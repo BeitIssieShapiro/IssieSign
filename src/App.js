@@ -47,7 +47,9 @@ class App extends Component {
         // clean the search bar
         let path = this.props.location.pathname;
         if (!path.startsWith('/info')) {
-            this.refs.searchInput.refs.input.value = "";
+            if (this.refs.searchInput != null) {
+                this.refs.searchInput.refs.input.value = "";
+            }
         }
         if (path.startsWith('/word')) {
             //reset words position
@@ -119,6 +121,21 @@ class App extends Component {
             leftArrow =  <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow"/></a>
             rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow"/></a>
         }
+
+        var mobile =  window.innerHeight < 700
+        document.getElementById('playerhost').className = 
+            mobile ? "" : "player"
+       
+        if(mobile && path.startsWith("/video")){
+            return (
+                <div>
+                    <div "style"="text-align:center">
+                        {backElement}
+                    </div>
+                    {this.props.children}
+                </div>)
+         }
+
         return (
             <div className="App">
                 <Shell theme={categoryTheme} id="page1" >
