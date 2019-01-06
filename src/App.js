@@ -129,7 +129,7 @@ class App extends Component {
         if(mobile && path.startsWith("/video")){
             return (
                 <div>
-                    <div "style"="text-align:center">
+                    <div style="text-align:center">
                         {backElement}
                     </div>
                     {this.props.children}
