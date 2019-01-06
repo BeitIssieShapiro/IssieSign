@@ -111,8 +111,8 @@ export const VideoToggle = (on) =>  {
         clearInterval(videoMonitor);
         videoMonitor = undefined
     } else {
-        if (videoMonitor === undefined)
-            videoMonitor = setInterval(monitorVideo, 250);
+        //if (videoMonitor === undefined)
+            //videoMonitor = setInterval(monitorVideo, 250);
     }
 }
 
