@@ -1,4 +1,3 @@
-
 npm run build
 rm -r ../cordova/IsraeliSignLanguage/www
 mkdir ../cordova/IsraeliSignLanguage/www
