@@ -1,0 +1,50 @@
+.searchInputHost {
+}
+
+.search {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 5px;
+}
+
+.search:before {
+    display: inline-block;
+    position: relative;
+    font-family: 'Material-Design-Iconic-Font';
+    font-size: 18px;
+    font-weight: 200;
+    text-align: center;
+    content: '\f1c3';
+    margin-right: -22px;
+    vertical-align: middle;
+}
+
+input {
+    display: inline-block;
+    border: none;
+    border-radius: 13px;
+    height: 26px;
+    width: 150px;
+    background-color: rgb(119,119,119);;
+    padding-left: 28px;
+    color: rgb(255,255,255);
+
+}
+
+input:focus {
+    outline: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
+
+.sameLine {
+    display: inline-block;
+    float: right;
+    margin-right: 30px;
+}
