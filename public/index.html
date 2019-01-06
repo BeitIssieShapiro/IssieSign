@@ -156,20 +156,9 @@
 <div class="container-fluid fgAppHolder" style="position: fixed; height:100%; width:100%; top:0; left:0;">
 </div>
 <div class="player" id="playerhost">
-    <video class="centerWidthAlign"  autoplay="true" id="player"  playsinline
-        onclick="this.paused?this.play():this.pause();" 
+    <video class="centerWidthAlign" muted="false" autoplay="true" id="player"  playsinline
+        onclick="this.paused?this.play():this.pause();"
         ></video>
-        <div class="replayhost" id="buttonReplay">
-            <button id="pauseBtn" class="roundbutton display-hidden">
-                <div   class=" zmdi zmdi-pause" />
-            </button>
-            <button id="playBtn" class="roundbutton display-hidden">
-                <div class="spacer zmdi zmdi-play" />
-            </button>
-            <button id="replayBtn" class="roundbutton display-hidden">
-                <div class=" zmdi zmdi-replay" />
-            </button>
-        </div>
 </div>
 </body>
 
