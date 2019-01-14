@@ -1,9 +1,9 @@
 console.log("Start building JSON file for sign language app");
 
-var sourceFile = '../../../ContentNew'
+var sourceFile = '/Users/i022021/dev/sign_lang/ContentNew'
 var targetFile = '../src/jsons/main.json'
-var imagePath = '../src/images/'
-var videoPath = '../public/videos/'
+var imagePath = '/Users/i022021/dev/sign_lang/IssieSignMedia/images/'
+var videoPath = '/Users/i022021/dev/sign_lang/IssieSignMedia/videos/'
 var colors = [
     "#2d9f8e",
     "#d95841",
@@ -90,8 +90,9 @@ for (var i=0; items && i<items.length; i++) {
                     
 
 
-                    word.videoName = words[j].replace(suffix, "_x264.mov");
-                    
+                    //word.videoName = words[j].replace(suffix, "_x264.mov");
+                    word.videoName = words[j]
+
                     pathToTest = videoPath + word.videoName
                     if (!fs.existsSync(pathToTest)) {
                         console.log("missing video: '" +  word.videoName+ "'");
