@@ -4,7 +4,7 @@ if [ "$1" == "" ]; then
     exit 1
 fi
 
-#npm install
+npm install
 
 
 echo "Remove old media"
