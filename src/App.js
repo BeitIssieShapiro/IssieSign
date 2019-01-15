@@ -122,14 +122,14 @@ class App extends Component {
             rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow"/></a>
         }
 
-        var mobile =  window.innerHeight < 700
+        var mobile =  window.innerHeight < 500
         document.getElementById('playerhost').className = 
             mobile ? "" : "player"
        
         if(mobile && path.startsWith("/video")){
             return (
                 <div>
-                    <div style="text-align:center">
+                    <div >
                         {backElement}
                     </div>
                     {this.props.children}
