@@ -3,14 +3,10 @@
 
 ## Build instraction
 
-* After cloning the project, run npm install once
+* After cloning the project, you need to run at the root fo the project: `scripts/init.sh <password>`, password is kept secret and not in this git repo. as the repo admin...
 * you need also to install cordova: `npm install -g cordova`
-* run ./make.sh (linux) or run the following:
-  * npm run build
-  * overwrite ../cordova/IsraeliSignLanguage/www with ./build
-  * for ios: 
-    * move to directory ../cordova/IsraeliSignLanguage
-    * run `cordova platform remove ios` and then `cordova platform add ios`
+* run in the root prject`./make.sh` (linux/bash) 
+* for other than ios, run `cordova platform remove android` and then `cordova platform add android`
 
 * to run in ios simulator, you need xcode installed, then:
   * in ./cordova/IsraeliSignLanguage/ run `cordova run ios`
