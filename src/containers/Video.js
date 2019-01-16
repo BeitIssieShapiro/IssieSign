@@ -9,7 +9,6 @@ import IssieBase from "../IssieBase";
 class Video extends IssieBase {
  
     updateDimensions() {
-        //var videoElem = document.getElementById("player")
         var videoElemHost = document.getElementById("playerhost")
         if (this.isLandscape() && this.isMobile()) {
             videoElemHost.style.top = "0px";

@@ -107,12 +107,16 @@ class App extends IssieBase {
             categoryTheme=getTheme(categoryId);
             title = mainJson.categories[categoryId-1].name;
         }
-        if(!path.startsWith("/info") && !this.isMobile()){
-            document.preventTouch = true;
+        document.preventTouch = true;
+
+        if(!path.startsWith("/info") ){
             searchInput = <SearchInput theme={categoryTheme} slot={this.state.narrow?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
-        } else {
+        } 
+        
+        if (this.isMobile() || path.startsWith("/info"))  {
             document.preventTouch = false;
-         }
+        } 
+
         if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info") && !this.state.mobile) {
 
             leftArrow =  <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow"/></a>

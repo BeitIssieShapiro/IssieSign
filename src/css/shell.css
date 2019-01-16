@@ -103,6 +103,7 @@
         var(--shell-main-background-color-0),
         var(--shell-main-background-color-1)
     );
+    overflow: scroll;
 }
 
 
