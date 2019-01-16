@@ -16,6 +16,7 @@
   * On the project Navigator left panel, select the root (IssieSign)
   * In the "Signing" section, choose the Team (you would need to click on manage-account and add your appleId account before)
   * choose a device (your connected iPad) and press the run button.
+  * You may get this error: "A valid provisioning profile for this executable was not found". In this case, goto File->project settings... and choose legacy build system. then re-run
   * On first run, you need to verify the app: in Settings->General->Device Management->choose you e-mail and the verify the app.
   
   

@@ -5,28 +5,25 @@ import "../css/Tile.css";
 
 import {imageLocalCall} from "../apis/ImageLocalCall";
 import Rope from "../components/Rope";
+import IssieBase from "../IssieBase";
+import ListItem from "./ListItem";
 
 
-class Card2 extends React.Component {
-   constructor(props){
-        super(props);
-        //this.play = this.play.bind(this);
-   }
-
-    /*play(e) {
-        e.preventDefault = true
-        let url = document.basePath + (document.basePath.startsWith("file")?"www/":"") + "videos/"+ this.props.vidName;
-
-        document.getElementById("player").src = url;
-        document.getElementById("playerhost").style.visibility = "visible";
-    }*/
-    
+class Card2 extends IssieBase {
     render() {
 
-        let imageSrc = this.props.imageName ? imageLocalCall(this.props.imageName) : "image1.png";
-        let image2 = this.props.imageName2?<img slot="body" className="tileImg" src={imageLocalCall(this.props.imageName2)} alt="card Placeholder"></img>:"";
-        let cardDouble = this.props.imageName2?{'--card-width':'100%'}:{};
         
+        if (this.isMobile()) {
+            return (
+                <ListItem Name={this.props.cardName} 
+                          Url={this.props.cardUrl}
+                          imageName={this.props.imageName}/>
+            );
+        }
+        let imageSrc = this.props.imageName ? imageLocalCall(this.props.imageName) : "image1.png";
+        let image2 = this.props.imageName2?<img className="tileImg" src={imageLocalCall(this.props.imageName2)} alt="card Placeholder"></img>:"";
+        let cardDouble = this.props.imageName2?{'--card-width':'100%'}:{};
+ 
         return (
         <Link to={this.props.cardUrl}>
             <Rope>

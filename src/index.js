@@ -22,15 +22,15 @@ render(
     <Provider store={store}>
         <Router history={hashHistory}>
             <Route path="/" component={App} router={this} >
-                <IndexRoute component={Body} />
-                <Route path="/word/:wordId" component={Word} />
+                <IndexRoute component={Body}/>
+                <Route path="/word/:wordId" component={Word}/>
                 <Route path="/video/:videoName/:categoryId/:title" component={Video} />
                 <Route path="/search/:searchStr" component={Search} />
                 <Route path="/info" component={Info} />
             </Route>
         </Router>
     </Provider>,
-    document.getElementsByClassName("fgAppHolder")[0]
+    document.getElementsByClassName("AppHolder")[0]
 );
 
 

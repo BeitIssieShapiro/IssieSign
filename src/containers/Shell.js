@@ -1,6 +1,7 @@
 import React from "react";
 import '../css/shell.css';
-import { isNarrow } from "../utils/Utils";
+import IssieBase from "../IssieBase";
+import ReactDOM from 'react-dom';
 
 function Slot({ children, slot }) {
     let slottedChildren = [];
@@ -20,32 +21,20 @@ function Slot({ children, slot }) {
     return slottedChildren;
 }
 
-class Shell extends React.Component {
-    constructor(props){
-        super(props);
-        this.updateDimensions = this.updateDimensions.bind(this);
-    }
- 
-    updateDimensions() {
-        this.setState({width:window.innerHeight})
-    }
-    
-    componentWillMount(){
-        this.updateDimensions();
-    }
- 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
-    }
-
-    componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
-        if (isNarrow() && document.getElementsByClassName("projectors")[0]) {
-            document.getElementsByClassName("projectors")[0].style.padding = "0 10px";
-        }
-    }
+class Shell extends IssieBase {
 
     render(){
+
+        var projectors = ""
+        if (!this.isMobile()) {
+            projectors = <ul className="projectors">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        }
+
         return (
         <div className="shellhost">
             <div className="shellTopBlueBar"/>
@@ -63,12 +52,8 @@ class Shell extends React.Component {
                 </div>
             </div>
             
-            <ul className="projectors">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-            </ul>
+            {projectors}
+            
             <div className="shellmain">
                 <aside className="prev">
                     <Slot slot="prev">{this.props.children}</Slot>

@@ -13,21 +13,14 @@
             width: 100%;
             padding: 15px;
         }
-        .App-intro {
-            font-size: large;
-            padding-top: 150px;
-
-        }
 
         .player {
             position:relative; 
-            z-index: 1002;
-            top:150px; 
             visibility: hidden;
         }
 
         video::-webkit-media-controls-panel {
-            padding: 100px
+            padding: 100px;
             height: 25px;
         }
 
@@ -60,7 +53,6 @@
         .display-hidden {
             display: none;
         }
-
 
         .spacer:before {
             content: "\00a0 ";
@@ -153,13 +145,14 @@
 </head>
 
 <body theme="blue">
-<div class="container-fluid fgAppHolder" style="position: fixed; height:100%; width:100%; top:0; left:0;">
-</div>
-<div class="player" id="playerhost">
-    <video class="centerWidthAlign" autoplay="true" id="player"  playsinline
-        onclick="this.paused?this.play():this.pause();"
-        ></video>
-</div>
+    <div class="container-fluid AppHolder" style="position: fixed; height:100%; width:100%; top:0; left:0; z-index:1;">
+    </div>
+
+    <div class="player" id="playerhost" style="z-index:2;">
+        <video class="centerWidthAlign" autoplay="true" id="player"  playsinline
+            onclick="this.paused?this.play():this.pause();"
+            ></video>
+    </div>
 </body>
 
 </html>

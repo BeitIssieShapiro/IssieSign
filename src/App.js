@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './css/App.css';
 import './css/style.css';
@@ -6,15 +6,15 @@ import {connect} from "react-redux";
 import { bindActionCreators } from "redux";
 import {jsonLocalCall} from "./apis/JsonLocalCall";
 
-import PropTypes from "prop-types";
 import {browserHistory} from "react-router";
 import SearchInput from "./components/SearchInput";
 
-import {scrollLeft, scrollRight, saveWordTranslateX, saveRootTranslateX, getTheme, VideoToggle, isNarrow} from "./utils/Utils";
+import {scrollLeft, scrollRight, saveWordTranslateX, saveRootTranslateX, getTheme, VideoToggle} from "./utils/Utils";
 import Shell from "./containers/Shell";
+import IssieBase from './IssieBase';
 
 
-class App extends Component {
+class App extends IssieBase {
     constructor(props) {
         super(props);
         this.state = {searchString:""};
@@ -24,11 +24,9 @@ class App extends Component {
         this.ScrollLeft = this.ScrollLeft.bind(this);
         this.ScrollRight = this.ScrollRight.bind(this);
         this.showInfo = this.showInfo.bind(this);
-
-        let winWidth = window.innerWidth;
-        let winHeight = window.innerHeight;
     }
-
+    
+ 
     handleSearch(e) {
         if (e.target.value.length > 1
             ) {
@@ -38,7 +36,6 @@ class App extends Component {
             //go back to category
             this.props.router.push('/');
         }
- 
         
         this.setState({searchString: e.target.value})
     }
@@ -85,8 +82,8 @@ class App extends Component {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = <div className="rowdiv" slot="end-bar"><button  className="roundbutton "
-                        onClick={this.goBack} style={{visibility:(path !== "/" ? "visible":"hidden") , "--radius":"50px"}}><div className="zmdi zmdi-arrow-right"/></button></div>
+        let backElement = <div slot="end-bar" style={{height:50}}><button className="roundbutton navBtn"
+                        onClick={this.goBack} style={{float:"right",  visibility:(path !== "/" ? "visible":"hidden") , "--radius":"50px"}}><div className="zmdi zmdi-arrow-right"/></button></div>
         let searchInput = "";
 
         if(path.startsWith("/word")){
@@ -100,7 +97,7 @@ class App extends Component {
             categoryTheme = getTheme(categoryId);
             title =this.props.params.title;
 
-            VideoToggle(true);
+            VideoToggle(true); 
         } else {
             VideoToggle(false);
         }
@@ -110,31 +107,29 @@ class App extends Component {
             categoryTheme=getTheme(categoryId);
             title = mainJson.categories[categoryId-1].name;
         }
-        if(!path.startsWith("/info")){
+        if(!path.startsWith("/info") && !this.isMobile()){
             document.preventTouch = true;
-            searchInput = <SearchInput theme={categoryTheme} slot={isNarrow()?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
+            searchInput = <SearchInput theme={categoryTheme} slot={this.state.narrow?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
         } else {
             document.preventTouch = false;
          }
-        if(!path.startsWith("/video") &&  !path.startsWith("/info")) {
+        if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info") && !this.state.mobile) {
 
             leftArrow =  <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow"/></a>
             rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow"/></a>
         }
 
-        var mobile =  window.innerHeight < 500
-        document.getElementById('playerhost').className = 
-            mobile ? "" : "player"
-       
-        if(mobile && path.startsWith("/video")){
+      
+        if(this.isMobile() && this.isLandscape() && path.startsWith("/video")){
             return (
                 <div>
-                    <div >
+                    <div style={{height:50}}>
                         {backElement}
                     </div>
                     {this.props.children}
                 </div>)
          }
+         
 
         return (
             <div className="App">
@@ -145,16 +140,16 @@ class App extends Component {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
-                 </Shell>
-               {this.props.children}
+                    <div slot="body" >
+                        {this.props.children}
+                    </div>
+                </Shell>
+              
             </div>
         );
     }
 }
 
-App.propTypes = {
-    children: PropTypes.any
-};
 
 const mapStateToProps = (state) => {
     return {};

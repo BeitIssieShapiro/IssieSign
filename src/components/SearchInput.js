@@ -1,8 +1,8 @@
-import React from "react";
 import "../css/search.css";
-import { isNarrow } from "../utils/Utils";
+import React from "react";
+import IssieBase from "../IssieBase";
 
-class SearchInput extends React.Component {
+class SearchInput extends IssieBase {
     constructor(props){
         super(props);
         if (props.onChange !== undefined) {
@@ -13,7 +13,7 @@ class SearchInput extends React.Component {
     handleChange (){}
 
     render() {
-        let searchClassName = isNarrow()? "": "sameLine";
+        let searchClassName = this.state.narrow? "": "sameLine";
         return (
             <div slot={this.props.slot} className={"search " + searchClassName}>
                 <input ref="input" type="search" onChange={this.handleChange}

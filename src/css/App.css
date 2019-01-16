@@ -46,3 +46,56 @@
     width: 60%;
     padding-bottom: 10px;
 }
+
+.listItem {
+  display: flex;
+  margin: 20px;
+  flex-flow: column;
+  direction: rtl;
+}
+ 
+.listItems ul{
+  list-style-type: none;
+
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow: auto;
+}
+ 
+ 
+
+
+.listImage {
+
+  margin: 0 15px 0 0;
+  height: 50px;
+
+  margin: 0 15px 0 0;
+  width: 20%;
+  height: 100%;
+}
+.listImage img {
+  height: 50px;
+  width: 50px;
+}
+ 
+.listItem td {
+  padding: 0;
+}
+
+.listItem td p {
+  font:  25px/1.5 Georgia, Times New Roman, serif;
+  color: black;
+  width: 70%;
+  margin: 0;
+  padding-top: 0;
+  padding-right: 20px;
+
+  text-align: right;
+}
+ 
+.listItem li {
+  padding: 10px;
+}

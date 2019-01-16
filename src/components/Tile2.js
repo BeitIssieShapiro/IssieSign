@@ -6,16 +6,27 @@ import "../css/Tile.css";
 import '../css/App.css';
 
 import {imageLocalCall} from "../apis/ImageLocalCall";
-import { isNarrow } from "../utils/Utils";
+import IssieBase from "../IssieBase";
+import ListItem from "./ListItem";
 
 
-class Tile2 extends React.Component {
+class Tile2 extends IssieBase {
 
     render() {
     
+ 
+        if (this.isMobile()) {
+            return (
+                <ListItem Name={this.props.tileName} 
+                          Url={this.props.tileUrl}
+                          imageName={this.props.imageName} />
+            );
+        }
+
         let imageSrc = this.props.imageName ? imageLocalCall(this.props.imageName) : "image1.png";
-        let classNameShelf = isNarrow()? "shelfMobile" : "shelf";
-        let classNameTileGroup = isNarrow()? "tileGroupMobile" : "tileGroup";
+        let classNameShelf = this.state.narrow? "shelfMobile" : "shelf";
+        let classNameTileGroup = this.state.narrow? "tileGroupMobile" : "tileGroup";
+
         return (
             <Link to={this.props.tileUrl}>
             <div className={classNameTileGroup}>

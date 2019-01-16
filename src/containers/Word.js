@@ -3,28 +3,15 @@ import '../css/App.css';
 import {jsonLocalCall} from "../apis/JsonLocalCall";
 import Card2 from "../components/Card2";
 import {wordsTranslateX, saveWordTranslateX, getTheme} from "../utils/Utils";
+import IssieBase from "../IssieBase";
 
-class Word extends React.Component {
+
+class Word extends IssieBase {
     constructor(props){
         super(props);
         this.state = this.getState(this.props);
-        this.updateDimensions = this.updateDimensions.bind(this);
     }
     
-    updateDimensions() {
-        this.setState({width:window.innerHeight})
-   }
-    
-    componentWillMount(){
-        this.updateDimensions();
-    }
-    componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
-    } 
-
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
-    }
     getState(props) {
         var state;
         if (props.words === undefined) {
@@ -70,17 +57,20 @@ class Word extends React.Component {
         }
         width = Math.max(width, window.innerWidth);
 
- //       console.log("h:"+window.innerHeight+ ", w:"+ window.innerWidth+ ", cols: "+ cols + ", rows:" + rows + ", width:"+width)
+        if (this.isMobile()) 
+        return (
+            <div className="listItems">
+                <ul>
+                    {wordsElements}
+                </ul>
+    
+            </div>);
+
 
         return (
-        <div className="App-intro">
-            <div className="centerWidthAlign">
-                <div className="fgTileContainer" style={{width:width+"px", transform:'translateX(' + wordsTranslateX + 'px)'}}>
+            <div className="tileContainer" style={{width:width+"px", transform:'translateX(' + wordsTranslateX + 'px)'}}>
                     {wordsElements}
-                </div>
             </div>
-        </div>
-
         )
     }
 }

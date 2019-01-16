@@ -26,12 +26,9 @@ export const scrollLeft = (() => {
     return newVal;
 });
 
-export const isNarrow = (() => {
-    return window.innerWidth < 700
-});
 
 function getIncrement(curr, toRight) {
-    let container = document.getElementsByClassName("fgTileContainer")[0];
+    let container = document.getElementsByClassName("tileContainer")[0];
     var inc =  container.parentNode.clientWidth  - 50;
     if (inc >= container.clientWidth)
         return 0;
@@ -46,7 +43,7 @@ function getIncrement(curr, toRight) {
 }
 
 function getTranslateX() {
-    let container = document.getElementsByClassName("fgTileContainer")[0];
+    let container = document.getElementsByClassName("tileContainer")[0];
     let transform = container.style.transform;
     if (transform) {
         var transXRegex = /\.*translateX\((.*)px\)/i;
@@ -56,7 +53,7 @@ function getTranslateX() {
 }
 
 function setTranslateX(newVal) {
-    let container = document.getElementsByClassName("fgTileContainer")[0];
+    let container = document.getElementsByClassName("tileContainer")[0];
     container.style.transform = 'translateX(' +newVal+ 'px)';
 }
 
@@ -111,8 +108,8 @@ export const VideoToggle = (on) =>  {
         clearInterval(videoMonitor);
         videoMonitor = undefined
     } else {
-        //if (videoMonitor === undefined)
-            //videoMonitor = setInterval(monitorVideo, 250);
+     //   if (videoMonitor === undefined)
+     //       videoMonitor = setInterval(monitorVideo, 250);
     }
 }
 
