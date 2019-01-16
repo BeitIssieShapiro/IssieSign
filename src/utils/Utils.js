@@ -100,16 +100,16 @@ export const themeMap = {
 };
 
 var videoMonitor = undefined;
-export const VideoToggle = (on) =>  { 
+export const VideoToggle = (on, addButtons) =>  { 
     let video = document.getElementById("player");
     document.getElementById("playerhost").style.visibility = (on?"visible":"hidden");
     if (!on) {
         video.pause();
         clearInterval(videoMonitor);
         videoMonitor = undefined
-    } else {
-     //   if (videoMonitor === undefined)
-     //       videoMonitor = setInterval(monitorVideo, 250);
+    } else if (addButtons) {
+        if (videoMonitor === undefined)
+            videoMonitor = setInterval(monitorVideo, 250);
     }
 }
 

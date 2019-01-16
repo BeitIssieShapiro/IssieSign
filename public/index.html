@@ -151,7 +151,19 @@
     <div class="player" id="playerhost" style="z-index:2;">
         <video class="centerWidthAlign" autoplay="true" id="player"  playsinline
             onclick="this.paused?this.play():this.pause();"
-            ></video>
+            >
+        </video>
+        <div class="replayhost" id="buttonReplay">
+            <button id="pauseBtn" class="roundbutton display-hidden">
+                <div   class=" zmdi zmdi-pause" />
+            </button>
+            <button id="playBtn" class="roundbutton display-hidden">
+                <div class="spacer zmdi zmdi-play" />
+            </button>
+            <button id="replayBtn" class="roundbutton display-hidden">
+                <div class=" zmdi zmdi-replay" />
+            </button>
+        </div>
     </div>
 </body>
 

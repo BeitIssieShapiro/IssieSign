@@ -97,7 +97,7 @@ class App extends IssieBase {
             categoryTheme = getTheme(categoryId);
             title =this.props.params.title;
 
-            VideoToggle(true); 
+            VideoToggle(true, !this.isMobile()); 
         } else {
             VideoToggle(false);
         }
