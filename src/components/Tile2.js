@@ -46,7 +46,7 @@ class Tile2 extends IssieBase {
             <div className={classNameTileGroup}>
                 <Link to={this.props.tileUrl}>
                 <div className={classNameTileBox + " " + classNameBoxHost} theme="blue" theme-flavor= {this.props.themeFlavor} style={{display: "border: 1px solid red"}}>
-
+                    {mobileText}
                     <div className="box" >
                         <header>
                             <span></span>
@@ -58,7 +58,6 @@ class Tile2 extends IssieBase {
                             </div>
                         </main>
                     </div>
-                    {mobileText}
                     </div>
                     <div className="shelfhost">
                                 <div className={classNameShelf}>
