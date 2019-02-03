@@ -174,5 +174,10 @@
     float: left;
     width: 35px;
     height: 35px;
-    border: 0px solid;
+    border: 0 solid;
+}
+
+.theBody {
+    display: flex;
+    justify-content: center;
 }

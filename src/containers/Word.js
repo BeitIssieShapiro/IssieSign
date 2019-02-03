@@ -52,7 +52,7 @@ class Word extends IssieBase {
             //calculate best width:
             let tileH = 192;
             let rows = Math.max(Math.floor( (window.innerHeight - 153) / tileH), 1);
-            let cols = Math.ceil(wordsElements.length / rows)
+            let cols = Math.ceil(wordsElements.length / rows);
             width = cols * tileW;
         }
         width = Math.max(width, window.innerWidth);

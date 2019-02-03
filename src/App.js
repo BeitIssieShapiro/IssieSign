@@ -144,7 +144,7 @@ class App extends IssieBase {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
-                    <div slot="body" >
+                    <div slot="body" className="theBody">
                         {this.props.children}
                     </div>
                 </Shell>
