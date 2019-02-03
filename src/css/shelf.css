@@ -20,16 +20,17 @@
 .shelf,
 .shelfMobile {
     position: relative;
-    height: 25px;
     background-color: var(--shelf-background-color);
 }
 
 .shelf {
     width: 170px;
+    height: 22px;
 }
 
 .shelfMobile {
-    width: 125px;
+    width: 313px;
+    height: 17px;
 }
 
 .shelf:before {

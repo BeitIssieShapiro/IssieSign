@@ -177,7 +177,12 @@
     border: 0 solid;
 }
 
-.theBody {
+.theBody,
+.theBodyMobile{
     display: flex;
     justify-content: center;
+}
+
+.theBodyMobile {
+    margin-top: 20px;
 }

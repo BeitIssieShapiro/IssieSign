@@ -1,5 +1,4 @@
-.boxhost {
-    display: flex;
+.boxhost, .boxhostMobile{
     flex-direction: column;
     justify-content: flex-end;
     min-width: 124px;
@@ -8,6 +7,14 @@
     pointer-events:none;
  }
 
+.boxhost {
+    display: flex;
+    margin-left: 24px;
+}
+
+.boxhostMobile {
+    display: -webkit-box;
+}
 
 .box {
     width: 100%;

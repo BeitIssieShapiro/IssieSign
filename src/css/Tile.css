@@ -115,6 +115,16 @@
     width: 100%;
 }
 
+.tileTextMobile {
+    color: black;
+    width: 100%;
+    font-family: Roboto, Helvetica, sans-serif;
+    font-weight: inherit;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    font-size: 25px;
+}
+
 .tileGroup,
 .tileGroupMobile {
     display: flex;
@@ -130,4 +140,10 @@
 
 .tileGroupMobile {
     width: 140px;
+}
+
+.textContainer {
+    margin-top: 50px;
+    width:124px;
+    align-content: center;
 }

@@ -133,8 +133,8 @@ class App extends IssieBase {
                     {this.props.children}
                 </div>)
          }
-         
 
+        let classNameTheBody = this.state.narrow? "theBodyMobile" : "theBody";
         return (
             <div className="App">
                 <Shell theme={categoryTheme} id="page1" >
@@ -144,7 +144,7 @@ class App extends IssieBase {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
-                    <div slot="body" className="theBody">
+                    <div slot="body" className={classNameTheBody}>
                         {this.props.children}
                     </div>
                 </Shell>
