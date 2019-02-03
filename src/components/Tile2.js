@@ -13,9 +13,9 @@ import ListItem from "./ListItem";
 class Tile2 extends IssieBase {
 
     render() {
-    
- 
-        if (this.isMobile()) {
+
+        //this.isMobile()
+        if (false) {
             return (
                 <ListItem Name={this.props.tileName} 
                           Url={this.props.tileUrl}

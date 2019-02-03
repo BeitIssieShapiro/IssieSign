@@ -1,7 +1,6 @@
 import React from "react";
 import '../css/shell.css';
 import IssieBase from "../IssieBase";
-import ReactDOM from 'react-dom';
 
 function Slot({ children, slot }) {
     let slottedChildren = [];
@@ -25,8 +24,9 @@ class Shell extends IssieBase {
 
     render(){
 
-        var projectors = ""
-        if (!this.isMobile()) {
+        var projectors = "";
+        //this.isMobile()
+        if (true) {
             projectors = <ul className="projectors">
                 <li></li>
                 <li></li>

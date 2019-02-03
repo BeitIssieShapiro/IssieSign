@@ -2,8 +2,6 @@ import React from "react";
 
 import '../css/App.css';
 
-
-import {getTheme} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 
 class Video extends IssieBase {

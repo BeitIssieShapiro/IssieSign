@@ -2,9 +2,8 @@ import React from "react";
 import '../css/App.css';
 import {jsonLocalCall} from "../apis/JsonLocalCall";
 import Tile2 from "../components/Tile2";
-import ListItem from "../components/ListItem";
 
-import {rootTranslateX, saveRootTranslateX, getThemeFlavor} from "../utils/Utils";
+import {rootTranslateX, getThemeFlavor} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 
 var elements;
@@ -32,8 +31,8 @@ class Body extends IssieBase {
         //calculate best width:
         let tileH = 175, tileW = this.state.narrow?140:220;
         let rows = Math.max(Math.floor( (window.innerHeight - 153) / tileH), 1);
-        console.log("Height: " + window.innerHeight + ", rows: " + rows)
-        let cols = Math.ceil(elements.length / rows)
+        console.log("Height: " + window.innerHeight + ", rows: " + rows);
+        let cols = Math.ceil(elements.length / rows);
         let width = cols * tileW;
 
         if (this.isMobile()) 

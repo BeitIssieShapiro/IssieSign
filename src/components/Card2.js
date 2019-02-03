@@ -11,9 +11,8 @@ import ListItem from "./ListItem";
 
 class Card2 extends IssieBase {
     render() {
-
-        
-        if (this.isMobile()) {
+        // this.isMobile()
+        if (false) {
             return (
                 <ListItem Name={this.props.cardName} 
                           Url={this.props.cardUrl}
@@ -27,7 +26,6 @@ class Card2 extends IssieBase {
         return (
         <Link to={this.props.cardUrl}>
             <Rope>
-               
                     <div className="card" style={cardDouble} theme={this.props.theme}>
                         <div className="header clip"></div>
                         <div className="main">
