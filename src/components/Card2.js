@@ -16,7 +16,8 @@ class Card2 extends IssieBase {
             return (
                 <ListItem Name={this.props.cardName} 
                           Url={this.props.cardUrl}
-                          imageName={this.props.imageName}/>
+                          imageName={this.props.imageName}
+                          imageName2={this.props.imageName2}/>
             );
         }
         let imageSrc = this.props.imageName ? imageLocalCall(this.props.imageName) : "image1.png";

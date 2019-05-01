@@ -18,7 +18,8 @@ class Tile2 extends IssieBase {
             return (
                 <ListItem Name={this.props.tileName}
                           Url={this.props.tileUrl}
-                          imageName={this.props.imageName} />
+                          imageName={this.props.imageName} 
+                          imageName2={this.props.imageName2} />
             );
         }
 

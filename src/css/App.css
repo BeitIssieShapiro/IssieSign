@@ -80,8 +80,8 @@
   height: 100%;
 }
 .listImage img {
-  height: 50px;
-  width: 50px;
+  height: 75px;
+  width: 75px;
 }
  
 .listItem td {
@@ -89,7 +89,7 @@
 }
 
 .listItem td p {
-  font:  25px/1.5 Georgia, Times New Roman, serif;
+  font:  30px/1.5 Georgia, Times New Roman, serif;
   color: black;
   width: 70%;
   margin: 0;

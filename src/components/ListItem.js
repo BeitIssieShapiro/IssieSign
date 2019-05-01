@@ -10,6 +10,11 @@ class ListItem extends IssieBase {
     render() {
     
         let imageSrc = this.props.imageName ? imageLocalCall(this.props.imageName) : "image1.png";
+        var image2 = "";
+        if (this.props.imageName2) {
+            let imageSrc2 = this.props.imageName ? imageLocalCall(this.props.imageName2) : "image2.png";
+            image2 = <img  src={imageSrc2} alt="Category Placeholder"></img>
+        }
         return (
             <li>
                 <Link to={this.props.Url}>
@@ -17,6 +22,7 @@ class ListItem extends IssieBase {
                         <tr>
                             <td className="listImage">
                                 <img  src={imageSrc} alt="Category Placeholder"></img>
+                                {image2}
                             </td>
                             <td>
                                 <p>{this.props.Name}</p>
