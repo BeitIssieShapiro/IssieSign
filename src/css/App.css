@@ -51,6 +51,11 @@
     padding-bottom: 10px;
 }
 
+.listItemLandscape {
+    columns: 1;
+    
+}
+
 .listItem {
   display: flex;
   margin: 20px;

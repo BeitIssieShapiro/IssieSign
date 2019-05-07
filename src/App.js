@@ -134,7 +134,7 @@ class App extends IssieBase {
                 </div>)
          }
 
-        let classNameTheBody = this.state.narrow? "theBodyMobile" : "theBody";
+        let classNameTheBody = this.state.narrow? "theBody" : "theBody";
         return (
             <div className="App">
                 <Shell theme={categoryTheme} id="page1" >

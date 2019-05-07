@@ -29,25 +29,11 @@ class Tile2 extends IssieBase {
         let classNameTileBox = this.state.narrow? "tileBoxMobile" : "tileBox";
         let classNameBoxHost = this.state.narrow? "boxhostMobile" : "boxhost";
 
-        let mobileText = "";
-            if (this.isMobile()) {
-                mobileText =
-                    <div className="textContainer">
-                        <span className="rtl tileTextMobile">{this.props.tileName}</span>
-                    </div>
-            }
-        let notMobileText = "";
-        if (!this.isMobile()) {
-            notMobileText =
-                <h2 className="rtl tileText">{this.props.tileName}</h2>
-        }
-
         return (
 
-            <div className={classNameTileGroup}>
+            <div className="tileGroup">
                 <Link to={this.props.tileUrl}>
-                <div className={classNameTileBox + " " + classNameBoxHost} theme="blue" theme-flavor= {this.props.themeFlavor} style={{display: "border: 1px solid red"}}>
-                    {mobileText}
+                <div className="tileBox boxhost" theme="blue" theme-flavor= {this.props.themeFlavor} style={{display: "border: 1px solid red"}}>
                     <div className="box" >
                         <header>
                             <span></span>
@@ -61,9 +47,9 @@ class Tile2 extends IssieBase {
                     </div>
                     </div>
                     <div className="shelfhost">
-                                <div className={classNameShelf}>
+                                <div className="shelf">
                                     <div className="container">
-                                        {notMobileText}
+                                    <h2 className="rtl tileText">{this.props.tileName}</h2>
                                     </div>
                                 </div>
                             </div>

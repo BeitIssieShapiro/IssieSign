@@ -28,18 +28,23 @@ export const scrollLeft = (() => {
 
 
 function getIncrement(curr, toRight) {
-    let container = document.getElementsByClassName("tileContainer")[0];
-    var inc =  container.parentNode.clientWidth  - 50;
-    if (inc >= container.clientWidth)
-        return 0;
+    let containers = document.getElementsByClassName("tileContainer")
+    let maxInc = 0;
+    for (const container of containers) {
+        var inc =  container.parentNode.clientWidth  - 50;
+        if (inc >= container.clientWidth) {
+            continue;
+        }
 
-    if (toRight) {
-        var rightHidden = (container.clientWidth - inc) + curr;
-        return Math.min(inc, rightHidden);
-    } else {
-        var leftHidden =  container.clientWidth - curr - inc;
-        return Math.min(inc, leftHidden);
+        if (toRight) {
+            var rightHidden = (container.clientWidth - inc) + curr;
+            maxInc = Math.max( Math.min(inc, rightHidden), maxInc);
+        } else {
+            var leftHidden =  container.clientWidth - curr - inc;
+            maxInc = Math.max(  Math.min(inc, leftHidden), maxInc);
+        }
     }
+    return maxInc;
 }
 
 function getTranslateX() {
@@ -53,8 +58,25 @@ function getTranslateX() {
 }
 
 function setTranslateX(newVal) {
-    let container = document.getElementsByClassName("tileContainer")[0];
-    container.style.transform = 'translateX(' +newVal+ 'px)';
+    let containers = document.getElementsByClassName("tileContainer");
+    for (let cont of containers) {
+        cont.style.transform = 'translateX(' +newVal+ 'px)';
+    }
+}
+
+export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, isSearch) {
+    if (isMobile) {
+        //scroll vertically by touch
+        let cols = Math.max(Math.ceil(windowWidth / tileW), 1);
+        return cols * ( tileW * 1.05);
+    }
+
+    let rows = Math.max(Math.floor( (windowHeight - 153) / tileH), 1);
+    if (isSearch) {
+        rows = Math.floor(rows/2);
+    }
+    let cols = Math.ceil(elementCount / rows);
+    return cols * tileW;
 }
 
 //exluded: 8,12,20,14,6

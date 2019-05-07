@@ -3,46 +3,40 @@ import '../css/App.css';
 import {jsonLocalCall} from "../apis/JsonLocalCall";
 import Tile2 from "../components/Tile2";
 
-import {rootTranslateX, getThemeFlavor} from "../utils/Utils";
+import {rootTranslateX, getThemeFlavor, calcWidth} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 
-var elements;
+
 class Body extends IssieBase {
     constructor(props){
         super(props);
+        let categories 
+        if (props.categories === undefined) {
+            let mainJson = jsonLocalCall("main");
+            categories = mainJson.categories;
 
-        let mainJson = jsonLocalCall("main");
-        if (!elements) {
-           elements = mainJson.categories.map((category) =>
-                <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + category.id}
-                    imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)}  />); 
+        } else {
+            categories = props.categories;
         }
 
         this.state = {
-            elements: elements
-        };
+            elements: categories.map((category) =>
+            <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + category.id}
+                imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)}  />) 
+        }
     }
 
 
     render() {
-
         let elements = this.state.elements;
 
         //calculate best width:
         let tileH = 175, tileW = this.state.narrow?140:220;
-        let rows = Math.max(Math.floor( (window.innerHeight - 153) / tileH), 1);
-        console.log("Height: " + window.innerHeight + ", rows: " + rows);
-        let cols = Math.ceil(elements.length / rows);
-        let width = cols * tileW;
 
-        if (this.isMobile()) 
-            return (
-                <div className="listItems">
-                    <ul>
-                        {elements}
-                    </ul>
+        let width = calcWidth(elements.length, window.innerHeight, 
+            window.innerWidth, tileH, tileW, this.isMobile(), this.props.isSearch !== undefined) ;
         
-                </div>);
+        console.log("Body: Height: " + window.innerHeight + "Width: "+width);
 
         return (
             <div className="tileContainer" style={{width:width+"px", transform:'translateX(' + rootTranslateX + 'px)'}}>

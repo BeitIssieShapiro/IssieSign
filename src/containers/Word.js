@@ -2,7 +2,7 @@ import React from "react";
 import '../css/App.css';
 import {jsonLocalCall} from "../apis/JsonLocalCall";
 import Card2 from "../components/Card2";
-import {wordsTranslateX, getTheme} from "../utils/Utils";
+import {wordsTranslateX, getTheme, calcWidth} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 
 
@@ -11,23 +11,21 @@ class Word extends IssieBase {
         super(props);
         this.state = this.getState(this.props);
     }
-    
+        
     getState(props) {
-        var state;
-        if (props.words === undefined) {
+        if (props.words) {
+            return  {words:props.words, categoryId:"1"}
+        } else if (this.props.routeParams) {
             let mainJson = jsonLocalCall("main");
-            let wordId = this.props.routeParams.wordId;
+            let wordId = props.routeParams.wordId;
             
-            mainJson.categories.forEach((category) => {
-                if (category.id === wordId && category.words) {
-                    state = {words:category.words, categoryId:category.id};
+            for (const cat of mainJson.categories) {
+                if (cat.id === wordId && cat.words) {
+                    return {words:cat.words, categoryId:cat.id};
                 }
-            });
-
-        } else {
-            state = {words:props.words, categoryId:"1"}
-        }
-        return state;
+            }
+        } 
+        return {words:[], categoryId:"1"}
     }
 
     componentWillReceiveProps(newProps) {
@@ -51,21 +49,12 @@ class Word extends IssieBase {
 
             //calculate best width:
             let tileH = 192;
-            let rows = Math.max(Math.floor( (window.innerHeight - 153) / tileH), 1);
-            let cols = Math.ceil(wordsElements.length / rows);
-            width = cols * tileW;
-        }
+
+            width = calcWidth(wordsElements.length, window.innerHeight, 
+                window.innerWidth, tileH, tileW, this.isMobile(), this.props.isSearch !== undefined) ; 
+          }
+
         width = Math.max(width, window.innerWidth);
-
-        if (this.isMobile()) 
-        return (
-            <div className="listItems">
-                <ul>
-                    {wordsElements}
-                </ul>
-    
-            </div>);
-
 
         return (
             <div className="tileContainer" style={{width:width+"px", transform:'translateX(' + wordsTranslateX + 'px)'}}>

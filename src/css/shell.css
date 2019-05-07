@@ -177,12 +177,7 @@
     border: 0 solid;
 }
 
-.theBody,
-.theBodyMobile{
-    display: flex;
+.theBody {
     justify-content: center;
 }
 
-.theBodyMobile {
-    margin-top: 20px;
-}
