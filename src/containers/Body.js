@@ -10,6 +10,10 @@ import IssieBase from "../IssieBase";
 class Body extends IssieBase {
     constructor(props){
         super(props);
+        this.state = this.getState(props);
+    }
+
+    getState(props) {
         let categories 
         if (props.categories === undefined) {
             let mainJson = jsonLocalCall("main");
@@ -18,14 +22,17 @@ class Body extends IssieBase {
         } else {
             categories = props.categories;
         }
-
-        this.state = {
-            elements: categories.map((category) =>
-            <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + category.id}
-                imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)}  />) 
-        }
+        let elements = categories.map((category) => {
+            return <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + category.id}
+                imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)}  />
+        });
+        return {elements:elements};
     }
+      
 
+    componentWillReceiveProps(props) {
+        this.setState(this.getState(props));
+    }
 
     render() {
         let elements = this.state.elements;

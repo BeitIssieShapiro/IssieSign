@@ -33,9 +33,14 @@ class Word extends IssieBase {
     }
 
     render() {
+
         var wordsElements = this.state.words.map((word) => {
-                return <Card2 key={word.id} cardName={word.name} vidName={word.videoName} cardUrl={"/video/" + word.videoName + "/" + this.state.categoryId + "/" + word.name}
-                                imageName={word.imageName} imageName2={word.imageName2} theme={getTheme(this.state.categoryId)} />
+            let themeId = this.state.categoryId;
+                if (word.categoryId) {
+                    themeId = word.categoryId;
+                }
+                return <Card2 key={word.id} cardName={word.name} vidName={word.videoName} cardUrl={"/video/" + word.videoName + "/" + themeId + "/" + word.name}
+                                imageName={word.imageName} imageName2={word.imageName2} theme={getTheme(themeId)} />
             });
 
         //calculate the average width, while considering double images

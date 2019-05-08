@@ -28,8 +28,7 @@ class App extends IssieBase {
     
  
     handleSearch(e) {
-        if (e.target.value.length > 1
-            ) {
+        if (e.target.value.length > 1) {
             this.props.router.push('/search/' + e.target.value);
             console.log("Search: " + e.target.value);
         } else if (this.props.location.pathname.startsWith("/search")) {
@@ -41,13 +40,7 @@ class App extends IssieBase {
     }
 
     goBack() {
-        // clean the search bar
-        let path = this.props.location.pathname;
-        if (!path.startsWith('/info')) {
-            if (this.refs.searchInput != null) {
-                this.refs.searchInput.refs.input.value = "";
-            }
-        }
+       let path = this.props.location.pathname;
         if (path.startsWith('/word')) {
             //reset words position
             saveWordTranslateX(0);
@@ -109,16 +102,27 @@ class App extends IssieBase {
         }
         document.preventTouch = true;
 
-        if(!path.startsWith("/info") ){
-            searchInput = <SearchInput theme={categoryTheme} slot={this.state.narrow?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
+        if (!path.startsWith("/info") ){
+            let searchVal = this.state.searchString;
+
+            if (!searchVal) {
+                if (this.props.router.params.SearchInput ) {
+                    searchVal = this.props.router.params.SearchInput
+                } else {
+                    searchVal = ""
+                }
+            }
+            if (searchVal.length > 1 && !path.startsWith("/search")) {
+                searchVal = "";
+            }
+            searchInput = <SearchInput value={searchVal} theme={categoryTheme} slot={this.state.narrow?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
         } 
         
         if (this.isMobile() || path.startsWith("/info"))  {
             document.preventTouch = false;
         } 
 
-        if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info") && !this.state.mobile) {
-
+        if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info")) {
             leftArrow =  <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow"/></a>
             rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow"/></a>
         }

@@ -19,7 +19,11 @@ class Search extends React.Component {
     filterWords(filterStr){
         var mainJson = jsonLocalCall("main").categories;
         return mainJson.reduce((acc, cur) => {
-            return acc.concat(cur.words)
+            
+            return acc.concat(cur.words.map((word)=>{
+                word['categoryId'] = cur.id;
+                return word;
+            }))
         }, []).filter(function(word) {
             return word.name.includes(filterStr);
         });
