@@ -9,15 +9,20 @@ import {jsonLocalCall} from "./apis/JsonLocalCall";
 import {browserHistory} from "react-router";
 import SearchInput from "./components/SearchInput";
 
-import {scrollLeft, scrollRight, saveWordTranslateX, saveRootTranslateX, getTheme, VideoToggle} from "./utils/Utils";
+import {scrollLeft, scrollRight,
+     saveWordTranslateX, saveRootTranslateX,  setTranslateX,
+     getTheme, VideoToggle,
+     ALLOW_SWIPE_KEY , saveSettingKey, getBooleanSettingKey} from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-
+import { MenuButton, Menu, MenuItem } from './settings'
+import './css/settings.css'
 
 class App extends IssieBase {
     constructor(props) {
         super(props);
-        this.state = {searchString:""};
+        console.log("allow swipe: "+ getBooleanSettingKey(ALLOW_SWIPE_KEY, false));
+        this.state = {searchString:"", allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false)};
         this.handleSearch = this.handleSearch.bind(this);
         this.goBack = this.goBack.bind(this);
         this.savePos = this.savePos.bind(this);
@@ -38,6 +43,10 @@ class App extends IssieBase {
         
         this.setState({searchString: e.target.value})
     }
+
+    handleMenuClick() {
+        this.setState({menuOpen:!this.state.menuOpen});
+      }
 
     goBack() {
        let path = this.props.location.pathname;
@@ -64,7 +73,14 @@ class App extends IssieBase {
     }
 
     showInfo() {
+        this.setState({menuOpen:false});
         this.props.router.push('/info');
+    }
+
+    allowSwipe(allow) {
+        saveSettingKey(ALLOW_SWIPE_KEY, allow);
+        this.setState({allowSwipe: allow});
+        setTranslateX(0);
     }
 
     render() {
@@ -118,16 +134,15 @@ class App extends IssieBase {
             searchInput = <SearchInput value={searchVal} theme={categoryTheme} slot={this.state.narrow?"title":"end-bar"} onChange={this.handleSearch} ref="searchInput" style={{display: "inline-block"}} />
         } 
         
-        if (this.isMobile() || path.startsWith("/info"))  {
+        if (this.isMobile() || path.startsWith("/info") || this.state.allowSwipe)  {
             document.preventTouch = false;
         } 
 
-        if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info")) {
+        if(!this.isMobile() && !path.startsWith("/video") &&  !path.startsWith("/info") && !this.state.allowSwipe) {
             leftArrow =  <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow"/></a>
             rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow"/></a>
         }
 
-      
         if(this.isMobile() && this.isLandscape() && path.startsWith("/video")){
             return (
                 <div>
@@ -142,12 +157,23 @@ class App extends IssieBase {
         return (
             <div className="App">
                 <Shell theme={categoryTheme} id="page1" >
-                    <button slot="start-bar" className="zmdi zmdi-info-outline" onClick={this.showInfo}></button>
+                    {/* <button slot="start-bar" className="zmdi zmdi-info-outline" onClick={this.showInfo}></button> */}
+                    <MenuButton slot="start-bar" open={this.state.menuOpen} onClick={()=>this.handleMenuClick()} color='white'/>
                     <div slot="title" style={{display: "inline-block"}}>{title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}
                     {backElement}
+                    <Menu slot="body" open={this.state.menuOpen}>
+                    <MenuItem 
+                        delay={`${0.1}s`}
+                        onClick={()=>{this.showInfo();}}>About Us - עלינו</MenuItem>
+                        <div id="toggles">
+                            <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" class="ios-toggle" checked={this.state.allowSwipe}
+                                onChange={(e)=>this.allowSwipe(e.target.checked)}/>
+                            <label for="allowSwipeCB" class="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
+                        </div>
+                    </Menu>
                     <div slot="body" className={classNameTheBody}>
                         {this.props.children}
                     </div>

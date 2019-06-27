@@ -1,6 +1,24 @@
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
+export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
+
+export function saveSettingKey(key, value) {
+    window.localStorage.setItem(key, value);
+}
+
+export function getBooleanSettingKey(key, defaultVal) {
+    let value = window.localStorage.getItem(key);
+    
+    if (value) {
+        if (typeof value === "boolean") {
+            return value;
+        } else {   
+            return (value.toLowerCase() === "true");
+        }
+    }
+    return Boolean(defaultVal);
+}
 
 export function saveWordTranslateX(newValue) {
     wordsTranslateX = newValue;
@@ -57,7 +75,7 @@ function getTranslateX() {
     return 0;
 }
 
-function setTranslateX(newVal) {
+export function setTranslateX(newVal) {
     let containers = document.getElementsByClassName("tileContainer");
     for (let cont of containers) {
         cont.style.transform = 'translateX(' +newVal+ 'px)';
