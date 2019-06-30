@@ -30,7 +30,6 @@ class App extends IssieBase {
         this.ScrollRight = this.ScrollRight.bind(this);
         this.showInfo = this.showInfo.bind(this);
     }
-    
  
     handleSearch(e) {
         if (e.target.value.length > 1) {
@@ -45,8 +44,21 @@ class App extends IssieBase {
     }
 
     handleMenuClick() {
-        this.setState({menuOpen:!this.state.menuOpen});
-      }
+        let newState = !this.state.menuOpen
+        // if (newState) {
+        //     document.closeSettings = this.closeSettings;
+        // } else {
+        //     document.closeSettings = undefined;
+        // }
+        this.setState({menuOpen:newState});
+        
+       // e.nativeEvent.stopImmediatePropagation()
+    }
+
+    closeSettings() {
+        this.setState({menuOpen:false});
+        //document.closeSettings = undefined;
+    }
 
     goBack() {
        let path = this.props.location.pathname;
@@ -164,14 +176,14 @@ class App extends IssieBase {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
-                    <Menu slot="body" open={this.state.menuOpen}>
+                    <Menu id="SettingWindow" slot="body" open={this.state.menuOpen} closeSettings={()=>this.closeSettings()}>
                     <MenuItem 
                         delay={`${0.1}s`}
                         onClick={()=>{this.showInfo();}}>About Us - עלינו</MenuItem>
                         <div id="toggles">
-                            <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" class="ios-toggle" checked={this.state.allowSwipe}
+                            <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" className="ios-toggle" checked={this.state.allowSwipe}
                                 onChange={(e)=>this.allowSwipe(e.target.checked)}/>
-                            <label for="allowSwipeCB" class="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
+                            <label for="allowSwipeCB" className="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
                         </div>
                     </Menu>
                     <div slot="body" className={classNameTheBody}>

@@ -1,5 +1,6 @@
 import './css/settings.css';
 import React from 'react';
+import ReactDOM from 'react-dom';
   
   /* MenuItem.jsx*/
   export class MenuItem extends React.Component{
@@ -20,6 +21,8 @@ import React from 'react';
           opacity: 0,
           animation: '1s appear forwards',
           animationDelay:this.props.delay,
+          display: 'flex',
+          alignItems:'flex-start'
         },
         menuItem:{
           fontFamily:`'Open Sans', sans-serif`,
@@ -51,9 +54,11 @@ import React from 'react';
             onMouseLeave={()=>{this.handleHover();}}
             onClick={this.props.onClick}
           >
+            <div className="zmdi zmdi-info-outline" ></div> 
+           
             {this.props.children}  
           </div>
-        <div style={styles.line}/>
+        
       </div>  
       )
     }
@@ -67,15 +72,24 @@ import React from 'react';
         open: this.props.open? this.props.open:false,
       }
     }
-      
+    
     componentWillReceiveProps(nextProps){
       if(nextProps.open !== this.state.open){
         this.setState({open:nextProps.open});
       }
     }
     
+    
     render(){
       const styles={
+        clickCatcher: {
+          position: 'absolute',
+          top:0,
+          bottom:0,
+          left:0,
+          right:0,
+          zIndex: 999,
+        },
         container: {
           position: 'absolute',
           top: '20%',
@@ -96,14 +110,23 @@ import React from 'react';
         }
       }
       return(
-        <div style={styles.container}>
-          {
-            this.state.open?
-              <div style={styles.menuList}>
-                {this.props.children}
-              </div>:null
+        this.state.open? 
+        <div style={styles.clickCatcher} onClick={()=>{
+          if (this.props.closeSettings) {
+            console.log("close settings");
+            this.props.closeSettings()
           }
-        </div>
+        }}>
+          <div style={styles.container} onClick={(e)=>e.stopPropagation()}>
+            {
+              this.state.open?
+                <div style={styles.menuList} >
+                  {this.props.children}
+                </div>:null
+            }
+          </div>
+        </div>:
+        <div/>
       )
     }
   }
@@ -116,7 +139,9 @@ import React from 'react';
         open: this.props.open? this.props.open:false,
         color: this.props.color? this.props.color:'black',
       }
+      this.handleClick = this.handleClick.bind(this);
     }
+   
   
     componentWillReceiveProps(nextProps){
       if(nextProps.open !== this.state.open){
@@ -124,8 +149,8 @@ import React from 'react';
       }
     }
     
-    handleClick(){
-    this.setState({open:!this.state.open});
+    handleClick() {
+      this.setState({open:!this.state.open});
     }
     
     render(){

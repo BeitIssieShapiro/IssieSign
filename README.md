@@ -19,7 +19,20 @@
   * You may get this error: "A valid provisioning profile for this executable was not found". In this case, goto File->project settings... and choose legacy build system. then re-run
   * On first run, you need to verify the app: in Settings->General->Device Management->choose you e-mail and the verify the app.
   
-  
+## Build android
+* run `scripts/makeAndroid.sh`
+* Open android studio `cordova/IsraeliSignLanguage/platforms/android/<proj>`
+* Manually create file named `gradle.properties`, with the following:
+```
+    org.gradle.jvmargs=-Xmx4608M
+    
+    RELEASE_STORE_FILE={path to your keystore}
+    RELEASE_STORE_PASSWORD=<ask the team for password>
+    RELEASE_KEY_ALIAS=signlang
+    RELEASE_KEY_PASSWORD=<ask the team for password>
+```
+* in the studio - build APK
+* 
 
 # Licence
 IssieSign is avaiable under the GPL Licence. See the following link: https://www.gnu.org/licenses/gpl-3.0.en.html

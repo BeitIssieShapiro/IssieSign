@@ -134,6 +134,7 @@
             }
         }
         document.addEventListener("touchmove", doNothing, {passive:false});
+        
 
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
@@ -141,6 +142,7 @@
             console.log(cordova.file.applicationDirectory);
             document.basePath = cordova.file.applicationDirectory;
         }
+        
     </script>
 </head>
 
