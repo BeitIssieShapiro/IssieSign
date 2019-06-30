@@ -62,4 +62,13 @@
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.2" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <engine name="ios" spec="~4.5.5" />
+    <plugin name="com.flyingsoftgames.xapkreader" spec="https://github.com/agamemnus/cordova-plugin-xapkreader.git#cordova-6.5.0" >
+        <variable name="XAPK_PUBLIC_KEY" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAipDdTNNZPaUtMH/6lbx/TJQaCUjqiqv0wane93e5kOHO3WZ+ErMBb0sd6X09Dusox4J+yXGfo+dq67bjRC8m+/S/2k3FM2bYp94dS3Yif144K6edq5t4H6P0zGb6JjMkNPaBhfpXhJ+zk/cKE8IAB5Oha8HRF/fXcI7UZIOWQPJTi95tbtIjvdGVa3r1Nny+UzGG72d4d6ElySkvEtyMvhHAITbHqWwGXc1+yfjADZ0iv3Nqh0FHny/FpggQltN1dKDbTJkfPH08b3jvSqB8ghmXop8BbgIAl75UrXm/e2Z4YAMiHyAchq9MQUCZqqTRbcY7sC5Qy/VifLsNmVodGwIDAQAB" />
+        <variable name="XAPK_EXPANSION_AUTHORITY" value="com.issieshapiro.issiesign" />
+        <variable name="XAPK_AUTO_DOWNLOAD" value="true" />
+        <variable name="XAPK_AUTO_PERMISSION" value="true" />
+        <variable name="XAPK_TEXT_DL_ASSETS" value="מוריד קבצי מדיה" />
+        
+        
+    </plugin>
 </widget>
