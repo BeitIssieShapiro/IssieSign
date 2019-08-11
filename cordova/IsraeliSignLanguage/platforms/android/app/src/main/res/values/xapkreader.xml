@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string name="xapk_expansion_authority">com.issieshapiro.signlang</string>
+    <string name="xapk_google_play_public_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB</string>
+    <string name="xapk_text_downloading_assets">מוריד קבצי מדיה...…</string>
+    <string name="xapk_text_preparing_assets">Preparing assets…</string>
+    <string name="xapk_text_download_failed">Download failed.</string>
+    <string name="xapk_text_error">Error.</string>
+    <string name="xapk_text_close">Close.</string>
+    <integer name="xapk_main_version">9</integer>
+    <integer name="xapk_patch_version">0</integer>
+    <integer name="xapk_main_file_size">0</integer>
+    <integer name="xapk_patch_file_size">0</integer>
+    <bool name="xapk_auto_download">false</bool>
+    <bool name="xapk_auto_permission">true</bool>
+    <bool name="xapk_auto_reload">false</bool>
+    <string name="xapk_progress_format">percent</string>
+</resources>

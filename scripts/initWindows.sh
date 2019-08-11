@@ -22,7 +22,7 @@ done
 echo "Extract Videos"
 
 zip -s 0 videos_split.zip --out all.zip
-unzip -d public/ all.zip
+unzip -d videos/ all.zip
 
 echo "Decrypt Images"
 openssl aes-256-cbc -k $1 -d -in images.zip.enc -out images.zip

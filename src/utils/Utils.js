@@ -9,11 +9,11 @@ export function saveSettingKey(key, value) {
 
 export function getBooleanSettingKey(key, defaultVal) {
     let value = window.localStorage.getItem(key);
-    
+
     if (value) {
         if (typeof value === "boolean") {
             return value;
-        } else {   
+        } else {
             return (value.toLowerCase() === "true");
         }
     }
@@ -46,22 +46,21 @@ export const scrollLeft = (() => {
 
 
 function getIncrement(curr, toRight) {
-    let containers = document.getElementsByClassName("tileContainer")
+    let container = document.getElementsByClassName("tileContainer")[0];
     let maxInc = 0;
-    for (const container of containers) {
-        var inc =  container.parentNode.clientWidth  - 50;
-        if (inc >= container.clientWidth) {
-            continue;
-        }
-
-        if (toRight) {
-            var rightHidden = (container.clientWidth - inc) + curr;
-            maxInc = Math.max( Math.min(inc, rightHidden), maxInc);
-        } else {
-            var leftHidden =  container.clientWidth - curr - inc;
-            maxInc = Math.max(  Math.min(inc, leftHidden), maxInc);
-        }
+    var inc = container.parentNode.clientWidth - 50;
+    if (inc >= container.clientWidth) {
+        return maxInc;
     }
+
+    if (toRight) {
+        var rightHidden = (container.clientWidth - inc) + curr;
+        maxInc = Math.max(Math.min(inc, rightHidden), maxInc);
+    } else {
+        var leftHidden = container.clientWidth - curr - inc;
+        maxInc = Math.max(Math.min(inc, leftHidden), maxInc);
+    }
+
     return maxInc;
 }
 
@@ -76,39 +75,37 @@ function getTranslateX() {
 }
 
 export function setTranslateX(newVal) {
-    let containers = document.getElementsByClassName("tileContainer");
-    for (let cont of containers) {
-        cont.style.transform = 'translateX(' +newVal+ 'px)';
-    }
+    let container = document.getElementsByClassName("tileContainer")[0];
+    container.style.transform = 'translateX(' + newVal + 'px)';
 }
 
 export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, isSearch) {
     if (isMobile) {
         //scroll vertically by touch
         let cols = Math.max(Math.ceil(windowWidth / tileW), 1);
-        return cols * ( tileW * 1.05);
+        return cols * (tileW * 1.05);
     }
 
-    let rows = Math.max(Math.floor( (windowHeight - 153) / tileH), 1);
+    let rows = Math.max(Math.floor((windowHeight - 153) / tileH), 1);
     if (isSearch) {
-        rows = Math.floor(rows/2);
+        rows = Math.floor(rows / 2);
     }
     let cols = Math.ceil(elementCount / rows);
     return cols * tileW;
 }
 
 //exluded: 8,12,20,14,6
-var themes = [0,1,2,3,4,5,7,9,10,11,13,15,16,17,18,19,21,22,23];
-export const getTheme = (categoryID) =>  {
+var themes = [0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 13, 15, 16, 17, 18, 19, 21, 22, 23];
+export const getTheme = (categoryID) => {
     let count = themes.length;
-    let index = (Number(categoryID)-1) % count;
-    let mapIndex = Number(themes[index])+1;
+    let index = (Number(categoryID) - 1) % count;
+    let mapIndex = Number(themes[index]) + 1;
     return themeMap[mapIndex.toString()];
 }
 
-export const getThemeFlavor = (categoryID) =>  {
+export const getThemeFlavor = (categoryID) => {
     let count = themes.length;
-    let index = (Number(categoryID)-1) % count;
+    let index = (Number(categoryID) - 1) % count;
     return Number(themes[index]);
 }
 
@@ -140,9 +137,9 @@ export const themeMap = {
 };
 
 var videoMonitor = undefined;
-export const VideoToggle = (on, addButtons) =>  { 
+export const VideoToggle = (on, addButtons) => {
     let video = document.getElementById("player");
-    document.getElementById("playerhost").style.visibility = (on?"visible":"hidden");
+    document.getElementById("playerhost").style.visibility = (on ? "visible" : "hidden");
     if (!on) {
         video.pause();
         clearInterval(videoMonitor);
@@ -157,11 +154,11 @@ function monitorVideo() {
     let video = document.getElementById("player");
     if (video) {
         if (video.ended) {
-            setButtons(0,0,1);
+            setButtons(0, 0, 1);
         } else if (video.paused) {
-            setButtons(0,1,0);
+            setButtons(0, 1, 0);
         } else {
-            setButtons(1,0,0);
+            setButtons(1, 0, 0);
         }
     }
 }
@@ -171,7 +168,7 @@ function setButtons(pause, play, replay) {
     let playBtn = document.getElementById("playBtn");
     let replayBtn = document.getElementById("replayBtn");
 
-    pauseBtn.style.display = (pause === 1?"block":"none");    
-    playBtn.style.display = (play === 1?"block":"none");    
-    replayBtn.style.display = (replay === 1?"block":"none");    
+    pauseBtn.style.display = (pause === 1 ? "block" : "none");
+    playBtn.style.display = (play === 1 ? "block" : "none");
+    replayBtn.style.display = (replay === 1 ? "block" : "none");
 }

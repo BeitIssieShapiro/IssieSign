@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
-    
+ 
     <style>
         html, body { height:100%; width:100%; }
 
@@ -125,8 +125,7 @@
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
  
     <script>
-        
-        document.basePath = "/";
+        document.basePath = document.location.href.includes('android_asset') ? "content://com.issieshapiro.signlang/" : "/";
         document.preventTouch = true;
         function doNothing(e) {
             if (document.preventTouch) {
@@ -140,7 +139,10 @@
         function onDeviceReady() {
             console.log(cordova.file);
             console.log(cordova.file.applicationDirectory);
-            document.basePath = cordova.file.applicationDirectory;
+            if (document.basePath === "/") {
+                //only in iOS
+                document.basePath = cordova.file.applicationDirectory;
+            }
         }
         
     </script>

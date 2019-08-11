@@ -21,18 +21,67 @@
   
 ## Build android
 * run `scripts/makeAndroid.sh`
-* Open android studio `cordova/IsraeliSignLanguage/platforms/android/<proj>`
+* Open android studio `cordova/IsraeliSignLanguage/platforms/android/<proj>` 
+* gradle-wrapper
+* change all 
+```
+    debugCompile project(path: ":CordovaLib", configuration: "debug")
+    releaseCompile project(path: ":CordovaLib", configuration: "release")
+```
+change to 
+```
+    implementation project(':CordovaLib')
+```
+<br/>
+and also `project(path: "??
+
+`uses-sdk` - remove all but the AndroidManifest.xml
+
+* LocalBroadcastManager comment out 
+* app-icon, splash
+  * res folder
+* MainActivity.java
+ ```    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        // enable Cordova apps to be started in the background
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
+            moveTaskToBack(true);
+        }
+
+        setTheme((int)0x01030129);
+
+        // Set by <content src="index.html" /> in config.xml
+        loadUrl(launchUrl);
+    }
+    ```
+
+* ---
+
 * Manually create file named `gradle.properties`, with the following:
 ```
     org.gradle.jvmargs=-Xmx4608M
-    
+
     RELEASE_STORE_FILE={path to your keystore}
     RELEASE_STORE_PASSWORD=<ask the team for password>
     RELEASE_KEY_ALIAS=signlang
     RELEASE_KEY_PASSWORD=<ask the team for password>
 ```
 * in the studio - build APK
-* 
+* gradle/wrapper/gradle-wrapper.properties: `distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip`
 
+
+
+
+## .jks file converion
+* `keytool -importkeystore -srckeystore issieSign2.0.jks -destkeystore issieSign2.0.jks -deststoretype pkcs12` - converts the file to new format
+* `openssl pkcs12 -in issieSign2.0.jks` - to show public and private key -> copy public key to sme file, then
+* `openssl  rsa -in signlangpk.key  -pubout`
+* result pk: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
+
+
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
 # Licence
 IssieSign is avaiable under the GPL Licence. See the following link: https://www.gnu.org/licenses/gpl-3.0.en.html

@@ -22,7 +22,14 @@ class Video extends IssieBase {
 
     render() {
         let videoName = this.props.routeParams.videoName;
-        let videoContent = document.basePath + (document.basePath.startsWith("file")?"www/":"") + "videos/"+ videoName;
+        let videoContent = "";
+        if (document.basePath.startsWith("file")) {
+            //iOS
+            videoContent = document.basePath + "www/videos/" + videoName;
+        } else {
+            //Android
+            videoContent = document.basePath + "videos/" + decodeURIComponent(videoName);
+        }
         var videoElem = document.getElementById("player")
         videoElem.src = videoContent;
 

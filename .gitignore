@@ -3,14 +3,31 @@ node_modules/
 .DS_Store
 .vscode/
 build
-cordova/IsraeliSignLanguage/platforms/
+cordova/IsraeliSignLanguage/platforms/ios/*
 cordova/IsraeliSignLanguage/www/
 cordova/IsraeliSignLanguage/plugins/
 package-lock.json
 
+#android
+cordova/IsraeliSignLanguage/platforms/android/.gradle
+cordova/IsraeliSignLanguage/platforms/android/.idea
+cordova/IsraeliSignLanguage/platforms/android/.settings
+cordova/IsraeliSignLanguage/platforms/android/build
+
+
+
+
+
 public/videos
+static
 src/images
 src/design
+android-gen
+
+#pk
+googleplay/issieSign2.0-pkc12.jks
+googleplay/issieSign2.0.jks
+
 
 # Mac
 .DS_Store
