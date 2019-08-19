@@ -43,7 +43,7 @@ class Body extends IssieBase {
         let width = calcWidth(elements.length, window.innerHeight, 
             window.innerWidth, tileH, tileW, this.isMobile(), this.props.isSearch !== undefined) ;
         
-        console.log("Body: Height: " + window.innerHeight + "Width: "+width);
+        console.log("Body: Height: " + window.innerHeight + ", window.innerWidth="+ window.innerWidth+", Width: "+width);
 
         return (
             <div className="tileContainer" style={{width:width+"px", transform:'translateX(' + rootTranslateX + 'px)'}}>

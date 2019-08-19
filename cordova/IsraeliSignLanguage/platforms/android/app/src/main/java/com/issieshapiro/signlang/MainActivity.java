@@ -35,9 +35,10 @@ public class MainActivity extends CordovaActivity
             moveTaskToBack(true);
         }
 
-        setTheme((int)0x01030129);
+
 
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
+        setTheme((int)0x01030129);
     }
 }

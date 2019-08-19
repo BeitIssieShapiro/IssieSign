@@ -8,7 +8,7 @@
     <string name="xapk_text_error">Error.</string>
     <string name="xapk_text_close">Close.</string>
     <integer name="xapk_main_version">9</integer>
-    <integer name="xapk_patch_version">0</integer>
+    <integer name="xapk_patch_version">11</integer>
     <integer name="xapk_main_file_size">0</integer>
     <integer name="xapk_patch_file_size">0</integer>
     <bool name="xapk_auto_download">false</bool>

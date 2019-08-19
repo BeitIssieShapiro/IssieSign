@@ -165,7 +165,7 @@ task cdvPrintProps {
 android {
     signingConfigs {
         debug {
-            storeFile file('/Users/i022021/dev/IssieSign/issieSign2.0.jks')
+            storeFile file('/Users/i022021/dev/IssieSign/googleplay/issieSign2.0.jks')
             storePassword 'signlang'
             keyAlias = 'issiesign'
             keyPassword 'signlang'
