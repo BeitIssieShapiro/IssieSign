@@ -13,7 +13,6 @@ function Slot({ children, slot }) {
       
       if (child.props['slot'] === slot) { //Verify it matches the slot we are looking for.
         let clone = React.cloneElement(child, {"key":slot + id++});
- 
         slottedChildren.push(clone); // Clone it and set it to the slotted child
       }
     });
@@ -58,7 +57,7 @@ class Shell extends IssieBase {
                 <aside className="prev">
                     <Slot slot="prev">{this.props.children}</Slot>
                 </aside>
-                <Slot slot="body">{this.props.children}</Slot>
+                    <Slot slot="body">{this.props.children}</Slot>
                 <aside className="next">
                     <Slot slot="next">{this.props.children}</Slot>
                 </aside>

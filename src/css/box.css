@@ -1,20 +1,11 @@
-.boxhost, .boxhostMobile{
+.boxhost{
+    display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-width: 124px;
-    max-width: 124px;
     --box-background-color-2: rgb(255,255,255);
     pointer-events:none;
  }
 
-.boxhost {
-    display: flex;
-    margin-left: 24px;
-}
-
-.boxhostMobile {
-    display: -webkit-box;
-}
 
 .box {
     width: 100%;
@@ -84,7 +75,6 @@ main {
 }
 
 main > div {
-    width: 94px;
     height: 54px;
     background-color: var(--box-background-color-2);
     text-align: center;

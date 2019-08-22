@@ -167,7 +167,11 @@ class App extends IssieBase {
                 </div>)
         }
 
-        let classNameTheBody = this.state.narrow ? "theBody" : "theBody";
+        let overFlowX = this.overFlowX
+        if (path.startsWith("/word") || path.startsWith("/search")) {
+            overFlowX = 'visible';
+        }
+
         return (
             <div className="App">
                 <Shell theme={categoryTheme} id="page1" >
@@ -190,7 +194,11 @@ class App extends IssieBase {
                             </div>
                         }
                     </Menu>
-                    <div slot="body" className={classNameTheBody}>
+                    <div slot="body" className="theBody" style={{
+                        paddingLeft:this.shellPadding, 
+                        paddingRight:this.shellPadding,
+                        overflowX: overFlowX
+                    }}>
                         {this.props.children}
                     </div>
                 </Shell>
