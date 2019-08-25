@@ -12,7 +12,7 @@
     "dependencies": {
         "com.flyingsoftgames.xapkreader": "https://github.com/agamemnus/cordova-plugin-xapkreader.git#cordova-6.5.0",
         "cordova-android": "^8.0.0",
-        "cordova-ios": "^4.5.5",
+        "cordova-ios": "^5.0.1",
         "cordova-plugin-device": "^2.0.3",
         "cordova-plugin-file": "^6.0.1",
         "cordova-plugin-splashscreen": "^5.0.2",
@@ -35,8 +35,8 @@
             "cordova-plugin-device": {}
         },
         "platforms": [
-            "ios",
-            "android"
+            "android",
+            "ios"
         ]
     }
 }

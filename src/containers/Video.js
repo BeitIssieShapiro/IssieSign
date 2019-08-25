@@ -11,12 +11,12 @@ class Video extends IssieBase {
         if (this.isLandscape() && this.isMobile()) {
             videoElemHost.style.top = "0px";
             videoElemHost.style.height = window.innerHeight
+            videoElemHost.style.width = '95%';
             videoElemHost.style.position = "relative";
-            videoElemHost.style.zIndex = 0
         } else {
             videoElemHost.style.top = "150px";
             videoElemHost.style.position = "relative";
-            videoElemHost.style.zIndex = 2
+            videoElemHost.style.width = '100%';
         }  
     }
 
@@ -37,7 +37,7 @@ class Video extends IssieBase {
 
         return (
            <div/>
-        )
+        ) 
     }
 }
 

@@ -3,9 +3,11 @@ import '../css/App.css';
 import {jsonLocalCall} from "../apis/JsonLocalCall";
 import Word from "./Word";
 import Body from "./Body";
+import { rootTranslateX } from "../utils/Utils";
+import IssieBase from "../IssieBase";
 
 
-class Search extends React.Component {
+class Search extends IssieBase {
     constructor(props){
         super(props);
         var mainJson = jsonLocalCall("main").categories;
@@ -38,11 +40,11 @@ class Search extends React.Component {
 
     render() {
         return (
-            <div>
-                <Body categories={
+            <div className='tileContainer' style={{width: this.isMobile()?'110%':'1200px', transform: 'translateX(' + rootTranslateX + 'px)'}}>
+                <Body InSearch={true} categories={
                     this.filterCategories(this.props.routeParams.searchStr)
                 } isSearch="true"/>
-                <Word words={
+                <Word InSearch={true} words={
                     this.filterWords(this.props.routeParams.searchStr)
                 } isSearch="true"/>
             </div>

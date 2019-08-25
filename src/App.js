@@ -36,6 +36,7 @@ class App extends IssieBase {
     handleSearch(e) {
         if (e.target.value.length > 1) {
             this.props.router.push('/search/' + e.target.value);
+            saveRootTranslateX(0);
             console.log("Search: " + e.target.value);
         } else if (this.props.location.pathname.startsWith("/search")) {
             //go back to category
@@ -74,7 +75,7 @@ class App extends IssieBase {
         let path = this.props.location.pathname;
         if (path.startsWith('/word')) {
             saveWordTranslateX(newVal);
-        } else if (path === '/') {
+        } else  {
             saveRootTranslateX(newVal);
         }
     }
@@ -105,7 +106,7 @@ class App extends IssieBase {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton navBtn"
+        let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
             onClick={this.goBack} style={{ float: "right", visibility: (path !== "/" ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
         let searchInput = "";
 
@@ -160,7 +161,7 @@ class App extends IssieBase {
         if (this.isMobile() && this.isLandscape() && path.startsWith("/video")) {
             return (
                 <div>
-                    <div style={{ height: 50 }}>
+                    <div style={{ height: 50, zIndex:0 }}>
                         {backElement}
                     </div>
                     {this.props.children}

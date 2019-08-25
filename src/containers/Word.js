@@ -64,8 +64,13 @@ class Word extends IssieBase {
 
         width = Math.max(width, window.innerWidth);
 
+        if (this.props.InSearch) {
+            width = '100%';
+        } else {
+            width += 'px';
+        }
         return (
-            <div className="tileContainer" style={{width: width + "px", transform: 'translateX(' + wordsTranslateX + 'px)' }}>
+            <div className="tileContainer" style={{width: width, transform: 'translateX(' + (this.props.InSearch?0:wordsTranslateX) + 'px)' }}>
                 {wordsElements}
             </div>
         )

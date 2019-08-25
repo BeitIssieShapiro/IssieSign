@@ -43,9 +43,8 @@ class Body extends IssieBase {
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.isMobile(), this.props.isSearch !== undefined);
 
-        if (this.isMobile() && this.state.narrow) {
+        if (this.isMobile() && this.state.narrow || this.props.isSearch) {
             width = '100%'
-
         } else {
             width = width + 'px';
         }
@@ -53,7 +52,7 @@ class Body extends IssieBase {
         console.log("Body: Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
 
         return (
-            <div className="tileContainer" style={{ width: width, transform: 'translateX(' + rootTranslateX + 'px)' }}>
+            <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch?0:rootTranslateX) + 'px)' }}>
                 {elements}
             </div>
         )
