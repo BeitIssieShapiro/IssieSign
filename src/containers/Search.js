@@ -42,10 +42,10 @@ class Search extends IssieBase {
         return (
             <div className='tileContainer' style={{width: this.isMobile()?'110%':'1200px', transform: 'translateX(' + rootTranslateX + 'px)'}}>
                 <Body InSearch={true} categories={
-                    this.filterCategories(this.props.routeParams.searchStr)
+                    this.filterCategories(this.props.searchStr)
                 } isSearch="true"/>
                 <Word InSearch={true} words={
-                    this.filterWords(this.props.routeParams.searchStr)
+                    this.filterWords(this.props.searchStr)
                 } isSearch="true"/>
             </div>
         )

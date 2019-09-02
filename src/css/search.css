@@ -20,7 +20,8 @@
     vertical-align: middle;
 }
 
-input {
+
+input[type="search"]{
     display: inline-block;
     border: none;
     border-radius: 13px;
@@ -32,6 +33,36 @@ input {
 
 }
 
+
+input[type="text"]{
+    display: inline-block;
+    border: none;
+    height: 45px;
+    width: 150px;
+    font-size: 40px;
+    background-color: rgb(119,119,119);;
+    color: rgb(255,255,255);
+}
+
+input[type="button"]{
+    height: 45px;
+    font-size: 40px;
+    background-color: rgb(119,119,119);;
+    color: rgb(255,255,255);
+
+}
+
+.check {
+    display: inline-block;
+    position: relative;
+    font-family: 'Material-Design-Iconic-Font';
+    font-size: 18px;
+    font-weight: 200;
+    text-align: center;
+    content: '\f12c';
+    margin-right: -22px;
+    vertical-align: middle;
+}
 input:focus {
     outline: none;
 }

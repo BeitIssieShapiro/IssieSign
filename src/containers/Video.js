@@ -3,9 +3,17 @@ import React from "react";
 import '../css/App.css';
 
 import IssieBase from "../IssieBase";
+import { VideoToggle } from "../utils/Utils";
 
 class Video extends IssieBase {
- 
+
+    componentWillMount() {
+        VideoToggle(true, !this.isMobile());
+    }
+    componentWillUnmount() {
+        VideoToggle(false);
+    }
+    
     updateDimensions() {
         var videoElemHost = document.getElementById("playerhost")
         if (this.isLandscape() && this.isMobile()) {
@@ -17,27 +25,39 @@ class Video extends IssieBase {
             videoElemHost.style.top = "150px";
             videoElemHost.style.position = "relative";
             videoElemHost.style.width = '100%';
-        }  
+        }
     }
 
     render() {
-        let videoName = this.props.routeParams.videoName;
         let videoContent = "";
-        if (document.basePath.startsWith("file")) {
-            //iOS
-            videoContent = document.basePath + "www/videos/" + videoName;
+
+        let videoName = this.props.videoName;
+        if (videoName === 'file') {
+            videoContent = this.props.filePath;
+            alert(videoContent)
         } else {
-            //Android
-            videoContent = document.basePath + "videos/" + decodeURIComponent(videoName);
+            if (document.basePath.startsWith("file")) {
+                //iOS
+                videoContent = document.basePath + "www/videos/" + videoName;
+            } else {
+                //Android
+                videoContent = document.basePath + "videos/" + decodeURIComponent(videoName);
+            }
         }
         var videoElem = document.getElementById("player")
+        
+        // if (videoContent.startsWith("file")) {
+        //     videoContent = "cdvfile"+videoContent.substr(4);
+        // }
+        //alert(videoContent)
         videoElem.src = videoContent;
+
 
         this.updateDimensions()
 
         return (
-           <div/>
-        ) 
+            <div />
+        )
     }
 }
 

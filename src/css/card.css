@@ -37,6 +37,10 @@
     text-align: center;
 }
 
+.noTouchCallout {
+    -webkit-touch-callout: none;
+}
+
 .binder.header:before {
     display: inline-block;
     content: '';

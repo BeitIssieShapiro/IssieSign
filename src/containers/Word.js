@@ -2,46 +2,99 @@ import React from "react";
 import '../css/App.css';
 import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Card2 from "../components/Card2";
-import { wordsTranslateX, getTheme, calcWidth } from "../utils/Utils";
+import { wordsTranslateX, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
+import { AdditionsDirEntry, listWordsInFolder, deleteWord } from '../apis/file'
 
 
 class Word extends IssieBase {
     constructor(props) {
         super(props);
         this.state = this.getState(this.props);
+        setTimeout(() => AdditionsDirEntry(this.props.categoryId).then(async (additionsDir) => {
+            if (additionsDir) {
+                let words = this.state.words;
+
+                let addedWords = await listWordsInFolder(additionsDir);
+                words = [...words, ...addedWords]
+
+                this.setState({ words });
+            }
+        }), 50);
     }
 
     getState(props) {
         if (props.words) {
             return { words: props.words, categoryId: "1" }
-        } else if (this.props.routeParams) {
-            let mainJson = jsonLocalCall("main");
-            let wordId = props.routeParams.wordId;
+        }
+        let mainJson = jsonLocalCall("main");
 
-            for (const cat of mainJson.categories) {
-                if (cat.id === wordId && cat.words) {
-                    return { words: cat.words, categoryId: cat.id };
-                }
+        if (this.props.type === "added") {
+
+            return { words: [], categoryId: this.props.categoryId };
+        }
+
+        for (const cat of mainJson.categories) {
+            if (cat.id === this.props.categoryId && cat.words) {
+                return { words: cat.words, categoryId: cat.id };
             }
         }
-        return { words: [], categoryId: "1" }
+
     }
 
     componentWillReceiveProps(newProps) {
         this.setState(this.getState(newProps));
+    }
+    toggleSelect = (word, forceOff) => {
+
+        if (forceOff || (this.state.selectedWord && this.state.selectedWord.id === word.id)) {
+            //toggle off
+            this.setState({ selectedWord: undefined });
+            this.props.pubSub.publish({ command: "hide-all-buttons" });
+        } else {
+
+            this.setState({ selectedWord: word });
+            if (this.props.pubSub) {
+
+                this.props.pubSub.publish({
+                    command: "show-delete", callback: () => {
+                        if (this.state.selectedWord && window.confirm("האם למחוק מילה זו?")) {
+                            deleteWord(this.state.selectedWord.videoName).then(
+                                //Success:
+                                () => {
+                                    let removeElem = this.state.words.findIndex(w => w.id === this.state.selectedWord.id);
+                                    if (removeElem >= 0) {
+                                        let words = this.state.words;
+                                        words.splice(removeElem, 1);
+                                        this.setState({ words });
+                                    }
+                                    this.toggleSelect(null, true)
+                                },
+                                //error
+                                (e) => alert("מחיקה נכשלה\n" + e)
+                            );
+                        }
+                    }
+                });
+            }
+        }
+
     }
 
     render() {
 
         var wordsElements = this.state.words.map((word) => {
             let themeId = this.state.categoryId;
+            let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
             if (word.categoryId) {
                 themeId = word.categoryId;
             }
-            return <Card2 key={word.id} cardName={word.name} vidName={word.videoName} cardUrl={"/video/" + word.videoName + "/" + themeId + "/" + word.name}
-                imageName={word.imageName} imageName2={word.imageName2} theme={getTheme(themeId)} />
+            return <Card2 key={word.id} cardType={word.type === "file" ? "file" : "default"} cardName={word.name} videoName={word.videoName}
+                imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={true ? () => this.toggleSelect(word) : undefined} selected={selected} />
         });
+
+        wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.state.categoryId}
+            imageName={'plus.jpg'} themeId={this.state.categoryId} />);
 
         //calculate the average width, while considering double images
         var elementWidths = this.state.words.map((word) => {
@@ -70,7 +123,7 @@ class Word extends IssieBase {
             width += 'px';
         }
         return (
-            <div className="tileContainer" style={{width: width, transform: 'translateX(' + (this.props.InSearch?0:wordsTranslateX) + 'px)' }}>
+            <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
                 {wordsElements}
             </div>
         )

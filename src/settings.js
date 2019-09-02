@@ -1,6 +1,5 @@
 import './css/settings.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
   
   /* MenuItem.jsx*/
   export class MenuItem extends React.Component{

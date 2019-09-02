@@ -17,7 +17,7 @@ class ListItem extends IssieBase {
         }
         return (
             <li>
-                <Link to={this.props.Url}>
+                <A href={this.props.Url}>
                     <table className="listItem"><tbody>
                         <tr>
                             <td className="listImage">
@@ -29,7 +29,7 @@ class ListItem extends IssieBase {
                             </td>
                         </tr>
                     </tbody></table>
-                </Link>
+                </A>
             </li>
         );
     }

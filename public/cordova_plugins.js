@@ -1,0 +1,1 @@
+../cordova/IsraeliSignLanguage/platforms/ios/www/cordova_plugins.js

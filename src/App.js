@@ -2,45 +2,77 @@ import React from 'react';
 
 import './css/App.css';
 import './css/style.css';
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { jsonLocalCall } from "./apis/JsonLocalCall";
 
 import { browserHistory } from "react-router";
 import SearchInput from "./components/SearchInput";
-
+import { getPath, navigate } from "hookrouter";
 import {
     scrollLeft, scrollRight,
     saveWordTranslateX, saveRootTranslateX, setTranslateX,
-    getTheme, VideoToggle,
+    getTheme, 
     ALLOW_SWIPE_KEY, saveSettingKey, getBooleanSettingKey
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
 import { MenuButton, Menu, MenuItem } from './settings'
 import './css/settings.css'
+import { imageLocalCall } from "./apis/ImageLocalCall";
+
 
 class App extends IssieBase {
     constructor(props) {
         super(props);
+        if (this.props.pubSub) {
+            this.props.pubSub.subscribe((args)=>this.getEvents(args));
+        }
         console.log("allow swipe: " + getBooleanSettingKey(ALLOW_SWIPE_KEY, false));
         this.state = { searchString: "", allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false) };
+        this.getEvents = this.getEvents.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+
         this.goBack = this.goBack.bind(this);
         this.savePos = this.savePos.bind(this);
-        this.ScrollLeft = this.ScrollLeft.bind(this);
+        this.ScrollLeft = this.ScrollLeft.bind(this); 
         this.ScrollRight = this.ScrollRight.bind(this);
         this.showInfo = this.showInfo.bind(this);
     }
+    componentDidUpdate() {
+        if (this.props.pubSub) {
+            this.props.pubSub.subscribe((args)=>this.getEvents(args));
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (!props.pubSub) {
+          return {
+            showDelete: undefined,
+          };
+        }
+    
+        // Return null if the state hasn't changed
+        return null;
+    }
+    getEvents(args){
+        switch (args.command) {
+            case 'show-delete':
+                this.setState({showDelete: args.callback} );
+                break;
+            case 'hide-all-buttons':
+                this.setState({showDelete:undefined})
+                break;
+            default:
+        }
+    } 
 
     handleSearch(e) {
+       // this.setState({searchInput:e.target.value})
         if (e.target.value.length > 1) {
-            this.props.router.push('/search/' + e.target.value);
+            navigate('/search/' + e.target.value);
             saveRootTranslateX(0);
             console.log("Search: " + e.target.value);
-        } else if (this.props.location.pathname.startsWith("/search")) {
+        } else {
             //go back to category
-            this.props.router.push('/');
+            navigate('/');
         }
 
         this.setState({ searchString: e.target.value })
@@ -64,16 +96,14 @@ class App extends IssieBase {
     }
 
     goBack() {
-        let path = this.props.location.pathname;
-        if (path.startsWith('/word')) {
+        if (getPath().startsWith('/word')) {
             //reset words position
             saveWordTranslateX(0);
         }
         browserHistory.goBack();
     }
     savePos(newVal) {
-        let path = this.props.location.pathname;
-        if (path.startsWith('/word')) {
+        if (getPath().startsWith('/word')) {
             saveWordTranslateX(newVal);
         } else  {
             saveRootTranslateX(newVal);
@@ -89,7 +119,7 @@ class App extends IssieBase {
 
     showInfo() {
         this.setState({ menuOpen: false });
-        this.props.router.push('/info');
+        navigate('/info');
     }
 
     allowSwipe(allow) {
@@ -100,65 +130,52 @@ class App extends IssieBase {
 
     render() {
         let categoryTheme = "blue";
+        let categoryId = this.props.categoryId;
+        if (categoryId) {
+            categoryTheme = getTheme(categoryId);
+        }
         let title = "שפת הסימנים";
-        let mainJson = jsonLocalCall("main");
-        let path = this.props.location.pathname;
+        if (this.props.title) {
+            title = this.props.title;
+        }
         let leftArrow = "";
         let rightArrow = "";
 
         let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={this.goBack} style={{ float: "right", visibility: (path !== "/" ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
+            onClick={this.goBack} style={{ float: "right", visibility: (!this.props.noBack ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
         let searchInput = "";
 
-        if (path.startsWith("/word")) {
-            let categoryId = this.props.params.wordId;
-            categoryTheme = getTheme(categoryId);
-            title = mainJson.categories[categoryId - 1].name;
-        }
+        let deleteButton = this.state.showDelete?<div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
+            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi zmdi-delete" /></button></div>:null
 
-        if (path.startsWith("/video")) {
-            let categoryId = this.props.params.categoryId;
-            categoryTheme = getTheme(categoryId);
-            title = this.props.params.title;
-
-            VideoToggle(true, !this.isMobile());
-        } else {
-            VideoToggle(false);
-        }
-
-        if (path.startsWith("/word")) {
-            let categoryId = this.props.params.wordId;
-            categoryTheme = getTheme(categoryId);
-            title = mainJson.categories[categoryId - 1].name;
-        }
         document.preventTouch = true;
 
-        if (!path.startsWith("/info")) {
-            let searchVal = this.state.searchString;
+        if (!this.props.noSearch) {
+            let searchVal = this.state.searchString || "";
 
-            if (!searchVal) {
-                if (this.props.router.params.SearchInput) {
-                    searchVal = this.props.router.params.SearchInput
-                } else {
-                    searchVal = ""
-                }
-            }
-            if (searchVal.length > 1 && !path.startsWith("/search")) {
-                searchVal = "";
-            }
-            searchInput = <SearchInput value={searchVal} theme={categoryTheme} slot={this.state.narrow ? "title" : "end-bar"} onChange={this.handleSearch} ref="searchInput" style={{ display: "inline-block" }} />
+            // if (!searchVal) {
+            //     if (this.state.searchInput) {
+            //         searchVal = this.state.searchInput;
+            //     } else {
+            //         searchVal = ""
+            //     }
+            // }
+            // if (searchVal.length > 1 && !path.startsWith("/search")) {
+            //     searchVal = "";
+            // }
+            searchInput = <SearchInput value={searchVal} theme={categoryTheme} slot={this.state.narrow ? "title" : "end-bar"} onChange={this.handleSearch} style={{ display: "inline-block" }} />
         }
 
-        if (this.isMobile() || path.startsWith("/info") || this.state.allowSwipe) {
+        if (this.isMobile() || this.props.allowTouch || this.state.allowSwipe) {
             document.preventTouch = false;
         }
 
-        if (!this.isMobile() && !path.startsWith("/video") && !path.startsWith("/info") && !this.state.allowSwipe) {
-            leftArrow = <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src="assets/arrow-right.svg" alt="arrow" /></a>
-            rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src="assets/arrow-left.svg" alt="arrow" /></a>
+        if (!this.isMobile() && !this.props.noNavBtn && !this.state.allowSwipe) {
+            leftArrow = <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src={imageLocalCall("arrow-right.svg")} alt="arrow" /></a>
+            rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src={imageLocalCall("arrow-left.svg")} alt="arrow" /></a>
         }
 
-        if (this.isMobile() && this.isLandscape() && path.startsWith("/video")) {
+        if (this.isMobile() && this.isLandscape() && this.props.child==="video") {
             return (
                 <div>
                     <div style={{ height: 50, zIndex:0 }}>
@@ -169,13 +186,15 @@ class App extends IssieBase {
         }
 
         let overFlowX = this.overFlowX
-        if (path.startsWith("/word") || path.startsWith("/search")) {
+        if (this.props.allowOverflow ) {
             overFlowX = 'visible';
         }
 
         return (
             <div className="App">
+                
                 <Shell theme={categoryTheme} id="page1" >
+                    
                     {/* <button slot="start-bar" className="zmdi zmdi-info-outline" onClick={this.showInfo}></button> */}
                     <MenuButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleMenuClick()} color='white' />
                     <div slot="title" style={{ display: "inline-block" }}>{title}</div>
@@ -183,6 +202,7 @@ class App extends IssieBase {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
+                    {deleteButton} 
                     <Menu id="SettingWindow" slot="body" open={this.state.menuOpen} closeSettings={() => this.closeSettings()}>
                         <MenuItem
                             delay={`${0.1}s`}
@@ -210,12 +230,13 @@ class App extends IssieBase {
 }
 
 
-const mapStateToProps = (state) => {
-    return {};
-};
+// const mapStateToProps = (state) => {
+//     return {};
+// };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({}, dispatch);
-};
+// const mapDispatchToProps = (dispatch) => {
+//     return bindActionCreators({}, dispatch);
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

@@ -49,7 +49,12 @@
     <preference name="FadeSplashScreen" value="false" />
     <preference name="SplashScreenBackgroundColor" value="white" />
     <preference name="AllowInlineMediaPlayback" value="true" />
-    <content src="index.html" />
+    <!-- <content src="index.html" />  -->
+    <!-- <content src="http://192.168.1.17:3000/index.html" />
+    <allow-navigation href="http://192.168.1.17:3000" /> -->
+    <content src="http://localhost:3000/index.html" />
+    <allow-navigation href="http://localhost:3000" />
+ 
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
