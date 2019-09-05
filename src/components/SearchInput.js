@@ -23,7 +23,7 @@ class SearchInput extends IssieBase {
         let searchClassName = this.state.narrow? "": "sameLine";
         return (
             <div slot={this.props.slot} className={"search " + searchClassName}>
-                <input ref="input" type="search" onChange={this.handleChange}
+                <input autofocus ref="input" type="search" onChange={this.handleChange}
                 onFocus={this.preventKeyBoardScrollApp} value={this.state.value} />
             </div>
         );

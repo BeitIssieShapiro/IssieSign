@@ -36,7 +36,8 @@ export async function deleteWord(filePath) {
 export async function listAdditionsFolders() {
     if (!getDocDir() || !window.resolveLocalFileSystemURL) {
         console.log("no cordova files")
-        return [{name:"test", nativeURL:"file:///none"}];
+         return [{name:"test", nativeURL:"file:///none/"}];
+        return [];
     }
     return new Promise( resolve => window.resolveLocalFileSystemURL(getDocDir() + "Additions/", (additionsDir) => {
         var reader = additionsDir.createReader();
@@ -58,13 +59,9 @@ export async function AdditionsDirEntry(folderName) {
         return undefined;
     }
  
-    if (!getDocDir() || !window.resolveLocalFileSystemURL) {
-        console.log("no cordova files")
-        return [{name:"test", nativeURL:"file:///none"}];
-    }
     return new Promise( resolve => window.resolveLocalFileSystemURL(getDocDir() + "Additions/" + folderName, 
         additionsDir => resolve(additionsDir),
-        err => resolve([]) //folder has no additions
+        err => resolve(undefined) //folder has no additions
         )
     );
 }
@@ -75,15 +72,16 @@ export async function listWordsInFolder(dirEntry) {
         var words = [];
         reader.readEntries(entries => {
             for (let entry of entries) {
-                if (entry.name == "default.jpg") continue;
-                
-                let nameParts = entry.name.split(".");
-                let wordIndex = words.findIndex(f => f.name === nameParts[0])
+                if (entry.name === "default.jpg") continue;
+                var period = entry.name.lastIndexOf('.');
+                var fileName = entry.name.substring(0, period);
+                var fileExt = entry.name.substring(period + 1);
+                let wordIndex = words.findIndex(f => f.name === fileName)
                 if (wordIndex < 0) {
-                    words.push({name:nameParts[0], id: 1000+ words.length, type:'file'})
+                    words.push({name:fileName, id: 1000+ words.length, type:'file'})
                     wordIndex = words.length - 1;
                 }
-                if (nameParts[1] === 'jpg') {
+                if (fileExt === 'jpg') {
                     words[wordIndex].imageName = entry.nativeURL;
                 } else {
                     words[wordIndex].videoName = entry.nativeURL;
@@ -105,5 +103,4 @@ export async function listWordsInFolder(dirEntry) {
 
 function getDocDir() {
     return window['documents'];
-//    return cordova.file.documentsDirectory
 }

@@ -34,7 +34,6 @@ class Video extends IssieBase {
         let videoName = this.props.videoName;
         if (videoName === 'file') {
             videoContent = this.props.filePath;
-            alert(videoContent)
         } else {
             if (document.basePath.startsWith("file")) {
                 //iOS

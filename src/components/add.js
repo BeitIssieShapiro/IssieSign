@@ -3,6 +3,7 @@ import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
 import { imageLocalCall } from "../apis/ImageLocalCall";
+//import { browserHistory } from "react-router";
 
 
 async function selectImage() {
@@ -72,6 +73,7 @@ class AddItem extends React.Component {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
         alert("נשמר בהצלחה");
+        this.props.history.goBack();
     }
 
     saveWord = async () => {
@@ -82,6 +84,7 @@ class AddItem extends React.Component {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
         alert("נשמר בהצלחה");
+        this.props.history.goBack();
     }
 
     render() {

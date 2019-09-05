@@ -2,6 +2,7 @@
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
+export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 
 export function saveSettingKey(key, value) {
     window.localStorage.setItem(key, value);
@@ -66,17 +67,21 @@ function getIncrement(curr, toRight) {
 
 function getTranslateX() {
     let container = document.getElementsByClassName("tileContainer")[0];
-    let transform = container.style.transform;
-    if (transform) {
-        var transXRegex = /\.*translateX\((.*)px\)/i;
-        return Number(transXRegex.exec(transform)[1]);
+    if (container) {
+        let transform = container.style.transform;
+        if (transform) {
+            var transXRegex = /\.*translateX\((.*)px\)/i;
+            return Number(transXRegex.exec(transform)[1]);
+        }
     }
     return 0;
 }
 
 export function setTranslateX(newVal) {
     let container = document.getElementsByClassName("tileContainer")[0];
-    container.style.transform = 'translateX(' + newVal + 'px)';
+    if (container) {
+        container.style.transform = 'translateX(' + newVal + 'px)';
+    }
 }
 
 export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, isSearch) {

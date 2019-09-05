@@ -1,3 +1,4 @@
+
 /**
  * Returns the location of the image files
  * @param image
@@ -13,8 +14,12 @@ const getImageContent = (image):string => {
  * @returns {string}
  */
 export const imageLocalCall = (imageName:string) => {
-    if (imageName.startsWith("file:") || imageName.startsWith("cdvfile:")) {
+    if (imageName.startsWith("file:")) {
         return imageName; 
     }
-    return getImageContent(imageName);
+    let res = getImageContent(imageName);
+    // if (!res.startsWith("data")) {
+    //     res = window.location.origin + res;
+    // }
+    return res;
 };

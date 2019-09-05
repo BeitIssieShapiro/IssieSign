@@ -6,28 +6,29 @@ import { imageLocalCall } from "../apis/ImageLocalCall";
 import Rope from "../components/Rope";
 import { getTheme } from "../utils/Utils";
 import longPress from '../apis/longPress';
-import { A } from "hookrouter";
+import { Link } from "react-router-dom";
 
 export default function Card2(props) {
     const longPressEvent = props.longPressCallback? longPress(() => props.longPressCallback(), 500):{};
 
     let imageSrc = props.imageName ? imageLocalCall(props.imageName) : "image1.png";
+    
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2)} alt="card Placeholder"></img> : "";
     let cardDouble = props.imageName2 ? { '--card-width': '100%' } : {};
     let url = "";
     if (!props.noLink) {
         if (props.cardType === "add") {
-            url = "/add-word/" + props.cardAddToCategory
+            url = "/add-word/" + encodeURIComponent(props.cardAddToCategory)
         } else if (props.cardType === "file") {
-            url = "/video/file/" + props.themeId + "/" + props.cardName+"/"+encodeURIComponent(props.videoName);
+            url = "/video/file/" + props.themeId + "/" + encodeURIComponent(props.cardName)+"/"+encodeURIComponent(props.videoName);
         } else {
-            url = "/video/" + props.videoName + "/" + props.themeId + "/" + props.cardName + "/-";
+            url = "/video/" + encodeURIComponent(props.videoName) + "/" + props.themeId + "/" + encodeURIComponent(props.cardName) + "/-";
         }
     }
 
     return (
         <div {...longPressEvent} className="noTouchCallout">
-            <A href={url}>
+            <Link to={url}>
                 <Rope>
                     <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
                         <div className="header clip"></div>
@@ -40,10 +41,8 @@ export default function Card2(props) {
                             <h2 className="rtl tileFont">{props.cardName}</h2>
                         </div>
                     </div>
-
-
                 </Rope>
-            </A>
+            </Link>
         </div>
     );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import '../css/App.css';
 import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Card2 from "../components/Card2";
-import { wordsTranslateX, calcWidth } from "../utils/Utils";
+import { wordsTranslateX, calcWidth} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import { AdditionsDirEntry, listWordsInFolder, deleteWord } from '../apis/file'
 
@@ -36,7 +36,10 @@ class Word extends IssieBase {
 
         for (const cat of mainJson.categories) {
             if (cat.id === this.props.categoryId && cat.words) {
-                return { words: cat.words, categoryId: cat.id };
+                return { 
+                    words: cat.words, 
+                    categoryId: cat.id
+                };
             }
         }
 
@@ -93,8 +96,10 @@ class Word extends IssieBase {
                 imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={true ? () => this.toggleSelect(word) : undefined} selected={selected} />
         });
 
-        wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.state.categoryId}
-            imageName={'plus.jpg'} themeId={this.state.categoryId} />);
+        if (this.props.allowAddWord) {
+            wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.state.categoryId}
+                imageName={'plus.jpg'} themeId={this.state.categoryId} />);
+        }
 
         //calculate the average width, while considering double images
         var elementWidths = this.state.words.map((word) => {

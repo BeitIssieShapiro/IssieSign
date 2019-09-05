@@ -246,6 +246,10 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-plugin-device": "2.0.3",
     "cordova-plugin-image-picker": "1.1.1",
-    "cordova-plugin-camera": "4.1.0"
+    "cordova-plugin-camera": "4.1.0",
+    "cocoon-cordova-labs-local-webserver": "2.4.1",
+    "cordova-labs-local-webserver": "2.4.0",
+    "cordova-plugin-wkwebview-engine": "1.2.1",
+    "cordova-labs-wkwebview-engine-localhost": "0.5.1"
   };
 });

@@ -3,7 +3,7 @@ import '../css/App.css';
 import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Tile2 from "../components/Tile2";
 
-import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
+import { rootTranslateX, getThemeFlavor, calcWidth , ALLOW_ADD_KEY, getBooleanSettingKey} from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import { listAdditionsFolders } from '../apis/file'
 
@@ -13,11 +13,12 @@ class Body extends IssieBase {
         super(props);
         this.state = this.getState(props);
         setTimeout(() => listAdditionsFolders().then(addedCategories => {
+            let elements = this.state.elements;
+            let newWords = false;
             if (addedCategories.length > 0) {
-                let elements = this.state.elements;
                 let i = 9000;
                 for (let cat of addedCategories) {
-                    
+                    newWords = true;
                     if (!this.state.categories.find(c => c.id === cat.name)) {
                         //only add category that is not an existing one
 
@@ -25,14 +26,25 @@ class Body extends IssieBase {
                             imageName={cat.nativeURL + "default.jpg"} themeFlavor="1" />);
                     }
                 }
-                this.setState({elements});
             }
-        }), 1000);
+
+            if (this.state.allowAddWord) {
+                elements.push(<Tile2 key={9998} tileName={'הוסף'} tileUrl={"/add-category"}
+                    imageName={'plus.jpg'} themeFlavor={1} />);
+                newWords = true;
+            }
+            if (newWords) {
+                this.setState({ elements });
+            }
+
+
+        }), 400);
 
     }
 
     getState(props) {
         let categories
+        let allowAddWord = getBooleanSettingKey(ALLOW_ADD_KEY, false)
         if (props.categories === undefined) {
             let mainJson = jsonLocalCall("main");
             categories = mainJson.categories;
@@ -40,7 +52,7 @@ class Body extends IssieBase {
             categories = props.categories;
         }
         let elements = categories.map((category) => {
-            return <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + category.id + "/" + category.name}
+            return <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
                 imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)} />
         });
 
@@ -51,10 +63,8 @@ class Body extends IssieBase {
         //     //     imageName={cat.fullPath + "/default.jpg"} themeFlavor="1" />);
         // }
 
-        elements.push(<Tile2 key={9998} tileName={'הוסף'} tileUrl={"/add-category"}
-            imageName={'plus.jpg'} themeFlavor={1} />);
 
-        return { elements: elements, categories };
+        return { elements: elements, categories, allowAddWord };
     }
 
 
