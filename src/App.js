@@ -1,12 +1,20 @@
+import './css/App.css';
 import { imageLocalCall } from "./apis/ImageLocalCall";
 
 import React from 'react';
+import Word from "./containers/Word";
+import Body from "./containers/Body";
+import Video from "./containers/Video";
+import Search, { getAllCategories, getAllWords } from "./containers/Search";
+import Info from "./containers/Info";
+import AddItem from "./components/add";
+
+import { Route, Switch } from "react-router";
+
 
 import './css/App.css';
 import './css/style.css';
 
-//import { browserHistory } from "react-router";
-import SearchInput from "./components/SearchInput";
 import {
     scrollLeft, scrollRight,
     saveWordTranslateX, saveRootTranslateX, setTranslateX,
@@ -19,17 +27,28 @@ import { MenuButton, Menu, MenuItem } from './settings'
 import './css/settings.css'
 
 
+const SEARCH_PATH = "/search/";
+
+class PubSub {
+    constructor() {
+        this.rcb = undefined;
+    }
+    subscribe = (cb) => {
+
+        this.rcb = cb;
+    }
+    publish = (args) => {
+        if (this.rcb) {
+            this.rcb(args);
+        }
+    }
+}
+
 class App extends IssieBase {
     constructor(props) {
         super(props);
-        if (this.props.pubSub) {
-            this.props.pubSub.subscribe((args) => this.getEvents(args));
-        }
         console.log("allow swipe: " + getBooleanSettingKey(ALLOW_SWIPE_KEY, false));
-        this.state = {
-            allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
-            allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false)
-        };
+
         this.getEvents = this.getEvents.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
 
@@ -39,16 +58,29 @@ class App extends IssieBase {
         this.ScrollRight = this.ScrollRight.bind(this);
         this.showInfo = this.showInfo.bind(this);
     }
+
+    componentDidMount() {
+        let pubsub = new PubSub()
+        this.setState({
+            allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
+            allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            pubsub: pubsub
+        });
+        pubsub.subscribe((args) => this.getEvents(args));
+
+    }
     componentDidUpdate() {
-        if (this.props.pubSub) {
-            this.props.pubSub.subscribe((args) => this.getEvents(args));
+        if (this.state.pubSub) {
+            this.state.pubSub.subscribe((args) => this.getEvents(args));
         }
     }
 
     static getDerivedStateFromProps(props, state) {
         if (!props.pubSub) {
             return {
-                showDelete: undefined,
+                theme: props.history.location.pathname === "/" ? "blue" : state.theme,
+                title: props.history.location.pathname === "/" ? "שפת הסימנים" : state.title,
+                pubsub: state.pubsub ? state.pubsub : new PubSub()
             };
         }
 
@@ -63,51 +95,62 @@ class App extends IssieBase {
             case 'hide-all-buttons':
                 this.setState({ showDelete: undefined })
                 break;
+            case 'set-categoryId':
+                console.log("rec: set-cat" + getTheme(args.categoryId))
+                if (args.categoryId !== this.state.categoryId) {
+                    this.setState({ theme: getTheme(args.categoryId), categoryId: args.categoryId })
+                }
+                break;
+            case 'set-title':
+                if (args.title !== this.state.title) {
+                    this.setState({ title: args.title })
+                }
+                break;
+
             default:
         }
     }
 
     handleSearch(e) {
-        //alert(JSON.stringify(this.props.history))
-        this.setState({searchInput:e.target.value})
-        if (e.target.value.length > 1) {
-            this.props.history.push('/search/' + e.target.value);
-            saveRootTranslateX(0);
-            console.log("Search: " + e.target.value);
-        } else if (e.target.value.length === 0 && this.props.history.location.pathname.startsWith("/search/")) {
-            //go back to category
-            this.props.history.goBack();
-        }
+        e.persist()
+        this.setState({ searchStr: e.target.value }, () => {
+            if (e.target.value.length > 1 && !this.isSearch()) {
+                this.props.history.push(SEARCH_PATH);
+                saveRootTranslateX(0);
+                console.log("Search: " + e.target.value);
+            } else if (e.target.value.length < 2) {
+                if (this.isSearch()) {
+                    this.goBack(true);
+                }
+            }
+        });
 
-        this.setState({ searchString: e.target.value })
     }
 
     handleMenuClick() {
         let newState = !this.state.menuOpen
-        // if (newState) {
-        //     document.closeSettings = this.closeSettings;
-        // } else {
-        //     document.closeSettings = undefined;
-        // }
         this.setState({ menuOpen: newState });
-
-        // e.nativeEvent.stopImmediatePropagation()
     }
 
     closeSettings() {
         this.setState({ menuOpen: false });
-        //document.closeSettings = undefined;
     }
 
-    goBack() {
-        if (this.props.child === "word") {
+    goBack(skipSearch) {
+        if (this.isWords()) {
             //reset words position
             saveWordTranslateX(0);
         }
-        this.props.history.goBack();
+        if (skipSearch === undefined && this.isSearch()) {
+            this.props.history.goBack();
+            setTimeout(() => this.setState({ searchStr: "" }), 100);
+        } else {
+            this.props.history.goBack();
+        }
+        this.setState({ showDelete: undefined });
     }
     savePos(newVal) {
-        if (this.props.child === "word") {
+        if (this.isWords()) {
             saveWordTranslateX(newVal);
         } else {
             saveRootTranslateX(newVal);
@@ -139,53 +182,41 @@ class App extends IssieBase {
     }
 
     render() {
-        let categoryTheme = "blue";
-        let categoryId = this.props.categoryId;
-        if (categoryId) {
-            categoryTheme = getTheme(categoryId);
-        }
-        let title = "שפת הסימנים";
-        if (this.props.title) {
-            title = this.props.title;
-        }
+        console.log("Theme: " + this.state.theme);
         let leftArrow = "";
         let rightArrow = "";
 
         let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={this.goBack} style={{ float: "right", visibility: (!this.props.noBack ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
+            onClick={() => this.goBack()} style={{ float: "right", visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
         let searchInput = "";
 
         let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
             onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi zmdi-delete" /></button></div> : null
-
+        console.log("delete button: " + this.state.showDelete)
         document.preventTouch = true;
 
-        if (!this.props.noSearch) {
-            let searchVal = this.state.searchString || this.props.searchStr || "";
-
-            // if (!searchVal) {
-            //     if (this.state.searchInput) {
-            //         searchVal = this.state.searchInput;
-            //     } else {
-            //         searchVal = ""
-            //     }
-            // }
-            // if (searchVal.length > 1 && !path.startsWith("/search")) {
-            //     searchVal = "";
-            // }
-            searchInput = <SearchInput value={searchVal} theme={categoryTheme} slot={this.state.narrow ? "title" : "end-bar"} onChange={this.handleSearch} style={{ display: "inline-block" }} />
+        if (!this.isInfo() && !this.isVideo()) {
+            let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
+            let searchClassName = narrow ? "" : "sameLine";
+            searchInput = (
+                <div slot={narrow ? "title" : "end-bar"} className={"search " + searchClassName} >
+                    <input style={{ direction: "RTL", paddingRight: '5px' }} type="search" onChange={this.handleSearch}
+                        onFocus={this.preventKeyBoardScrollApp} value={this.state.searchStr || ""} />
+                </div>)
         }
 
-        if (this.isMobile() || this.props.allowTouch || this.state.allowSwipe) {
+        if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe) {
             document.preventTouch = false;
         }
 
-        if (!this.isMobile() && !this.props.noNavBtn && !this.state.allowSwipe) {
-            leftArrow = <a slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src={imageLocalCall("arrow-right.svg")} alt="arrow" /></a>
-            rightArrow = <a slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src={imageLocalCall("arrow-left.svg")} alt="arrow" /></a>
+        if (!IssieBase.isMobile() &&
+            (!this.isAddScreen() && !this.isVideo() && !this.isInfo())
+            && !this.state.allowSwipe) {
+            leftArrow = <button slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src={imageLocalCall("arrow-right.svg")} alt="arrow" /></button>
+            rightArrow = <button slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src={imageLocalCall("arrow-left.svg")} alt="arrow" /></button>
         }
 
-        if (this.isMobile() && this.isLandscape() && this.props.child === "video") {
+        if (IssieBase.isMobile() && IssieBase.isLandscape() && this.isVideo()) {
             return (
                 <div>
                     <div style={{ height: 50, zIndex: 0 }}>
@@ -195,34 +226,36 @@ class App extends IssieBase {
                 </div>)
         }
 
-        let overFlowX = this.overFlowX
-        if (this.props.allowOverflow) {
+        let overFlowX = this.state.dimensions.overFlowX;
+        if (this.isSearch() || this.isWords()) {
             overFlowX = 'visible';
         }
-
         return (
             <div className="App">
 
-                <Shell theme={categoryTheme} id="page1" >
+                <Shell theme={this.state.theme} id="page1" >
 
-                    {/* <button slot="start-bar" className="zmdi zmdi-info-outline" onClick={this.showInfo}></button> */}
                     <MenuButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleMenuClick()} color='white' />
-                    <div slot="title" style={{ display: "inline-block" }}>{title}</div>
+                    <div slot="title" style={{ display: "inline-block" }}>{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}
                     {backElement}
                     {deleteButton}
-                    {this.state.allowAddWord?<div/>:null}
+                    {this.state.allowAddWord ? <div /> : null}
                     <Menu id="SettingWindow" slot="body" open={this.state.menuOpen} closeSettings={() => this.closeSettings()}>
                         <MenuItem
                             delay={`${0.1}s`}
                             onClick={() => { this.showInfo(); }}>About Us - עלינו</MenuItem>
-                        {this.isMobile() ? null :
+                        {
                             <div id="toggles">
-                                <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" className="ios-toggle" checked={this.state.allowSwipe}
-                                    onChange={(e) => this.allowSwipe(e.target.checked)} />
-                                <label for="allowSwipeCB" className="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
+                                {
+                                    IssieBase.isMobile() ? null : (<div>
+                                        <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" className="ios-toggle" checked={this.state.allowSwipe}
+                                            onChange={(e) => this.allowSwipe(e.target.checked)} />
+                                        <label for="allowSwipeCB" className="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
+                                    </div>)
+                                }
                                 <input type="checkbox" name="allowAddWordsCB" id="allowAddWordsCB" className="ios-toggle" checked={this.state.allowAddWord}
                                     onChange={(e) => this.allowAddWord(e.target.checked)} />
                                 <label for="allowAddWordsCB" className="checkbox-label" data-off="הוספה כבויה" data-on="הוספה דולקת"></label>
@@ -234,23 +267,148 @@ class App extends IssieBase {
                         paddingRight: this.shellPadding,
                         overflowX: overFlowX
                     }}>
-                        {this.props.children}
+                        {this.getChildren()}
                     </div>
                 </Shell>
 
-            </div>
+            </div >
         );
+        //        }} />
+    }
+
+    getChildren() {
+        return (
+            <Switch>
+                <Route exact path="/" render={(props) => (
+                    <Body
+                        allowAddWord={this.state.allowAddWord}
+                        isLandscape={IssieBase.isLandscape()}
+                        isMobile={IssieBase.isMobile()}
+                    />
+                )} />
+
+                <Route
+                    path={SEARCH_PATH}
+                    render={(props) => (
+                        <Search
+                            words={getAllWords()}
+                            categories={getAllCategories()}
+                            isMobile={IssieBase.isMobile()}
+                            searchStr={this.state.searchStr}
+                        />
+                    )
+                    } />
+
+                <Route
+                    path="/word/:categoryId/:title"
+                    render={(props) => {
+                        this.setTitle(props.match.params.title);
+
+                        return (
+                            <Word
+                                pubSub={this.state.pubsub}
+                                isMobile={IssieBase.isMobile()}
+                                allowAddWord={this.state.allowAddWord}
+                                categoryId={props.match.params.categoryId}
+                            />)
+                    }
+                    } />
+                <Route
+                    path="/word-added/:categoryId/:title"
+                    render={(props) => {
+                        this.setTitle(props.match.params.title);
+                        return (
+                            <Word
+                                pubSub={this.state.pubsub}
+                                isMobile={IssieBase.isMobile()}
+                                allowAddWord={this.state.allowAddWord}
+                                type="added"
+                                categoryId={props.match.params.categoryId}
+                            />
+                        )
+                    }
+                    } />
+                <Route
+                    path="/video/:videoName/:categoryId/:title/:filePath"
+                    render={(props) => (
+                        <Video {...props}
+                            categoryId={props.match.params.categoryId}
+                            isLandscape={IssieBase.isLandscape()}
+                            isMobile={IssieBase.isMobile()}
+                            videoName={props.match.params.videoName}
+                            filePath={props.match.params.filePath ? props.match.params.filePath : ""}
+                        />)
+                    }
+                />
+
+                <Route
+                    path="/info"
+                    render={(props) => {
+                        this.setTitle("עלינו")
+                        return (
+                            <Info />
+                        )
+                    }
+                    } />
+                <Route
+                    path="/add-category"
+                    render={(props) => (
+                        <AddItem
+                            history={props.history}
+                            addWord={false} />
+                    )
+                    } />
+                <Route
+                    path="/add-word/:categoryId"
+                    render={(props) => (
+                        <AddItem
+                            addWord="true"
+                            history={props.history}
+                            categoryId={props.match.params.categoryId}
+                        />
+                    )
+                    } />
+            </Switch>);
+    }
+
+    setTitle(title) {
+        this.state.pubsub.publish({ command: "set-title", title })
+    }
+
+    isSearch() {
+        return this.props.history.location.pathname.startsWith(SEARCH_PATH);
+    }
+
+    isWords() {
+        return this.props.history.location.pathname.startsWith("/word");
+    }
+
+    isWordsAdded() {
+        return this.props.history.location.pathname.startsWith("/word-added/");
+    }
+
+    isAddScreen() {
+        return this.props.history.location.pathname.startsWith("/add-");
+    }
+
+    isVideo() {
+        return this.props.history.location.pathname.startsWith("/video/");
+    }
+
+    isInfo() {
+        return this.props.history.location.pathname.startsWith("/info");
+    }
+
+    isHome() {
+        return this.props.history.location.pathname === "/";
+    }
+
+    getSearchStr() {
+        if (this.props.history.location.pathname.startsWith(SEARCH_PATH)) {
+            return this.props.history.location.pathname.substr(SEARCH_PATH.length);
+        }
+        return this.state.searchStr || "";
     }
 }
 
-
-// const mapStateToProps = (state) => {
-//     return {};
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//     return bindActionCreators({}, dispatch);
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
 export default App;

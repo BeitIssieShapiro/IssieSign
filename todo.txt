@@ -1,0 +1,9 @@
+delete category
+only select added words and category
+search added words
+export words
+import 
+
+bugs:
+----
+remove warning of file.js

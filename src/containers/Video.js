@@ -1,14 +1,13 @@
 import React from "react";
 
 import '../css/App.css';
-
-import IssieBase from "../IssieBase";
 import { VideoToggle } from "../utils/Utils";
 
-class Video extends IssieBase {
+class Video extends React.Component {
 
-    componentWillMount() {
-        VideoToggle(true, !this.isMobile());
+    componentDidMount() {
+        VideoToggle(true, !this.props.isMobile);
+        this.updateDimensions()
     }
     componentWillUnmount() {
         VideoToggle(false);
@@ -16,7 +15,7 @@ class Video extends IssieBase {
     
     updateDimensions() {
         var videoElemHost = document.getElementById("playerhost")
-        if (this.isLandscape() && this.isMobile()) {
+        if (this.props.isLandscape && this.props.isMobile) {
             videoElemHost.style.top = "0px";
             videoElemHost.style.height = window.innerHeight
             videoElemHost.style.width = '95%';

@@ -1,6 +1,5 @@
 import React from "react";
 import '../css/shell.css';
-import IssieBase from "../IssieBase";
 
 function Slot({ children, slot }) {
     let slottedChildren = [];
@@ -19,12 +18,10 @@ function Slot({ children, slot }) {
     return slottedChildren;
 }
 
-class Shell extends IssieBase {
+function Shell (props) {
 
-    render(){
 
         var projectors = "";
-        //this.isMobile()
         if (true) {
             projectors = <ul className="projectors">
                 <li></li>
@@ -37,16 +34,16 @@ class Shell extends IssieBase {
         return (
         <div className="shellhost">
             <div className="shellTopBlueBar"/>
-            <div className="shellheader parent" theme={this.props.theme}>
+            <div className="shellheader parent" theme={props.theme}>
                 <div className="shellheaderTop">
                     <div className="startBar right">
-                        <Slot slot="start-bar">{this.props.children}</Slot>
+                        <Slot slot="start-bar">{props.children}</Slot>
                     </div>
                     <div className="shelltitle centerSlot">
-                        <Slot slot="title">{this.props.children}</Slot>
+                        <Slot slot="title">{props.children}</Slot>
                     </div>
                     <div className="endBar left">
-                        <Slot slot="end-bar">{this.props.children}</Slot>
+                        <Slot slot="end-bar">{props.children}</Slot>
                     </div>
                 </div>
             </div>
@@ -55,16 +52,15 @@ class Shell extends IssieBase {
             
             <div className="shellmain">
                 <aside className="prev">
-                    <Slot slot="prev">{this.props.children}</Slot>
+                    <Slot slot="prev">{props.children}</Slot>
                 </aside>
-                    <Slot slot="body">{this.props.children}</Slot>
+                    <Slot slot="body">{props.children}</Slot>
                 <aside className="next">
-                    <Slot slot="next">{this.props.children}</Slot>
+                    <Slot slot="next">{props.children}</Slot>
                 </aside>
             </div>
         </div>
         );
-    }
 }
 
 export default Shell;

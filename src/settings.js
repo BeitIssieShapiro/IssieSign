@@ -71,11 +71,11 @@ import React from 'react';
         open: this.props.open? this.props.open:false,
       }
     }
-    
-    componentWillReceiveProps(nextProps){
-      if(nextProps.open !== this.state.open){
-        this.setState({open:nextProps.open});
+    static getDerivedStateFromProps(props, state) {
+      if(props.open !== state.open){
+        return {open:props.open};
       }
+      return null;
     }
     
     
@@ -141,11 +141,11 @@ import React from 'react';
       this.handleClick = this.handleClick.bind(this);
     }
    
-  
-    componentWillReceiveProps(nextProps){
-      if(nextProps.open !== this.state.open){
-        this.setState({open:nextProps.open});
+    static getDerivedStateFromProps(props, state) {
+      if(props.open !== state.open){
+        return {open:props.open};
       }
+      return null;
     }
     
     handleClick() {

@@ -2,42 +2,27 @@ import React from "react";
 import '../css/App.css';
 import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Card2 from "../components/Card2";
-import { wordsTranslateX, calcWidth} from "../utils/Utils";
-import IssieBase from "../IssieBase";
+import { wordsTranslateX, calcWidth } from "../utils/Utils";
 import { AdditionsDirEntry, listWordsInFolder, deleteWord } from '../apis/file'
-
+import IssieBase from '../IssieBase'
 
 class Word extends IssieBase {
-    constructor(props) {
-        super(props);
-        this.state = this.getState(this.props);
-        setTimeout(() => AdditionsDirEntry(this.props.categoryId).then(async (additionsDir) => {
-            if (additionsDir) {
-                let words = this.state.words;
+    
 
-                let addedWords = await listWordsInFolder(additionsDir);
-                words = [...words, ...addedWords]
-
-                this.setState({ words });
-            }
-        }), 50);
-    }
-
-    getState(props) {
+    static getState(props) {
         if (props.words) {
             return { words: props.words, categoryId: "1" }
         }
         let mainJson = jsonLocalCall("main");
 
-        if (this.props.type === "added") {
-
-            return { words: [], categoryId: this.props.categoryId };
+        if (props.type === "added") {
+            return { words: [], categoryId: props.categoryId };
         }
 
         for (const cat of mainJson.categories) {
-            if (cat.id === this.props.categoryId && cat.words) {
-                return { 
-                    words: cat.words, 
+            if (cat.id === props.categoryId && cat.words) {
+                return {
+                    words: cat.words,
                     categoryId: cat.id
                 };
             }
@@ -45,11 +30,49 @@ class Word extends IssieBase {
 
     }
 
-    componentWillReceiveProps(newProps) {
-        this.setState(this.getState(newProps));
-    }
-    toggleSelect = (word, forceOff) => {
+    static getDerivedStateFromProps(props, state) {
+        if (props.pubSub && props.categoryId) {
+            props.pubSub.publish({ command: "set-categoryId", categoryId: props.type === "added"? "1" :props.categoryId});
+        }
+        
+        if (state.words && !props.InSearch) return;
 
+        if (props.words) {
+            return { words: props.words, categoryId: "1" }
+        }
+        let mainJson = jsonLocalCall("main");
+
+        if (props.type === "added") {
+            return { words: [], categoryId: props.categoryId };
+        }
+
+        for (const cat of mainJson.categories) {
+            if (cat.id === props.categoryId && cat.words) {
+                return {
+                    words: cat.words,
+                    categoryId: cat.id
+                };
+            }
+        }
+    }
+
+    componentDidMount() {
+        if (!this.props.InSearch) {
+            AdditionsDirEntry(this.props.categoryId).then(async (additionsDir) => {
+                if (additionsDir) {
+                    let words = this.state.words;
+
+                    let addedWords = await listWordsInFolder(additionsDir);
+                    words = [...words, ...addedWords]
+
+                    this.setState({ words });
+                }
+            });
+        }
+    }
+
+    toggleSelect = (word, forceOff) => {
+        if(!word || word.type !== 'file') return;
         if (forceOff || (this.state.selectedWord && this.state.selectedWord.id === word.id)) {
             //toggle off
             this.setState({ selectedWord: undefined });
@@ -58,7 +81,6 @@ class Word extends IssieBase {
 
             this.setState({ selectedWord: word });
             if (this.props.pubSub) {
-
                 this.props.pubSub.publish({
                     command: "show-delete", callback: () => {
                         if (this.state.selectedWord && window.confirm("האם למחוק מילה זו?")) {
@@ -114,7 +136,7 @@ class Word extends IssieBase {
             let tileH = 192;
 
             width = calcWidth(wordsElements.length, window.innerHeight,
-                window.innerWidth, tileH, tileW, this.isMobile(), this.props.isSearch !== undefined);
+                window.innerWidth, tileH, tileW, this.props.isMobile, this.props.isSearch !== undefined);
         }
         // if (this.state.words.find(f => f.imageName2)) {
         //     width += 100; //for double image icons

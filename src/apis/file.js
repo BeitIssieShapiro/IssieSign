@@ -1,4 +1,8 @@
 
+let isBrowser = () => {
+    //for debug in browser
+    return true;
+}
 
 export async function createDir(dirName) {
     return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(getDocDir(), (docDir) => {
@@ -34,9 +38,10 @@ export async function deleteWord(filePath) {
 }
 
 export async function listAdditionsFolders() {
+    if (isBrowser()) return [{name:"test", nativeURL:"file:///none/"}];
+    
     if (!getDocDir() || !window.resolveLocalFileSystemURL) {
         console.log("no cordova files")
-         return [{name:"test", nativeURL:"file:///none/"}];
         return [];
     }
     return new Promise( resolve => window.resolveLocalFileSystemURL(getDocDir() + "Additions/", (additionsDir) => {
@@ -54,6 +59,8 @@ export async function listAdditionsFolders() {
     ));
 }
 export async function AdditionsDirEntry(folderName) {
+    if (isBrowser()) return Promise.resolve({});
+
     if (!getDocDir() || !window.resolveLocalFileSystemURL) {
         console.log("no cordova files")
         return undefined;
@@ -67,6 +74,10 @@ export async function AdditionsDirEntry(folderName) {
 }
 
 export async function listWordsInFolder(dirEntry) {
+    if (isBrowser()) return Promise.resolve([
+        {name:"test word", id: 1000, type:'file'}
+    ])
+
     return new Promise( resolve =>{
         var reader = dirEntry.createReader();
         var words = [];

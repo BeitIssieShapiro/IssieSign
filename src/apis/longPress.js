@@ -27,6 +27,7 @@ export default function useLongPress(callback = () => {}, ms = 300) {
   }, []);
   const stop = useCallback((e) => {
     if (callBackTriggered) {
+      console.log("prevent default")
       e.preventDefault();
     }
     setStartLongPress(false);

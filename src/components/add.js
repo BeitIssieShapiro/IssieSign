@@ -1,9 +1,9 @@
+
 import React from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
 import { imageLocalCall } from "../apis/ImageLocalCall";
-//import { browserHistory } from "react-router";
 
 
 async function selectImage() {
@@ -118,7 +118,7 @@ class AddItem extends React.Component {
                                 <td width="15%"></td>
                                 <td width="30%">צלמית</td>
                                 <td width="60%">
-                                    <input type="button" value="בחר..." onClick={async () => {
+                                    <input type="button" value="..." className="browserButton" onClick={async () => {
                                         let img = await selectImage();
                                         this.setState({ selectedImage: img })
                                     }
@@ -131,7 +131,7 @@ class AddItem extends React.Component {
                                     <td width="15%"></td>
                                     <td width="30%">וידאו</td>
                                     <td width="60%">
-                                        <input type="button" value="בחר..." onClick={async () => {
+                                        <input type="button" value="..." className="browserButton" onClick={async () => {
                                             let video = await selectVideo();
                                             //alert(JSON.stringify(video)) ;
                                             this.setState({ selectedVideo: video })
@@ -144,7 +144,7 @@ class AddItem extends React.Component {
                     </table>
                 </div>
                 <div style={{ paddingTop: 50 }}>
-                    <input type="button" value="שמור" disabled={!this.IsValidInput()} onClick={async () =>
+                    <input type="button" value="שמור"  className="browserButton saveBtn" disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
                 </div>

@@ -4,61 +4,62 @@ import PropTypes from "prop-types";
 class IssieBase extends Component {
     constructor(props) {
         super(props);
-
-        this.imageBoxWidth = '94px';
-        this.marginLeftBox = '24px';
-        this.boxWidth = '124px';
-        this.shelfWidth = '170px';
-        this.tileGroupWidth = '220px';
-        this.shellPadding = '10px';
-
-
-
-
-        this.updateDimensions = this.updateDimensions.bind(this);
-        this.isMobile = this.isMobile.bind(this);
+        this.resizeListener = this.resizeListener.bind(this);
+        this.state = IssieBase.getDerivedStateFromProps();
     }
 
-    isMobile() {
+    static isMobile() {
         return window.innerHeight < 450 || window.innerWidth < 450;
     }
 
-    isLandscape() {
+    static isLandscape() {
         return (window.innerWidth > window.innerHeight);
     }
 
-    updateDimensions() {
-        var isNarrow = window.innerWidth < 700;
-        if (this.isMobile()) {
+    static updateDimensions() {
+        let ret = {};
+        if (IssieBase.isMobile()) {
             let numBoxSize = Math.round(window.innerWidth / 230);
 
             let boxSize = window.innerWidth / numBoxSize;
 
-            this.imageBoxWidth = (.4 * boxSize) + 'px';
-            this.marginLeftBox = (.1 * boxSize) + 'px';
-            this.boxWidth = (.53 * boxSize) + 'px';
-            this.shelfWidth = (.73 * boxSize) + 'px';
-            this.tileGroupWidth = (.95 * boxSize) + 'px';
-            this.shellPadding = (.05 * boxSize) + 'px';
-            this.overFlowX = 'hidden';
-
+            ret.imageBoxWidth = (.4 * boxSize) + 'px';
+            ret.marginLeftBox = (.1 * boxSize) + 'px';
+            ret.boxWidth = (.53 * boxSize) + 'px';
+            ret.shelfWidth = (.73 * boxSize) + 'px';
+            ret.tileGroupWidth = (.95 * boxSize) + 'px';
+            ret.shellPadding = (.05 * boxSize) + 'px';
+            ret.overFlowX = 'hidden';
+        } else {
+            ret.imageBoxWidth = '94px';
+            ret.marginLeftBox = '24px';
+            ret.boxWidth = '124px';
+            ret.shelfWidth = '170px';
+            ret.tileGroupWidth = '220px';
+            ret.shellPadding = '10px';
+            ret.overFlowX = 'visible';
         }
-        this.setState({ width: window.innerHeight, narrow: isNarrow })
+        return ret;
+    }
+    static getDerivedStateFromProps(props, state) {
+        return {
+            dimensions: IssieBase.updateDimensions(),
+            //narrow: window.innerWidth < 700,
+            width: window.innerHeight
+        };
     }
 
-    componentWillMount() {
-        this.updateDimensions();
+    resizeListener() {
+        this.setState(IssieBase.getDerivedStateFromProps());
     }
     componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
+        window.addEventListener("resize", this.resizeListener);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions);
+        window.removeEventListener("resize", this.resizeListener);
     }
-
 }
-
 IssieBase.propTypes = {
     children: PropTypes.any
 };
