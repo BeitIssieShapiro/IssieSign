@@ -156,15 +156,24 @@
 
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
-            console.log(cordova.file);
-            console.log(cordova.file.applicationDirectory);
+            //console.log(cordova.file);
+            //console.log(cordova.file.applicationDirectory);
+            console.log("Device Ready event");
 
             if (document.basePath === "/") {
                 //only in iOS
                 document.basePath = cordova.file.applicationDirectory;
-                //alert(document.basePath)
             }
             window.documents = cordova.file.documentsDirectory;
+
+            if (cordova.openwith) {
+                cordova.openwith.addHandler((args)=> {
+                    console.log("Open with received...")
+                    if (window.openWith) {
+                        window.openWith(args);
+                    }
+                });
+            }
         }
 
     </script>

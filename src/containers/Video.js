@@ -4,11 +4,15 @@ import '../css/App.css';
 import { VideoToggle } from "../utils/Utils";
 
 class Video extends React.Component {
-
-    componentDidMount() {
-        VideoToggle(true, !this.props.isMobile);
-        this.updateDimensions()
+    constructor (props) {
+        super(props);
+        this.state = {}
     }
+    
+    componentDidMount() {
+        this.updateDimensions()
+
+    } 
     componentWillUnmount() {
         VideoToggle(false);
     }

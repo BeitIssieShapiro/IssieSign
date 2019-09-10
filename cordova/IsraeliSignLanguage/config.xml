@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.issieshapiro.signlang" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.issieshapiro.signlang" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>IssieSign</name>
     <description>
         An app that help learning the sign language of Israel
@@ -44,17 +44,20 @@
         <icon height="100" src="resources/Icon-Small-50x50@2x.png" width="100" />
         <icon height="20" src="resources/Icon-App-20x20@1x.png" width="20" />
         <icon height="167" src="resources/Icon-App-83.5x83.5@2x.png" width="167" />
+
+         <config-file target="**/Entitlements-Debug.plist"
+            parent="com.apple.security.application-groups">
+            <array><string>group.com.issieshapiro.issiesign</string></array>
+        </config-file>
     </platform>
     <preference name="SplashScreenDelay" value="2000" />
     <preference name="FadeSplashScreen" value="false" />
     <preference name="SplashScreenBackgroundColor" value="white" />
     <preference name="AllowInlineMediaPlayback" value="true" />
-    <content src="http://192.168.1.17:3000/" /> 
-    
-    <!-- <content src="http://192.168.1.17:3000/index.html" />
-    <allow-navigation href="http://192.168.1.17:3000" /> 
-    <content src="http://localhost:3000/index.html" />
-    <allow-navigation href="http://localhost:3000" /> -->
+    <!-- <content src="http://192.168.1.17:3000/" />  -->
+    <content src="index.html" />
+    <!-- <content src="http://localhost:3000" /> -->
+
  
     <access origin="*" />
     <allow-navigation href="*" />
@@ -71,4 +74,15 @@
         <variable name="XAPK_TEXT_DL_ASSETS" value="מוריד קבצי מדיה" />
         <variable name="XAPK_MAIN_VERSION" value="0" />
     </plugin>
+    <!-- <plugin name="cc.fovea.cordova.openwith">
+        <variable name="ANDROID_MIME_TYPE" value="image/*" />
+        <variable name="IOS_URL_SCHEME" value="issiesignopenwith" />
+        <variable name="IOS_UNIFORM_TYPE_IDENTIFIER" value="com.pkware.zip-archive" />
+        <variable name="IOS_GROUP_IDENTIFIER" value="group.com.issieshapiro.issiesign" />
+        <variable name="SHAREEXT_DEVELOPMENT_TEAM" value="BEIT ISSIE SHAPIRO" />
+    </plugin> -->
+
+
+
+
 </widget>

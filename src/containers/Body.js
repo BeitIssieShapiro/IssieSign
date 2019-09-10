@@ -1,56 +1,49 @@
 import React from "react";
 import '../css/App.css';
-import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Tile2 from "../components/Tile2";
 
 import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
-import { listAdditionsFolders } from '../apis/file'
-
 
 class Body extends IssieBase {
 
-    static getDerivedStateFromProps(props, state) {
 
-        if (state.elements && !props.InSearch) return null; 
-        let categories
-        if (props.categories === undefined) {
-            let mainJson = jsonLocalCall("main");
-            categories = mainJson.categories;
+    toggleSelect = (category, forceOff) => {
+        if (!forceOff && (!category || category.type !== 'added')) return;
+
+        if (forceOff || (this.state.selectedCategory && this.state.selectedCategory.id === category.id)) {
+            //toggle off
+            this.setState({ selectedCategory: undefined });
+            this.props.pubSub.publish({ command: "hide-all-buttons" });
         } else {
-            categories = props.categories;
-        }
-        let elements = categories.map((category) => {
-            return <Tile2 key={category.id} tileName={category.name} tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
-                imageName={category.imageName} themeFlavor={getThemeFlavor(category.id)} />
-        });
-
-        return { elements, categories };
-    }
-
-    componentDidMount() {
-        if (!this.props.InSearch) {
-            listAdditionsFolders().then(addedCategories => {
-                if (addedCategories.length > 0) {
-                    let elements = this.state.elements;
-
-                    let i = 9000;
-                    for (let cat of addedCategories) {
-                        if (!this.state.categories.find(c => c.id === cat.name)) {
-                            //only add category that is not an existing one
-
-                            elements.push(<Tile2 key={i++} tileName={cat.name} tileUrl={"/word-added/" + cat.name + "/" + cat.name}
-                                imageName={cat.nativeURL + "default.jpg"} themeFlavor="1" />);
+            this.setState({ selectedCategory: category });
+            if (this.props.pubSub) {
+                this.props.pubSub.publish({
+                    command: "show-delete", callback: () => {
+                        if (this.state.selectedCategory && window.confirm("האם למחוק קטגוריה '" + category.name + "'?")) {
+                            alert("delete category!")
                         }
                     }
-                    this.setState({ elements });
-                }
-            });
+                });
+            }
         }
     }
 
+
     render() {
-        let elements = this.state.elements;
+        let elements = this.props.categories.map((category) => {
+            return <Tile2 
+                key={category.id} 
+                tileName={category.name} 
+                tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
+                imageName={category.imageName} 
+                themeFlavor={getThemeFlavor(category.type === "added" ?"1":category.id)} 
+                onLongPress={category.type === "added" ? () => this.toggleSelect(category) : undefined} 
+                selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
+                dimensions={this.props.dimensions}
+            />
+        });
+
         if (this.props.allowAddWord) {
             elements = elements.concat(<Tile2
                 key={9998}
@@ -58,6 +51,7 @@ class Body extends IssieBase {
                 tileUrl={"/add-category"}
                 imageName={'plus.jpg'}
                 themeFlavor={1}
+                dimensions={this.props.dimensions}
             />);
         }
 

@@ -5,11 +5,13 @@ import React from 'react';
 import Word from "./containers/Word";
 import Body from "./containers/Body";
 import Video from "./containers/Video";
-import Search, { getAllCategories, getAllWords } from "./containers/Search";
+import { getAllCategories, getAllWords, reloadAdditionals, getWordsByCategoryID } from "./apis/catalog";
+import Search from './containers/Search'
 import Info from "./containers/Info";
 import AddItem from "./components/add";
 
 import { Route, Switch } from "react-router";
+import { VideoToggle } from "./utils/Utils";
 
 
 import './css/App.css';
@@ -47,7 +49,6 @@ class PubSub {
 class App extends IssieBase {
     constructor(props) {
         super(props);
-        console.log("allow swipe: " + getBooleanSettingKey(ALLOW_SWIPE_KEY, false));
 
         this.getEvents = this.getEvents.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
@@ -67,6 +68,8 @@ class App extends IssieBase {
             pubsub: pubsub
         });
         pubsub.subscribe((args) => this.getEvents(args));
+
+        reloadAdditionals().then(() => this.forceUpdate());
 
     }
     componentDidUpdate() {
@@ -92,11 +95,13 @@ class App extends IssieBase {
             case 'show-delete':
                 this.setState({ showDelete: args.callback });
                 break;
+            case 'show-share':
+                this.setState({ showShare: args.callback });
+                break;
             case 'hide-all-buttons':
-                this.setState({ showDelete: undefined })
+                this.setState({ showDelete: undefined, showShare: undefined })
                 break;
             case 'set-categoryId':
-                console.log("rec: set-cat" + getTheme(args.categoryId))
                 if (args.categoryId !== this.state.categoryId) {
                     this.setState({ theme: getTheme(args.categoryId), categoryId: args.categoryId })
                 }
@@ -106,7 +111,9 @@ class App extends IssieBase {
                     this.setState({ title: args.title })
                 }
                 break;
-
+            case 'refresh':
+                this.forceUpdate()
+                break;
             default:
         }
     }
@@ -141,13 +148,19 @@ class App extends IssieBase {
             //reset words position
             saveWordTranslateX(0);
         }
+
+        if (this.isVideo()) {
+            VideoToggle(false);
+        }
+
         if (skipSearch === undefined && this.isSearch()) {
             this.props.history.goBack();
             setTimeout(() => this.setState({ searchStr: "" }), 100);
         } else {
             this.props.history.goBack();
         }
-        this.setState({ showDelete: undefined });
+        setTimeout(() =>
+            this.setState({ showDelete: undefined , showShare: undefined}), 50);
     }
     savePos(newVal) {
         if (this.isWords()) {
@@ -192,7 +205,8 @@ class App extends IssieBase {
 
         let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
             onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi zmdi-delete" /></button></div> : null
-        console.log("delete button: " + this.state.showDelete)
+        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
+            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="zmdi zmdi-share" /></button></div> : null
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo()) {
@@ -242,6 +256,7 @@ class App extends IssieBase {
                     {rightArrow}
                     {backElement}
                     {deleteButton}
+                    {shareButton}
                     {this.state.allowAddWord ? <div /> : null}
                     <Menu id="SettingWindow" slot="body" open={this.state.menuOpen} closeSettings={() => this.closeSettings()}>
                         <MenuItem
@@ -281,9 +296,12 @@ class App extends IssieBase {
             <Switch>
                 <Route exact path="/" render={(props) => (
                     <Body
+                        categories={getAllCategories()}
                         allowAddWord={this.state.allowAddWord}
                         isLandscape={IssieBase.isLandscape()}
                         isMobile={IssieBase.isMobile()}
+                        pubSub={this.state.pubsub}
+                        dimensions={this.state.dimensions}
                     />
                 )} />
 
@@ -303,13 +321,16 @@ class App extends IssieBase {
                     path="/word/:categoryId/:title"
                     render={(props) => {
                         this.setTitle(props.match.params.title);
-
+                        let words = getWordsByCategoryID(props.match.params.categoryId);
+                        //alert(JSON.stringify(words))
                         return (
                             <Word
                                 pubSub={this.state.pubsub}
                                 isMobile={IssieBase.isMobile()}
                                 allowAddWord={this.state.allowAddWord}
+                                words={words}
                                 categoryId={props.match.params.categoryId}
+                                categoryId4Theme={props.match.params.categoryId}
                             />)
                     }
                     } />
@@ -323,21 +344,29 @@ class App extends IssieBase {
                                 isMobile={IssieBase.isMobile()}
                                 allowAddWord={this.state.allowAddWord}
                                 type="added"
+                                words={getWordsByCategoryID(props.match.params.categoryId)}
                                 categoryId={props.match.params.categoryId}
+                                categoryId4Theme={"1"}
+                                dimensions={this.state.dimensions}
                             />
                         )
                     }
                     } />
                 <Route
                     path="/video/:videoName/:categoryId/:title/:filePath"
-                    render={(props) => (
-                        <Video {...props}
-                            categoryId={props.match.params.categoryId}
-                            isLandscape={IssieBase.isLandscape()}
-                            isMobile={IssieBase.isMobile()}
-                            videoName={props.match.params.videoName}
-                            filePath={props.match.params.filePath ? props.match.params.filePath : ""}
-                        />)
+                    render={(props) => {
+                        VideoToggle(true, !props.isMobile);
+                        this.setTitle(props.match.params.title);
+
+                        return (
+                            <Video {...props}
+                                categoryId={props.match.params.categoryId}
+                                isLandscape={IssieBase.isLandscape()}
+                                isMobile={IssieBase.isMobile()}
+                                videoName={props.match.params.videoName}
+                                filePath={props.match.params.filePath ? decodeURIComponent(props.match.params.filePath) : ""}
+                            />)
+                    }
                     }
                 />
 
@@ -355,7 +384,9 @@ class App extends IssieBase {
                     render={(props) => (
                         <AddItem
                             history={props.history}
-                            addWord={false} />
+                            addWord={false} 
+                            dimensions={this.state.dimensions}
+                         />
                     )
                     } />
                 <Route
@@ -365,6 +396,7 @@ class App extends IssieBase {
                             addWord="true"
                             history={props.history}
                             categoryId={props.match.params.categoryId}
+                            dimensions={this.state.dimensions}
                         />
                     )
                     } />
@@ -372,7 +404,7 @@ class App extends IssieBase {
     }
 
     setTitle(title) {
-        this.state.pubsub.publish({ command: "set-title", title })
+        this.state.pubsub.publish({ command: "set-title", title });
     }
 
     isSearch() {

@@ -143,12 +143,14 @@ export const themeMap = {
 
 var videoMonitor = undefined;
 export const VideoToggle = (on, addButtons) => {
+    console.log("toggle: "+ on)
     let video = document.getElementById("player");
     document.getElementById("playerhost").style.visibility = (on ? "visible" : "hidden");
     if (!on) {
         video.pause();
         clearInterval(videoMonitor);
         videoMonitor = undefined
+        setButtons(0, 0, 0);
     } else if (addButtons) {
         if (videoMonitor === undefined)
             videoMonitor = setInterval(monitorVideo, 250);

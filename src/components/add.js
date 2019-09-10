@@ -73,6 +73,7 @@ class AddItem extends React.Component {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
         alert("נשמר בהצלחה");
+        await reloadAdditionals()
         this.props.history.goBack();
     }
 
@@ -84,6 +85,7 @@ class AddItem extends React.Component {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
         alert("נשמר בהצלחה");
+        await reloadAdditionals();
         this.props.history.goBack();
     }
 
@@ -97,7 +99,7 @@ class AddItem extends React.Component {
                         <Card2 key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
                             imageName={this.state.selectedImage} themeId={themeId} noLink="true"/>
                         :
-                        <Tile2 key="1" tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />}
+                        <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />}
                 </div>
 
                 <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right' }}>

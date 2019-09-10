@@ -1,5 +1,5 @@
 
-const mainJson = {
+export const mainJson = {
     "categories": [
       {
         "name": "איברי גוף",
@@ -3475,6 +3475,3 @@ const mainJson = {
     ]
   }
 
-export const jsonLocalCall = () => {
-    return mainJson;
-};

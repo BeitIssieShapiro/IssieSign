@@ -1,28 +1,9 @@
 import React from "react";
 import '../css/App.css';
-import { jsonLocalCall } from "../apis/JsonLocalCall";
 import Word from "./Word";
 import Body from "./Body";
 import { rootTranslateX } from "../utils/Utils";
 
-let wordsGlobal
-
-export function getAllWords() {
-    if (wordsGlobal) return wordsGlobal;
-
-    wordsGlobal = getAllCategories().reduce((acc, cur) => {
-        return acc.concat(cur.words.map((word) => {
-            word['categoryId'] = cur.id;
-            return word;
-        }))
-    }, []);
-    return wordsGlobal;
-}
-
-export function getAllCategories() {
-    let mainJson = jsonLocalCall();
-    return mainJson.categories;
-}
 
 
 function Search(props) {
