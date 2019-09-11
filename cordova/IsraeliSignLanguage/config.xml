@@ -47,8 +47,35 @@
 
          <config-file target="**/Entitlements-Debug.plist"
             parent="com.apple.security.application-groups">
-            <array><string>group.com.issieshapiro.issiesign</string></array>
+            <array>
+                <string>group.com.issieshapiro.issiesign</string>
+            </array>
         </config-file>
+        <!-- <config-file target="**/Entitlements-Debug.plist" 
+            parent="UTImportedTypeDeclarations">
+            <array>
+            <dict>
+                <key>UTTypeConformsTo</key>
+                <array>
+                    <string>public.data</string>
+                    <string>public.archive</string>
+                </array>
+                <key>UTTypeDescription</key>
+                <string>Issie Sign Content file</string>
+                <key>UTTypeIdentifier</key>
+                <string>public.issiesign.content</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>com.apple.ostype</key>
+                    <string>Zip</string>
+                    <key>public.mime-type</key>
+                    <string>application/zip</string>
+                    <key>public.filename-extension</key>
+                    <string>isc</string>
+                </dict>
+            </dict>
+            </array>
+        </config-file> -->
     </platform>
     <preference name="SplashScreenDelay" value="2000" />
     <preference name="FadeSplashScreen" value="false" />

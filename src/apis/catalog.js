@@ -27,7 +27,8 @@ async function loadAdditional() {
 
     try {
         let addedCategories = await listAdditionsFolders()
-        console.log("found " + addedCategories.length + " additional categories");
+        console.log("found " + addedCategories.length + " additional categories:");
+        console.log(addedCategories.map(c => c.name) + " additional categories:");
         for (let i = 0; i< addedCategories.length;i++) {
             let words = await listWordsInFolder(addedCategories[i])
             if (mainJson.categories.find(c => c.id === addedCategories[i].name)) {
@@ -37,11 +38,10 @@ async function loadAdditional() {
                 //new category
                 //alert(addedCategories[i].name+" - "+JSON.stringify(words))
                 gAdditionalNewCategories.push({...addedCategories[i], id:addedCategories[i].name, imageName:addedCategories[i].nativeURL + "default.jpg" , type:"added", words});
-            }
-            
-            gCategories = getAllCategories();
-            gWordsFlat = getAllWords();
+            }            
         }
+        gCategories = getAllCategories();
+        gWordsFlat = getAllWords();
     } catch (e) {
         console.log("Error loadAdditional:" + e);
         return Promise.reject(e)

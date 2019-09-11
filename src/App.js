@@ -313,6 +313,7 @@ class App extends IssieBase {
                             categories={getAllCategories()}
                             isMobile={IssieBase.isMobile()}
                             searchStr={this.state.searchStr}
+                            dimensions={this.state.dimensions}
                         />
                     )
                     } />

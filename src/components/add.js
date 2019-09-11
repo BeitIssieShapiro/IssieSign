@@ -4,12 +4,13 @@ import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
 import { imageLocalCall } from "../apis/ImageLocalCall";
+import { reloadAdditionals } from "../apis/catalog";
 
 
 async function selectImage() {
     if (!window.imagePicker) {
         alert("Image picker is not installed");
-        return;
+        return "file://nothing.jpg";
     }
     return new Promise((resolve, reject) => window.imagePicker.getPictures(
         function (results) {
@@ -62,7 +63,7 @@ class AddItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { label: "", selectImage: "", selectedVideo: "" }
+        this.state = { label: "", selectImage: "", selectedVideo: ""}
     }
 
     IsValidInput = () => {
@@ -73,8 +74,7 @@ class AddItem extends React.Component {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
         alert("נשמר בהצלחה");
-        await reloadAdditionals()
-        this.props.history.goBack();
+        reloadAdditionals().then(()=>this.props.history.goBack())
     }
 
     saveWord = async () => {
@@ -85,8 +85,7 @@ class AddItem extends React.Component {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
         alert("נשמר בהצלחה");
-        await reloadAdditionals();
-        this.props.history.goBack();
+        reloadAdditionals().then(()=>this.props.history.goBack());
     }
 
     render() {
@@ -150,13 +149,6 @@ class AddItem extends React.Component {
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
                 </div>
-                {/* <input type="button" value="בדוק" onClick={async () => {
-                    let cat = await listAdditionsFolders();
-                    for (let c of cat) {
-                        alert(JSON.stringify(c));
-                    }
-
-                }} /> */}
             </div>
         )
     }

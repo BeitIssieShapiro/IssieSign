@@ -5,7 +5,6 @@ import "../css/Tile.css";
 import '../css/App.css';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
-import IssieBase from "../IssieBase";
 import longPress from '../apis/longPress';
 
 //import { A, navigate } from "hookrouter";

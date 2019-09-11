@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import { Route } from "react-router";
 import { HashRouter } from "react-router-dom";
 import './index.css';
-import { ALLOW_ADD_KEY, getBooleanSettingKey } from "./utils/Utils";
 
 //Containers
 import App from './App';

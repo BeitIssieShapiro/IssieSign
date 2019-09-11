@@ -10,7 +10,7 @@ class Word extends IssieBase {
 
     static getDerivedStateFromProps(props, state) {
         if (props.pubSub && props.categoryId) {
-            props.pubSub.publish({ command: "set-categoryId", categoryId: props.type === "added" ? "1" : props.categoryId });
+            props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
         }
 
         return null;
@@ -29,11 +29,11 @@ class Word extends IssieBase {
             this.setState({ selectedWord: word });
             if (this.props.pubSub) {
                 this.props.pubSub.publish({
-                    command: "show-delete", callback: async () => {
+                    command: "show-delete", callback: () => {
                         if (this.state.selectedWord && window.confirm("האם למחוק את המילה '" + this.state.selectedWord.name + "'?")) {
                             deleteWord(this.state.selectedWord.videoName).then(
                                 //Success:
-                                () => {
+                                async () => {
                                     await reloadAdditionals();
                                     this.props.pubSub.publish({ command: "refresh" })
                                     this.toggleSelect(null, true)

@@ -1,3 +1,4 @@
+import { isNumber } from "util";
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
@@ -102,9 +103,12 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
 //exluded: 8,12,20,14,6
 var themes = [0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 13, 15, 16, 17, 18, 19, 21, 22, 23];
 export const getTheme = (categoryID) => {
-    let count = themes.length;
-    let index = (Number(categoryID) - 1) % count;
-    let mapIndex = Number(themes[index]) + 1;
+    let mapIndex = 1;
+    if (isNumber(categoryID)) {
+        let count = themes.length;
+        let index = (Number(categoryID) - 1) % count;
+        mapIndex = Number(themes[index]) + 1;
+    }
     return themeMap[mapIndex.toString()];
 }
 

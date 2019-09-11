@@ -4,6 +4,8 @@ import Tile2 from "../components/Tile2";
 
 import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
+import {deleteCategory } from '../apis/file'
+import {reloadAdditionals} from '../apis/catalog'
 
 class Body extends IssieBase {
 
@@ -20,8 +22,8 @@ class Body extends IssieBase {
             if (this.props.pubSub) {
                 this.props.pubSub.publish({
                     command: "show-delete", callback: () => {
-                        if (this.state.selectedCategory && window.confirm("האם למחוק קטגוריה '" + category.name + "'?")) {
-                            alert("delete category!")
+                        if (this.state.selectedCategory && window.confirm("מחיקת קטגוריה תמחק גם את כל המילים שבתוכה. האם למחוק את הקטגוריה:'" + category.name + "'?")) {
+                            this.deleteCategory(category);
                         }
                     }
                 });
@@ -29,6 +31,18 @@ class Body extends IssieBase {
         }
     }
 
+    deleteCategory(category) {
+        deleteCategory(category).then(
+            //Success:
+            async () => {
+                await reloadAdditionals();
+                this.props.pubSub.publish({ command: "refresh" })
+                this.toggleSelect(null, true)
+            },
+            //error
+            (e) => alert("מחיקה נכשלה\n" + e)
+        );        
+    }
 
     render() {
         let elements = this.props.categories.map((category) => {

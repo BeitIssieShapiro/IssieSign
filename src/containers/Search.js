@@ -28,11 +28,16 @@ function Search(props) {
     return (
         <div className='tileContainer' style={{ width: props.isMobile ? '110%' : '1200px', transform: 'translateX(' + rootTranslateX + 'px)' }}>
             <Body InSearch={true} categories={
-                filterCategories(props.searchStr)
-            } isSearch="true" />
-            <Word InSearch={true} words={
-                filterWords(props.searchStr)
-            } isSearch="true" />
+                    filterCategories(props.searchStr)    
+                } 
+                dimensions={props.dimensions}
+                isSearch="true" />
+            <Word InSearch={true} 
+                words={
+                    filterWords(props.searchStr)
+                } 
+                dimensions={props.dimensions}
+                isSearch="true" />
         </div>
     )
 }
