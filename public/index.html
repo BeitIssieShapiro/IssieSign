@@ -154,6 +154,13 @@
         document.addEventListener("touchmove", doNothing, { passive: false });
         
 
+        var handleOpenURL = (url) => {
+            if (window.openWith) {
+                window.openWith(url);
+            }
+        }
+
+
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             //console.log(cordova.file);
@@ -165,15 +172,6 @@
                 document.basePath = cordova.file.applicationDirectory;
             }
             window.documents = cordova.file.documentsDirectory;
-
-            if (cordova.openwith) {
-                cordova.openwith.addHandler((args)=> {
-                    console.log("Open with received...")
-                    if (window.openWith) {
-                        window.openWith(args);
-                    }
-                });
-            }
         }
 
     </script>

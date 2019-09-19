@@ -3,7 +3,14 @@ node_modules/
 .DS_Store
 .vscode/
 build
-cordova/IsraeliSignLanguage/platforms/ios/*
+cordova/IsraeliSignLanguage/platforms/ios/www/videos
+cordova/IsraeliSignLanguage/platforms/ios/www/static
+cordova/IsraeliSignLanguage/platforms/ios/www/asset*
+cordova/IsraeliSignLanguage/platforms/ios/www/index.html
+cordova/IsraeliSignLanguage/platforms/ios/www/manifest.json
+cordova/IsraeliSignLanguage/platforms/ios/www/service-worker.json
+cordova/IsraeliSignLanguage/platforms/ios/www/sprecache*
+
 cordova/IsraeliSignLanguage/www/
 cordova/IsraeliSignLanguage/plugins/
 package-lock.json

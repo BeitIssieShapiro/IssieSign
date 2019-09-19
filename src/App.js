@@ -69,9 +69,30 @@ class App extends IssieBase {
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
-        reloadAdditionals().then(() => this.forceUpdate());
+        window.refreshApp = (data) => {
+            console.log("Reloading app");
+            reloadAdditionals().then(() => {
+                this.forceUpdate();
 
+                //generate message:
+                if (data) {
+                    let msg = "מילים חדשות:\n";
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].words.length > 0) {
+                            msg += data[i].name + ":\n";
+                            for (let j = 0;j< data[i].words.length;j++) {
+                                msg += "  "+data[i].words[j] + "\n";
+                            }
+                        }
+                    }
+                    alert(msg)
+                }
+            });
+        }
+
+        reloadAdditionals().then(() => this.forceUpdate());
     }
+
     componentDidUpdate() {
         if (this.state.pubSub) {
             this.state.pubSub.subscribe((args) => this.getEvents(args));
@@ -160,7 +181,7 @@ class App extends IssieBase {
             this.props.history.goBack();
         }
         setTimeout(() =>
-            this.setState({ showDelete: undefined , showShare: undefined}), 50);
+            this.setState({ showDelete: undefined, showShare: undefined }), 50);
     }
     savePos(newVal) {
         if (this.isWords()) {
@@ -385,9 +406,9 @@ class App extends IssieBase {
                     render={(props) => (
                         <AddItem
                             history={props.history}
-                            addWord={false} 
+                            addWord={false}
                             dimensions={this.state.dimensions}
-                         />
+                        />
                     )
                     } />
                 <Route
