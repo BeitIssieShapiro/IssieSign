@@ -12,7 +12,8 @@ import AddItem from "./components/add";
 
 import { Route, Switch } from "react-router";
 import { VideoToggle } from "./utils/Utils";
-
+import { ClipLoader } from 'react-spinners';
+import { CategoryList, ListItem } from './containers/categoryPicker'
 
 import './css/App.css';
 import './css/style.css';
@@ -27,6 +28,9 @@ import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
 import { MenuButton, Menu, MenuItem } from './settings'
 import './css/settings.css'
+import { receiveIncomingZip } from './apis/file'
+import { isNumber } from 'util';
+
 
 
 const SEARCH_PATH = "/search/";
@@ -65,27 +69,44 @@ class App extends IssieBase {
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
-            pubsub: pubsub
+            pubsub: pubsub,
+            busy: false,
+            busyText: 'עובד על זה...'
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
-        window.refreshApp = (data) => {
+        window.importWords = (url) => {
             console.log("Reloading app");
-            reloadAdditionals().then(() => {
-                this.forceUpdate();
-
-                //generate message:
+            this.setState({ busy: true, busyText: 'מייבא מילים...' });
+            receiveIncomingZip(url).then((data) => {
                 if (data) {
-                    let msg = "מילים חדשות:\n";
-                    for (let i = 0; i < data.length; i++) {
-                        if (data[i].words.length > 0) {
-                            msg += data[i].name + ":\n";
-                            for (let j = 0;j< data[i].words.length;j++) {
-                                msg += "  "+data[i].words[j] + "\n";
+                    reloadAdditionals().then(() => {
+
+                        //generate message:
+                        this.setState({ busy: false });
+
+                        setTimeout(() => {
+                            let msg = "מילים חדשות:\n";
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i].words.length > 0) {
+                                    let folderName = data[i].name;
+                                    if (isNumber(folderName)) {
+                                        let cat = getAllCategories().find(f => f.name === folderName);
+                                        if (cat) {
+                                            folderName = cat.name;
+                                        }
+                                    }
+
+                                    msg += folderName + ":\n";
+                                    for (let j = 0; j < data[i].words.length; j++) {
+                                        msg += "  " + data[i].words[j] + "\n";
+                                    }
+                                }
                             }
-                        }
-                    }
-                    alert(msg)
+                            alert(msg)
+                        }, 100);
+
+                    });
                 }
             });
         }
@@ -134,6 +155,9 @@ class App extends IssieBase {
                 break;
             case 'refresh':
                 this.forceUpdate()
+                break;
+            case 'set-busy':
+                this.setState({ busy: args.active === true, busyText: args.text });
                 break;
             default:
         }
@@ -224,10 +248,10 @@ class App extends IssieBase {
             onClick={() => this.goBack()} style={{ float: "right", visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
         let searchInput = "";
 
-        let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi zmdi-delete" /></button></div> : null
-        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="zmdi zmdi-share" /></button></div> : null
+        let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
+            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi actionBtn zmdi-delete" /></button></div> : null
+        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
+            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="zmdi actionBtn zmdi-share" /></button></div> : null
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo()) {
@@ -267,7 +291,15 @@ class App extends IssieBase {
         }
         return (
             <div className="App">
-
+                <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
+                    {this.state.busy ? <div style={{ position: 'absolute', top: '60px', width: '100%', color: 'black' }}>{this.state.busyText}</div> : null}
+                    <ClipLoader
+                        sizeUnit={"px"}
+                        size={150}
+                        color={'#123abc'}
+                        loading={this.state.busy}
+                    />
+                </div>
                 <Shell theme={this.state.theme} id="page1" >
 
                     <MenuButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleMenuClick()} color='white' />
@@ -303,6 +335,7 @@ class App extends IssieBase {
                         paddingRight: this.shellPadding,
                         overflowX: overFlowX
                     }}>
+
                         {this.getChildren()}
                     </div>
                 </Shell>
@@ -424,6 +457,16 @@ class App extends IssieBase {
                     } />
             </Switch>);
     }
+
+                        // <CategoryList>
+                        //     {getAllCategories().map(cat => <ListItem
+                        //     name={cat.name}
+                        //     imageName={cat.imageName}
+                        //     callback={()=>alert("cat selected: "+cat.name)}
+                        //     />
+
+                        //     )}
+                        // </CategoryList>
 
     setTitle(title) {
         this.state.pubsub.publish({ command: "set-title", title });

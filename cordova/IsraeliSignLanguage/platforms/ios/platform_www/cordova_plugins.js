@@ -228,6 +228,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "navigator.splashscreen"
       ]
+    },
+    {
+      "id": "nl.madebymark.share.Share",
+      "file": "plugins/nl.madebymark.share/www/share.js",
+      "pluginId": "nl.madebymark.share",
+      "clobbers": [
+        "window.navigator.share"
+      ]
     }
   ];
   module.exports.metadata = {
@@ -238,6 +246,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-image-picker": "1.1.1",
     "cordova-plugin-ios-microphone-permissions": "1.0.0",
     "cordova-plugin-splashscreen": "5.0.2",
-    "cordova-plugin-whitelist": "1.3.3"
+    "cordova-plugin-whitelist": "1.3.3",
+    "nl.madebymark.share": "0.1.1"
   };
 });

@@ -1,6 +1,5 @@
 import JSZip from 'jszip'
 
-
 let isBrowser = () => {
     //for debug in browser
     return false;
@@ -61,20 +60,36 @@ export async function deleteCategory(category) {
         ));
 }
 
-export function shareWord(word) {
+function share(text, title, mimetype, success, error) {
+    if (typeof text !== "string") {
+        text = "";
+    }
+    if (typeof title !== "string") {
+        title = "Share";
+    }
+    if (typeof mimetype !== "string") {
+        mimetype = "text/plain";
+    }
+    window.cordova.exec(success, error, "Share", "share", [text, title, mimetype]);
+    return true;
+};
+
+export async function shareWord(word) {
     if (!word) return;
 
-    alert("share: " + word.name)
-    return Promise.resolve(true)
+    let paths = [word.videoName, word.imageName];
+    let zipPath = await zipWord(paths);
+    zipPath = zipPath.replace("file://", "")
+    share(zipPath, "", "", () => { }, (err) => alert(err));
 }
 
 function waitForCordova(ms) {
-    if (isBrowser() || (window.cordova && window.cordova.file)) {
+    if (isBrowser() || (window.cordova && window.cordova.file && window.resolveLocalFileSystemURL && getDocDir())) {
         return Promise.resolve(true);
     }
     return new Promise((resolve) => {
         setTimeout(() => {
-            if (window.cordova && window.cordova.file) {
+            if (window.cordova && window.cordova.file && window.resolveLocalFileSystemURL && getDocDir()) {
                 resolve(true)
             }
             resolve(false)
@@ -88,8 +103,10 @@ export async function listAdditionsFolders() {
     return new Promise(async (resolve) => {
         let attempts = 0;
         while (attempts < 5 && !(await waitForCordova(1000))) {
+            console.log("Wait for cordova..." + attempts)
             attempts++;
         };
+
 
         if (!getDocDir() || !window.resolveLocalFileSystemURL) {
             console.log("no cordova files")
@@ -167,19 +184,111 @@ export async function listWordsInFolder(dirEntry) {
     });
 }
 
-export async function zipWord(filePath) {
+export async function zipWord(paths) {
     let zip = new JSZip();
-    let photoZip = zip.folder("photos");
-    photoZip.file("README", "a folder with photos");
-    if (JSZip.support.uint8array) {
-        zip.generateAsync({ type: "uint8array" });
-    } else {
-        zip.generateAsync({ type: "string" });
+
+    console.log("Zipping: ", paths)
+    let handledFolders = {};
+    let zipFileName = "word.zip";
+    for (let i = 0; i < paths.length; i++) {
+        let parts = paths[i].split("/");
+        let folderName = decodeURIComponent(parts[parts.length - 2]);
+        let fileName = decodeURIComponent(parts[parts.length - 1]);
+        zipFileName = getFileNameWithoutExt(fileName) + ".zip";
+
+        console.log('Adding file:', fileName, ' in folder: ', folderName);
+        let folderZip = zip.folder(folderName);
+        if (!handledFolders[folderName]) {
+            handledFolders[folderName] = true;
+            //look for default.jpg in the folder:
+            parts[parts.length - 1] = "default.jpg"
+            let defaultJpgPath = parts.join('/');
+            console.log('Looking for ', defaultJpgPath);
+            try {
+                let defaultJpg = dataURL2Blob(await readFile(defaultJpgPath));
+                console.log('Found default.jpg');
+                folderZip.file("default.jpg", defaultJpg);
+            } catch (e) {/*ok if missing*/ }
+        }
+
+        folderZip.file(fileName, dataURL2Blob(await readFile(paths[i])));
     }
+
+    console.log("Generate Zip file");
+    return zip.generateAsync({ type: "blob" }).then(
+        async (fileBlob) => {
+            //console.log("Generate finish, convert to blob");
+            //let fileBlob = b64toBlob(content, "application/zip");
+            //save to tmp file
+            let fileName = window.cordova.file.tempDirectory + zipFileName;
+            console.log("About to save blob to tmp file", fileName);
+            await writeBlobToFile(fileName, fileBlob);
+            return fileName;
+        }
+    );
+}
+
+function dataURL2Blob(dataURL) {
+    if (dataURL.startsWith('data:')) {
+        //look for the ;
+        let semicolonPos = dataURL.indexOf(';')
+        if (semicolonPos > 0) {
+            let mimeType = dataURL.substring(5, semicolonPos);
+            let contentStart = dataURL.indexOf(',', semicolonPos);
+            return b64toBlob(dataURL.substr(contentStart + 1), mimeType)
+        }
+
+    }
+    return null;
+}
+
+async function writeBlobToFile(filePath, fileBlob) {
+    let parts = filePath.split('/');
+    let fileName = parts[parts.length - 1];
+    parts.pop();
+    let folderName = parts.join('/');
+    return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(folderName,
+        (dirEntry) => {
+            dirEntry.getFile(fileName, { create: true },
+                //Success
+                (fileEntry) => fileEntry.createWriter((fileWriter) => {
+                    fileWriter.onwriteend = function (evt) {
+                        resolve();
+                    };
+
+                    fileWriter.write(fileBlob);
+                })
+                , (err) => {
+                    console.log("save blob to file failed", JSON.stringify(err));
+                    reject(err)
+                }
+            )
+        }
+    ));
 }
 
 const base64Prefix = "data:application/zip;base64,";
 
+
+async function readFile(filePath) {
+    return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(filePath, (fileEntry) => {
+        fileEntry.file(
+            //success
+            (file) => {
+                console.log("About to read file");
+                let reader = new FileReader();
+                reader.onloadend = (evt) => {
+                    console.log("Successfully read file");
+                    resolve(evt.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+            , (err) => reject(err)
+        )
+    },
+        (err) => reject(err)));
+
+}
 
 export async function receiveIncomingZip(filePath) {
     return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(filePath, (fileEntry) => {
@@ -195,33 +304,45 @@ export async function receiveIncomingZip(filePath) {
                         reject("unknown format of an input file");
                         return;
                     }
+
                     let retData = [];
                     zipFile.loadAsync(evt.target.result.substr(base64Prefix.length), { base64: true }).then(zipEntry => {
+                        let fileAndFoldersCount = Object.keys(zipEntry.files).length;
+                        let countSoFar = 0;
                         zipEntry.forEach(async (relativePath, fileObj) => {
                             //at this level, we expect only folder(s)
+                            console.log("Zip entry:", relativePath, ", count:" + countSoFar);
                             if (fileObj.dir) {
-                                console.log("Zip entry:", fileObj.dir ? "<Dir> " : "<File> ", relativePath);
+                                countSoFar++;
+                                console.log("Dir entry:", fileObj.dir ? "<Dir> " : "<File> ", relativePath);
                                 //for each folder, we save it with all its file-only contents
                                 let categoryName = relativePath.replace("/", "")
-                                let category = {name:categoryName, words:[]}
+                                let category = { name: categoryName, words: [] }
                                 retData.push(category);
 
                                 let dirEntry = await createDir(categoryName);
                                 let folder = zipEntry.folder(relativePath);
-
                                 folder.forEach(async (inFilePath, inFileObj) => {
                                     if (!inFileObj.dir) {
-                                        await saveZipEntryToFile(dirEntry, inFilePath, inFileObj)
-                                        let fileNameWithoutExt = getFileNameWithoutExt(inFilePath)
-                                        if (!category.words.find(f=> f === fileNameWithoutExt)) {
-                                            category.words.push(fileNameWithoutExt)
-                                        }
+                                        await saveZipEntryToFile(dirEntry, inFilePath, inFileObj).then(() => {
+                                            let fileNameWithoutExt = getFileNameWithoutExt(inFilePath)
+                                            if (fileNameWithoutExt !== "default" && !category.words.find(f => f === fileNameWithoutExt)) {
+                                                category.words.push(fileNameWithoutExt)
+                                            }
+                                            countSoFar++;
+                                        })
+                                    } else {
+                                        countSoFar++;
+                                    }
+                                    console.log("finish file:", inFilePath, ", count:" + countSoFar);
+                                    if (countSoFar === fileAndFoldersCount) {
+                                        console.log("Finish Load Zip")
+                                        resolve(retData);
                                     }
                                 });
                             }
+
                         });
-                        console.log("Finish Load Zip")
-                        resolve(retData);
                     },
                         (err) => {
                             console.log("Error reading zip:", err);
@@ -231,7 +352,7 @@ export async function receiveIncomingZip(filePath) {
                 reader.readAsDataURL(file);
             },
             //fail
-            (err) => { }
+            (err) => { reject(err) }
         );
     }));
 }

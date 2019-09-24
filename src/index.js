@@ -4,18 +4,16 @@ import { Route } from "react-router";
 import { HashRouter } from "react-router-dom";
 import './index.css';
 
-import {receiveIncomingZip} from './apis/file'
 
 //Containers
 import App from './App';
 
 window.openWith = async (url) => {
   console.log('Open with URL received:' + url);
-  let data = await receiveIncomingZip(url)
+  
 
-  if (window.refreshApp) {
-    setTimeout(()=>
-    window.refreshApp(data), 2500);
+  if (window.importWords) {
+    window.importWords(url);
   } 
 }
 

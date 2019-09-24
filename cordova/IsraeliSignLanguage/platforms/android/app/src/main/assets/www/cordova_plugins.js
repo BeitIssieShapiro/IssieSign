@@ -236,6 +236,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "CameraPopoverHandle"
       ]
+    },
+    {
+      "id": "nl.madebymark.share.Share",
+      "file": "plugins/nl.madebymark.share/www/share.js",
+      "pluginId": "nl.madebymark.share",
+      "clobbers": [
+        "window.navigator.share"
+      ]
     }
   ];
   module.exports.metadata = {
@@ -250,6 +258,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cocoon-cordova-labs-local-webserver": "2.4.1",
     "cordova-labs-local-webserver": "2.4.0",
     "cordova-plugin-wkwebview-engine": "1.2.1",
-    "cordova-labs-wkwebview-engine-localhost": "0.5.1"
+    "cordova-labs-wkwebview-engine-localhost": "0.5.1",
+    "nl.madebymark.share": "0.1.1"
   };
 });

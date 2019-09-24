@@ -6,7 +6,12 @@ import { createDir, mvFileIntoDir } from '../apis/file';
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import { reloadAdditionals } from "../apis/catalog";
 
-
+const imagePickerOptions  =   {
+    maximumImagesCount: 1, 
+    quality: 30, 
+    width: 394, 
+    height: 336
+}
 async function selectImage() {
     if (!window.imagePicker) {
         alert("Image picker is not installed");
@@ -23,9 +28,7 @@ async function selectImage() {
             console.log('Error: ' + error);
             reject(error);
         },
-        {
-            maximumImagesCount: 1
-        }
+        imagePickerOptions
     ));
 }
 
@@ -37,7 +40,7 @@ async function selectVideo() {
             console.log(err);
             reject(err);
         }, {
-            quality: 100,
+            quality: 30,
             destinationType: navigator.camera.DestinationType.FILE_URI,
             sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
             mediaType: navigator.camera.MediaType.VIDEO

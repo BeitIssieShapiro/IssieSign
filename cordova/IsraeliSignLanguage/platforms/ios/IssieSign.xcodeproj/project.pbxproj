@@ -17,6 +17,7 @@
 		301BF552109A68D80062928A /* libCordova.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 301BF535109A57CC0062928A /* libCordova.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		302D95F114D2391D003F00A1 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 302D95EF14D2391D003F00A1 /* MainViewController.m */; };
 		302D95F214D2391D003F00A1 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 302D95F014D2391D003F00A1 /* MainViewController.xib */; };
+		395AB97E8C824C90991A40A1 /* MMShare.m in Sources */ = {isa = PBXBuildFile; fileRef = D74E7868A59B4BEB8E4AC48A /* MMShare.m */; };
 		3B3A7808E4344E9A8D2C4112 /* ELCAssetPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 257B452E7048453BAAD70FFF /* ELCAssetPicker.xib */; };
 		4CD389EE5D4E4F42A1D26081 /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = C92D0F451B254CEB8A6CD00F /* CDVAssetLibraryFilesystem.m */; };
 		4F714F4805044267BF2F463A /* SOSPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B68F5F9A3F445A8A55742F7 /* SOSPicker.m */; };
@@ -108,6 +109,7 @@
 		93E39D219A4642799BCCB075 /* CDVExif.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVExif.h; path = "cordova-plugin-camera/CDVExif.h"; sourceTree = "<group>"; };
 		9B132EEDD0974E6F87A42FB1 /* ELCAssetPickerFilterDelegate.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = ELCAssetPickerFilterDelegate.h; path = "cordova-plugin-image-picker/ELCAssetPickerFilterDelegate.h"; sourceTree = "<group>"; };
 		9B68F5F9A3F445A8A55742F7 /* SOSPicker.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = SOSPicker.m; path = "cordova-plugin-image-picker/SOSPicker.m"; sourceTree = "<group>"; };
+		9FD2CEA361C34A0388785D1D /* MMShare.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = MMShare.h; path = nl.madebymark.share/MMShare.h; sourceTree = "<group>"; };
 		A1CE93833A4D494B98DD7BB1 /* ELCImagePickerController.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = ELCImagePickerController.m; path = "cordova-plugin-image-picker/ELCImagePickerController.m"; sourceTree = "<group>"; };
 		B06B221A780343BB9CDF5958 /* ELCAlbumPickerController.xib */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file.xib; path = ELCAlbumPickerController.xib; sourceTree = "<group>"; };
 		BA6B8265ED5041C0B29DFA31 /* Overlay.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; path = Overlay.png; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		C92D0F451B254CEB8A6CD00F /* CDVAssetLibraryFilesystem.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVAssetLibraryFilesystem.m; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.m"; sourceTree = "<group>"; };
 		CF5553FE866E4AFE8EE5CCAA /* CDVSplashScreen.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVSplashScreen.h; path = "cordova-plugin-splashscreen/CDVSplashScreen.h"; sourceTree = "<group>"; };
 		D1FC8357784943B782374FB3 /* CDVViewController+SplashScreen.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = "CDVViewController+SplashScreen.m"; path = "cordova-plugin-splashscreen/CDVViewController+SplashScreen.m"; sourceTree = "<group>"; };
+		D74E7868A59B4BEB8E4AC48A /* MMShare.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = MMShare.m; path = nl.madebymark.share/MMShare.m; sourceTree = "<group>"; };
 		D98B1BD4AFF14593A632C2E1 /* ELCImagePickerController.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = ELCImagePickerController.h; path = "cordova-plugin-image-picker/ELCImagePickerController.h"; sourceTree = "<group>"; };
 		DA454BA3152E4433A2DD992B /* CDVLocalFilesystem.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVLocalFilesystem.m; path = "cordova-plugin-file/CDVLocalFilesystem.m"; sourceTree = "<group>"; };
 		DD0741B2FB1E4C3284A74D37 /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVAssetLibraryFilesystem.h; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; };
@@ -271,6 +274,8 @@
 				D1FC8357784943B782374FB3 /* CDVViewController+SplashScreen.m */,
 				CF5553FE866E4AFE8EE5CCAA /* CDVSplashScreen.h */,
 				36BC9B36B0BB4A1AAF3EE472 /* CDVViewController+SplashScreen.h */,
+				D74E7868A59B4BEB8E4AC48A /* MMShare.m */,
+				9FD2CEA361C34A0388785D1D /* MMShare.h */,
 			);
 			name = Plugins;
 			path = IssieSign/Plugins;
@@ -420,6 +425,7 @@
 				B8F360D0E4DE4555909F4331 /* ELCImagePickerController.m in Sources */,
 				72BEDAA2A0C7466E9B7AC1BC /* CDVSplashScreen.m in Sources */,
 				25361412C23B4460816C23D5 /* CDVViewController+SplashScreen.m in Sources */,
+				395AB97E8C824C90991A40A1 /* MMShare.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

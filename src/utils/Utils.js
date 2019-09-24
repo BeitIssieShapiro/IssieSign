@@ -49,6 +49,9 @@ export const scrollLeft = (() => {
 
 function getIncrement(curr, toRight) {
     let container = document.getElementsByClassName("tileContainer")[0];
+    if (!container) {
+        return 0;
+    }
     let maxInc = 0;
     var inc = container.parentNode.clientWidth - 50;
     if (inc >= container.clientWidth) {

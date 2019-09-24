@@ -17,7 +17,7 @@ class Word extends IssieBase {
     }
 
 
-    toggleSelect = (word, forceOff) => {
+    toggleSelect = async (word, forceOff) => {
         if (!forceOff && (!word || word.type !== 'file')) return;
 
         if (forceOff || (this.state.selectedWord && this.state.selectedWord.id === word.id)) {
@@ -47,77 +47,79 @@ class Word extends IssieBase {
                 this.props.pubSub.publish({
                     command: "show-share", callback: () => {
                         if (this.state.selectedWord) {
+                            this.props.pubSub.publish({ command: 'set-busy',  active: true, text: 'מייצא מילים...'  });
                             shareWord(this.state.selectedWord).then(
                                 //Success:
-                                () => {
-                                    this.toggleSelect(null, true)
-                                },
+                                () => this.toggleSelect(null, true),
                                 //error
                                 (e) => alert("שיתוף נכשל\n" + e)
+                                 
+                            ).finally(() =>
+                                    this.props.pubSub.publish({ command: 'set-busy', active: false })
                             );
-                        }
-                    }
-                });
             }
+        }
+    });
+}
         }
 
     }
 
-    render() {
+render() {
 
-        let wordsElements = [];
-        let elementWidths = [];
-        if (Array.isArray(this.props.words)) {
-            wordsElements = this.props.words.map((word) => {
-                let themeId = this.props.categoryId4Theme;
-                let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
-                if (word.categoryId) {
-                    themeId = word.categoryId;
-                }
-                let selectable = word.type === "file"
-                return <Card2 key={word.id} cardType={selectable ? "file" : "default"} cardName={word.name} videoName={word.videoName}
-                    imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected} />
-            });
-
-
-            if (this.props.allowAddWord) {
-                wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.props.categoryId}
-                    imageName={'plus.jpg'} themeId={this.props.categoryId4Theme} />);
+    let wordsElements = [];
+    let elementWidths = [];
+    if (Array.isArray(this.props.words)) {
+        wordsElements = this.props.words.map((word) => {
+            let themeId = this.props.categoryId4Theme;
+            let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
+            if (word.categoryId) {
+                themeId = word.categoryId;
             }
+            let selectable = word.type === "file"
+            return <Card2 key={word.id} cardType={selectable ? "file" : "default"} cardName={word.name} videoName={word.videoName}
+                imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected} />
+        });
 
-            //calculate the average width, while considering double images
-            elementWidths = this.props.words.map((word) => {
-                return word.imageName2 ? 300 : 220;
-            });
+
+        if (this.props.allowAddWord) {
+            wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.props.categoryId}
+                imageName={'plus.jpg'} themeId={this.props.categoryId4Theme} />);
         }
-        let width = 0;
-        if (elementWidths.length > 0) {
-            let widthSum = elementWidths.reduce(function (a, b) { return a + b; });
-            let tileW = widthSum / elementWidths.length;
 
-            //calculate best width:
-            let tileH = 192;
-
-            width = calcWidth(wordsElements.length, window.innerHeight,
-                window.innerWidth, tileH, tileW, this.props.isMobile, this.props.isSearch !== undefined);
-        }
-        // if (this.state.words.find(f => f.imageName2)) {
-        //     width += 100; //for double image icons
-        // }
-
-        width = Math.max(width, window.innerWidth);
-
-        if (this.props.InSearch) {
-            width = '100%';
-        } else {
-            width += 'px';
-        }
-        return (
-            <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
-                {wordsElements}
-            </div>
-        )
+        //calculate the average width, while considering double images
+        elementWidths = this.props.words.map((word) => {
+            return word.imageName2 ? 300 : 220;
+        });
     }
+    let width = 0;
+    if (elementWidths.length > 0) {
+        let widthSum = elementWidths.reduce(function (a, b) { return a + b; });
+        let tileW = widthSum / elementWidths.length;
+
+        //calculate best width:
+        let tileH = 192;
+
+        width = calcWidth(wordsElements.length, window.innerHeight,
+            window.innerWidth, tileH, tileW, this.props.isMobile, this.props.isSearch !== undefined);
+    }
+    // if (this.state.words.find(f => f.imageName2)) {
+    //     width += 100; //for double image icons
+    // }
+
+    width = Math.max(width, window.innerWidth);
+
+    if (this.props.InSearch) {
+        width = '100%';
+    } else {
+        width += 'px';
+    }
+    return (
+        <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
+            {wordsElements}
+        </div>
+    )
+}
 }
 
 export default Word;
