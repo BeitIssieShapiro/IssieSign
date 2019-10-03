@@ -16,7 +16,7 @@ export default function Card2(props) {
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2)} alt="card Placeholder"></img> : "";
     let cardDouble = props.imageName2 ? { '--card-width': '100%' } : {};
     let url = "";
-    if (!props.noLink) {
+    if (!props.noLink && !props.selected) {
         if (props.cardType === "add") {
             url = "/add-word/" + encodeURIComponent(props.cardAddToCategory)
         } else if (props.cardType === "file") {
@@ -25,11 +25,7 @@ export default function Card2(props) {
             url = "/video/" + encodeURIComponent(props.videoName) + "/" + props.themeId + "/" + encodeURIComponent(props.cardName) + "/-";
         }
     }
-
-    return (
-        <div {...longPressEvent} className="noTouchCallout">
-            <Link to={url}>
-                <Rope>
+    let body = <Rope>
                     <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
                         <div className="header clip"></div>
                         <div className="main">
@@ -42,7 +38,11 @@ export default function Card2(props) {
                         </div>
                     </div>
                 </Rope>
-            </Link>
+
+    return (
+        <div {...longPressEvent} className="noTouchCallout tileGroup">
+            {url != "" ? <Link to={url}>{body}</Link>:
+             body}
         </div>
     );
 }

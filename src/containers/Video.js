@@ -25,6 +25,7 @@ class Video extends React.Component {
             videoElemHost.style.width = '95%';
             videoElemHost.style.position = "relative";
         } else {
+            console.log("not mobile landscape")
             videoElemHost.style.top = "150px";
             videoElemHost.style.position = "relative";
             videoElemHost.style.width = '100%';
@@ -55,7 +56,7 @@ class Video extends React.Component {
         videoElem.src = videoContent;
 
 
-        this.updateDimensions()
+        //this.updateDimensions()
 
         return (
             <div />

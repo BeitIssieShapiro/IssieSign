@@ -52,21 +52,20 @@ function getIncrement(curr, toRight) {
     if (!container) {
         return 0;
     }
-    let maxInc = 0;
-    var inc = container.parentNode.clientWidth - 50;
-    if (inc >= container.clientWidth) {
-        return maxInc;
-    }
 
+    let winWidth = window.innerWidth-150;
     if (toRight) {
-        var rightHidden = (container.clientWidth - inc) + curr;
-        maxInc = Math.max(Math.min(inc, rightHidden), maxInc);
+        let maxInc = 0;
+        var normCurr = curr - window.innerWidth;  //curr is 0 or neg
+        maxInc = container.scrollWidth + normCurr;
+        if (maxInc < 0) {
+            maxInc = 0;
+        }
+        return Math.min(maxInc, winWidth);
     } else {
-        var leftHidden = container.clientWidth - curr - inc;
-        maxInc = Math.max(Math.min(inc, leftHidden), maxInc);
+       return winWidth;
     }
 
-    return maxInc;
 }
 
 function getTranslateX() {

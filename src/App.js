@@ -240,21 +240,20 @@ class App extends IssieBase {
     }
 
     render() {
-        console.log("Theme: " + this.state.theme);
         let leftArrow = "";
         let rightArrow = "";
 
         let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={() => this.goBack()} style={{ float: "right", visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="zmdi zmdi-arrow-right" /></button></div>
+            onClick={() => this.goBack()} style={{ float: "right", visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
         let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
-            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="zmdi actionBtn zmdi-delete" /></button></div> : null
-        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
-            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="zmdi actionBtn zmdi-share" /></button></div> : null
+            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="actionBtn delete" /></button></div> : null
+        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 , zIndex: 999999}}><button className="roundbutton backBtn"
+            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="actionBtn share" /></button></div> : null
         document.preventTouch = true;
 
-        if (!this.isInfo() && !this.isVideo()) {
+        if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
             let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
             let searchClassName = narrow ? "" : "sameLine";
             searchInput = (
@@ -281,7 +280,7 @@ class App extends IssieBase {
                     <div style={{ height: 50, zIndex: 0 }}>
                         {backElement}
                     </div>
-                    {this.props.children}
+                    {this.getChildren()}
                 </div>)
         }
 
@@ -346,6 +345,7 @@ class App extends IssieBase {
     }
 
     getChildren() {
+        console.log("render")
         return (
             <Switch>
                 <Route exact path="/" render={(props) => (
@@ -410,7 +410,7 @@ class App extends IssieBase {
                 <Route
                     path="/video/:videoName/:categoryId/:title/:filePath"
                     render={(props) => {
-                        VideoToggle(true, !props.isMobile);
+                        VideoToggle(true, !IssieBase.isMobile());
                         this.setTitle(props.match.params.title);
 
                         return (

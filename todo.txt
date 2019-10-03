@@ -7,3 +7,16 @@ import
 bugs:
 ----
 remove warning of file.js
+
+
+
+
+iPhone:
+-------
+V- video is not full screen 
+V- icons are missing
+swipe is slow
+V- share button overlaps search
+V- landscape video is not showing
+V- long press follows the click
+

@@ -85,11 +85,16 @@ class Body extends IssieBase {
         //console.log("Body: Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
 
         return (
-            <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)' }}>
+            <div className="tileContainer" style={{
+                width: width, 
+                transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)',
+                
+            }}>
                 {elements}
             </div>
         )
     }
+
 }
 
 export default Body;

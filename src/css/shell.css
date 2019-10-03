@@ -96,6 +96,7 @@
 }
 
 .shellmain {
+    display: flex;
     flex-shrink: 1;
     flex-grow: 1;
     padding: 8px 0px 0;
@@ -104,8 +105,8 @@
         var(--shell-main-background-color-1)
     );
     overflow: scroll;
+    -webkit-overflow-scrolling: touch; 
 }
-
 
 .projectors {
     display: flex;
@@ -178,6 +179,9 @@
 }
 
 .theBody {
-    justify-content: center;
+    justify-content: flex-start;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 

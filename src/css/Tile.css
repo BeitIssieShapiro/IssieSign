@@ -1,21 +1,14 @@
 .tileContainer {
-    display: -webkit-flex;
     display: flex;
+    flex-wrap: wrap;
     -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: flex-start;
-    -webkit-flex-flow: row wrap;
-    flex-flow: row wrap;
+    align-items: center;  
     -webkit-align-content: flex-start;
     align-content: flex-start;
     height: 100%;
     transition-duration: 1.7s;
     z-index: 1;
 }
-
-
-
 
 
 .fgStatusIcon {
@@ -117,7 +110,7 @@
 
 
 .tileGroup{
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;

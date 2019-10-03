@@ -46,6 +46,7 @@ class Word extends IssieBase {
                 });
                 this.props.pubSub.publish({
                     command: "show-share", callback: () => {
+                        console.log("Share pressed");
                         if (this.state.selectedWord) {
                             this.props.pubSub.publish({ command: 'set-busy',  active: true, text: 'מייצא מילים...'  });
                             shareWord(this.state.selectedWord).then(

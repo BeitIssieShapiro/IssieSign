@@ -53,7 +53,7 @@ import React from 'react';
             onMouseLeave={()=>{this.handleHover();}}
             onClick={this.props.onClick}
           >
-            <div className="zmdi zmdi-info-outline" ></div> 
+            <div className="info-button" ></div> 
            
             {this.props.children}  
           </div>
