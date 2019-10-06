@@ -10,6 +10,11 @@
     z-index: 1;
 }
 
+.subTileContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 
 .fgStatusIcon {
     padding: 10px 0 0 35px;

@@ -14,21 +14,27 @@ class Video extends React.Component {
 
     } 
     componentWillUnmount() {
-        VideoToggle(false);
+        //VideoToggle(false);
+        console.log("unmount video")
     }
     
     updateDimensions() {
-        var videoElemHost = document.getElementById("playerhost")
+        var videoElemHost = document.getElementById("playerhost");        
+
+        let backBtn = document.getElementById("backBtn");
         if (this.props.isLandscape && this.props.isMobile) {
             videoElemHost.style.top = "0px";
-            videoElemHost.style.height = window.innerHeight
-            videoElemHost.style.width = '95%';
-            videoElemHost.style.position = "relative";
+            videoElemHost.style.height = window.innerHeight;
+            backBtn.style.display = "block";
+
+            //videoElemHost.style.width = '95%';
+            //videoElemHost.style.position = "absolute";
         } else {
             console.log("not mobile landscape")
             videoElemHost.style.top = "150px";
-            videoElemHost.style.position = "relative";
-            videoElemHost.style.width = '100%';
+            backBtn.style.display = "none";
+            //videoElemHost.style.position = "absolute";
+            //videoElemHost.style.width = '100%';
         }
     }
 

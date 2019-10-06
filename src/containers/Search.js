@@ -14,7 +14,7 @@ function Search(props) {
         let res = props.words.filter(function (word) {
             return word.name.includes(filterStr);
         });
-        console.log(JSON.stringify(res))
+        //console.log(JSON.stringify(res))
         return res;
     }
 
@@ -31,13 +31,13 @@ function Search(props) {
                     filterCategories(props.searchStr)    
                 } 
                 dimensions={props.dimensions}
-                isSearch="true" />
+                />
             <Word InSearch={true} 
                 words={
                     filterWords(props.searchStr)
                 } 
                 dimensions={props.dimensions}
-                isSearch="true" />
+                />
         </div>
     )
 }

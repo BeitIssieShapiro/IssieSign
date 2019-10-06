@@ -45,20 +45,15 @@ class IssieBase extends Component {
         return {
             dimensions: IssieBase.updateDimensions(),
             //narrow: window.innerWidth < 700,
-            width: window.innerHeight
+            //width: window.innerHeight
         };
     }
 
     resizeListener() {
         this.setState(IssieBase.getDerivedStateFromProps());
+        console.log("resize detected");
     }
-    componentDidMount() {
-        window.addEventListener("resize", this.resizeListener);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.resizeListener);
-    }
+    
 }
 IssieBase.propTypes = {
     children: PropTypes.any

@@ -65,6 +65,10 @@ class App extends IssieBase {
     }
 
     componentDidMount() {
+        window.addEventListener("resize", this.resizeListener);
+
+        window.goBack = () => this.goBack();
+
         let pubsub = new PubSub()
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
@@ -244,7 +248,7 @@ class App extends IssieBase {
         let rightArrow = "";
 
         let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={() => this.goBack()} style={{ float: "right", visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
+            onClick={() => this.goBack()} style={{  visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
         let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
@@ -277,9 +281,7 @@ class App extends IssieBase {
         if (IssieBase.isMobile() && IssieBase.isLandscape() && this.isVideo()) {
             return (
                 <div>
-                    <div style={{ height: 50, zIndex: 0 }}>
-                        {backElement}
-                    </div>
+                    
                     {this.getChildren()}
                 </div>)
         }

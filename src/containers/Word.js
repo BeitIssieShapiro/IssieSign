@@ -102,7 +102,7 @@ render() {
         let tileH = 192;
 
         width = calcWidth(wordsElements.length, window.innerHeight,
-            window.innerWidth, tileH, tileW, this.props.isMobile, this.props.isSearch !== undefined);
+            window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch !== undefined);
     }
     // if (this.state.words.find(f => f.imageName2)) {
     //     width += 100; //for double image icons
@@ -111,12 +111,16 @@ render() {
     width = Math.max(width, window.innerWidth);
 
     if (this.props.InSearch) {
-        width = '100%';
+        if (window.innerWidth > 500) {
+            width = '100%';
+        } else {
+            width = '500px';
+        }
     } else {
         width += 'px';
     }
     return (
-        <div className="tileContainer" style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
+        <div className={this.props.InSearch?"subTileContainer":"tileContainer"} style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
             {wordsElements}
         </div>
     )

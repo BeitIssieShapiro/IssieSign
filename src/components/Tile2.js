@@ -43,7 +43,7 @@ function Tile2(props) {
     </div>
 
     return (
-        <div {...longPressEvent} className="tileGroup" style={{ width: props.dimensions.tileGroupWidth }} >
+        <div {...longPressEvent} className="tileGroup noTouchCallout" style={{ width: props.dimensions.tileGroupWidth }} >
             {props.tileUrl  != "" && !props.selected ? <Link to={props.tileUrl}>{body}</Link>: body}
         </div>
     );

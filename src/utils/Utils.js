@@ -87,7 +87,7 @@ export function setTranslateX(newVal) {
     }
 }
 
-export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, isSearch) {
+export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, inSearch) {
     if (isMobile) {
         //scroll vertically by touch
         let cols = Math.max(Math.ceil(windowWidth / tileW), 1);
@@ -95,7 +95,7 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
     }
 
     let rows = Math.max(Math.floor((windowHeight - 153) / tileH), 1);
-    if (isSearch) {
+    if (inSearch) {
         rows = Math.floor(rows / 2);
     }
     let cols = Math.ceil(elementCount / rows);
@@ -152,11 +152,13 @@ export const VideoToggle = (on, addButtons) => {
     console.log("toggle: "+ on)
     let video = document.getElementById("player");
     document.getElementById("playerhost").style.visibility = (on ? "visible" : "hidden");
+    let backBtn = document.getElementById("backBtn");
     if (!on) {
         video.pause();
         clearInterval(videoMonitor);
         videoMonitor = undefined
         setButtons(0, 0, 0);
+        backBtn.style.display = "none";
     } else if (addButtons) {
         if (videoMonitor === undefined)
             videoMonitor = setInterval(monitorVideo, 250);
