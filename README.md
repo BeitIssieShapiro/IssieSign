@@ -1,12 +1,20 @@
 # IssieSign
 אפליקציה ללימוד שפת הסימנים המכילה כ-600 מילים בעברית מעולמם של ילדים. האפליקציה כוללת תמונות וסרטונים ופותחה בשיתוף עם סאפ והמרכז לייעוץ טכנולוגי בבית איזי שפירא.
 
-## Build instraction
+## Build instruction
 
-* After cloning the project, you need to run at the root fo the project: `scripts/init.sh <password>`, password is kept secret and not in this git repo. as the repo admin...
-* you need also to install cordova: `npm install -g cordova`
-* run in the root prject`./make.sh` (linux/bash) 
-* for other than ios, run `cordova platform remove android` and then `cordova platform add android`
+- After cloning the project, you need to run at the root fo the project: `scripts/init.sh <password>`, password is kept secret and not in this git repo. as the repo admin...
+- Install cordova: `npm install -g cordova`
+- run `npm install`
+
+### Run in Browser 
+Note: some features won't work, as it requires device API such as filesystem
+
+- run `npm start`
+- browser will open with the App.
+- On every file change, the browser will reload the App.
+
+### Run in iOS simulator
 
 * to run in ios simulator, you need xcode installed, then:
   * in ./cordova/IsraeliSignLanguage/ run `cordova run ios`

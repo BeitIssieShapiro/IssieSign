@@ -58,17 +58,6 @@ class Body extends IssieBase {
             />
         });
 
-        if (this.props.allowAddWord) {
-            elements = elements.concat(<Tile2
-                key={9998}
-                tileName={'הוסף'}
-                tileUrl={"/add-category"}
-                imageName={'plus.jpg'}
-                themeFlavor={1}
-                dimensions={this.props.dimensions}
-            />);
-        }
-
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
         let tileH = 175, tileW = narrow ? 140 : 220;

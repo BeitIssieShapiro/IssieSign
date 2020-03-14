@@ -1,7 +1,6 @@
 import React from "react";
 
 import '../css/App.css';
-import { VideoToggle } from "../utils/Utils";
 
 class Video extends React.Component {
     constructor (props) {

@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 export default function Card2(props) {
     const longPressEvent = props.longPressCallback? longPress(() => props.longPressCallback(), 500):{};
 
-    let imageSrc = props.imageName ? imageLocalCall(props.imageName) : "image1.png";
+    let imageSrc = props.imageName ? imageLocalCall(props.imageName) : undefined;
     
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2)} alt="card Placeholder"></img> : "";
     let cardDouble = props.imageName2 ? { '--card-width': '100%' } : {};
@@ -30,7 +30,7 @@ export default function Card2(props) {
                         <div className="header clip"></div>
                         <div className="main">
                             {image2}
-                            <img className="tileImg" src={imageSrc} alt="card Placeholder"></img>
+                            {imageSrc?<img className="tileImg" src={imageSrc} alt="card Placeholder"></img>:null}
                             {props.selected?<div style={{display:'flex',position:'absolute', left:10, top:10, zIndex:0}}><img  style={{maxWidth:'25px', maxHeight:'25px'}} alt="" src={imageLocalCall("check.png")}></img></div>:null}
                         </div>
                         <div className="footer">
@@ -41,7 +41,7 @@ export default function Card2(props) {
 
     return (
         <div {...longPressEvent} className="noTouchCallout tileGroup">
-            {url != "" ? <Link to={url}>{body}</Link>:
+            {url !== "" ? <Link to={url}>{body}</Link>:
              body}
         </div>
     );

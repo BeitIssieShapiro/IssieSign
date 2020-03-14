@@ -11,6 +11,7 @@ class Word extends IssieBase {
     static getDerivedStateFromProps(props, state) {
         if (props.pubSub && props.categoryId) {
             props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
+            console.log("set-catId "+ props.categoryId)
         }
 
         return null;
@@ -70,9 +71,9 @@ render() {
 
     let wordsElements = [];
     let elementWidths = [];
+    let themeId = this.props.categoryId4Theme;
     if (Array.isArray(this.props.words)) {
         wordsElements = this.props.words.map((word) => {
-            let themeId = this.props.categoryId4Theme;
             let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
             if (word.categoryId) {
                 themeId = word.categoryId;
@@ -82,11 +83,6 @@ render() {
                 imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected} />
         });
 
-
-        if (this.props.allowAddWord) {
-            wordsElements.push(<Card2 key={9999} cardName={'הוסף'} cardType="add" cardAddToCategory={this.props.categoryId}
-                imageName={'plus.jpg'} themeId={this.props.categoryId4Theme} />);
-        }
 
         //calculate the average width, while considering double images
         elementWidths = this.props.words.map((word) => {

@@ -5,11 +5,13 @@ import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import { reloadAdditionals } from "../apis/catalog";
+import '../css/add.css';
+import { AttachButton } from "./ui-elements";
 
-const imagePickerOptions  =   {
-    maximumImagesCount: 1, 
-    quality: 30, 
-    width: 394, 
+const imagePickerOptions = {
+    maximumImagesCount: 1,
+    quality: 30,
+    width: 394,
     height: 336
 }
 async function selectImage() {
@@ -40,11 +42,11 @@ async function selectVideo() {
             console.log(err);
             reject(err);
         }, {
-            quality: 30,
-            destinationType: navigator.camera.DestinationType.FILE_URI,
-            sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
-            mediaType: navigator.camera.MediaType.VIDEO
-        }));
+        quality: 30,
+        destinationType: navigator.camera.DestinationType.FILE_URI,
+        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
+        mediaType: navigator.camera.MediaType.VIDEO
+    }));
 }
 
 function isValid(fileName) {
@@ -66,7 +68,7 @@ class AddItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { label: "", selectImage: "", selectedVideo: ""}
+        this.state = { label: "", selectImage: "", selectedVideo: "" }
     }
 
     IsValidInput = () => {
@@ -77,7 +79,7 @@ class AddItem extends React.Component {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
         alert("נשמר בהצלחה");
-        reloadAdditionals().then(()=>this.props.history.goBack())
+        reloadAdditionals().then(() => this.props.history.goBack())
     }
 
     saveWord = async () => {
@@ -88,67 +90,76 @@ class AddItem extends React.Component {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
         alert("נשמר בהצלחה");
-        reloadAdditionals().then(()=>this.props.history.goBack());
+        reloadAdditionals().then(() => this.props.history.goBack());
     }
 
     render() {
         let themeId = "1";
         let addWordMode = this.props.addWord;
         return (
-            <div >
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
                     {addWordMode ?
                         <Card2 key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
-                            imageName={this.state.selectedImage} themeId={themeId} noLink="true"/>
+                            imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
                         :
                         <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />}
                 </div>
 
-                <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right' }}>
-                    <table>
+                <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right', width: '100%' }}>
+                    <table style={{ width: "100%" }}>
                         <tbody>
-                            <tr>
-                                <td width="15%"></td>
-                                <td width="30%">שם<font color="red">*</font></td>
-                                <td width="60%">
-                                    <input type="text" onChange={(e) => {
-                                        this.setState({ label: e.target.value })
-                                    }
-                                    } />
+                            <tr style={{height:'120px'}}>
+                                <td width="10%"></td>
+                                <td width="8%"><div className="title-icon" style={{marginTop:15}}/></td>
+                                <td width="70%">
+                                    <input type="text" className="addInput"
+                                        placeholder={addWordMode?"שם המילה":"שם הקטגוריה"}
+                                        onChange={(e) => {
+                                            this.setState({ label: e.target.value })
+                                        }} />
                                 </td>
-                                <td><img alt="" style={{ maxWidth: '40px', maxHeight: '40px' }} src={isValid(this.state.label) ? imageLocalCall("check.png") : imageLocalCall("missing.png")}></img></td>
+                                
+                                <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"}/></td>
                             </tr>
-                            <tr>
-                                <td width="15%"></td>
-                                <td width="30%">צלמית</td>
-                                <td width="60%">
-                                    <input type="button" value="..." className="browserButton" onClick={async () => {
-                                        let img = await selectImage();
-                                        this.setState({ selectedImage: img })
-                                    }
-                                    } />
+                            <tr style={{height:'120px'}}>
+                                <td></td>
+                                <td><div className="image-icon" style={{marginTop:15}}/></td>
+                                <td>
+                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <input type="text" className="addInput" readOnly placeholder="בחר צלמית" style={{ width: '90%' }} />
+                                        <AttachButton onClick={async () => {
+                                            let img = await selectImage();
+                                            this.setState({ selectedImage: img })
+                                        }} />
+                                    </div>
                                 </td>
-                                <td><img alt="" style={{ maxWidth: '40px', maxHeight: '40px' }} src={this.state.selectedImage ? imageLocalCall("check.png") : imageLocalCall("missing.png")}></img></td>
+
+                                <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"}/></td>
                             </tr>
                             {addWordMode ?
-                                <tr>
-                                    <td width="15%"></td>
-                                    <td width="30%">וידאו</td>
-                                    <td width="60%">
-                                        <input type="button" value="..." className="browserButton" onClick={async () => {
+                            <tr style={{height:'120px'}}>
+                                    <td></td>
+                                    <td><div className="movie-icon" style={{marginTop:15}}/></td>
+                                    <td>
+                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <input type="text" className="addInput" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} />
+                                        <AttachButton onClick={async () => {
                                             let video = await selectVideo();
                                             //alert(JSON.stringify(video)) ;
                                             this.setState({ selectedVideo: video })
                                         }} />
+                                    </div>
+
                                     </td>
-                                    <td><img  alt="" style={{ maxWidth: '40px', maxHeight: '40px' }} src={this.state.selectedVideo.length > 0 ? imageLocalCall("check.png") : imageLocalCall("missing.png")}></img></td>
+                                    <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"}/></td>
                                 </tr>
                                 : null}
                         </tbody>
                     </table>
                 </div>
                 <div style={{ paddingTop: 50 }}>
-                    <input type="button" value="שמור"  className="browserButton saveBtn" disabled={!this.IsValidInput()} onClick={async () =>
+                    <input type="button" value="שמור" className="addButton" style={{width:'150px'}} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
                 </div>

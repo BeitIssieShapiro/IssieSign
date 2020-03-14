@@ -26,10 +26,11 @@ import {
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import { MenuButton, Menu, MenuItem } from './settings'
+import { MenuButton, Menu, OnOffMenu, LineMenu } from './settings'
 import './css/settings.css'
 import { receiveIncomingZip } from './apis/file'
 import { isNumber } from 'util';
+import { PlusButton, SettingsButton } from './components/ui-elements';
 
 
 
@@ -150,6 +151,7 @@ class App extends IssieBase {
             case 'set-categoryId':
                 if (args.categoryId !== this.state.categoryId) {
                     this.setState({ theme: getTheme(args.categoryId), categoryId: args.categoryId })
+                    console.log("catId:" + args.categoryId + ", theme:" + getTheme(args.categoryId))
                 }
                 break;
             case 'set-title':
@@ -186,6 +188,14 @@ class App extends IssieBase {
     handleMenuClick() {
         let newState = !this.state.menuOpen
         this.setState({ menuOpen: newState });
+    }
+
+    handleNewClick() {
+        if (this.isHome()) {
+            this.props.history.push("/add-category");
+        } else if (this.isWords()) {
+            this.props.history.push("/add-word/" + encodeURIComponent(this.state.categoryId));
+        }
     }
 
     closeSettings() {
@@ -248,12 +258,12 @@ class App extends IssieBase {
         let rightArrow = "";
 
         let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={() => this.goBack()} style={{  visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
+            onClick={() => this.goBack()} style={{ visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
         let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
             onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="actionBtn delete" /></button></div> : null
-        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 , zIndex: 999999}}><button className="roundbutton backBtn"
+        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10, zIndex: 999999 }}><button className="roundbutton backBtn"
             onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="actionBtn share" /></button></div> : null
         document.preventTouch = true;
 
@@ -281,7 +291,7 @@ class App extends IssieBase {
         if (IssieBase.isMobile() && IssieBase.isLandscape() && this.isVideo()) {
             return (
                 <div>
-                    
+
                     {this.getChildren()}
                 </div>)
         }
@@ -303,7 +313,9 @@ class App extends IssieBase {
                 </div>
                 <Shell theme={this.state.theme} id="page1" >
 
-                    <MenuButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleMenuClick()} color='white' />
+                    <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />
+                    {this.state.allowAddWord && (this.isHome() || this.isWords()) ? <PlusButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleNewClick()} color='white' />
+                    : null}
                     <div slot="title" style={{ display: "inline-block" }}>{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
@@ -312,24 +324,23 @@ class App extends IssieBase {
                     {deleteButton}
                     {shareButton}
                     {this.state.allowAddWord ? <div /> : null}
-                    <Menu id="SettingWindow" slot="body" open={this.state.menuOpen} closeSettings={() => this.closeSettings()}>
-                        <MenuItem
-                            delay={`${0.1}s`}
-                            onClick={() => { this.showInfo(); }}>About Us - עלינו</MenuItem>
-                        {
-                            <div id="toggles">
-                                {
-                                    IssieBase.isMobile() ? null : (<div>
-                                        <input type="checkbox" name="allowSwipeCB" id="allowSwipeCB" className="ios-toggle" checked={this.state.allowSwipe}
-                                            onChange={(e) => this.allowSwipe(e.target.checked)} />
-                                        <label for="allowSwipeCB" className="checkbox-label" data-off="החלקה כבויה" data-on="החלקה דולקת"></label>
-                                    </div>)
-                                }
-                                <input type="checkbox" name="allowAddWordsCB" id="allowAddWordsCB" className="ios-toggle" checked={this.state.allowAddWord}
-                                    onChange={(e) => this.allowAddWord(e.target.checked)} />
-                                <label for="allowAddWordsCB" className="checkbox-label" data-off="הוספה כבויה" data-on="הוספה דולקת"></label>
-                            </div>
-                        }
+                    <Menu id="SettingWindow" 
+                        slot="body" 
+                        open={this.state.menuOpen} 
+                        closeSettings={() => this.closeSettings()}
+                        showInfo={() => { this.showInfo(); }}>
+                        {IssieBase.isMobile() ? null :
+                        <OnOffMenu 
+                            label={'החלקה'} 
+                            checked={this.state.allowSwipe}
+                            onChange={(isOn) => this.allowSwipe(isOn) }
+                        />}
+                        {IssieBase.isMobile() ? null :<LineMenu />}
+                        <OnOffMenu 
+                            label={'הוספת מילים'} 
+                            checked={this.state.allowAddWord}
+                            onChange={(isOn) => this.allowAddWord(isOn) }
+                        />
                     </Menu>
                     <div slot="body" className="theBody" style={{
                         paddingLeft: this.shellPadding,
@@ -438,37 +449,41 @@ class App extends IssieBase {
                     } />
                 <Route
                     path="/add-category"
-                    render={(props) => (
+                    render={(props) => {
+                        this.setTitle("הוספת קטגוריה");
+                        return (
                         <AddItem
                             history={props.history}
                             addWord={false}
                             dimensions={this.state.dimensions}
                         />
-                    )
+                    )}
                     } />
                 <Route
                     path="/add-word/:categoryId"
-                    render={(props) => (
+                    render={(props) => {
+                        this.setTitle("הוספת מילה")
+                        return (
                         <AddItem
                             addWord="true"
                             history={props.history}
                             categoryId={props.match.params.categoryId}
                             dimensions={this.state.dimensions}
                         />
-                    )
+                    )}
                     } />
             </Switch>);
     }
 
-                        // <CategoryList>
-                        //     {getAllCategories().map(cat => <ListItem
-                        //     name={cat.name}
-                        //     imageName={cat.imageName}
-                        //     callback={()=>alert("cat selected: "+cat.name)}
-                        //     />
+    // <CategoryList>
+    //     {getAllCategories().map(cat => <ListItem
+    //     name={cat.name}
+    //     imageName={cat.imageName}
+    //     callback={()=>alert("cat selected: "+cat.name)}
+    //     />
 
-                        //     )}
-                        // </CategoryList>
+    //     )}
+    // </CategoryList>
 
     setTitle(title) {
         this.state.pubsub.publish({ command: "set-title", title });

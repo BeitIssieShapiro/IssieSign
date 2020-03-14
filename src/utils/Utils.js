@@ -1,5 +1,3 @@
-import { isNumber } from "util";
-
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
@@ -106,7 +104,7 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
 var themes = [0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 13, 15, 16, 17, 18, 19, 21, 22, 23];
 export const getTheme = (categoryID) => {
     let mapIndex = 1;
-    if (isNumber(categoryID)) {
+    if (!isNaN(categoryID)) {
         let count = themes.length;
         let index = (Number(categoryID) - 1) % count;
         mapIndex = Number(themes[index]) + 1;

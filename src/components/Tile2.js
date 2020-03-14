@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 function Tile2(props) {
     const longPressEvent = props.onLongPress ? longPress(() => props.onLongPress(), 500) : {};
 
-    let imageSrc = props.imageName ? imageLocalCall(props.imageName) : "image1.png";
+    let imageSrc = props.imageName ? imageLocalCall(props.imageName) : undefined;
     let body = <div>
         <div className="tileBox boxhost" theme="blue" theme-flavor={props.themeFlavor}
             style={{ 
@@ -26,7 +26,7 @@ function Tile2(props) {
                 </header>
                 <main>
                     <div style={{ width: props.dimensions.imageBoxWidth }}>
-                        <img className="tileImg" src={imageSrc} alt="ללא תמונה" />
+                        {imageSrc?<img className="tileImg" src={imageSrc} alt="ללא תמונה" />:null}
                         {props.selected ? <div style={{ display: 'flex', position: 'absolute', left: 10, top: 10, zIndex: 0 }}><img style={{ maxWidth: '25px', maxHeight: '25px' }} alt="" src={imageLocalCall("check.png")}></img></div> : null}
                     </div>
 
@@ -44,7 +44,7 @@ function Tile2(props) {
 
     return (
         <div {...longPressEvent} className="tileGroup noTouchCallout" style={{ width: props.dimensions.tileGroupWidth }} >
-            {props.tileUrl  != "" && !props.selected ? <Link to={props.tileUrl}>{body}</Link>: body}
+            {props.tileUrl  !== "" && !props.selected ? <Link to={props.tileUrl}>{body}</Link>: body}
         </div>
     );
 }
