@@ -3,7 +3,6 @@ import React from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
-import { imageLocalCall } from "../apis/ImageLocalCall";
 import { reloadAdditionals } from "../apis/catalog";
 import '../css/add.css';
 import { AttachButton } from "./ui-elements";
@@ -14,6 +13,14 @@ const imagePickerOptions = {
     width: 394,
     height: 336
 }
+function getFileName(pathStr) {
+    if (!pathStr || pathStr.length === 0)
+        return "";
+
+    let parts = pathStr.split("/");
+    return parts[parts.length-1];
+}
+
 async function selectImage() {
     if (!window.imagePicker) {
         alert("Image picker is not installed");
@@ -68,11 +75,12 @@ class AddItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { label: "", selectImage: "", selectedVideo: "" }
+        this.state = { label: "", selectedImage: "", selectedVideo: "" }
     }
 
     IsValidInput = () => {
-        return isValid(this.state.label) && this.state.selectedImage && (!this.props.addWord || this.state.selectedVideo.length > 0);
+        return isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0 
+                && (!this.props.addWord || this.state.selectedVideo && this.state.selectedVideo.length > 0);
     }
 
     saveCategory = async () => {
@@ -96,6 +104,8 @@ class AddItem extends React.Component {
     render() {
         let themeId = "1";
         let addWordMode = this.props.addWord;
+        let vidName = getFileName(this.state.selectedVideo);
+        let imgName = getFileName(this.state.selectedImage);
         return (
             <div style={{ width: '100%' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
@@ -127,7 +137,8 @@ class AddItem extends React.Component {
                                 <td><div className="image-icon" style={{marginTop:15}}/></td>
                                 <td>
                                     <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <input type="text" className="addInput" readOnly placeholder="בחר צלמית" style={{ width: '90%' }} />
+                                        <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
+                                            value={imgName} />
                                         <AttachButton onClick={async () => {
                                             let img = await selectImage();
                                             this.setState({ selectedImage: img })
@@ -143,10 +154,9 @@ class AddItem extends React.Component {
                                     <td><div className="movie-icon" style={{marginTop:15}}/></td>
                                     <td>
                                     <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <input type="text" className="addInput" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} />
+                                        <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName}/>
                                         <AttachButton onClick={async () => {
                                             let video = await selectVideo();
-                                            //alert(JSON.stringify(video)) ;
                                             this.setState({ selectedVideo: video })
                                         }} />
                                     </div>
@@ -167,5 +177,6 @@ class AddItem extends React.Component {
         )
     }
 }
+
 
 export default AddItem;

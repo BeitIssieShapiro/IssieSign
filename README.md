@@ -16,16 +16,18 @@ Note: some features won't work, as it requires device API such as filesystem
 
 ### Run in iOS simulator
 
-* to run in ios simulator, you need xcode installed, then:
-  * in ./cordova/IsraeliSignLanguage/ run `cordova run ios`
-  
-* to install on iPad, after running the make.sh:
-  * Open xcode and open a workspace in `cordova/IsraeliSignLanguage/platforms/ios/IssieSign.xcworkspace`
-  * On the project Navigator left panel, select the root (IssieSign)
-  * In the "Signing" section, choose the Team (you would need to click on manage-account and add your appleId account before)
-  * choose a device (your connected iPad) and press the run button.
-  * You may get this error: "A valid provisioning profile for this executable was not found". In this case, goto File->project settings... and choose legacy build system. then re-run
-  * On first run, you need to verify the app: in Settings->General->Device Management->choose you e-mail and the verify the app.
+- to run in ios simulator, you need a Mac and xcode installed
+- run `script/make.sh`  
+- Open xcode and open a workspace in `cordova/IsraeliSignLanguage/platforms/ios/IssieSign.xcworkspace`
+- On the project Navigator left panel, select the root (IssieSign)
+- In the "Signing" section, choose the Team (you would need to click on manage-account and add your appleId account before)
+- choose a device (your connected iPad) and press the run button.
+- You may get this error: "A valid provisioning profile for this executable was not found". In this case, goto File->project settings... and choose legacy build system. then re-run
+
+### Run on iPad, connected via cable
+- same as before, select the iPad as the device
+- On first run, you need to verify the app: in Settings->General->Device Management->choose you e-mail and the verify the app.
+
   
 ## Build android
 * run `scripts/makeAndroid.sh`

@@ -19,11 +19,16 @@ export async function createDir(dirName) {
 }
 
 export async function mvFileIntoDir(filePath, dirEntry, newFileName) {
+    console.log("move "+filePath + "to " + dirEntry);
     return new Promise((resolve) => window.resolveLocalFileSystemURL(filePath, (file) => {
+        console.log("resolve local file to " + file);
+
         file.moveTo(dirEntry, newFileName, (res) => {
+            console.log("move success");
             resolve(res);
-        });
-    }));
+        },
+        (err)=>console.log("move failed" + err));
+    }, (err)=>console.log("resolve local file failed"+ err)));
 }
 //expects the filePath to be  .MOV filePath
 export async function deleteWord(filePath) {

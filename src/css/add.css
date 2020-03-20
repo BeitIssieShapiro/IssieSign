@@ -9,6 +9,16 @@
     border-bottom: 2px solid;
     border-bottom-color: grey;
   }
+  .addInputReadonly {
+    font-size: 0.7em;
+    color: #5c7e9d;
+    height: 45px;
+    background-color:transparent;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid;
+    border-bottom-color: grey;
+  }
   
   .addInput::-webkit-input-placeholder { /* WebKit browsers */
     font-size: 0.7em;
