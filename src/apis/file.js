@@ -5,8 +5,10 @@ let isBrowser = () => {
     return false;
 }
 
-let testWords = [{ name: "test word", id: 1000, type: 'file' }, { name: "test word2", id: 1001, type: 'file' }];
+let testWords = [{ name: "test word", id: 1000, type: 'file' }] //, { name: "test word2", id: 1001, type: 'file' }];
 let testCategories = [{ name: "test", nativeURL: "file:///none/" }];
+
+
 export async function createDir(dirName) {
     return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(getDocDir(), (docDir) => {
         docDir.getDirectory("Additions", { create: true }, function (additionsDir) {

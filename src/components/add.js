@@ -6,6 +6,7 @@ import { createDir, mvFileIntoDir } from '../apis/file';
 import { reloadAdditionals } from "../apis/catalog";
 import '../css/add.css';
 import { AttachButton } from "./ui-elements";
+import { withAlert } from 'react-alert'
 
 const imagePickerOptions = {
     maximumImagesCount: 1,
@@ -18,7 +19,7 @@ function getFileName(pathStr) {
         return "";
 
     let parts = pathStr.split("/");
-    return parts[parts.length-1];
+    return parts[parts.length - 1];
 }
 
 async function selectImage() {
@@ -75,18 +76,23 @@ class AddItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { label: "", selectedImage: "", selectedVideo: "" }
+        this.state = {
+            label: "",
+            selectedImage: "",
+            selectedVideo: "",
+            selectInProgress: false
+        }
     }
 
     IsValidInput = () => {
-        return isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0 
-                && (!this.props.addWord || this.state.selectedVideo && this.state.selectedVideo.length > 0);
+        return isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0
+            && (!this.props.addWord || this.state.selectedVideo && this.state.selectedVideo.length > 0);
     }
 
     saveCategory = async () => {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
-        alert("נשמר בהצלחה");
+        this.props.alert.show("נשמר בהצלחה");
         reloadAdditionals().then(() => this.props.history.goBack())
     }
 
@@ -97,7 +103,7 @@ class AddItem extends React.Component {
         if (this.state.selectedImage.length > 0) {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
-        alert("נשמר בהצלחה");
+        this.props.alert.show("נשמר בהצלחה");
         reloadAdditionals().then(() => this.props.history.goBack());
     }
 
@@ -119,58 +125,71 @@ class AddItem extends React.Component {
                 <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right', width: '100%' }}>
                     <table style={{ width: "100%" }}>
                         <tbody>
-                            <tr style={{height:'120px'}}>
+                            <tr style={{ height: '120px' }}>
                                 <td width="10%"></td>
-                                <td width="8%"><div className="title-icon" style={{marginTop:15}}/></td>
+                                <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
                                 <td width="70%">
                                     <input type="text" className="addInput"
-                                        placeholder={addWordMode?"שם המילה":"שם הקטגוריה"}
+                                        placeholder={addWordMode ? "שם המילה" : "שם הקטגוריה"}
                                         onChange={(e) => {
                                             this.setState({ label: e.target.value })
                                         }} />
                                 </td>
-                                
-                                <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"}/></td>
+
+                                <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"} /></td>
                             </tr>
-                            <tr style={{height:'120px'}}>
+                            <tr style={{ height: '120px' }}>
                                 <td></td>
-                                <td><div className="image-icon" style={{marginTop:15}}/></td>
+                                <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
                                 <td>
                                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                                         <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
                                             value={imgName} />
                                         <AttachButton onClick={async () => {
-                                            let img = await selectImage();
-                                            this.setState({ selectedImage: img })
+                                            this.setState({ selectInProgress: true });
+                                            const a = this.props.alert.show('טוען...', { timeout: 20000 });
+                                            setTimeout(async () => {
+                                                let img = await selectImage();
+                                                this.props.alert.remove(a);
+                                                this.setState({ selectedImage: img, selectInProgress: false })
+                                            }, 300);
                                         }} />
                                     </div>
                                 </td>
 
-                                <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"}/></td>
+                                <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"} /></td>
                             </tr>
                             {addWordMode ?
-                            <tr style={{height:'120px'}}>
+                                <tr style={{ height: '120px' }}>
                                     <td></td>
-                                    <td><div className="movie-icon" style={{marginTop:15}}/></td>
+                                    <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
                                     <td>
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName}/>
-                                        <AttachButton onClick={async () => {
-                                            let video = await selectVideo();
-                                            this.setState({ selectedVideo: video })
-                                        }} />
-                                    </div>
+                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
+                                            <AttachButton onClick={async () => {
+                                                this.setState({ selectInProgress: true });
+                                                const a = this.props.alert.show('טוען...', { timeout: 20000 });
+                                                setTimeout(async () => {
+                                                    let video = await selectVideo();
+                                                    this.props.alert.remove(a);
+                                                    this.setState({ selectedVideo: video, selectInProgress: false })
+                                                }, 300);
+                                            }} />
+                                        </div>
 
                                     </td>
-                                    <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"}/></td>
+                                    <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
                                 </tr>
                                 : null}
                         </tbody>
                     </table>
                 </div>
                 <div style={{ paddingTop: 50 }}>
-                    <input type="button" value="שמור" className="addButton" style={{width:'150px'}} disabled={!this.IsValidInput()} onClick={async () =>
+                    <input type="button" value="שמור" className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
+                    } />
+                    <input type="button" value="בדיקה" className="addButton" style={{ width: '150px' }}  onClick={ () =>
+                        this.props.alert.info("אוהב...")
                     } />
                 </div>
             </div>
@@ -179,4 +198,4 @@ class AddItem extends React.Component {
 }
 
 
-export default AddItem;
+export default withAlert()(AddItem);

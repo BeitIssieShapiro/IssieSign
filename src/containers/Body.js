@@ -1,6 +1,7 @@
 import React from "react";
 import '../css/App.css';
 import Tile2 from "../components/Tile2";
+import { withAlert } from 'react-alert'
 
 import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
@@ -38,9 +39,10 @@ class Body extends IssieBase {
                 await reloadAdditionals();
                 this.props.pubSub.publish({ command: "refresh" })
                 this.toggleSelect(null, true)
+                this.props.alert.success("מחיקה בוצעה");
             },
             //error
-            (e) => alert("מחיקה נכשלה\n" + e)
+            (e) => this.props.alert.error("מחיקה נכשלה\n" + e)
         );        
     }
 
@@ -86,7 +88,7 @@ class Body extends IssieBase {
 
 }
 
-export default Body;
+export default withAlert()(Body);
 
 
 

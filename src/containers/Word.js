@@ -5,6 +5,7 @@ import { wordsTranslateX, calcWidth } from "../utils/Utils";
 import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
 import { reloadAdditionals } from "../apis/catalog";
+import { withAlert } from 'react-alert'
 
 class Word extends IssieBase {
 
@@ -38,9 +39,10 @@ class Word extends IssieBase {
                                     await reloadAdditionals();
                                     this.props.pubSub.publish({ command: "refresh" })
                                     this.toggleSelect(null, true)
+                                    this.props.alert.success("מחיקה בוצעה");
                                 },
                                 //error
-                                (e) => alert("מחיקה נכשלה\n" + e)
+                                (e) => this.props.alert.show("מחיקה נכשלה\n" + e)
                             );
                         }
                     }
@@ -54,7 +56,7 @@ class Word extends IssieBase {
                                 //Success:
                                 () => this.toggleSelect(null, true),
                                 //error
-                                (e) => alert("שיתוף נכשל\n" + e)
+                                (e) => this.props.alert.error("שיתוף נכשל\n" + e)
                                  
                             ).finally(() =>
                                     this.props.pubSub.publish({ command: 'set-busy', active: false })
@@ -123,4 +125,4 @@ render() {
 }
 }
 
-export default Word;
+export default withAlert()(Word);

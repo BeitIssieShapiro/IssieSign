@@ -11,6 +11,7 @@
     "jszip": "^3.2.2",
     "react": "^16.13.0",
     "react-alert": "^5.5.0",
+    "react-alert-template-basic": "^1.0.0",
     "react-dom": "^16.13.0",
     "react-message-box": "^1.0.6",
     "react-router": "^5.1.2",
