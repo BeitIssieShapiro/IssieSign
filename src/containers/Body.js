@@ -7,6 +7,9 @@ import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import {deleteCategory } from '../apis/file'
 import {reloadAdditionals} from '../apis/catalog'
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 
 class Body extends IssieBase {
 
@@ -23,8 +26,22 @@ class Body extends IssieBase {
             if (this.props.pubSub) {
                 this.props.pubSub.publish({
                     command: "show-delete", callback: () => {
-                        if (this.state.selectedCategory && window.confirm("מחיקת קטגוריה תמחק גם את כל המילים שבתוכה. האם למחוק את הקטגוריה:'" + category.name + "'?")) {
-                            this.deleteCategory(category);
+                        if (this.state.selectedCategory) {
+                            confirmAlert({
+                                title: 'מחיקת קטגוריה',
+                                message: "מחיקת קטגוריה תמחק גם את כל המילים שבתוכה. האם למחוק את הקטגוריה:'" + category.name + "'?",
+                                buttons: [
+                                    {
+                                        label: 'כן',
+                                        onClick: () => this.deleteCategory(category)
+                                    },
+                                    {
+                                        label: 'בטל',
+                                        onClick: () => this.props.alert.info('מחיקה בוטלה')
+                                    }
+                                ]
+                            }); 
+                            
                         }
                     }
                 });
@@ -78,6 +95,7 @@ class Body extends IssieBase {
         return (
             <div className={this.props.InSearch?"subTileContainer":"tileContainer"} style={{
                 width: width, 
+                flexWrap: 'wrap',
                 transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)',
                 
             }}>

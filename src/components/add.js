@@ -108,15 +108,19 @@ class AddItem extends React.Component {
     }
 
     render() {
-        let themeId = "1";
+        let themeId = "3";
+        if (this.props.categoryId4Theme) {
+            themeId = this.props.categoryId4Theme;
+        }
+
         let addWordMode = this.props.addWord;
         let vidName = getFileName(this.state.selectedVideo);
         let imgName = getFileName(this.state.selectedImage);
         return (
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', backgroundColor: 'lightgray' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
                     {addWordMode ?
-                        <Card2 key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
+                        <Card2 addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
                             imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
                         :
                         <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />}
@@ -147,12 +151,15 @@ class AddItem extends React.Component {
                                             value={imgName} />
                                         <AttachButton onClick={async () => {
                                             this.setState({ selectInProgress: true });
-                                            const a = this.props.alert.show('טוען...', { timeout: 20000 });
+                                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+                                            //const a = this.props.alert.show('טוען...', { timeout: 20000 });
                                             setTimeout(async () => {
-                                                let img = await selectImage();
-                                                this.props.alert.remove(a);
-                                                this.setState({ selectedImage: img, selectInProgress: false })
+                                                selectImage().then(
+                                                    img => this.setState({ selectedImage: img, selectInProgress: false }),
+                                                    err => this.props.alert.error('טעינת תמונה נכשלה')).finally(
+                                                        () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
                                             }, 300);
+                                            //this.props.alert.remove(a);
                                         }} />
                                     </div>
                                 </td>
@@ -168,11 +175,12 @@ class AddItem extends React.Component {
                                             <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
                                             <AttachButton onClick={async () => {
                                                 this.setState({ selectInProgress: true });
-                                                const a = this.props.alert.show('טוען...', { timeout: 20000 });
+                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                 setTimeout(async () => {
-                                                    let video = await selectVideo();
-                                                    this.props.alert.remove(a);
-                                                    this.setState({ selectedVideo: video, selectInProgress: false })
+                                                    selectVideo().then(
+                                                        video => this.setState({ selectedVideo: video, selectInProgress: false }),
+                                                        err => this.props.alert.error('טעינת סרטון נכשלה')).finally(
+                                                            () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
                                                 }, 300);
                                             }} />
                                         </div>
@@ -184,13 +192,13 @@ class AddItem extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div style={{ paddingTop: 50 }}>
+                <div style={{ paddingTop: 20 }}>
                     <input type="button" value="שמור" className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
-                    <input type="button" value="בדיקה" className="addButton" style={{ width: '150px' }}  onClick={ () =>
+                    {/* <input type="button" value="בדיקה" className="addButton" style={{ width: '150px' }}  onClick={ () =>
                         this.props.alert.info("אוהב...")
-                    } />
+                    } /> */}
                 </div>
             </div>
         )

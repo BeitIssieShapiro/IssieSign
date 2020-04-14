@@ -6,6 +6,7 @@ import '../css/App.css';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import longPress from '../apis/longPress';
+import {Selected} from "./ui-elements";
 
 //import { A, navigate } from "hookrouter";
 import { Link } from "react-router-dom";
@@ -27,7 +28,7 @@ function Tile2(props) {
                 <main>
                     <div style={{ width: props.dimensions.imageBoxWidth }}>
                         {imageSrc?<img className="tileImg" src={imageSrc} alt="ללא תמונה" />:null}
-                        {props.selected ? <div style={{ display: 'flex', position: 'absolute', left: 10, top: 10, zIndex: 0 }}><img style={{ maxWidth: '25px', maxHeight: '25px' }} alt="" src={imageLocalCall("check.png")}></img></div> : null}
+                        {props.selected?<div style={{display:'flex',position:'absolute', right:-17, bottom:-10, zIndex:0}}><Selected/></div>:null}
                     </div>
 
                 </main>

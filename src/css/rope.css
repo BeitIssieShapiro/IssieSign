@@ -3,11 +3,21 @@
     height: 25px;
     margin-top: 25px;
     background-size: contain;
-    background-image: url('data:image/svg+xml;utf8,<svg width="872" height="25" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 2 C 218 25, 654 25, 872 2" stroke="%2389775d" stroke-linecap="round" stroke-width="2" fill="transparent" /></g></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg width="872" height="25" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 2 C 218 25, 654 25, 872 2" stroke="%2389775d" stroke-linecap="round" vector-effect="non-scaling-stroke" stroke-width="2" fill="transparent" /></g></svg>');
     background-repeat: no-repeat;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.rope-medium {
+    background-size: cover;
+    background-image: url('data:image/svg+xml;utf8,<svg width="872" height="25" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 2 C 218 10, 654 10, 872 2" stroke="%2389775d" stroke-linecap="round" vector-effect="non-scaling-stroke" stroke-width="2" fill="transparent" /></g></svg>');
+}
+
+.rope-large {
+    background-size: cover;
+    background-image: url('data:image/svg+xml;utf8,<svg width="872" height="25" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 2 C 218 5, 654 5, 872 2" stroke="%2389775d" stroke-linecap="round" vector-effect="non-scaling-stroke" stroke-width="2" fill="transparent" /></g></svg>');
 }
 
 .rope:before,
@@ -44,8 +54,6 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    padding: 0 45px;
 }
 
 :host(.compact) .rope-container {

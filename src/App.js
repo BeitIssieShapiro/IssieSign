@@ -30,7 +30,8 @@ import { MenuButton, Menu, OnOffMenu, LineMenu } from './settings'
 import './css/settings.css'
 import { receiveIncomingZip } from './apis/file'
 import { isNumber } from 'util';
-import { PlusButton, SettingsButton } from './components/ui-elements';
+import { PlusButton, SettingsButton, TrashButton, ShareButton,
+    BackButton, PrevButton, NextButton } from './components/ui-elements';
 
 
 
@@ -257,14 +258,15 @@ class App extends IssieBase {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-            onClick={() => this.goBack()} style={{ visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
+        let backElement = this.isHome()? null : <BackButton slot="end-bar" onClick={() => this.goBack()}/>
+        // <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
+        //     onClick={() => this.goBack()} style={{ visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
-        let deleteButton = this.state.showDelete ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10 }}><button className="roundbutton backBtn"
-            onClick={this.state.showDelete} style={{ "--radius": "50px" }}><div className="actionBtn delete" /></button></div> : null
-        let shareButton = this.state.showShare ? <div slot="start-bar" style={{ height: 50, paddingLeft: 10, zIndex: 999999 }}><button className="roundbutton backBtn"
-            onClick={this.state.showShare} style={{ "--radius": "50px" }}><div className="actionBtn share" /></button></div> : null
+        let deleteButton = this.state.showDelete ? 
+            <TrashButton slot="start-bar" onClick={this.state.showDelete}/> : null;
+        let shareButton = this.state.showShare ? 
+            <ShareButton slot="start-bar" onClick={this.state.showShare}/> : null;
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
@@ -272,20 +274,23 @@ class App extends IssieBase {
             let searchClassName = narrow ? "" : "sameLine";
             searchInput = (
                 <div slot={narrow ? "title" : "end-bar"} className={"search " + searchClassName} >
-                    <input style={{ direction: "RTL", paddingRight: '5px' }} type="search" onChange={this.handleSearch}
+                    <input 
+                    
+                    type="search" onChange={this.handleSearch}
                         onFocus={this.preventKeyBoardScrollApp} value={this.state.searchStr || ""} />
                 </div>)
         }
 
         if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe) {
             document.preventTouch = false;
+            console.log("touch allowed")
         }
 
         if (!IssieBase.isMobile() &&
             (!this.isAddScreen() && !this.isVideo() && !this.isInfo())
             && !this.state.allowSwipe) {
-            leftArrow = <button slot="next" onClick={this.ScrollRight} id="scrolRight" className="navBtn"><img src={imageLocalCall("arrow-right.svg")} alt="arrow" /></button>
-            rightArrow = <button slot="prev" onClick={this.ScrollLeft} id="scrollLeft" className="navBtn"><img src={imageLocalCall("arrow-left.svg")} alt="arrow" /></button>
+            leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
+            rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
         }
 
         if (IssieBase.isMobile() && IssieBase.isLandscape() && this.isVideo()) {
@@ -303,7 +308,7 @@ class App extends IssieBase {
         return (
             <div className="App">
                 <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
-                    {this.state.busy ? <div style={{ position: 'absolute', top: '60px', width: '100%', color: 'black' }}>{this.state.busyText}</div> : null}
+                    {this.state.busy ? <div style={{ position: 'absolute', direction: 'rtl', top: '60px', width: '100%', color: 'black' }}>{this.state.busyText}</div> : null}
                     <ClipLoader
                         sizeUnit={"px"}
                         size={150}
@@ -441,7 +446,7 @@ class App extends IssieBase {
                 <Route
                     path="/info"
                     render={(props) => {
-                        this.setTitle("עלינו")
+                        this.setTitle("עלינו - About us")
                         return (
                             <Info />
                         )
@@ -455,6 +460,7 @@ class App extends IssieBase {
                         <AddItem
                             history={props.history}
                             addWord={false}
+                            pubSub={this.state.pubsub}
                             dimensions={this.state.dimensions}
                         />
                     )}
@@ -467,7 +473,9 @@ class App extends IssieBase {
                         <AddItem
                             addWord="true"
                             history={props.history}
+                            pubSub={this.state.pubsub}
                             categoryId={props.match.params.categoryId}
+                            categoryId4Theme={props.match.params.categoryId}
                             dimensions={this.state.dimensions}
                         />
                     )}

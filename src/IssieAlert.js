@@ -26,7 +26,7 @@ var BaseIcon = function BaseIcon(_ref) {
 var InfoIcon = function InfoIcon() {
     return React.createElement(
       BaseIcon,
-      { color: '#2E9AFE' },
+      { color: '#5c7e9d' },
       React.createElement('circle', { cx: '12', cy: '12', r: '10' }),
       React.createElement('line', { x1: '12', y1: '16', x2: '12', y2: '12' }),
       React.createElement('line', { x1: '12', y1: '8', x2: '12', y2: '8' })
@@ -67,9 +67,9 @@ var InfoIcon = function InfoIcon() {
   };
 
   var alertStyle = {
-    backgroundColor: '#151515',
-    color: 'white',
-    padding: '10px',
+    backgroundColor: 'white',
+    color: '#5c7e9d',
+    padding: '8px',
     textTransform: 'uppercase',
     borderRadius: '3px',
     display: 'flex',
@@ -77,6 +77,7 @@ var InfoIcon = function InfoIcon() {
     alignItems: 'center',
     boxShadow: '0px 2px 2px 2px rgba(0, 0, 0, 0.03)',
     fontFamily: 'Arial',
+    fontSize: 18,
     width: '300px',
     boxSizing: 'border-box'
   };

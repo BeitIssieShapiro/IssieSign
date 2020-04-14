@@ -77,7 +77,9 @@ function share(text, title, mimetype, success, error) {
     if (typeof mimetype !== "string") {
         mimetype = "text/plain";
     }
+    console.log("about to share via cordova exec")
     window.cordova.exec(success, error, "Share", "share", [text, title, mimetype]);
+    console.log("share via cordova exec completed")
     return true;
 };
 
@@ -230,6 +232,7 @@ export async function zipWord(paths) {
             let fileName = window.cordova.file.tempDirectory + zipFileName;
             console.log("About to save blob to tmp file", fileName);
             await writeBlobToFile(fileName, fileBlob);
+            console.log("blob saved");
             return fileName;
         }
     );

@@ -135,12 +135,11 @@
 [theme="flavor-0"] {
     --shell-header-background-color-0: #19665c;
     --shell-header-background-color-1: #2d9f8e;
-    --search-background-color: #19665c;
+    --search-background-color: #0a4941;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
     --payer-arrow-color: #19665c;
-    --search-background-color: #c1b7a1 ;
     /*--payer-lamp-color-1: #b8e986;*/
     --card-background-color-0: #2d9f8e;
     /*--shell-decor-background-color-1: #eb5a49;
@@ -151,7 +150,7 @@
 [theme="flavor-1"] {
     --shell-header-background-color-0: #ae3d2a;
     --shell-header-background-color-1: #d95841;
-    --search-background-color: #a94331;
+    --search-background-color: #8d1f0c;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -160,13 +159,12 @@
     --card-background-color-0: #d6634e;
     --shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-2"] {
     --shell-header-background-color-0: #f09533;
     --shell-header-background-color-1: #f8ca73;
-    --search-background-color: #f09533;
+    --search-background-color: #c97011;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -175,13 +173,12 @@
     --card-background-color-0: #f8ca73;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-3"] {
     --shell-header-background-color-0: #475d7f;
     --shell-header-background-color-1: #7c97be;
-    --search-background-color: #475d7f;
+    --search-background-color: #0d418f;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -190,7 +187,6 @@
     --card-background-color-0: #7c97be;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-4"] {
@@ -205,7 +201,6 @@
     --card-background-color-0: #85d5ee;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-5"] {
@@ -220,13 +215,12 @@
     --card-background-color-0: #dd81aa;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-6"] {
     --shell-header-background-color-0: #93aa3f;
     --shell-header-background-color-1: #e0f33c;
-    --search-background-color: #93aa3f;
+    --search-background-color: #4b5717;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -235,13 +229,12 @@
     --card-background-color-0: #e0f33c;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-7"] {
     --shell-header-background-color-0: #494949;
     --shell-header-background-color-1: #8d8d8d;
-    --search-background-color: #494949;
+    --search-background-color: #313131;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -250,13 +243,12 @@
     --card-background-color-0: #8d8d8d;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-8"] {
     --shell-header-background-color-0: #c3b507;
     --shell-header-background-color-1: #fbef5f;
-    --search-background-color: #c3b507;
+    --search-background-color: #7c7407;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -265,13 +257,12 @@
     --card-background-color-0: #fbef5f;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-9"] {
     --shell-header-background-color-0: #503d6f;
     --shell-header-background-color-1: #9d8ab5;
-    --search-background-color: #503d6f;
+    --search-background-color: #2d1f42;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -280,13 +271,12 @@
     --card-background-color-0: #9d8ab5;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-10"] {
     --shell-header-background-color-0: #7a2242;
     --shell-header-background-color-1: #bd5a6c;
-    --search-background-color: #7a2242;
+    --search-background-color: #55112a;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -295,13 +285,12 @@
     --card-background-color-0: #bd5a6c;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-11"] {
     --shell-header-background-color-0: #649736;
     --shell-header-background-color-1: #98c867;
-    --search-background-color: #649736;
+    --search-background-color: #375f13;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -310,13 +299,12 @@
     --card-background-color-0: #98c867;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-12"] {
     --shell-header-background-color-0: #e1bb96;
     --shell-header-background-color-1: #ffe7c6;
-    --search-background-color: #e1bb96;
+    --search-background-color: #74491f;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -325,13 +313,12 @@
     --card-background-color-0: #ffe7c6;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-13"] {
     --shell-header-background-color-0: #e79579;
     --shell-header-background-color-1: #fa8071;
-    --search-background-color: #e79579;
+    --search-background-color: #8f4d37;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -340,13 +327,12 @@
     --card-background-color-0: #fa8071;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-14"] {
     --shell-header-background-color-0: #55560d;
     --shell-header-background-color-1: #7f8000;
-    --search-background-color: #55560d;
+    --search-background-color: #393a0d;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -355,13 +341,12 @@
     --card-background-color-0: #7f8000;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-15"] {
     --shell-header-background-color-0: #181a1c;
     --shell-header-background-color-1: #61676c;
-    --search-background-color: #181a1c;
+    --search-background-color: #2a4f75;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -370,13 +355,12 @@
     --card-background-color-0: #61676c;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-16"] {
     --shell-header-background-color-0: #e92c7e;
     --shell-header-background-color-1: #fc66b2;
-    --search-background-color: #e92c7e;
+    --search-background-color: #8d1147;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -385,13 +369,12 @@
     --card-background-color-0: #fc66b2;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-17"] {
     --shell-header-background-color-0: #2346c1;
     --shell-header-background-color-1: #4c70da;
-    --search-background-color: #2346c1;
+    --search-background-color: #0b237a;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -400,13 +383,12 @@
     --card-background-color-0: #4c70da;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-18"] {
     --shell-header-background-color-0: #c65404;
     --shell-header-background-color-1: #f77e29;
-    --search-background-color: #c65404;
+    --search-background-color: #6d2f03;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -415,13 +397,12 @@
     --card-background-color-0: #f77e29;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-19"] {
     --shell-header-background-color-0: #3ab4a3;
     --shell-header-background-color-1: #abd6d0;
-    --search-background-color: #3ab4a3;
+    --search-background-color: #1b534c;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -430,13 +411,12 @@
     --card-background-color-0: #abd6d0;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-20"] {
     --shell-header-background-color-0: #b3accb;
     --shell-header-background-color-1: #d6d8e7;
-    --search-background-color: #b3accb;
+    --search-background-color: #4e4372;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -445,13 +425,12 @@
     --card-background-color-0: #d6d8e7;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-21"] {
     --shell-header-background-color-0: #234d20;
     --shell-header-background-color-1: #36802d;
-    --search-background-color: #234d20;
+    --search-background-color: #172c15;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -460,13 +439,12 @@
     --card-background-color-0: #36802d;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-22"] {
     --shell-header-background-color-0: #cd847d;
     --shell-header-background-color-1: #f1c5c1;
-    --search-background-color: #cd847d;
+    --search-background-color: #7f413b;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -475,13 +453,12 @@
     --card-background-color-0: #f1c5c1;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 [theme="flavor-23"] {
     --shell-header-background-color-0: #8b572a;
     --shell-header-background-color-1: #d8a67a;
-    --search-background-color: #8b572a;
+    --search-background-color: #552e0c;
     --shell-main-background-color-0: #fdfaf4;
     --shell-main-background-color-1: #c1b7a1;
     --shelf-background-color: #a38f64;
@@ -490,7 +467,6 @@
     --card-background-color-0: #d8a67a;
     /*--shell-decor-background-color-1: #eb5a49;
     --shell-decor-shade-color-0: #ac432e;*/
-    --search-background-color: #c1b7a1 ;
 }
 
 

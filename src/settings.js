@@ -23,10 +23,11 @@ export function OnOffMenu(props) {
         width: '80%',
         display: 'flex',
         flexDirection: 'row',
+        fontSize: '25px',
         justifyContent: 'space-between'
       }}>
         <label className="form-switch">
-          <input type="checkbox" checked={props.checked} onChange={(e)=> props.onChange(e.target.checked)} />
+          <input type="checkbox" checked={props.checked} onChange={(e) => props.onChange(e.target.checked)} />
           <i></i>
         </label>
         {props.label}
@@ -56,6 +57,8 @@ export class Menu extends React.Component {
     const styles = {
       clickCatcher: {
         position: 'absolute',
+        backgroundColor: 'black',
+        opacity: .5,
         top: 0,
         bottom: 0,
         left: 0,
@@ -71,7 +74,7 @@ export class Menu extends React.Component {
         minWidth: '20em',
         display: 'flex',
         flexDirection: 'column',
-        background: 'white',
+        backgroundColor: 'white',
         color: '#5c7e9d',
         transition: 'height 0.3s ease',
         zIndex: 1000,
@@ -103,12 +106,12 @@ export class Menu extends React.Component {
     }
     return (
       this.state.open ?
-        <div style={styles.clickCatcher} onClick={() => {
+        <div><div style={styles.clickCatcher} onClick={() => {
           if (this.props.closeSettings) {
             console.log("close settings");
             this.props.closeSettings()
           }
-        }}>
+        }}></div>
           <div style={styles.container} onClick={(e) => e.stopPropagation()}>
             {
               this.state.open ?
@@ -124,10 +127,11 @@ export class Menu extends React.Component {
                   <div
                     onClick={this.props.showInfo}
                     style={{
-                      marginRight:'10%',
+                      marginRight: '10%',
                       marginLeft: '10%',
                       width: '80%',
                       display: 'flex',
+                      fontSize: '25px',
                       flexDirection: 'row',
                       justifyContent: 'space-between'
                     }}>
@@ -140,7 +144,8 @@ export class Menu extends React.Component {
                 </div> : null
             }
           </div>
-        </div> :
+        </div>
+        :
         <div />
     )
   }

@@ -26,7 +26,11 @@ function Search(props) {
     }
 
     return (
-        <div className='tileContainer' style={{ width: props.isMobile ? '110%' : '1200px', transform: 'translateX(' + rootTranslateX + 'px)' }}>
+        <div className='tileContainer' style={{ 
+                //width: props.isMobile ? '110%' : '1200px', 
+                transform: 'translateX(' + rootTranslateX + 'px)',
+                flexDirection: 'column'
+            }}>
             <Body InSearch={true} categories={
                     filterCategories(props.searchStr)    
                 } 

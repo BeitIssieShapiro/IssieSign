@@ -1,11 +1,13 @@
-delete category
+V - delete category
 V - only select added words and category
 V- search added words
-export words
-import 
+V - export words
+V - import 
 
 bugs:
 ----
+warning message with index.html header
+while deleting, message
 remove warning of file.js
 
 

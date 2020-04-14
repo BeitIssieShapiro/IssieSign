@@ -35,6 +35,31 @@ export function SettingsButton (props) {
     return <div className="settings-button" onClick={props.onClick}></div>
 }
 
+export function TrashButton (props) {
+  return <div className="trash-button" {...props}></div>
+}
+
+export function BackButton (props) {
+  return <div className="back-button" {...props}></div>
+}
+
+export function PrevButton (props) {
+  return <div className="prev-button" {...props}></div>
+}
+
+export function NextButton (props) {
+  return <div className="next-button" {...props}></div>
+}
+
+
+export function ShareButton (props) {
+  return <div className="share-button" {...props}></div>
+}
+
 export function AttachButton (props) {
     return <div className="attach-button" onClick={props.onClick}></div>
+}
+
+export function Selected (props) {
+  return <div className="selected-icon"></div>
 }
