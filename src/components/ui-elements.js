@@ -14,6 +14,7 @@ export function PlusButton(props) {
           alignItems: 'center',
           cursor: 'pointer',
           padding: '4px',
+          paddingLeft: '25px'
         },
         line: {
           height: '3px',
@@ -58,6 +59,14 @@ export function ShareButton (props) {
 
 export function AttachButton (props) {
     return <div className="attach-button" onClick={props.onClick}></div>
+}
+
+export function CameraButton (props) {
+  return <div className="camera-button" onClick={props.onClick}></div>
+}
+
+export function VideoButton (props) {
+  return <div className="video-button" onClick={props.onClick}></div>
 }
 
 export function Selected (props) {

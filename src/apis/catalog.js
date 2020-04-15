@@ -85,7 +85,7 @@ function safeMergeWordsArray(a1, a2) {
         return a1.words
     } 
     if (!a1 && a2) {
-        alert("2")
+        //alert("2")
         return a2.words
     }
     if (a1 && a2) {

@@ -5,7 +5,7 @@ import Card2 from "./Card2";
 import { createDir, mvFileIntoDir } from '../apis/file';
 import { reloadAdditionals } from "../apis/catalog";
 import '../css/add.css';
-import { AttachButton } from "./ui-elements";
+import { AttachButton, CameraButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 
 const imagePickerOptions = {
@@ -14,6 +14,23 @@ const imagePickerOptions = {
     width: 394,
     height: 336
 }
+
+const cameraOptions = {
+    quality: 30,
+    targetWidth: 394,
+    targetHeight: 336,
+    mediaType: 0,
+    allowEdit: true,
+}
+
+const videoOptions = {
+    quality: 30,
+    targetWidth: 394,
+    targetHeight: 336,
+    mediaType: 1,
+}
+
+
 function getFileName(pathStr) {
     if (!pathStr || pathStr.length === 0)
         return "";
@@ -114,8 +131,12 @@ class AddItem extends React.Component {
         }
 
         let addWordMode = this.props.addWord;
-        let vidName = getFileName(this.state.selectedVideo);
-        let imgName = getFileName(this.state.selectedImage);
+        //let vidName = getFileName(this.state.selectedVideo);
+        //let imgName = getFileName(this.state.selectedImage);
+
+        let vidName = this.state.selectedVideo.length>0?"נבחר וידאו עבור המילה":""
+        let imgName = this.state.selectedImage.length>0?"נבחרה תמונה":""
+
         return (
             <div style={{ width: '100%', backgroundColor: 'lightgray' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
@@ -149,17 +170,34 @@ class AddItem extends React.Component {
                                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                                         <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
                                             value={imgName} />
+
+                                        <CameraButton onClick={() => {
+                                            if (this.state.selectInProgress) return;
+                                            this.setState({ selectInProgress: true });
+                                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען מצלמה...' });
+
+                                            setTimeout(async () => navigator.camera.getPicture(
+                                                img => {
+                                                    this.setState({ selectedImage: img, selectInProgress: false });
+                                                    this.props.pubSub.publish({ command: 'set-busy', active: false });
+                                                },
+                                                err => {
+                                                    this.props.alert.error('צילום נכשל או בוטל');
+                                                    this.props.pubSub.publish({ command: 'set-busy', active: false });
+                                                },
+                                                cameraOptions), 300);
+                                        }}
+                                        />
                                         <AttachButton onClick={async () => {
+                                            if (this.state.selectInProgress) return;
                                             this.setState({ selectInProgress: true });
                                             this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-                                            //const a = this.props.alert.show('טוען...', { timeout: 20000 });
                                             setTimeout(async () => {
                                                 selectImage().then(
                                                     img => this.setState({ selectedImage: img, selectInProgress: false }),
-                                                    err => this.props.alert.error('טעינת תמונה נכשלה')).finally(
+                                                    err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).finally(
                                                         () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
                                             }, 300);
-                                            //this.props.alert.remove(a);
                                         }} />
                                     </div>
                                 </td>
@@ -173,13 +211,32 @@ class AddItem extends React.Component {
                                     <td>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                                             <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
+                                            <VideoButton onClick={() => {
+                                                if (this.state.selectInProgress) return;
+                                                this.setState({ selectInProgress: true });
+                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+
+                                                setTimeout(async () => navigator.device.capture.captureVideo(
+                                                    (mediaFiles) => {
+                                                        if (mediaFiles.length == 1) {
+                                                            this.setState({ selectedVideo: ("file://" + mediaFiles[0].fullPath), selectInProgress: false })
+                                                        }
+                                                        this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                    },
+                                                    (err) => {
+                                                        this.props.alert.error("צילום וידאו נכשל או בוטל");
+                                                        this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                    },
+                                                    { limit: 1, duration: 15 }), 300);
+                                            }} />
                                             <AttachButton onClick={async () => {
+                                                if (this.state.selectInProgress) return;
                                                 this.setState({ selectInProgress: true });
                                                 this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                 setTimeout(async () => {
                                                     selectVideo().then(
                                                         video => this.setState({ selectedVideo: video, selectInProgress: false }),
-                                                        err => this.props.alert.error('טעינת סרטון נכשלה')).finally(
+                                                        err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).finally(
                                                             () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
                                                 }, 300);
                                             }} />
@@ -196,9 +253,7 @@ class AddItem extends React.Component {
                     <input type="button" value="שמור" className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
-                    {/* <input type="button" value="בדיקה" className="addButton" style={{ width: '150px' }}  onClick={ () =>
-                        this.props.alert.info("אוהב...")
-                    } /> */}
+
                 </div>
             </div>
         )

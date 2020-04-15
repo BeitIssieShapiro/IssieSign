@@ -82,7 +82,8 @@
     display: inline-block;
     font-size: 1.5em;
     margin: 4px 2px;
-    border-radius: 18px;
+    -webkit-appearance: none;
+    border-radius: 22px;
   }
 
   .image-icon {
@@ -127,7 +128,6 @@
 
 .v-icon {
     display: inline-block;
-    margin-top: 2px;
 }
 
 .v-icon:before {
@@ -140,7 +140,6 @@
 
 .x-icon {
     display: inline-block;
-    margin-top: 2px;
 }
 
 .x-icon:before {

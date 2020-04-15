@@ -9,6 +9,7 @@ import { getAllCategories, getAllWords, reloadAdditionals, getWordsByCategoryID 
 import Search from './containers/Search'
 import Info from "./containers/Info";
 import AddItem from "./components/add";
+import { withAlert } from 'react-alert'
 
 import { Route, Switch } from "react-router";
 import { VideoToggle } from "./utils/Utils";
@@ -109,7 +110,7 @@ class App extends IssieBase {
                                     }
                                 }
                             }
-                            alert(msg)
+                            this.props.alert.success(msg);
                         }, 100);
 
                     });
@@ -533,4 +534,4 @@ class App extends IssieBase {
     }
 }
 
-export default App;
+export default withAlert()(App);

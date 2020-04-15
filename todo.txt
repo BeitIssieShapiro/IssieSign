@@ -6,8 +6,8 @@ V - import
 
 bugs:
 ----
-warning message with index.html header
-while deleting, message
+V - warning message with index.html header
+V- while deleting, message
 remove warning of file.js
 
 

@@ -21,7 +21,7 @@ export async function createDir(dirName) {
 }
 
 export async function mvFileIntoDir(filePath, dirEntry, newFileName) {
-    console.log("move "+filePath + "to " + dirEntry);
+    console.log("move " + JSON.stringify(filePath) + " to " + dirEntry);
     return new Promise((resolve) => window.resolveLocalFileSystemURL(filePath, (file) => {
         console.log("resolve local file to " + file);
 
@@ -29,8 +29,8 @@ export async function mvFileIntoDir(filePath, dirEntry, newFileName) {
             console.log("move success");
             resolve(res);
         },
-        (err)=>console.log("move failed" + err));
-    }, (err)=>console.log("resolve local file failed"+ err)));
+            (err) => console.log("move failed" + err));
+    }, (err) => console.log("resolve local file failed" + JSON.stringify(err))));
 }
 //expects the filePath to be  .MOV filePath
 export async function deleteWord(filePath) {
@@ -67,9 +67,9 @@ export async function deleteCategory(category) {
         ));
 }
 
-function share(text, title, mimetype, success, error) {
-    if (typeof text !== "string") {
-        text = "";
+function share(filePath, title, mimetype, onSuccess, onError) {
+    if (typeof filePath !== "string") {
+        filePath = "";
     }
     if (typeof title !== "string") {
         title = "Share";
@@ -77,9 +77,22 @@ function share(text, title, mimetype, success, error) {
     if (typeof mimetype !== "string") {
         mimetype = "text/plain";
     }
-    console.log("about to share via cordova exec")
-    window.cordova.exec(success, error, "Share", "share", [text, title, mimetype]);
-    console.log("share via cordova exec completed")
+
+    // this is the complete list of currently supported params you can pass to the plugin (all optional)
+    var options = {
+        message: '', // not supported on some apps (Facebook, Instagram)
+        subject: 'שיתוף מילים', // fi. for email
+        files: [filePath], // an array of filenames either locally or remotely
+        chooserTitle: 'שתף מילים', // Android only, you can override the default share sheet title
+        iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
+    };
+
+    console.log("about to share via shareWithOptions")
+    window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
+
+
+    // window.cordova.exec(success, error, "Share", "share", [text, title, mimetype]);
+    console.log("share via cordova shareWithOptions completed")
     return true;
 };
 
