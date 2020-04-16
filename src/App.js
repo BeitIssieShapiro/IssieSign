@@ -456,7 +456,7 @@ class App extends IssieBase {
                 <Route
                     path="/add-category"
                     render={(props) => {
-                        this.setTitle("הוספת קטגוריה");
+                        this.setTitle("הוספת תיקיה");
                         return (
                         <AddItem
                             history={props.history}

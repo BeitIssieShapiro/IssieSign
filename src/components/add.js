@@ -138,7 +138,7 @@ class AddItem extends React.Component {
         let imgName = this.state.selectedImage.length>0?"נבחרה תמונה":""
 
         return (
-            <div style={{ width: '100%', backgroundColor: 'lightgray' }}>
+            <div style={{ width: '100%', height:'120%', backgroundColor: 'lightgray' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
                     {addWordMode ?
                         <Card2 addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
@@ -155,7 +155,7 @@ class AddItem extends React.Component {
                                 <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
                                 <td width="70%">
                                     <input type="text" className="addInput"
-                                        placeholder={addWordMode ? "שם המילה" : "שם הקטגוריה"}
+                                        placeholder={addWordMode ? "שם המילה" : "שם התיקיה"}
                                         onChange={(e) => {
                                             this.setState({ label: e.target.value })
                                         }} />

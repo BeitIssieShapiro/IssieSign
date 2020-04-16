@@ -28,8 +28,8 @@ class Body extends IssieBase {
                     command: "show-delete", callback: () => {
                         if (this.state.selectedCategory) {
                             confirmAlert({
-                                title: 'מחיקת קטגוריה',
-                                message: "מחיקת קטגוריה תמחק גם את כל המילים שבתוכה. האם למחוק את הקטגוריה:'" + category.name + "'?",
+                                title: 'מחיקת תיקיה',
+                                message: "מחיקת תיקיה תמחק גם את כל המילים שבתוכה. האם למחוק את התיקיה:'" + category.name + "'?",
                                 buttons: [
                                     {
                                         label: 'כן',
@@ -84,7 +84,7 @@ class Body extends IssieBase {
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
 
-        if ((this.props.isMobile && narrow) || this.props.InSearch) {
+        if (this.props.isMobile && narrow) {
             width = '100%'
         } else {
             width = width + 'px';

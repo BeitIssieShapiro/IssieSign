@@ -27,7 +27,7 @@ function Search(props) {
 
     return (
         <div className='tileContainer' style={{ 
-                //width: props.isMobile ? '110%' : '1200px', 
+                width: props.isMobile ? '110%' : '100%', 
                 transform: 'translateX(' + rootTranslateX + 'px)',
                 flexDirection: 'column'
             }}>
