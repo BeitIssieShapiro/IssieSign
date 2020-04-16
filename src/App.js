@@ -462,6 +462,7 @@ class App extends IssieBase {
                             history={props.history}
                             addWord={false}
                             pubSub={this.state.pubsub}
+                            isLandscape={IssieBase.isLandscape()}
                             dimensions={this.state.dimensions}
                         />
                     )}
@@ -475,6 +476,7 @@ class App extends IssieBase {
                             addWord="true"
                             history={props.history}
                             pubSub={this.state.pubsub}
+                            isLandscape={IssieBase.isLandscape()}
                             categoryId={props.match.params.categoryId}
                             categoryId4Theme={props.match.params.categoryId}
                             dimensions={this.state.dimensions}

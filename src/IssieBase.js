@@ -24,7 +24,7 @@ class IssieBase extends Component {
             let boxSize = window.innerWidth / numBoxSize;
 
             ret.imageBoxWidth = (.4 * boxSize) + 'px';
-            ret.marginLeftBox = (.1 * boxSize) + 'px';
+            //ret.marginLeftBox = (.1 * boxSize) + 'px';
             ret.boxWidth = (.53 * boxSize) + 'px';
             ret.shelfWidth = (.73 * boxSize) + 'px';
             ret.tileGroupWidth = (.95 * boxSize) + 'px';
@@ -32,7 +32,7 @@ class IssieBase extends Component {
             ret.overFlowX = 'hidden';
         } else {
             ret.imageBoxWidth = '94px';
-            ret.marginLeftBox = '24px';
+            //ret.marginLeftBox = '24px';
             ret.boxWidth = '124px';
             ret.shelfWidth = '170px';
             ret.tileGroupWidth = '220px';

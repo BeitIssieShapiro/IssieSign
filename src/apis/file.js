@@ -2,7 +2,7 @@ import JSZip from 'jszip'
 
 let isBrowser = () => {
     //for debug in browser
-    return false;
+    return true;
 }
 
 let testWords = [{ name: "test word", id: 1000, type: 'file' }] //, { name: "test word2", id: 1001, type: 'file' }];

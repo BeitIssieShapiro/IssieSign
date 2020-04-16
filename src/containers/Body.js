@@ -25,7 +25,7 @@ class Body extends IssieBase {
             this.props.pubSub.publish({ command: "hide-all-buttons" });
         } else {
             this.setState({ selectedCategory: category });
-            if (this.props.pubSub) {
+            if (this.props.pubSub && this.props.allowAddWord) {
                 this.props.pubSub.publish({
                     command: "show-delete", callback: () => {
                         if (this.state.selectedCategory) {
@@ -73,7 +73,7 @@ class Body extends IssieBase {
                 tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
                 imageName={category.imageName}
                 themeFlavor={getThemeFlavor(category.type === "added" ? "1" : category.id)}
-                onLongPress={category.type === "added" ? () => this.toggleSelect(category) : undefined}
+                onLongPress={category.type === "added" && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
                 selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
                 dimensions={this.props.dimensions}
             />
@@ -81,7 +81,7 @@ class Body extends IssieBase {
 
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-        let tileH = 175, tileW = narrow ? 179 : 212;
+        let tileH = 155, tileW = narrow ? 179 : 212;
 
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);

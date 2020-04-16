@@ -7,6 +7,7 @@ import { reloadAdditionals } from "../apis/catalog";
 import '../css/add.css';
 import { AttachButton, CameraButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
+import Shelf from '../containers/Shelf'
 
 const imagePickerOptions = {
     maximumImagesCount: 1,
@@ -134,120 +135,122 @@ class AddItem extends React.Component {
         //let vidName = getFileName(this.state.selectedVideo);
         //let imgName = getFileName(this.state.selectedImage);
 
-        let vidName = this.state.selectedVideo.length>0?"נבחר וידאו עבור המילה":""
-        let imgName = this.state.selectedImage.length>0?"נבחרה תמונה":""
-
+        let vidName = this.state.selectedVideo.length > 0 ? "נבחר וידאו עבור המילה" : ""
+        let imgName = this.state.selectedImage.length > 0 ? "נבחרה תמונה" : ""
         return (
-            <div style={{ width: '100%', height:'120%', backgroundColor: 'lightgray' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', zoom: '150%' }}>
-                    {addWordMode ?
-                        <Card2 addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
-                            imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
-                        :
-                        <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />}
-                </div>
+            <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
+                <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%':'100%', zoom: '150%' }}>
+                        {addWordMode ?
+                            <Card2 addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
+                                imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
+                            : <Shelf>
+                                <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />
+                            </Shelf>}
+                    </div>
 
-                <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right', width: '100%' }}>
-                    <table style={{ width: "100%" }}>
-                        <tbody>
-                            <tr style={{ height: '120px' }}>
-                                <td width="10%"></td>
-                                <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
-                                <td width="70%">
-                                    <input type="text" className="addInput"
-                                        placeholder={addWordMode ? "שם המילה" : "שם התיקיה"}
-                                        onChange={(e) => {
-                                            this.setState({ label: e.target.value })
-                                        }} />
-                                </td>
+                    <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right', width: '100%' }}>
+                        <table style={{ width: "100%" }}>
+                            <tbody>
+                                <tr style={{ height: '120px' }}>
+                                    <td width="10%"></td>
+                                    <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
+                                    <td width="70%">
+                                        <input type="text" className="addInput"
+                                            placeholder={addWordMode ? "שם המילה" : "שם התיקיה"}
+                                            onChange={(e) => {
+                                                this.setState({ label: e.target.value })
+                                            }} />
+                                    </td>
 
-                                <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"} /></td>
-                            </tr>
-                            <tr style={{ height: '120px' }}>
-                                <td></td>
-                                <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
-                                <td>
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
-                                            value={imgName} />
-
-                                        <CameraButton onClick={() => {
-                                            if (this.state.selectInProgress) return;
-                                            this.setState({ selectInProgress: true });
-                                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען מצלמה...' });
-
-                                            setTimeout(async () => navigator.camera.getPicture(
-                                                img => {
-                                                    this.setState({ selectedImage: img, selectInProgress: false });
-                                                    this.props.pubSub.publish({ command: 'set-busy', active: false });
-                                                },
-                                                err => {
-                                                    this.props.alert.error('צילום נכשל או בוטל');
-                                                    this.props.pubSub.publish({ command: 'set-busy', active: false });
-                                                },
-                                                cameraOptions), 300);
-                                        }}
-                                        />
-                                        <AttachButton onClick={async () => {
-                                            if (this.state.selectInProgress) return;
-                                            this.setState({ selectInProgress: true });
-                                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-                                            setTimeout(async () => {
-                                                selectImage().then(
-                                                    img => this.setState({ selectedImage: img, selectInProgress: false }),
-                                                    err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).finally(
-                                                        () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
-                                            }, 300);
-                                        }} />
-                                    </div>
-                                </td>
-
-                                <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"} /></td>
-                            </tr>
-                            {addWordMode ?
+                                    <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"} /></td>
+                                </tr>
                                 <tr style={{ height: '120px' }}>
                                     <td></td>
-                                    <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
+                                    <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
                                     <td>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
-                                            <VideoButton onClick={() => {
+                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
+                                                value={imgName} />
+
+                                            <CameraButton onClick={() => {
                                                 if (this.state.selectInProgress) return;
                                                 this.setState({ selectInProgress: true });
-                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען מצלמה...' });
 
-                                                setTimeout(async () => navigator.device.capture.captureVideo(
-                                                    (mediaFiles) => {
-                                                        if (mediaFiles.length == 1) {
-                                                            this.setState({ selectedVideo: ("file://" + mediaFiles[0].fullPath), selectInProgress: false })
-                                                        }
-                                                        this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                setTimeout(async () => navigator.camera.getPicture(
+                                                    img => {
+                                                        this.setState({ selectedImage: img, selectInProgress: false });
+                                                        this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
-                                                    (err) => {
-                                                        this.props.alert.error("צילום וידאו נכשל או בוטל");
-                                                        this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                    err => {
+                                                        this.props.alert.error('צילום נכשל או בוטל');
+                                                        this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
-                                                    { limit: 1, duration: 15 }), 300);
-                                            }} />
+                                                    cameraOptions), 300);
+                                            }}
+                                            />
                                             <AttachButton onClick={async () => {
                                                 if (this.state.selectInProgress) return;
                                                 this.setState({ selectInProgress: true });
                                                 this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                 setTimeout(async () => {
-                                                    selectVideo().then(
-                                                        video => this.setState({ selectedVideo: video, selectInProgress: false }),
-                                                        err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).finally(
+                                                    selectImage().then(
+                                                        img => this.setState({ selectedImage: img, selectInProgress: false }),
+                                                        err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).finally(
                                                             () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
                                                 }, 300);
                                             }} />
                                         </div>
-
                                     </td>
-                                    <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
+
+                                    <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"} /></td>
                                 </tr>
-                                : null}
-                        </tbody>
-                    </table>
+                                {addWordMode ?
+                                    <tr style={{ height: '120px' }}>
+                                        <td></td>
+                                        <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
+                                        <td>
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                                <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
+                                                <VideoButton onClick={() => {
+                                                    if (this.state.selectInProgress) return;
+                                                    this.setState({ selectInProgress: true });
+                                                    this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+
+                                                    setTimeout(async () => navigator.device.capture.captureVideo(
+                                                        (mediaFiles) => {
+                                                            if (mediaFiles.length == 1) {
+                                                                this.setState({ selectedVideo: ("file://" + mediaFiles[0].fullPath), selectInProgress: false })
+                                                            }
+                                                            this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                        },
+                                                        (err) => {
+                                                            this.props.alert.error("צילום וידאו נכשל או בוטל");
+                                                            this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                        },
+                                                        { limit: 1, duration: 15 }), 300);
+                                                }} />
+                                                <AttachButton onClick={async () => {
+                                                    if (this.state.selectInProgress) return;
+                                                    this.setState({ selectInProgress: true });
+                                                    this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+                                                    setTimeout(async () => {
+                                                        selectVideo().then(
+                                                            video => this.setState({ selectedVideo: video, selectInProgress: false }),
+                                                            err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).finally(
+                                                                () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
+                                                    }, 300);
+                                                }} />
+                                            </div>
+
+                                        </td>
+                                        <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
+                                    </tr>
+                                    : null}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div style={{ paddingTop: 20 }}>
                     <input type="button" value="שמור" className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
