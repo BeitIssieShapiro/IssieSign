@@ -14,6 +14,13 @@
     flex-wrap: wrap;
 }
 
+.tileText {
+    position:absolute;
+    bottom: -20px;
+    left: 0;
+    z-index: 1;
+}
+
 
 .fgStatusIcon {
     padding: 10px 0 0 35px;
@@ -119,6 +126,7 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    align-content: center;
     padding: 0 45px;
 }
 

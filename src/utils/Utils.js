@@ -88,7 +88,8 @@ export function setTranslateX(newVal) {
 export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, inSearch) {
     if (isMobile) {
         //scroll vertically by touch
-        let cols = Math.max(Math.ceil(windowWidth / tileW), 1);
+        let cols = Math.max(Math.floor((windowWidth) / tileW), 1);
+        console.log("calcWidth: mobile, " + Math.floor(windowWidth/ tileW)+ "cols: "+cols);
         return cols * (tileW * 1.05);
     }
 

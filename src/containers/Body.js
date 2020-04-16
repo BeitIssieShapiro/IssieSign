@@ -5,8 +5,10 @@ import { withAlert } from 'react-alert'
 
 import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
-import {deleteCategory } from '../apis/file'
-import {reloadAdditionals} from '../apis/catalog'
+import Shelf from "./Shelf";
+
+import { deleteCategory } from '../apis/file'
+import { reloadAdditionals } from '../apis/catalog'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -40,8 +42,8 @@ class Body extends IssieBase {
                                         onClick: () => this.props.alert.info('מחיקה בוטלה')
                                     }
                                 ]
-                            }); 
-                            
+                            });
+
                         }
                     }
                 });
@@ -60,18 +62,18 @@ class Body extends IssieBase {
             },
             //error
             (e) => this.props.alert.error("מחיקה נכשלה\n" + e)
-        );        
+        );
     }
 
     render() {
         let elements = this.props.categories.map((category) => {
-            return <Tile2 
-                key={category.id} 
-                tileName={category.name} 
+            return <Tile2
+                key={category.id}
+                tileName={category.name}
                 tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
-                imageName={category.imageName} 
-                themeFlavor={getThemeFlavor(category.type === "added" ?"1":category.id)} 
-                onLongPress={category.type === "added" ? () => this.toggleSelect(category) : undefined} 
+                imageName={category.imageName}
+                themeFlavor={getThemeFlavor(category.type === "added" ? "1" : category.id)}
+                onLongPress={category.type === "added" ? () => this.toggleSelect(category) : undefined}
                 selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
                 dimensions={this.props.dimensions}
             />
@@ -79,10 +81,29 @@ class Body extends IssieBase {
 
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-        let tileH = 175, tileW = narrow ? 140 : 220;
+        let tileH = 175, tileW = narrow ? 179 : 212;
 
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
+
+        
+
+        //build array of lines:
+        let lineWidth = 0;
+        let curLine = -1;
+        let lines = [];
+        for (let i = 0; i < elements.length; i++) {
+            let card = elements[i];
+            lineWidth += tileW;
+            if (curLine < 0 || lineWidth > width) {
+                curLine++;
+                lines.push([]);
+                lineWidth = tileW;
+            }
+            lines[curLine].push(card);
+        }
+
+        console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
 
         if (this.props.isMobile && narrow) {
             width = '100%'
@@ -90,16 +111,19 @@ class Body extends IssieBase {
             width = width + 'px';
         }
 
-        //console.log("Body: Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
 
         return (
-            <div className={this.props.InSearch?"subTileContainer":"tileContainer"} style={{
-                width: width, 
+            <div className={this.props.InSearch ? "subTileContainer" : "tileContainer"} style={{
+                width: width,
                 flexWrap: 'wrap',
                 transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)',
-                
+
             }}>
-                {elements}
+                {lines.map((line) => (
+                    <Shelf>
+                        {line}
+                    </Shelf>
+                ))}
             </div>
         )
     }
