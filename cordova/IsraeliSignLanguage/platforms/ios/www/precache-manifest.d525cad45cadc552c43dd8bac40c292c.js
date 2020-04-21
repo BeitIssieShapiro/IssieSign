@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "75496c6ca54325509449340bde7d6055",
+    "revision": "5a5906dca18ea73d1476fa3d52fc6259",
     "url": "./index.html"
   },
   {
-    "revision": "92bccbedbc236fe5190e",
+    "revision": "08d16ae89c1a6c6e6e67",
     "url": "./static/css/2.627926fe.chunk.css"
   },
   {
-    "revision": "806d138fd96400196861",
-    "url": "./static/css/main.fd3b0b2e.chunk.css"
+    "revision": "8b1ea8c519157afe4405",
+    "url": "./static/css/main.1384dfa8.chunk.css"
   },
   {
-    "revision": "92bccbedbc236fe5190e",
-    "url": "./static/js/2.540cecc5.chunk.js"
+    "revision": "08d16ae89c1a6c6e6e67",
+    "url": "./static/js/2.b8a0301e.chunk.js"
   },
   {
-    "revision": "806d138fd96400196861",
-    "url": "./static/js/main.215c3e84.chunk.js"
+    "revision": "8b1ea8c519157afe4405",
+    "url": "./static/js/main.8be19d3d.chunk.js"
   },
   {
     "revision": "d08ea4ba7bf7ef7bd677",
@@ -32,28 +32,40 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/media/Material-Design-Iconic-Font.a4d31128.woff2"
   },
   {
-    "revision": "3f73439d1f9669cdc367b235884d7451",
-    "url": "./static/media/arrow-left.3f73439d.svg"
+    "revision": "bb3e6777a0c06da68745c0b5e8ec25bd",
+    "url": "./static/media/clock.bb3e6777.svg"
   },
   {
-    "revision": "567ea7fcdafa577603f2e40bdaea1f52",
-    "url": "./static/media/arrow-right.567ea7fc.svg"
+    "revision": "334f7dbd3382fce4e66cee644eb88b29",
+    "url": "./static/media/cube.334f7dbd.svg"
   },
   {
-    "revision": "1b149d819c78564338647731c7a270af",
-    "url": "./static/media/check.1b149d81.png"
+    "revision": "b7a7ab2e868c4893e3aa382ebbeb2506",
+    "url": "./static/media/globe.b7a7ab2e.svg"
   },
   {
-    "revision": "1d472015725426ace1a710c3d1650698",
-    "url": "./static/media/missing.1d472015.png"
+    "revision": "ef8e4e3c09e2b567cd391dcbcf79c057",
+    "url": "./static/media/pencils.ef8e4e3c.svg"
   },
   {
     "revision": "4b8708edc42b7415ca1c931b8a0cd812",
     "url": "./static/media/pizza.4b8708ed.png"
   },
   {
+    "revision": "e8aed27525711486006ccbf5553949cc",
+    "url": "./static/media/plant.e8aed275.svg"
+  },
+  {
     "revision": "e5d0575a28c021cf06a2bd3f7bbebc77",
     "url": "./static/media/plus.e5d0575a.jpg"
+  },
+  {
+    "revision": "2c4a4bb0d6775fac72a19a636401f157",
+    "url": "./static/media/speakers.2c4a4bb0.svg"
+  },
+  {
+    "revision": "f0ab06a6c42fbd2102cf933bf6f51723",
+    "url": "./static/media/sticker.f0ab06a6.svg"
   },
   {
     "revision": "87a01822b745ea1abb978af0158a32f1",

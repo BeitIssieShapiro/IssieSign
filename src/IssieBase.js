@@ -12,6 +12,10 @@ class IssieBase extends Component {
         return window.innerHeight < 450 || window.innerWidth < 450;
     }
 
+    static isHighResolution() {
+        return window.innerHeight > 1200 || window.innerWidth < 1200;
+    }
+
     static isLandscape() {
         return (window.innerWidth > window.innerHeight);
     }
@@ -28,6 +32,7 @@ class IssieBase extends Component {
             ret.boxWidth = (.53 * boxSize) + 'px';
             ret.shelfWidth = (.73 * boxSize) + 'px';
             ret.tileGroupWidth = (.95 * boxSize) + 'px';
+            ret.tileGroupWidthNumeric = (.95 * boxSize);
             ret.shellPadding = (.05 * boxSize) + 'px';
             ret.overFlowX = 'hidden';
         } else {
@@ -36,6 +41,7 @@ class IssieBase extends Component {
             ret.boxWidth = '124px';
             ret.shelfWidth = '170px';
             ret.tileGroupWidth = '220px';
+            ret.tileGroupWidthNumeric = 220;
             ret.shellPadding = '10px';
             ret.overFlowX = 'visible';
         }

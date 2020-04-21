@@ -11,6 +11,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
+const getRandomBoolean = ()=> Math.random() >= 0.5;
+
 class Word extends IssieBase {
 
     static getDerivedStateFromProps(props, state) {
@@ -106,7 +108,9 @@ class Word extends IssieBase {
                 }
                 let selectable = word.type === "file"
                 return <Card2 key={word.id} cardType={selectable ? "file" : "default"} cardName={word.name} videoName={word.videoName}
-                    imageName={word.imageName} imageName2={word.imageName2} themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected} />
+                    imageName={word.imageName} imageName2={word.imageName2}
+                    themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected} 
+                    binder={getRandomBoolean()}/>
             });
 
 
@@ -159,22 +163,27 @@ class Word extends IssieBase {
             lines[curLine].push(card);
         }
 
-
-
         return (
             // <div className={this.props.InSearch?"subTileContainer":"tileContainer"} style={{ width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)' }}>
             //     {wordsElements}
             // </div>
-            <div className={this.props.InSearch ? "subTileContainer" : "tileContainer"}
+            <div className={this.props.InSearch ? "subTileContainer wordContainer" : "tileContainer wordContainer"}
                 style={{
                     flexDirection: 'column',
                     width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)'
                 }}>
-                {lines.map((line) => (
-                    <Rope size={line.length < 5 ? "S" : line.length > 15 ? "L" : "M"}>
+                {lines.map((line) => {
+                    let ropeSize = line.length < 5 ? "S" : line.length > 15 ? "L" : "M";
+                    //on high res go one up
+                    // if (IssieBase.isHighResolution()) {
+                    //     if (ropeSize === "L") {
+                    //         ropeSize = "M";
+                    //     } 
+                    // }
+                    return <Rope size={ropeSize}>
                         {line}
                     </Rope>
-                ))}
+                })}
             </div>
         )
     }

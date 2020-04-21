@@ -68,10 +68,9 @@ export class Menu extends React.Component {
       container: {
         position: 'absolute',
         top: '35%',
-        left: '20%',
+        left: '10%',
         height: this.state.open ? 400 : 0,
-        width: '60%',
-        minWidth: '20em',
+        width: '80%',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'white',

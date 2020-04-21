@@ -11,7 +11,7 @@ import { deleteCategory } from '../apis/file'
 import { reloadAdditionals } from '../apis/catalog'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-
+import {getDecoration} from "../components/ui-elements"
 
 class Body extends IssieBase {
 
@@ -81,7 +81,10 @@ class Body extends IssieBase {
 
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-        let tileH = 155, tileW = narrow ? 179 : 212;
+        let tileH = 155, 
+        //tileW = narrow ? 179 : 212;
+        tileW = this.props.dimensions.tileGroupWidthNumeric;
+        //let tileWidthAbs = narrow ? 178 : 220;
 
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
@@ -104,23 +107,24 @@ class Body extends IssieBase {
         }
 
         console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
-
+        let widthStr = width + 'px';
         if (this.props.isMobile && narrow) {
-            width = '100%'
+            widthStr = '100%'
         } else {
-            width = width + 'px';
+            
         }
 
 
         return (
             <div className={this.props.InSearch ? "subTileContainer" : "tileContainer"} style={{
-                width: width,
+                width: widthStr,
                 flexWrap: 'wrap',
                 transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)',
 
             }}>
-                {lines.map((line) => (
+                {lines.map((line, i) => (
                     <Shelf>
+                        {getDecoration(i, tileW, line.length, width)}
                         {line}
                     </Shelf>
                 ))}

@@ -56,6 +56,19 @@
             font-size: 85px;
         }
 
+        .replayhost-landscape {
+            position: absolute;
+            top: 120%;
+            width: 100%;
+            left: 50%;
+            margin-left: -50px;
+            --radius: 100px;
+            
+            visibility: inherit;
+            font-size: 85px;
+        }
+
+
         .display-hidden {
             display: none;
         }
@@ -188,14 +201,14 @@
             onclick="window.goBack()" style="z-index:99999; position:absolute; top:15px; right:35px; --radius: 50px;">
                 <div class="arrow-right" />
             </button>
-        <div class="replayhost" id="buttonReplay">
-            <button id="pauseBtn" class="roundbutton display-hidden">
+        <div class="replayhost" id="videoButtons">
+            <button id="pauseBtn" class="roundbutton display-hidden" onclick="player.pause()">
                 <div class="pause" />
             </button>
-            <button id="playBtn" class="roundbutton display-hidden">
+            <button id="playBtn" class="roundbutton display-hidden" onclick="player.play()">
                 <div class="play" />
             </button>
-            <button id="replayBtn" class="roundbutton display-hidden">
+            <button id="replayBtn" class="roundbutton display-hidden" onclick="player.play()">
                 <div class="replay" />
             </button>
         </div>

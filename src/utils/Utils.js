@@ -147,10 +147,17 @@ export const themeMap = {
 };
 
 var videoMonitor = undefined;
-export const VideoToggle = (on, addButtons) => {
+var gIsLandscape = false;
+
+export const VideoToggle = (on, addButtons, isLandscape) => {
     console.log("toggle: "+ on)
+    gIsLandscape = isLandscape;
     let video = document.getElementById("player");
-    document.getElementById("playerhost").style.visibility = (on ? "visible" : "hidden");
+    let playerHost = document.getElementById("playerhost")
+    playerHost.style.visibility = (on ? "visible" : "hidden");
+    let videoButtons = document.getElementById("videoButtons")
+
+    videoButtons.classList = isLandscape ? ["replayhost"] : ["replayhost-landscape"];
     let backBtn = document.getElementById("backBtn");
     if (!on) {
         video.pause();

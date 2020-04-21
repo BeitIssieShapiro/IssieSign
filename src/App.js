@@ -343,7 +343,7 @@ class App extends IssieBase {
                         />}
                         {IssieBase.isMobile() ? null :<LineMenu />}
                         <OnOffMenu 
-                            label={'הוספת מילים'} 
+                            label={'עריכה (הוספת/מחיקת קטגוריות ומילים)'} 
                             checked={this.state.allowAddWord}
                             onChange={(isOn) => this.allowAddWord(isOn) }
                         />
@@ -429,7 +429,7 @@ class App extends IssieBase {
                 <Route
                     path="/video/:videoName/:categoryId/:title/:filePath"
                     render={(props) => {
-                        VideoToggle(true, !IssieBase.isMobile());
+                        VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
                         this.setTitle(props.match.params.title);
 
                         return (

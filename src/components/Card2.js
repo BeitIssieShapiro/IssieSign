@@ -29,7 +29,7 @@ export default function Card2(props) {
     }
     let innerBody = (
         <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
-            <div className="header clip"></div>
+            <div className={"header" + (props.binder?" binder":" clip")}></div>
             <div className="main">
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
