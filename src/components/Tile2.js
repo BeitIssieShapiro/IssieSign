@@ -28,7 +28,7 @@ function Tile2(props) {
                 <main>
                     <div style={{ width: props.dimensions.imageBoxWidth }}>
                         {imageSrc ? <img className="tileImg" src={imageSrc} alt="ללא תמונה" /> : null}
-                        {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -10, zIndex: 0 }}><Selected /></div> : null}
+                        {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -25, zIndex: 5 }}><Selected /></div> : null}
                     </div>
 
                 </main>

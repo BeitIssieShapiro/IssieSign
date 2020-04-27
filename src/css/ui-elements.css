@@ -87,7 +87,7 @@
 .selected-icon:before {
   content: ' ';
   display: inline-block;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 40 40"><circle stroke="green" id="circle1" cy="15px" stroke-width="3px" fill="green" r="15px" cx="15px" ></circle><polyline points="8.0625,13.5 13.125,19.1875 21.625,8.1875" stroke="white" id="polyline1" stroke-width="2px" fill="none" transform=""></polyline></svg>');
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 40 40"><circle stroke="MidnightBlue" id="circle1" cy="17px" stroke-width="3px" fill="MidnightBlue" r="15px" cx="17px" ></circle><g transform="translate(2 2)"><polyline points="8.0625,13.5 13.125,19.1875 21.625,8.1875" stroke="white" id="polyline1" stroke-width="2px" fill="none" transform=""></polyline></g></svg>');
   width: 35px;
   height: 35px;
 }
