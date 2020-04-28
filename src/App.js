@@ -27,7 +27,7 @@ import {
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import { MenuButton, Menu, OnOffMenu, LineMenu } from './settings'
+import { Menu, OnOffMenu, LineMenu } from './settings'
 import './css/settings.css'
 import { receiveIncomingZip } from './apis/file'
 import { isNumber } from 'util';
@@ -343,7 +343,8 @@ class App extends IssieBase {
                         />}
                         {IssieBase.isMobile() ? null :<LineMenu />}
                         <OnOffMenu 
-                            label={'עריכה (הוספת/מחיקת קטגוריות ומילים)'} 
+                            label={'עריכה'} 
+                            subLabel={'הוספת/מחיקת קטגוריות ומילים'}
                             checked={this.state.allowAddWord}
                             onChange={(isOn) => this.allowAddWord(isOn) }
                         />

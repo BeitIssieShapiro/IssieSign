@@ -54,7 +54,7 @@ async function selectImage() {
             resolve(results[0]);
         }, function (error) {
             console.log('Error: ' + error);
-            reject(error);
+            resolve("");
         },
         imagePickerOptions
     ));
@@ -140,7 +140,7 @@ class AddItem extends React.Component {
         return (
             <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
                 <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%':'100%', zoom: '150%' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%' : '100%', zoom: '150%' }}>
                         {addWordMode ?
                             <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
                                 imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
@@ -185,6 +185,7 @@ class AddItem extends React.Component {
                                                     },
                                                     err => {
                                                         this.props.alert.error('צילום נכשל או בוטל');
+                                                        this.setState({ selectInProgress: false });
                                                         this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
                                                     cameraOptions), 300);
@@ -196,9 +197,20 @@ class AddItem extends React.Component {
                                                 this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                 setTimeout(async () => {
                                                     selectImage().then(
-                                                        img => this.setState({ selectedImage: img, selectInProgress: false }),
-                                                        err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).finally(
-                                                            () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
+                                                        img => {
+                                                            if (img && img.length > 0) {
+                                                            this.setState({ selectedImage: img })
+                                                            } else {
+                                                                this.props.alert.error('טעינת תמונה נכשלה או בוטלה');
+                                                            }
+                                                        },
+                                                        err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).catch(
+                                                            err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')
+                                                        ).finally(
+                                                            () => {
+                                                                this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                                this.setState({ selectInProgress: false })
+                                                            });
                                                 }, 300);
                                             }} />
                                         </div>
@@ -227,6 +239,7 @@ class AddItem extends React.Component {
                                                         },
                                                         (err) => {
                                                             this.props.alert.error("צילום וידאו נכשל או בוטל");
+                                                            this.setState({ selectInProgress: false });
                                                             this.props.pubSub.publish({ command: 'set-busy', active: false })
                                                         },
                                                         { limit: 1, duration: 15 }), 300);
@@ -237,9 +250,14 @@ class AddItem extends React.Component {
                                                     this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                     setTimeout(async () => {
                                                         selectVideo().then(
-                                                            video => this.setState({ selectedVideo: video, selectInProgress: false }),
-                                                            err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).finally(
-                                                                () => this.props.pubSub.publish({ command: 'set-busy', active: false }));
+                                                            video => this.setState({ selectedVideo: video }),
+                                                            err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).
+                                                            catch(err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).
+                                                            finally(
+                                                                () => {
+                                                                    this.props.pubSub.publish({ command: 'set-busy', active: false })
+                                                                    this.setState({ selectInProgress: false })
+                                                                });
                                                     }, 300);
                                                 }} />
                                             </div>

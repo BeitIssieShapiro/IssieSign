@@ -19,19 +19,33 @@ export function OnOffMenu(props) {
     }}>
       <div style={{ height: 30 }} />
       <div style={{
-
         width: '80%',
         display: 'flex',
         flexDirection: 'row',
         fontSize: '25px',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
         <label className="form-switch">
           <input type="checkbox" checked={props.checked} onChange={(e) => props.onChange(e.target.checked)} />
           <i></i>
         </label>
-        {props.label}
+
+          <div>
+          {props.label}
+          </div>
       </div>
+      {props.subLabel ? 
+        <div style={{ 
+          width: '80%',
+          display: 'flex',
+          fontSize: '20px', 
+          justifyContent:'flex-end' }}>
+            { props.subLabel}
+          </div> :
+          null}
+
+        
       <div style={{ height: 30 }} />
     </div>
   )
@@ -150,70 +164,70 @@ export class Menu extends React.Component {
   }
 }
 
-/* MenuButton.jsx */
-export class MenuButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: this.props.open ? this.props.open : false,
-      color: this.props.color ? this.props.color : 'black',
-    }
-    this.handleClick = this.handleClick.bind(this);
-  }
+// /* MenuButton.jsx */
+// export class MenuButton extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       open: this.props.open ? this.props.open : false,
+//       color: this.props.color ? this.props.color : 'black',
+//     }
+//     this.handleClick = this.handleClick.bind(this);
+//   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.open !== state.open) {
-      return { open: props.open };
-    }
-    return null;
-  }
+//   static getDerivedStateFromProps(props, state) {
+//     if (props.open !== state.open) {
+//       return { open: props.open };
+//     }
+//     return null;
+//   }
 
-  handleClick() {
-    this.setState({ open: !this.state.open });
-  }
+//   handleClick() {
+//     this.setState({ open: !this.state.open });
+//   }
 
-  render() {
-    const styles = {
-      container: {
-        height: '32px',
-        width: '32px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        cursor: 'pointer',
-        padding: '4px',
-      },
-      line: {
-        height: '3px',
-        width: '25px',
-        background: this.state.color,
-        transition: 'all 0.2s ease',
-      },
-      lineTop: {
-        transform: this.state.open ? 'rotate(45deg)' : 'none',
-        transformOrigin: 'top left',
-        marginBottom: '5.5px',
-      },
-      lineMiddle: {
-        opacity: this.state.open ? 0 : 1,
-        transform: this.state.open ? 'translateX(-16px)' : 'none',
-      },
-      lineBottom: {
-        transform: this.state.open ? 'translateX(-1.5px) rotate(-45deg)' : 'none',
-        transformOrigin: 'top left',
-        marginTop: '5.5px',
-      },
-    }
-    return (
-      <div style={styles.container}
-        onClick={this.props.onClick ? this.props.onClick :
-          () => { this.handleClick(); }}>
-        <div style={{ ...styles.line, ...styles.lineTop }} />
-        <div style={{ ...styles.line, ...styles.lineMiddle }} />
-        <div style={{ ...styles.line, ...styles.lineBottom }} />
-      </div>
-    )
-  }
-}
+//   render() {
+//     const styles = {
+//       container: {
+//         height: '32px',
+//         width: '32px',
+//         display: 'flex',
+//         flexDirection: 'column',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         cursor: 'pointer',
+//         padding: '4px',
+//       },
+//       line: {
+//         height: '3px',
+//         width: '25px',
+//         background: this.state.color,
+//         transition: 'all 0.2s ease',
+//       },
+//       lineTop: {
+//         transform: this.state.open ? 'rotate(45deg)' : 'none',
+//         transformOrigin: 'top left',
+//         marginBottom: '5.5px',
+//       },
+//       lineMiddle: {
+//         opacity: this.state.open ? 0 : 1,
+//         transform: this.state.open ? 'translateX(-16px)' : 'none',
+//       },
+//       lineBottom: {
+//         transform: this.state.open ? 'translateX(-1.5px) rotate(-45deg)' : 'none',
+//         transformOrigin: 'top left',
+//         marginTop: '5.5px',
+//       },
+//     }
+//     return (
+//       <div style={styles.container}
+//         onClick={this.props.onClick ? this.props.onClick :
+//           () => { this.handleClick(); }}>
+//         <div style={{ ...styles.line, ...styles.lineTop }} />
+//         <div style={{ ...styles.line, ...styles.lineMiddle }} />
+//         <div style={{ ...styles.line, ...styles.lineBottom }} />
+//       </div>
+//     )
+//   }
+// }
 

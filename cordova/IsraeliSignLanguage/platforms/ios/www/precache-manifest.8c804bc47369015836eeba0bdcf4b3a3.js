@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "5a5906dca18ea73d1476fa3d52fc6259",
+    "revision": "6b1b4452f1449aa01f4b83d0f997806b",
     "url": "./index.html"
   },
   {
-    "revision": "08d16ae89c1a6c6e6e67",
+    "revision": "e64bff9050dba961b154",
     "url": "./static/css/2.627926fe.chunk.css"
   },
   {
-    "revision": "8b1ea8c519157afe4405",
-    "url": "./static/css/main.1384dfa8.chunk.css"
+    "revision": "702fc621aed59989b22f",
+    "url": "./static/css/main.3fec5fc5.chunk.css"
   },
   {
-    "revision": "08d16ae89c1a6c6e6e67",
-    "url": "./static/js/2.b8a0301e.chunk.js"
+    "revision": "e64bff9050dba961b154",
+    "url": "./static/js/2.8718f049.chunk.js"
   },
   {
-    "revision": "8b1ea8c519157afe4405",
-    "url": "./static/js/main.8be19d3d.chunk.js"
+    "revision": "702fc621aed59989b22f",
+    "url": "./static/js/main.ff841161.chunk.js"
   },
   {
     "revision": "d08ea4ba7bf7ef7bd677",
@@ -30,6 +30,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "a4d31128b633bc0b1cc1f18a34fb3851",
     "url": "./static/media/Material-Design-Iconic-Font.a4d31128.woff2"
+  },
+  {
+    "revision": "9ffd565be87f87f28418b9d8e1aec897",
+    "url": "./static/media/clicking-finger.9ffd565b.png"
   },
   {
     "revision": "bb3e6777a0c06da68745c0b5e8ec25bd",
