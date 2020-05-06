@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="59px" viewBox="0 0 35 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>D538FF7D-F80F-4FFF-B638-B099B5C938B8</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Main-cards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-728.000000, -428.000000)">
+        <g id="Pencils-box" transform="translate(728.000000, 427.000000)">
+            <g id="Group-12" transform="translate(12.000000, 34.500000) rotate(-10.000000) translate(-12.000000, -34.500000) translate(10.000000, 9.000000)">
+                <polygon id="Rectangle-10" fill="#F5B658" points="1.0658141e-14 7.28571429 4 7.28571429 4 47.9268021 2 51 1.0658141e-14 47.9268021"></polygon>
+                <rect id="Rectangle-10" fill="#F36C19" x="7.10542736e-15" y="5.68434189e-14" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="1.42108547e-14" y="5.46428571" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="1.42108547e-14" y="1.82142857" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#B2B1B7" x="1.0658141e-14" y="3.64285714" width="4" height="1.82142857"></rect>
+            </g>
+            <g id="Group-12" transform="translate(27.000000, 29.500000) rotate(11.000000) translate(-27.000000, -29.500000) translate(25.000000, 4.000000)">
+                <polygon id="Rectangle-10" fill="#F5B658" points="1.42108547e-14 7.28571429 4 7.28571429 4 47.9268021 2 51 1.42108547e-14 47.9268021"></polygon>
+                <rect id="Rectangle-10" fill="#F36C19" x="-2.62900812e-13" y="-2.55795385e-13" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="-2.91322522e-13" y="5.46428571" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="3.55271368e-14" y="1.82142857" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#B2B1B7" x="-1.27897692e-13" y="3.64285714" width="4" height="1.82142857"></rect>
+            </g>
+            <g id="Group-12" transform="translate(20.000000, 26.500000) rotate(181.000000) translate(-20.000000, -26.500000) translate(18.000000, 1.000000)">
+                <polygon id="Rectangle-10" fill="#F5B658" points="0 7.28571429 4 7.28571429 4 47.9268021 2 51 0 47.9268021"></polygon>
+                <rect id="Rectangle-10" fill="#FF8134" x="0" y="0" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="0" y="5.46428571" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#DADBDF" x="0" y="1.82142857" width="4" height="1.82142857"></rect>
+                <rect id="Rectangle-10" fill="#B2B1B7" x="0" y="3.64285714" width="4" height="1.82142857"></rect>
+            </g>
+            <rect id="Rectangle-11" fill-opacity="0.889068161" fill="#00C3EB" x="13" y="11" width="4" height="42"></rect>
+            <rect id="Rectangle-12" fill="#967FBD" x="4" y="26" width="28" height="34"></rect>
+            <rect id="Rectangle-12" fill="#856DAE" x="4" y="27" width="28" height="6"></rect>
+            <rect id="Rectangle-12" fill="#AB9AC9" x="0" y="22" width="35" height="6"></rect>
+        </g>
+    </g>
+</svg>

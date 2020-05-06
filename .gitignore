@@ -28,7 +28,7 @@ cordova/IsraeliSignLanguage/platforms/android/app/release
 
 public/videos
 static
-src/images
+src/images/*.png
 src/design
 android-gen
 
