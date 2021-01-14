@@ -8,8 +8,8 @@ cordova/IsraeliSignLanguage/platforms/ios/www/static
 cordova/IsraeliSignLanguage/platforms/ios/www/asset*
 cordova/IsraeliSignLanguage/platforms/ios/www/index.html
 cordova/IsraeliSignLanguage/platforms/ios/www/manifest.json
-cordova/IsraeliSignLanguage/platforms/ios/www/service-worker.json
-cordova/IsraeliSignLanguage/platforms/ios/www/sprecache*
+cordova/IsraeliSignLanguage/platforms/ios/www/service-worker.js
+cordova/IsraeliSignLanguage/platforms/ios/www/precache*
 
 cordova/IsraeliSignLanguage/www/
 cordova/IsraeliSignLanguage/plugins/

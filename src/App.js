@@ -205,14 +205,13 @@ class App extends IssieBase {
     }
 
     goBack(skipSearch) {
+        this.backInProcess = true;
         if (this.isWords()) {
             //reset words position
             saveWordTranslateX(0);
         }
-
-        if (this.isVideo()) {
-            VideoToggle(false);
-        }
+        let video = this.isVideo();
+        
 
         if (skipSearch === undefined && this.isSearch()) {
             this.props.history.goBack();
@@ -220,8 +219,13 @@ class App extends IssieBase {
         } else {
             this.props.history.goBack();
         }
-        setTimeout(() =>
-            this.setState({ showDelete: undefined, showShare: undefined }), 50);
+        if (video) {
+            VideoToggle(false);
+        }
+        setTimeout(() => {
+            this.setState({ showDelete: undefined, showShare: undefined })
+            this.backInProcess = false
+        }, 50);
     }
     savePos(newVal) {
         if (this.isWords()) {
@@ -365,7 +369,7 @@ class App extends IssieBase {
     }
 
     getChildren() {
-        console.log("render")
+        console.log("Render App.js")
         return (
             <Switch>
                 <Route exact path="/" render={(props) => (
@@ -430,6 +434,9 @@ class App extends IssieBase {
                 <Route
                     path="/video/:videoName/:categoryId/:title/:filePath"
                     render={(props) => {
+                        console.log("Render video pane")
+                        if (this.backInProcess) 
+                            return 
                         VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
                         this.setTitle(props.match.params.title);
 
