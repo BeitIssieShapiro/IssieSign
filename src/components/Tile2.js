@@ -10,6 +10,8 @@ import { Selected } from "./ui-elements";
 
 //import { A, navigate } from "hookrouter";
 import { Link } from "react-router-dom";
+import { translate } from '../utils/lang';
+
 
 function Tile2(props) {
     const longPressEvent = props.onLongPress ? longPress(() => props.onLongPress(), 500) : {};

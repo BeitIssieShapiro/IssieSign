@@ -3,6 +3,10 @@ export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 
+export function isBrowser() {
+    return false;
+}
+
 export function saveSettingKey(key, value) {
     window.localStorage.setItem(key, value);
 }

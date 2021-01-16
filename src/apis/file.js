@@ -1,11 +1,6 @@
 import JSZip from 'jszip'
 import { translate } from '../utils/lang';
-
-
-let isBrowser = () => {
-    //for debug in browser
-    return false;
-}
+import {isBrowser} from '../utils/Utils';
 
 let testWords = [{ name: "test word", id: 1000, type: 'file' }] //, { name: "test word2", id: 1001, type: 'file' }];
 let testCategories = [{ name: "test", nativeURL: "file:///none/" }];

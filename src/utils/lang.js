@@ -1,4 +1,4 @@
-import {isBrowser} from '../utils/Utils'
+import {isBrowser} from './Utils'
 
 const DEFAULT_LANG = "he";
 let gPrefix = "";
