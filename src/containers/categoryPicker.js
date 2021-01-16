@@ -1,4 +1,5 @@
 import React from 'react';
+import { translate } from '../utils/lang';
 
 import {imageLocalCall} from '../apis/ImageLocalCall'
 export function CategoryList(props) {
@@ -22,7 +23,7 @@ export function ListItem(props) {
                 <table className="listItem"><tbody>
                     <tr>
                         <td className="listImage">
-                            <img src={imageSrc} alt="ללא תמונה"></img>
+                            <img src={imageSrc} alt={translate("MissingImageAlt")}></img>
                         </td>
                         <td>
                             <p>{props.name}</p>

@@ -1,5 +1,6 @@
 import './css/settings.css';
 import React from 'react';
+import { translate } from './utils/lang';
 
 export const LineMenu = () => (
   <hr
@@ -129,7 +130,7 @@ export class Menu extends React.Component {
             {
               this.state.open ?
                 <div style={styles.menuList} >
-                  <div style={styles.header}>הגדרות</div>
+                  <div style={styles.header}>{translate("SettingsTitle")}</div>
                   <div style={styles.close} onClick={() => {
                     if (this.props.closeSettings) {
                       console.log("close settings");
@@ -149,7 +150,7 @@ export class Menu extends React.Component {
                       justifyContent: 'space-between'
                     }}>
                     <div className="info-button" ></div>
-                    <div>עלינו - About us</div>
+                    <div>{translate("SettingsAbout")}</div>
                   </div>
                   <div style={{ height: 30 }} />
                   <LineMenu />

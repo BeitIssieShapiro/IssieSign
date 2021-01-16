@@ -12,6 +12,7 @@ import { reloadAdditionals } from '../apis/catalog'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import {getDecoration} from "../components/ui-elements"
+import { translate, fTranslate } from "../utils/lang";
 
 class Body extends IssieBase {
 
@@ -30,16 +31,16 @@ class Body extends IssieBase {
                     command: "show-delete", callback: () => {
                         if (this.state.selectedCategory) {
                             confirmAlert({
-                                title: 'מחיקת תיקיה',
-                                message: "מחיקת תיקיה תמחק גם את כל המילים שבתוכה. האם למחוק את התיקיה:'" + category.name + "'?",
+                                title: translate("ConfirmTitleDeleteCategory"),
+                                message: fTranslate("ConfirmDeleteCategoryMessage", category.name),
                                 buttons: [
                                     {
-                                        label: 'כן',
+                                        label: translate("BtnYes"),
                                         onClick: () => this.deleteCategory(category)
                                     },
                                     {
-                                        label: 'בטל',
-                                        onClick: () => this.props.alert.info('מחיקה בוטלה')
+                                        label: translate("BtnCancel"),
+                                        onClick: () => this.props.alert.info(translate("InfoDeleteCanceled"))
                                     }
                                 ]
                             });
@@ -58,10 +59,10 @@ class Body extends IssieBase {
                 await reloadAdditionals();
                 this.props.pubSub.publish({ command: "refresh" })
                 this.toggleSelect(null, true)
-                this.props.alert.success("מחיקה בוצעה");
+                this.props.alert.success(translate("InfoDeleteSucceeded"));
             },
             //error
-            (e) => this.props.alert.error("מחיקה נכשלה\n" + e)
+            (e) => this.props.alert.error(translate("InfoDeleteFailed") +"\n" + e)
         );
     }
 

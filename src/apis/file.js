@@ -1,4 +1,6 @@
 import JSZip from 'jszip'
+import { translate } from '../utils/lang';
+
 
 let isBrowser = () => {
     //for debug in browser
@@ -81,9 +83,9 @@ function share(filePath, title, mimetype, onSuccess, onError) {
     // this is the complete list of currently supported params you can pass to the plugin (all optional)
     var options = {
         message: '', // not supported on some apps (Facebook, Instagram)
-        subject: 'שיתוף מילים', // fi. for email
+        subject: translate("ShareWords"), // fi. for email
         files: [filePath], // an array of filenames either locally or remotely
-        chooserTitle: 'שתף מילים', // Android only, you can override the default share sheet title
+        chooserTitle: translate("ShareWords"), // Android only, you can override the default share sheet title
         iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
     };
 

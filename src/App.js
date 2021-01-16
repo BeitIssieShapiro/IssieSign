@@ -14,7 +14,8 @@ import { withAlert } from 'react-alert'
 import { Route, Switch } from "react-router";
 import { VideoToggle } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
-import { CategoryList, ListItem } from './containers/categoryPicker'
+import {translate, setLanguage} from './utils/lang';
+import {gCurrentLanguage} from './current-language';
 
 import './css/App.css';
 import './css/style.css';
@@ -68,6 +69,8 @@ class App extends IssieBase {
     }
 
     componentDidMount() {
+        setLanguage(gCurrentLanguage)
+
         window.addEventListener("resize", this.resizeListener);
 
         window.goBack = () => this.goBack();
@@ -78,13 +81,13 @@ class App extends IssieBase {
             allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
             pubsub: pubsub,
             busy: false,
-            busyText: 'עובד על זה...'
+            busyText: translate("Working")
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
         window.importWords = (url) => {
             console.log("Reloading app");
-            this.setState({ busy: true, busyText: 'מייבא מילים...' });
+            this.setState({ busy: true, busyText: translate("ImportWords") });
             receiveIncomingZip(url).then((data) => {
                 if (data) {
                     reloadAdditionals().then(() => {
@@ -93,7 +96,7 @@ class App extends IssieBase {
                         this.setState({ busy: false });
 
                         setTimeout(() => {
-                            let msg = "מילים חדשות:\n";
+                            let msg = translate("NewWords") +":\n";
                             for (let i = 0; i < data.length; i++) {
                                 if (data[i].words.length > 0) {
                                     let folderName = data[i].name;
@@ -131,7 +134,7 @@ class App extends IssieBase {
         if (!props.pubSub) {
             return {
                 theme: props.history.location.pathname === "/" ? "blue" : state.theme,
-                title: props.history.location.pathname === "/" ? "שפת הסימנים" : state.title,
+                title: props.history.location.pathname === "/" ? translate("AppTitle") : state.title,
                 pubsub: state.pubsub ? state.pubsub : new PubSub()
             };
         }
@@ -341,14 +344,14 @@ class App extends IssieBase {
                         showInfo={() => { this.showInfo(); }}>
                         {IssieBase.isMobile() ? null :
                         <OnOffMenu 
-                            label={'החלקה'} 
+                            label={translate("SettingsSwipe")} 
                             checked={this.state.allowSwipe}
                             onChange={(isOn) => this.allowSwipe(isOn) }
                         />}
                         {IssieBase.isMobile() ? null :<LineMenu />}
                         <OnOffMenu 
-                            label={'עריכה'} 
-                            subLabel={'הוספת/מחיקת קטגוריות ומילים'}
+                            label={translate("SettingsEdit")} 
+                            subLabel={translate("SettingsAddCatAndWords")}
                             checked={this.state.allowAddWord}
                             onChange={(isOn) => this.allowAddWord(isOn) }
                         />
@@ -455,7 +458,7 @@ class App extends IssieBase {
                 <Route
                     path="/info"
                     render={(props) => {
-                        this.setTitle("עלינו - About us")
+                        this.setTitle(translate("About"))
                         return (
                             <Info />
                         )
@@ -464,7 +467,7 @@ class App extends IssieBase {
                 <Route
                     path="/add-category"
                     render={(props) => {
-                        this.setTitle("הוספת תיקיה");
+                        this.setTitle(translate("TitleAddCategory"));
                         return (
                         <AddItem
                             history={props.history}
@@ -478,7 +481,7 @@ class App extends IssieBase {
                 <Route
                     path="/add-word/:categoryId"
                     render={(props) => {
-                        this.setTitle("הוספת מילה")
+                        this.setTitle(translate("TitleAddWord"))
                         return (
                         <AddItem
                             addWord="true"

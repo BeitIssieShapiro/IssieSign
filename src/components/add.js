@@ -8,6 +8,7 @@ import '../css/add.css';
 import { AttachButton, CameraButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
+import { translate, fTranslate } from "../utils/lang";
 
 const imagePickerOptions = {
     maximumImagesCount: 1,
@@ -110,7 +111,7 @@ class AddItem extends React.Component {
     saveCategory = async () => {
         let dirEntry = await createDir(this.state.label);
         await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
-        this.props.alert.show("נשמר בהצלחה");
+        this.props.alert.show(translate("InfoSavedSuccessfully"));
         reloadAdditionals().then(() => this.props.history.goBack())
     }
 
@@ -121,7 +122,7 @@ class AddItem extends React.Component {
         if (this.state.selectedImage.length > 0) {
             await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
         }
-        this.props.alert.show("נשמר בהצלחה");
+        this.props.alert.show(translate("InfoSavedSuccessfully"));
         reloadAdditionals().then(() => this.props.history.goBack());
     }
 
@@ -135,8 +136,8 @@ class AddItem extends React.Component {
         //let vidName = getFileName(this.state.selectedVideo);
         //let imgName = getFileName(this.state.selectedImage);
 
-        let vidName = this.state.selectedVideo.length > 0 ? "נבחר וידאו עבור המילה" : ""
-        let imgName = this.state.selectedImage.length > 0 ? "נבחרה תמונה" : ""
+        let vidName = this.state.selectedVideo.length > 0 ? translate("AddVideoSelected") : ""
+        let imgName = this.state.selectedImage.length > 0 ? translate("AddImageSelected") : ""
         return (
             <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
                 <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
@@ -157,7 +158,7 @@ class AddItem extends React.Component {
                                     <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
                                     <td width="70%">
                                         <input type="text" className="addInput"
-                                            placeholder={addWordMode ? "שם המילה" : "שם התיקיה"}
+                                            placeholder={addWordMode ? translate("AddPlaceholderWordName"):translate("AddPlaceholderCategoryName")}
                                             onChange={(e) => {
                                                 this.setState({ label: e.target.value })
                                             }} />
@@ -170,13 +171,13 @@ class AddItem extends React.Component {
                                     <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
                                     <td>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר צלמית" style={{ width: '90%' }}
+                                            <input type="text" className="addInputReadonly" readOnly placeholder={translate("AddPlaceholderSelectImage")} style={{ width: '90%' }}
                                                 value={imgName} />
 
                                             <CameraButton onClick={() => {
                                                 if (this.state.selectInProgress) return;
                                                 this.setState({ selectInProgress: true });
-                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען מצלמה...' });
+                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
 
                                                 setTimeout(async () => navigator.camera.getPicture(
                                                     img => {
@@ -184,7 +185,7 @@ class AddItem extends React.Component {
                                                         this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
                                                     err => {
-                                                        this.props.alert.error('צילום נכשל או בוטל');
+                                                        this.props.alert.error(translate("AddTakePictureFailedOrCanceled"));
                                                         this.setState({ selectInProgress: false });
                                                         this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
@@ -194,18 +195,18 @@ class AddItem extends React.Component {
                                             <AttachButton onClick={async () => {
                                                 if (this.state.selectInProgress) return;
                                                 this.setState({ selectInProgress: true });
-                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
                                                 setTimeout(async () => {
                                                     selectImage().then(
                                                         img => {
                                                             if (img && img.length > 0) {
                                                             this.setState({ selectedImage: img })
                                                             } else {
-                                                                this.props.alert.error('טעינת תמונה נכשלה או בוטלה');
+                                                                this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
                                                             }
                                                         },
-                                                        err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')).catch(
-                                                            err => this.props.alert.error('טעינת תמונה נכשלה או בוטלה')
+                                                        err => this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"))).catch(
+                                                            err => this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"))
                                                         ).finally(
                                                             () => {
                                                                 this.props.pubSub.publish({ command: 'set-busy', active: false })
@@ -238,7 +239,7 @@ class AddItem extends React.Component {
                                                             this.props.pubSub.publish({ command: 'set-busy', active: false })
                                                         },
                                                         (err) => {
-                                                            this.props.alert.error("צילום וידאו נכשל או בוטל");
+                                                            this.props.alert.error(translate("AddLoadVideoCameraFailedOrCanceled"));
                                                             this.setState({ selectInProgress: false });
                                                             this.props.pubSub.publish({ command: 'set-busy', active: false })
                                                         },
@@ -251,9 +252,9 @@ class AddItem extends React.Component {
                                                     setTimeout(async () => {
                                                         selectVideo().then(
                                                             video => this.setState({ selectedVideo: video }),
-                                                            err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).
-                                                            catch(err => this.props.alert.error('טעינת סרטון בוטלה או נכשלה')).
-                                                            finally(
+                                                            err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                                            .catch(err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                                            .finally(
                                                                 () => {
                                                                     this.props.pubSub.publish({ command: 'set-busy', active: false })
                                                                     this.setState({ selectInProgress: false })
@@ -271,7 +272,7 @@ class AddItem extends React.Component {
                     </div>
                 </div>
                 <div style={{ paddingTop: 20 }}>
-                    <input type="button" value="שמור" className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
+                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
 

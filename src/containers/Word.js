@@ -9,7 +9,7 @@ import { withAlert } from 'react-alert'
 import Rope from '../components/Rope'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-
+import { translate, fTranslate } from "../utils/lang";
 
 const getRandomBoolean = ()=> Math.random() >= 0.5;
 
@@ -41,11 +41,11 @@ class Word extends IssieBase {
                         command: "show-delete", callback: () => {
                             if (this.state.selectedWord) {
                                 confirmAlert({
-                                    title: 'מחיקת מילה',
-                                    message: "האם למחוק את המילה '" + this.state.selectedWord.name + "'?",
+                                    title: translate("ConfirmTitleDeleteWord"),
+                                    message: fTranslate("ConfirmDeleteWordMessage", this.state.selectedWord.name),
                                     buttons: [
                                         {
-                                            label: 'כן',
+                                            label: translate("BtnYes"),
                                             onClick: () => {
                                                 deleteWord(this.state.selectedWord.videoName).then(
                                                     //Success:
@@ -53,16 +53,16 @@ class Word extends IssieBase {
                                                         await reloadAdditionals();
                                                         this.props.pubSub.publish({ command: "refresh" })
                                                         this.toggleSelect(null, true)
-                                                        this.props.alert.success("מחיקה בוצעה");
+                                                        this.props.alert.success(translate("InfoDeleteSucceeded"));
                                                     },
                                                     //error
-                                                    (e) => this.props.alert.error("מחיקה נכשלה\n" + e)
+                                                    (e) => this.props.alert.error(translate("InfoDeleteFailed")+"\n"+ e)
                                                 );
                                             }
                                         },
                                         {
-                                            label: 'בטל',
-                                            onClick: () => this.props.alert.info('מחיקה בוטלה')
+                                            label: translate("BtnCancel"),
+                                            onClick: () => this.props.alert.info(translate("InfoDeleteCanceled"))
                                         }
                                     ]
                                 });
@@ -76,12 +76,12 @@ class Word extends IssieBase {
                     command: "show-share", callback: () => {
                         console.log("Share pressed");
                         if (this.state.selectedWord) {
-                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'משתף מילים...' });
+                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("InfoSharingWords") });
                             shareWord(this.state.selectedWord).then(
                                 //Success:
                                 () => this.toggleSelect(null, true),
                                 //error
-                                (e) => this.props.alert.error("שיתוף נכשל\n" + e)
+                                (e) => this.props.alert.error(translate("InfoSharingFailed")+"\n" + e)
 
                             ).finally(() =>
                                 this.props.pubSub.publish({ command: 'set-busy', active: false })
