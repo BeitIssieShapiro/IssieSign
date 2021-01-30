@@ -1,25 +1,19 @@
 
-/**
- * Returns the location of the image files
- * @param image
- * @returns {*}
- */
 const getImageContent = (image):string => {
-    return require("../images/" + image);
+    return require("../images/adt/" + image);
 };
 
-/**
- * Get the content of the image files
- * @param imageName
- * @returns {string}
- */
+
 export const imageLocalCall = (imageName:string) => {
     if (imageName.startsWith("file:")) {
         return imageName; 
     }
     let res = getImageContent(imageName);
-    // if (!res.startsWith("data")) {
-    //     res = window.location.origin + res;
-    // }
+
     return res;
+};
+
+
+export const svgLocalCall = (svgName:string) => {
+    return require("../images/" + svgName);
 };

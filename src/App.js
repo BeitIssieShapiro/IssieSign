@@ -1,5 +1,4 @@
 import './css/App.css';
-import { imageLocalCall } from "./apis/ImageLocalCall";
 
 import React from 'react';
 import Word from "./containers/Word";

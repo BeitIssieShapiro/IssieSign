@@ -1,6 +1,6 @@
 import React from 'react';
 import '../css/ui-elements.css';
-import { imageLocalCall } from "../apis/ImageLocalCall";
+import { svgLocalCall } from "../apis/ImageLocalCall";
 
 export function PlusButton(props) {
   const styles = {
@@ -80,40 +80,40 @@ const decorations = [
     style: {
       bottom: "0px",
     },
-    src: imageLocalCall("pencils.svg")
+    src: svgLocalCall("pencils.svg")
   },
   {
     style: {
       bottom: "-8px",
     },
-    src: imageLocalCall("cube.svg")
+    src: svgLocalCall("cube.svg")
   },
   {
     style: {
       bottom: "0px",
     },
-    src: imageLocalCall("globe.svg")
+    src: svgLocalCall("globe.svg")
   }, {
     style: {
       bottom: "-8px",
     },
-    src: imageLocalCall("clock.svg")
+    src: svgLocalCall("clock.svg")
   }, {
     style: {
       bottom: "0px",
     },
-    src: imageLocalCall("plant.svg")
+    src: svgLocalCall("plant.svg")
   }, {
     style: {
       bottom: "0px",
     },
-    src: imageLocalCall("speakers.svg")
+    src: svgLocalCall("speakers.svg")
   }, {
     style: {
       bottom: "-43px",
       zIndex:5
     },
-    src: imageLocalCall("sticker.svg")
+    src: svgLocalCall("sticker.svg")
   },
 ]
 

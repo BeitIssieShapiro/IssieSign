@@ -9,12 +9,15 @@ import { rootTranslateX } from "../utils/Utils";
 function Search(props) {
 
     const filterWords = (filterStr) => {
-        //alert(JSON.stringify(props.words))
         console.log("filterWord:"+filterStr)
-        let res = props.words.filter(function (word) {
-            return word.name.includes(filterStr);
+        let res = props.words.filter( word => {
+            let found = word.name.includes(filterStr);
+            if (!found && word.tags) {
+                let foundTags = word.tags.filter(tag => tag.includes(filterStr));
+                found = foundTags.length > 0;
+            }
+            return found;
         });
-        //console.log(JSON.stringify(res))
         return res;
     }
 

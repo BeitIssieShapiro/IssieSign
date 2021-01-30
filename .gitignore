@@ -23,12 +23,17 @@ cordova/IsraeliSignLanguage/platforms/android/build
 cordova/IsraeliSignLanguage/platforms/android/app/release
 
 
+# language sensitive files
+src/mainJson.js
+src/images/adt/
+
+#externa media
+Ext-Media
 
 
 
 public/videos
 static
-src/images/*.png
 src/design
 android-gen
 

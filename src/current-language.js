@@ -1,1 +1,1 @@
-export const gCurrentLanguage =  "ar"
+export const gCurrentLanguage =  "he"

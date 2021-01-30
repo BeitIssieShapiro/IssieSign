@@ -1,4 +1,10 @@
 echo 'export const gCurrentLanguage =  "he"' > ./src/current-language.js
+cp -f jsons/he/mainJson.js src/mainJson.js
+cp -R Ext-Media/images/he/ src/images/adt/
+
+rm -rf public/videos
+cp -R Ext-Media/videos/he/dev public/videos
+
 npm run build
 
 rm cordova/IsraeliSignLanguage/platforms/ios/www/precache-*.*
