@@ -1,9 +1,0 @@
-dependencies {
-    //debugCompile project(path: ':com.flyingsoftgames.xapkreader:library',configuration: "debug")
-    //releaseCompile project(path: ':com.flyingsoftgames.xapkreader:library',configuration: "release")
-    implementation project(':com.flyingsoftgames.xapkreader:library')
-}
-
-android {
-    useLibrary 'org.apache.http.legacy'
-}

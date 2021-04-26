@@ -2,7 +2,8 @@
 include ":"
 include ":CordovaLib"
 include ":app"
-include ":com.flyingsoftgames.xapkreader:downloader_library"
-project(":com.flyingsoftgames.xapkreader:downloader_library").projectDir = new File("com.flyingsoftgames.xapkreader/signlang-downloader_library")
-include ":com.flyingsoftgames.xapkreader:library"
-project(":com.flyingsoftgames.xapkreader:library").projectDir = new File("com.flyingsoftgames.xapkreader/signlang-library")
+include ":issie-sign-play-assets"
+// include ":com.flyingsoftgames.xapkreader:downloader_library"
+// project(":com.flyingsoftgames.xapkreader:downloader_library").projectDir = new File("com.flyingsoftgames.xapkreader/signlang-downloader_library")
+// include ":com.flyingsoftgames.xapkreader:library"
+// project(":com.flyingsoftgames.xapkreader:library").projectDir = new File("com.flyingsoftgames.xapkreader/signlang-library")

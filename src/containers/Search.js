@@ -23,8 +23,13 @@ function Search(props) {
 
     const filterCategories = (filterStr) => {
         console.log("filterCategories:"+filterStr)
-        return props.categories.filter(function (cat) {
-            return cat.name.includes(filterStr);
+        return props.categories.filter( cat => {
+            let found = cat.name.includes(filterStr);
+            if (!found && cat.tags) {
+                let foundTags = cat.tags.filter(tag => tag.includes(filterStr));
+                found = foundTags.length > 0;
+            }
+            return found;
         });
     }
 
