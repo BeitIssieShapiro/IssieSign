@@ -10,7 +10,6 @@
     "author": "SAP CSR Team",
     "license": "Apache-2.0",
     "dependencies": {
-        "com.flyingsoftgames.xapkreader": "https://github.com/agamemnus/cordova-plugin-xapkreader.git#cordova-6.5.0",
         "cordova-android": "^8.0.0",
         "cordova-ios": "^5.0.1",
         "cordova-plugin-camera": "^4.1.0",
@@ -29,14 +28,6 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-splashscreen": {},
             "cordova-plugin-file": {},
-            "com.flyingsoftgames.xapkreader": {
-                "XAPK_PUBLIC_KEY": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAipDdTNNZPaUtMH/6lbx/TJQaCUjqiqv0wane93e5kOHO3WZ+ErMBb0sd6X09Dusox4J+yXGfo+dq67bjRC8m+/S/2k3FM2bYp94dS3Yif144K6edq5t4H6P0zGb6JjMkNPaBhfpXhJ+zk/cKE8IAB5Oha8HRF/fXcI7UZIOWQPJTi95tbtIjvdGVa3r1Nny+UzGG72d4d6ElySkvEtyMvhHAITbHqWwGXc1+yfjADZ0iv3Nqh0FHny/FpggQltN1dKDbTJkfPH08b3jvSqB8ghmXop8BbgIAl75UrXm/e2Z4YAMiHyAchq9MQUCZqqTRbcY7sC5Qy/VifLsNmVodGwIDAQAB",
-                "XAPK_EXPANSION_AUTHORITY": "com.issieshapiro.issiesign",
-                "XAPK_AUTO_DOWNLOAD": "true",
-                "XAPK_AUTO_PERMISSION": "true",
-                "XAPK_TEXT_DL_ASSETS": "מוריד קבצי מדיה",
-                "XAPK_MAIN_VERSION": "0"
-            },
             "cordova-plugin-device": {},
             "cordova-plugin-image-picker": {
                 "PHOTO_LIBRARY_USAGE_DESCRIPTION": "Read images for new words and categories icons"

@@ -9,10 +9,6 @@
         "parents": {
           "/*": [
             {
-              "xml": "<feature name=\"XAPKReader\"><param name=\"android-package\" value=\"com.flyingsoftgames.xapkreader.XAPKReader\" /><param name=\"onload\" value=\"true\" /></feature>",
-              "count": 1
-            },
-            {
               "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
             },
@@ -151,22 +147,6 @@
           ],
           "application": [
             {
-              "xml": "<activity android:configChanges=\"orientation|keyboardHidden|keyboard|screenSize|locale\" android:label=\"@string/app_name\" android:name=\"com.flyingsoftgames.xapkreader.XAPKDownloaderActivity\"></activity>",
-              "count": 1
-            },
-            {
-              "xml": "<service android:name=\"com.flyingsoftgames.xapkreader.XAPKDownloaderService\" />",
-              "count": 1
-            },
-            {
-              "xml": "<receiver android:name=\"com.flyingsoftgames.xapkreader.XAPKAlarmReceiver\" />",
-              "count": 1
-            },
-            {
-              "xml": "<provider android:authorities=\"@string/xapk_expansion_authority\" android:exported=\"false\" android:multiprocess=\"true\" android:name=\"com.flyingsoftgames.xapkreader.XAPKProvider\" />",
-              "count": 1
-            },
-            {
               "xml": "<provider android:authorities=\"${applicationId}.provider\" android:exported=\"false\" android:grantUriPermissions=\"true\" android:name=\"org.apache.cordova.camera.FileProvider\"><meta-data android:name=\"android.support.FILE_PROVIDER_PATHS\" android:resource=\"@xml/camera_provider_paths\" /></provider>",
               "count": 1
             }
@@ -210,24 +190,7 @@
     }
   },
   "installed_plugins": {
-    "com.flyingsoftgames.xapkreader": {
-      "XAPK_EXPANSION_AUTHORITY": "$PACKAGE_NAME",
-      "XAPK_PUBLIC_KEY": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB",
-      "XAPK_TEXT_DL_ASSETS": "מוריד מדיה…",
-      "XAPK_TEXT_PR_ASSETS": "Preparing assets…",
-      "XAPK_TEXT_DL_FAILED": "Download failed.",
-      "XAPK_TEXT_ERROR": "Error.",
-      "XAPK_TEXT_CLOSE": "Close.",
-      "XAPK_MAIN_VERSION": "7",
-      "XAPK_PATCH_VERSION": "0",
-      "XAPK_MAIN_FILESIZE": "0",
-      "XAPK_PATCH_FILESIZE": "0",
-      "XAPK_AUTO_DOWNLOAD": "false",
-      "XAPK_AUTO_PERMISSION": "true",
-      "XAPK_AUTO_RELOAD": "true",
-      "XAPK_PROGRESS_FORMAT": "percent",
-      "PACKAGE_NAME": "com.issieshapiro.signlang"
-    },
+
     "cordova-plugin-file": {
       "PACKAGE_NAME": "com.issieshapiro.signlang"
     },
@@ -278,14 +241,6 @@
   },
   "dependent_plugins": {},
   "modules": [
-    {
-      "id": "com.flyingsoftgames.xapkreader.XAPKReader",
-      "file": "plugins/com.flyingsoftgames.xapkreader/www/XAPKReader.js",
-      "pluginId": "com.flyingsoftgames.xapkreader",
-      "clobbers": [
-        "XAPKReader"
-      ]
-    },
     {
       "id": "cordova-plugin-file.DirectoryEntry",
       "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",
@@ -607,7 +562,6 @@
     }
   ],
   "plugin_metadata": {
-    "com.flyingsoftgames.xapkreader": "0.9.1",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-ios-microphone-permissions": "1.0.0",
     "cordova-plugin-splashscreen": "5.0.2",

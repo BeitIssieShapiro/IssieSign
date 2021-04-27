@@ -25,7 +25,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.ArrayMap;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -45,10 +49,32 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import com.google.android.play.core.assetpacks.AssetPackLocation;
+import com.google.android.play.core.assetpacks.AssetPackManager;
+import com.google.android.play.core.assetpacks.AssetPackManagerFactory;
+import com.google.android.play.core.assetpacks.AssetPackState;
+import com.google.android.play.core.assetpacks.AssetPackStateUpdateListener;
+import com.google.android.play.core.assetpacks.AssetPackStates;
+import com.google.android.play.core.assetpacks.model.AssetPackStatus;
+import com.google.android.play.core.splitinstall.SplitInstallSessionState;
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.RuntimeExecutionException;
+import com.google.android.play.core.tasks.Task;
+;
 
 /**
  * This class provides file and directory services to JavaScript.
@@ -105,11 +131,16 @@ public class FileUtils extends CordovaPlugin {
     }
 
     private ArrayList<Filesystem> filesystems;
+    private Map<String,String> playAssets;
 
     public void registerFilesystem(Filesystem fs) {
     	if (fs != null && filesystemForName(fs.name)== null) {
     		this.filesystems.add(fs);
     	}
+    }
+
+    public void registerPlayAssets(String name, String path) {
+        this.playAssets.put(name, path);
     }
 
     private Filesystem filesystemForName(String name) {
@@ -173,7 +204,10 @@ public class FileUtils extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     	super.initialize(cordova, webView);
-    	this.filesystems = new ArrayList<Filesystem>();
+
+
+        this.filesystems = new ArrayList<Filesystem>();
+        this.playAssets = new ArrayMap<String,String>();
         this.pendingRequests = new PendingRequests();
 
     	String tempRoot = null;
@@ -221,6 +255,56 @@ public class FileUtils extends CordovaPlugin {
     		this.registerFilesystem(new LocalFilesystem("persistent", webView.getContext(), webView.getResourceApi(), persistentRootFile));
     		this.registerFilesystem(new ContentFilesystem(webView.getContext(), webView.getResourceApi()));
             this.registerFilesystem(new AssetFilesystem(webView.getContext().getAssets(), webView.getResourceApi()));
+
+            AssetPackManager assetPackManager;
+            assetPackManager = AssetPackManagerFactory.getInstance(cordova.getActivity().getApplicationContext());
+            FileUtils fu = this;
+            assetPackManager.getPackStates(Collections.singletonList("issiesign_assets"))
+                    .addOnCompleteListener(new OnCompleteListener<AssetPackStates>() {
+                        @Override
+                        public void onComplete(Task<AssetPackStates> task) {
+                            AssetPackStates assetPackStates;
+                            try {
+                                assetPackStates = task.getResult();
+                                AssetPackState assetPackState = assetPackStates.packStates().get("issiesign_assets");
+                                String name = assetPackState.name();
+                                String path = assetPackManager.getPackLocation(name).assetsPath();
+
+                                fu.registerPlayAssets(name, path);
+                                LOG.d("puzzle", "status: " + assetPackState.status() +
+                                        ", name: " + name +
+                                        ", errorCode: " + assetPackState.errorCode() +
+                                        ", bytesDownloaded: " + assetPackState.bytesDownloaded() +
+                                        ", totalBytesToDownload: " + assetPackState.totalBytesToDownload() +
+                                        ", transferProgressPercentage: " + assetPackState.transferProgressPercentage());
+                            }catch (Exception e){
+                                LOG.d("MainActivity", e.getMessage());
+                            }
+                        }
+                    });
+
+
+
+            assetPackManager.fetch(Collections.singletonList("issiesign_assets"));
+
+
+
+
+//            for (String aplKey: assetPackManager.getPackLocations().keySet()) {
+//                registerPlayAssets(aplKey, assetPackManager.getPackLocation(aplKey).assetsPath());
+//            }
+
+//            assetPackManager.registerListener(new AssetPackStateUpdateListener() {
+//
+//                @Override
+//                public void onStateUpdate(@NonNull AssetPackState state) {
+//                    if (state.status() == AssetPackStatus.COMPLETED) {
+//                        String name = state.name();
+//                        String path = assetPackManager.getPackLocation(name).assetsPath();
+//                        fu.registerPlayAssets(name, path);
+//                    }
+//                }
+//            });
 
             registerExtraFileSystems(getExtraFileSystemsPreference(activity), getAvailableFileSystems(activity));
 
@@ -708,6 +792,21 @@ public class FileUtils extends CordovaPlugin {
         if (uriString == null) {
             throw new MalformedURLException("Unrecognized filesystem URL");
         }
+
+        if (uriString.startsWith("playasset://")) {//PlayAssets
+            String name = uriString.substring(12);
+            String assetPath = this.playAssets.get(name);
+            if (assetPath == null) {
+                throw new MalformedURLException("Play Assets not found");
+            }
+
+            JSONObject fs = new JSONObject();
+            fs.put("name", name);
+            fs.put("root", assetPath);
+            return fs;
+        }
+
+
         Uri uri = Uri.parse(uriString);
         boolean isNativeUri = false;
 
@@ -942,6 +1041,7 @@ public class FileUtils extends CordovaPlugin {
      * @throws JSONException
      */
     private void requestFileSystem(int type, long requiredSize, final CallbackContext callbackContext) throws JSONException {
+
         Filesystem rootFs = null;
         try {
             rootFs = this.filesystems.get(type);
@@ -988,6 +1088,9 @@ public class FileUtils extends CordovaPlugin {
     private JSONObject requestAllPaths() throws JSONException {
         Context context = cordova.getActivity();
         JSONObject ret = new JSONObject();
+
+
+
         ret.put("applicationDirectory", "file:///android_asset/");
         ret.put("applicationStorageDirectory", toDirUrl(context.getFilesDir().getParentFile()));
         ret.put("dataDirectory", toDirUrl(context.getFilesDir()));

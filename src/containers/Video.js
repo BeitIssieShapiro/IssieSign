@@ -58,6 +58,7 @@ class Video extends React.Component {
         //     videoContent = "cdvfile"+videoContent.substr(4);
         // }
         //alert(videoContent)
+        console.log("video:", videoContent);
         videoElem.src = videoContent;
 
 

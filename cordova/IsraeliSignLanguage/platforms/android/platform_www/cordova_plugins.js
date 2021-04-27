@@ -1,13 +1,6 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
   module.exports = [
-    {
-      "id": "com.flyingsoftgames.xapkreader.XAPKReader",
-      "file": "plugins/com.flyingsoftgames.xapkreader/www/XAPKReader.js",
-      "pluginId": "com.flyingsoftgames.xapkreader",
-      "clobbers": [
-        "XAPKReader"
-      ]
-    },
+    
     {
       "id": "cordova-plugin-file.DirectoryEntry",
       "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",
@@ -329,7 +322,6 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     }
   ];
   module.exports.metadata = {
-    "com.flyingsoftgames.xapkreader": "0.9.1",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-ios-microphone-permissions": "1.0.0",
     "cordova-plugin-splashscreen": "5.0.2",

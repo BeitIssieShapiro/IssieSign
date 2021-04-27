@@ -18,14 +18,7 @@
 */
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.asset-pack'
 
-assetPack {
-    packName = "issie-sign-play-assets"
-    dynamicDelivery {
-        deliveryType = "fast-follow"
-    }
-}
 
 buildscript {
     repositories {
@@ -36,9 +29,14 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.3'
+
+
     }
 }
 
+dependencies {
+    implementation 'com.google.android.play:core:1.10.0'
+}
 // Allow plugins to declare Maven dependencies via build-extras.gradle.
 allprojects {
     repositories {
@@ -173,10 +171,16 @@ task cdvPrintProps {
 
 android {
 
-    assetPacks = [":issie-sign-play-assets"]
+    assetPacks = [":issiesign_assets"]
 
     signingConfigs {
         debug {
+            storeFile file('/Users/i022021/dev/Issie/IssieSign/googleplay/issieSign2.0.jks')
+            storePassword 'signlang'
+            keyAlias = 'issiesign'
+            keyPassword 'signlang'
+        }
+        release {
             storeFile file('/Users/i022021/dev/Issie/IssieSign/googleplay/issieSign2.0.jks')
             storePassword 'signlang'
             keyAlias = 'issiesign'

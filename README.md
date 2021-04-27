@@ -30,57 +30,18 @@ Note: some features won't work, as it requires device API such as filesystem
 
   
 ## Build android
-* run `scripts/makeAndroid.sh`
+* `cd scripts`
+* run `./deltaMakeAndroid.sh`
 * Open android studio `cordova/IsraeliSignLanguage/platforms/android/<proj>` 
-* gradle-wrapper
-* change all 
-```
-    debugCompile project(path: ":CordovaLib", configuration: "debug")
-    releaseCompile project(path: ":CordovaLib", configuration: "release")
-```
-change to 
-```
-    implementation project(':CordovaLib')
-```
-<br/>
-and also `project(path: "??
-
-`uses-sdk` - remove all but the AndroidManifest.xml
-
-* LocalBroadcastManager comment out 
-* app-icon, splash
-  * res folder
-* MainActivity.java
- ```    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        // enable Cordova apps to be started in the background
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
-            moveTaskToBack(true);
-        }
-
-        setTheme((int)0x01030129);
-
-        // Set by <content src="index.html" /> in config.xml
-        loadUrl(launchUrl);
-    }
-    ```
-
-* ---
-
-* Manually create file named `gradle.properties`, with the following:
-```
-    org.gradle.jvmargs=-Xmx4608M
-
+* set the signing info
     RELEASE_STORE_FILE={path to your keystore}
-    RELEASE_STORE_PASSWORD=<ask the team for password>
+    RELEASE_STORE_PASSWORD=issiesign
     RELEASE_KEY_ALIAS=signlang
-    RELEASE_KEY_PASSWORD=<ask the team for password>
-```
-* in the studio - build APK
-* gradle/wrapper/gradle-wrapper.properties: `distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip`
+    RELEASE_KEY_PASSWORD=issiesign
+
+* in the studio - build bundle
+
+* to test locally (on physical device), connect an android device (play asset delivery does not work with simulator), then run `./local-test-android.sh`
 
 
 
@@ -93,5 +54,7 @@ and also `project(path: "??
 
 
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
+
+
 # Licence
 IssieSign is avaiable under the GPL Licence. See the following link: https://www.gnu.org/licenses/gpl-3.0.en.html

@@ -85,9 +85,9 @@ cordova.define("cordova-plugin-file.resolveLocalFileSystemURI", function(require
         exec(success, fail, 'File', 'resolveLocalFileSystemURI', [uri]);
     };
 
-    module.exports.resolveLocalFileSystemURI = function () {
-        console.log('resolveLocalFileSystemURI is deprecated. Please call resolveLocalFileSystemURL instead.');
-        module.exports.resolveLocalFileSystemURL.apply(this, arguments);
+    module.exports.resolveLocalFileSystemURI = function (uri, successCallback, errorCallback) {
+        //console.log('resolveLocalFileSystemURI is deprecated. Please call resolveLocalFileSystemURL instead.');
+        exec(successCallback, errorCallback, 'File', 'resolveLocalFileSystemURI', [uri]);
     };
 })();
 
