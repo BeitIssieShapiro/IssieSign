@@ -198,6 +198,25 @@
                 getPlayAssetPath();
                 window.documents = cordova.file.externalDataDirectory;
                 window.isAndroid = true;
+
+                cordova.openwith.init(
+                    () => {
+                        console.log("open with init success");
+                        cordova.openwith.addHandler((intent) => {
+                            console.log("open with handler called");
+                            if (intent.items.length == 1) {
+                                let url = intent.items[0].uri
+                                console.log("open with url:", url);
+
+                                if (window.openWith) {
+                                    console.log("open with started");
+                                    window.openWith(url);
+                                }
+                            }
+                        });
+                    },
+                    (err) => console.log("open with init error", err));
+
             } else {
                 //only in iOS
                 document.basePath = cordova.file.applicationDirectory;
@@ -205,7 +224,7 @@
             }
             console.log("base path:", document.basePath);
 
-            
+
         }
 
     </script>

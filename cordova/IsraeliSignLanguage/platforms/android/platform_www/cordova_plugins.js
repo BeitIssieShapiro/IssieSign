@@ -319,6 +319,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "file": "plugins/cordova-plugin-media-capture/www/android/init.js",
       "pluginId": "cordova-plugin-media-capture",
       "runs": true
+    },
+    {
+      "id": "cordova-plugin-openwith.init",
+      "file": "plugins/cordova-plugin-openwith/www/openwith.js",
+      "pluginId": "cordova-plugin-openwith",
+      "clobbers": [
+        "cordova.openwith"
+      ]
     }
   ];
   module.exports.metadata = {
@@ -336,6 +344,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "nl.madebymark.share": "0.1.1",
     "es6-promise-plugin": "4.2.2",
     "cordova-plugin-x-socialsharing": "5.6.4",
-    "cordova-plugin-media-capture": "3.0.3"
+    "cordova-plugin-media-capture": "3.0.3",
+    "cordova-plugin-openwith":"2.0.0"
   };
 });
