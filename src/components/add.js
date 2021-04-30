@@ -22,7 +22,7 @@ const cameraOptions = {
     targetWidth: 394,
     targetHeight: 336,
     mediaType: 0,
-    allowEdit: true,
+    allowEdit: false,
 }
 
 const videoOptions = {
@@ -158,7 +158,7 @@ class AddItem extends React.Component {
                                     <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
                                     <td width="70%">
                                         <input type="text" className="addInput"
-                                            placeholder={addWordMode ? translate("AddPlaceholderWordName"):translate("AddPlaceholderCategoryName")}
+                                            placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
                                             onChange={(e) => {
                                                 this.setState({ label: e.target.value })
                                             }} />
@@ -200,7 +200,7 @@ class AddItem extends React.Component {
                                                     selectImage().then(
                                                         img => {
                                                             if (img && img.length > 0) {
-                                                            this.setState({ selectedImage: img })
+                                                                this.setState({ selectedImage: img })
                                                             } else {
                                                                 this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
                                                             }
@@ -234,7 +234,11 @@ class AddItem extends React.Component {
                                                     setTimeout(async () => navigator.device.capture.captureVideo(
                                                         (mediaFiles) => {
                                                             if (mediaFiles.length == 1) {
-                                                                this.setState({ selectedVideo: ("file://" + mediaFiles[0].fullPath), selectInProgress: false })
+                                                                let path = mediaFiles[0].fullPath;
+                                                                if (!path.startsWith("file://")) {
+                                                                    path = "file://" + path;
+                                                                }
+                                                                this.setState({ selectedVideo: (path), selectInProgress: false })
                                                             }
                                                             this.props.pubSub.publish({ command: 'set-busy', active: false })
                                                         },
@@ -250,8 +254,13 @@ class AddItem extends React.Component {
                                                     this.setState({ selectInProgress: true });
                                                     this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
                                                     setTimeout(async () => {
-                                                        selectVideo().then(
-                                                            video => this.setState({ selectedVideo: video }),
+                                                        selectVideo().then(video => {
+                                                            let path = video;
+                                                            if (!path.startsWith("file://")) {
+                                                                path = "file://" + path;
+                                                            }
+                                                            this.setState({ selectedVideo: path })
+                                                        },
                                                             err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
                                                             .catch(err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
                                                             .finally(
@@ -272,7 +281,7 @@ class AddItem extends React.Component {
                     </div>
                 </div>
                 <div style={{ paddingTop: 20 }}>
-                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
+                    <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
                         this.props.addWord ? this.saveWord() : this.saveCategory()
                     } />
 

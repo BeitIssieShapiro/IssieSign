@@ -196,13 +196,16 @@
             console.log("Device Ready event");
             if (document.basePath !== "/") {
                 getPlayAssetPath();
+                window.documents = cordova.file.externalDataDirectory;
+                window.isAndroid = true;
             } else {
                 //only in iOS
                 document.basePath = cordova.file.applicationDirectory;
+                window.documents = cordova.file.documentsDirectory;
             }
             console.log("base path:", document.basePath);
 
-            window.documents = cordova.file.documentsDirectory;
+            
         }
 
     </script>

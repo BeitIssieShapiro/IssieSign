@@ -129,6 +129,8 @@ ext.cdvBuildMultipleApks = cdvBuildMultipleApks == null ? false : cdvBuildMultip
 ext.cdvVersionCodeForceAbiDigit = cdvVersionCodeForceAbiDigit == null ? false : cdvVersionCodeForceAbiDigit.toBoolean();
 ext.cdvMinSdkVersion = cdvMinSdkVersion == null ? defaultMinSdkVersion : Integer.parseInt('' + cdvMinSdkVersion)
 ext.cdvVersionCode = cdvVersionCode == null ? null : Integer.parseInt('' + cdvVersionCode)
+ext.compileSdkVersion=30
+
 
 def computeBuildTargetName(debugBuild) {
     def ret = 'assemble'
@@ -291,8 +293,7 @@ dependencies {
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
     implementation 'com.google.android.gms:play-services-base:17.6.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-v4:19.1.0'
     // SUB-PROJECT DEPENDENCIES END
 }
 

@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import { translate } from '../utils/lang';
-import {isBrowser} from '../utils/Utils';
+import { isBrowser } from '../utils/Utils';
 
 let testWords = [{ name: "test word", id: 1000, type: 'file' }] //, { name: "test word2", id: 1001, type: 'file' }];
 let testCategories = [{ name: "test", nativeURL: "file:///none/" }];
@@ -84,7 +84,7 @@ function share(filePath, title, mimetype, onSuccess, onError) {
         iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
     };
 
-    console.log("about to share via shareWithOptions")
+    console.log("about to share via shareWithOptions:", JSON.stringify(options));
     window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
 
 
@@ -98,7 +98,13 @@ export async function shareWord(word) {
 
     let paths = [word.videoName, word.imageName];
     let zipPath = await zipWord(paths);
-    zipPath = zipPath.replace("file://", "")
+    // if (!window['isAndroid']) {
+    //     zipPath = zipPath.replace("file://", "")
+    // } else {
+        if (!zipPath.startsWith("file://")) {
+            zipPath = "file://" + zipPath;
+        }
+    //}
     share(zipPath, "", "", () => { }, (err) => alert(err));
 }
 
@@ -239,7 +245,7 @@ export async function zipWord(paths) {
             //console.log("Generate finish, convert to blob");
             //let fileBlob = b64toBlob(content, "application/zip");
             //save to tmp file
-            let fileName = window.cordova.file.tempDirectory + zipFileName;
+            let fileName = window.cordova.file.externalCacheDirectory + zipFileName;
             console.log("About to save blob to tmp file", fileName);
             await writeBlobToFile(fileName, fileBlob);
             console.log("blob saved");
