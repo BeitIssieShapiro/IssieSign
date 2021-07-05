@@ -39,7 +39,9 @@ Note: some features won't work, as it requires device API such as filesystem
     RELEASE_KEY_ALIAS=signlang
     RELEASE_KEY_PASSWORD=issiesign
 
-* in the studio - build bundle
+* in `cordova/IsraeliSignLanguage/platforms/android/app/src/main/AndroidManifest.xml` promote the `versionCode` and `versionName` 
+* in the studio - `build -> generate signed bundle`
+* locate the bundle in filesystem and upload to google-play console
 
 * to test locally (on physical device), connect an android device (play asset delivery does not work with simulator), then run `./local-test-android.sh`
 

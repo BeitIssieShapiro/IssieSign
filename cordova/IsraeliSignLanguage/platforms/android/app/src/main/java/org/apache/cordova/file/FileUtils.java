@@ -259,7 +259,11 @@ public class FileUtils extends CordovaPlugin {
             AssetPackManager assetPackManager;
             assetPackManager = AssetPackManagerFactory.getInstance(cordova.getActivity().getApplicationContext());
             FileUtils fu = this;
-            assetPackManager.getPackStates(Collections.singletonList("issiesign_assets"))
+            ArrayList<String> pckList = new ArrayList<String>();
+            pckList.add("issiesign_assets");
+            pckList.add("issiesign_assets3");
+
+            assetPackManager.getPackStates(pckList)
                     .addOnCompleteListener(new OnCompleteListener<AssetPackStates>() {
                         @Override
                         public void onComplete(Task<AssetPackStates> task) {
@@ -267,16 +271,20 @@ public class FileUtils extends CordovaPlugin {
                             try {
                                 assetPackStates = task.getResult();
                                 AssetPackState assetPackState = assetPackStates.packStates().get("issiesign_assets");
-                                String name = assetPackState.name();
-                                String path = assetPackManager.getPackLocation(name).assetsPath();
+                                if (assetPackState != null) {
+                                    String name = assetPackState.name();
+                                    String path = assetPackManager.getPackLocation(name).assetsPath();
 
-                                fu.registerPlayAssets(name, path);
-                                LOG.d("puzzle", "status: " + assetPackState.status() +
-                                        ", name: " + name +
-                                        ", errorCode: " + assetPackState.errorCode() +
-                                        ", bytesDownloaded: " + assetPackState.bytesDownloaded() +
-                                        ", totalBytesToDownload: " + assetPackState.totalBytesToDownload() +
-                                        ", transferProgressPercentage: " + assetPackState.transferProgressPercentage());
+                                    fu.registerPlayAssets(name, path);
+                                }
+                                assetPackState = assetPackStates.packStates().get("issiesign_assets3");
+                                if (assetPackState != null) {
+                                    String name = assetPackState.name();
+                                    String path = assetPackManager.getPackLocation(name).assetsPath();
+
+                                    fu.registerPlayAssets(name, path);
+                                }
+
                             }catch (Exception e){
                                 LOG.d("MainActivity", e.getMessage());
                             }
@@ -285,26 +293,7 @@ public class FileUtils extends CordovaPlugin {
 
 
 
-            assetPackManager.fetch(Collections.singletonList("issiesign_assets"));
-
-
-
-
-//            for (String aplKey: assetPackManager.getPackLocations().keySet()) {
-//                registerPlayAssets(aplKey, assetPackManager.getPackLocation(aplKey).assetsPath());
-//            }
-
-//            assetPackManager.registerListener(new AssetPackStateUpdateListener() {
-//
-//                @Override
-//                public void onStateUpdate(@NonNull AssetPackState state) {
-//                    if (state.status() == AssetPackStatus.COMPLETED) {
-//                        String name = state.name();
-//                        String path = assetPackManager.getPackLocation(name).assetsPath();
-//                        fu.registerPlayAssets(name, path);
-//                    }
-//                }
-//            });
+            assetPackManager.fetch(pckList);
 
             registerExtraFileSystems(getExtraFileSystemsPreference(activity), getAvailableFileSystems(activity));
 

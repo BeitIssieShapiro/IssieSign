@@ -31,6 +31,8 @@ function Shell (props) {
             </ul>
         }
 
+        let centerSlotClass = props.isMobile?"centerSlotMobile":"centerSlot"
+
         return (
         <div className="shellhost">
             <div className="shellTopBlueBar"/>
@@ -39,7 +41,7 @@ function Shell (props) {
                     <div className="startBar right">
                         <Slot slot="start-bar">{props.children}</Slot>
                     </div>
-                    <div className="shelltitle centerSlot">
+                    <div className={centerSlotClass}>
                         <Slot slot="title">{props.children}</Slot>
                     </div>
                     <div className="endBar left">

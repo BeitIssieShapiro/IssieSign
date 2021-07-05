@@ -9,6 +9,17 @@
             });
         }
 
+        function getPlayAssetPath2() {
+            window.resolveLocalFileSystemURI("playasset://issiesign_assets3", (obj) => {
+                document.basePath2 = obj.root + "/";
+                console.log("assets path:", obj.root);
+            }, () => {
+                //failed, try in few sec
+                console.log("retry getting playassets path")
+                setTimeout(getPlayAssetPath2, 1500);
+            });
+        }
+
         document.basePath = document.location.href.includes('android_asset') ? "file:///android_asset/" : "/";
         document.preventTouch = true;
         function doNothing(e) {
@@ -34,7 +45,28 @@
             console.log("Device Ready event");
             if (document.basePath !== "/") {
                 getPlayAssetPath();
-                window.documents = cordova.file.externalDataDirectory
+                getPlayAssetPath2();
+                window.documents = cordova.file.externalDataDirectory;
+                window.isAndroid = true;
+
+                cordova.openwith.init(
+                    () => {
+                        console.log("open with init success");
+                        cordova.openwith.addHandler((intent) => {
+                            console.log("open with handler called");
+                            if (intent.items.length == 1) {
+                                let url = intent.items[0].uri
+                                console.log("open with url:", url);
+
+                                if (window.openWith) {
+                                    console.log("open with started");
+                                    window.openWith(url);
+                                }
+                            }
+                        });
+                    },
+                    (err) => console.log("open with init error", err));
+
             } else {
                 //only in iOS
                 document.basePath = cordova.file.applicationDirectory;
@@ -42,5 +74,5 @@
             }
             console.log("base path:", document.basePath);
 
-            
-        }</script><link href="./static/css/2.24daf3d1.chunk.css" rel="stylesheet"><link href="./static/css/main.198d1b4e.chunk.css" rel="stylesheet"></head><body theme="blue"><div class="container-fluid AppHolder" style="position:fixed;height:100%;width:100%;top:0;left:0"></div><div class="player" id="playerhost" style="z-index:3"><video class="centerWidthAlign" autoplay="true" id="player" playsinline onclick="this.paused?this.play():this.pause()"></video><button id="backBtn" class="roundbutton display-hidden" onclick="window.goBack()" style="z-index:99999;position:absolute;top:15px;right:35px;--radius:50px"><div class="arrow-right"/></button><div class="replayhost" id="videoButtons"><button id="pauseBtn" class="roundbutton display-hidden" onclick="player.pause()"><div class="pause"/></button> <button id="playBtn" class="roundbutton display-hidden" onclick="player.play()"><div class="play"/></button> <button id="replayBtn" class="roundbutton display-hidden" onclick="player.play()"><div class="replay"/></button></div></div><script>!function(i){function e(e){for(var r,n,t=e[0],o=e[1],u=e[2],l=0,a=[];l<t.length;l++)n=t[l],Object.prototype.hasOwnProperty.call(p,n)&&p[n]&&a.push(p[n][0]),p[n]=0;for(r in o)Object.prototype.hasOwnProperty.call(o,r)&&(i[r]=o[r]);for(s&&s(e);a.length;)a.shift()();return c.push.apply(c,u||[]),f()}function f(){for(var e,r=0;r<c.length;r++){for(var n=c[r],t=!0,o=1;o<n.length;o++){var u=n[o];0!==p[u]&&(t=!1)}t&&(c.splice(r--,1),e=l(l.s=n[0]))}return e}var n={},p={1:0},c=[];function l(e){if(n[e])return n[e].exports;var r=n[e]={i:e,l:!1,exports:{}};return i[e].call(r.exports,r,r.exports,l),r.l=!0,r.exports}l.m=i,l.c=n,l.d=function(e,r,n){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:n})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(r,e){if(1&e&&(r=l(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var n=Object.create(null);if(l.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var t in r)l.d(n,t,function(e){return r[e]}.bind(null,t));return n},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="./";var r=window["webpackJsonpsign-language"]=window["webpackJsonpsign-language"]||[],t=r.push.bind(r);r.push=e,r=r.slice();for(var o=0;o<r.length;o++)e(r[o]);var s=t;f()}([])</script><script src="./static/js/2.db727887.chunk.js"></script><script src="./static/js/main.988383af.chunk.js"></script></body></html>
+
+        }</script><link href="./static/css/2.24daf3d1.chunk.css" rel="stylesheet"><link href="./static/css/main.0ae952a7.chunk.css" rel="stylesheet"></head><body theme="blue"><div class="container-fluid AppHolder" style="position:fixed;height:100%;width:100%;top:0;left:0"></div><div class="player" id="playerhost" style="z-index:3"><video class="centerWidthAlign" autoplay="true" id="player" playsinline onclick="this.paused?this.play():this.pause()"></video><button id="backBtn" class="roundbutton display-hidden" onclick="window.goBack()" style="z-index:99999;position:absolute;top:15px;right:35px;--radius:50px"><div class="arrow-right"/></button><div class="replayhost" id="videoButtons"><button id="pauseBtn" class="roundbutton display-hidden" onclick="player.pause()"><div class="pause"/></button> <button id="playBtn" class="roundbutton display-hidden" onclick="player.play()"><div class="play"/></button> <button id="replayBtn" class="roundbutton display-hidden" onclick="player.play()"><div class="replay"/></button></div></div><script>!function(i){function e(e){for(var r,n,t=e[0],o=e[1],u=e[2],l=0,a=[];l<t.length;l++)n=t[l],Object.prototype.hasOwnProperty.call(p,n)&&p[n]&&a.push(p[n][0]),p[n]=0;for(r in o)Object.prototype.hasOwnProperty.call(o,r)&&(i[r]=o[r]);for(s&&s(e);a.length;)a.shift()();return c.push.apply(c,u||[]),f()}function f(){for(var e,r=0;r<c.length;r++){for(var n=c[r],t=!0,o=1;o<n.length;o++){var u=n[o];0!==p[u]&&(t=!1)}t&&(c.splice(r--,1),e=l(l.s=n[0]))}return e}var n={},p={1:0},c=[];function l(e){if(n[e])return n[e].exports;var r=n[e]={i:e,l:!1,exports:{}};return i[e].call(r.exports,r,r.exports,l),r.l=!0,r.exports}l.m=i,l.c=n,l.d=function(e,r,n){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:n})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(r,e){if(1&e&&(r=l(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var n=Object.create(null);if(l.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var t in r)l.d(n,t,function(e){return r[e]}.bind(null,t));return n},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="./";var r=window["webpackJsonpsign-language"]=window["webpackJsonpsign-language"]||[],t=r.push.bind(r);r.push=e,r=r.slice();for(var o=0;o<r.length;o++)e(r[o]);var s=t;f()}([])</script><script src="./static/js/2.ee88e06f.chunk.js"></script><script src="./static/js/main.dde92c51.chunk.js"></script></body></html>

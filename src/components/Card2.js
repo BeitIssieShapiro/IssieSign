@@ -3,15 +3,14 @@ import "../css/card.css";
 import "../css/Tile.css";
 import "../css/rope.css";
 
+
 import { imageLocalCall } from "../apis/ImageLocalCall";
-import Rope from "../components/Rope";
 import { getTheme } from "../utils/Utils";
-import longPress from '../apis/longPress';
-import { Link } from "react-router-dom";
 import { Selected } from "./ui-elements";
+import ISLink from "./ISLink";
+
 
 export default function Card2(props) {
-    const longPressEvent = props.longPressCallback ? longPress(() => props.longPressCallback(), 500) : {};
 
     let imageSrc = props.imageName ? imageLocalCall(props.imageName) : undefined;
 
@@ -29,7 +28,7 @@ export default function Card2(props) {
     }
     let innerBody = (
         <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
-            <div className={"header" + (props.binder?" binder":" clip")}></div>
+            <div className={"header" + (props.binder ? " binder" : " clip")}></div>
             <div className="main">
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
@@ -46,10 +45,16 @@ export default function Card2(props) {
         </div>
 
     return (
-        <div {...longPressEvent} className="noTouchCallout tileGroup">
-            {props.addMode?<div style={{height:'40px', width:'100%'}}></div>:null}
-            {url !== "" ? <Link to={url}>{body}</Link> :
-                body}
-        </div>
+        [
+            props.addMode ? <div style={{ height: '40px', width: '100%' }}></div> : null,
+            <ISLink
+                onLongPress={props.longPressCallback}
+                url={url}
+            >
+                {body}
+            </ISLink>
+        ]
+
+
     );
 }
