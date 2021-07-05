@@ -27,7 +27,6 @@ cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/build/
 cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/src/main/assets/
 
 
-
 # language sensitive files
 src/mainJson.js
 src/images/adt/
@@ -68,6 +67,7 @@ platforms/android/CordovaLib/ant-gen
 platforms/android/CordovaLib/bin
 platforms/android/CordovaLib/gen
 platforms/android/CordovaLib/local.properties
+cordova/IsraeliSignLanguage/platforms/android/app/src/main/assets/www/
 
 # wp8
 platforms/wp8/bin
