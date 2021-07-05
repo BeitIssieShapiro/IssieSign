@@ -6,11 +6,18 @@
   direction: rtl;
 }
 
+*:not(input) {
+  -webkit-user-select: none;
+}
+
 .tileBox {
   position: relative;
   height: 150px;
 }
 
+.noMouseEvents {
+  pointer-events: none;
+}
 
 .tileImg {
   max-width: 100%;

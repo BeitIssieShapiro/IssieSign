@@ -25,7 +25,7 @@ cordova/IsraeliSignLanguage/platforms/android/issiesign_assets/build/
 cordova/IsraeliSignLanguage/platforms/android/issiesign_assets/src/main/assets/
 cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/build/
 cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/src/main/assets/
-
+cordova/IsraeliSignLanguage/platforms/android/app/src/main/assets/www/
 
 # language sensitive files
 src/mainJson.js

@@ -4,14 +4,18 @@ import Word from "./Word";
 import Body from "./Body";
 import { rootTranslateX } from "../utils/Utils";
 
+//const levenshtein = require('js-levenshtein');
 
+function fuzzyMatch(str, searchStr) {
+    return str.includes(searchStr);// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
+}
 
 function Search(props) {
 
     const filterWords = (filterStr) => {
         console.log("filterWord:"+filterStr)
         let res = props.words.filter( word => {
-            let found = word.name.includes(filterStr);
+            let found = fuzzyMatch(word.name, filterStr);
             if (!found && word.tags) {
                 let foundTags = word.tags.filter(tag => tag.includes(filterStr));
                 found = foundTags.length > 0;
@@ -24,7 +28,7 @@ function Search(props) {
     const filterCategories = (filterStr) => {
         console.log("filterCategories:"+filterStr)
         return props.categories.filter( cat => {
-            let found = cat.name.includes(filterStr);
+            let found = fuzzyMatch(cat.name, filterStr);
             if (!found && cat.tags) {
                 let foundTags = cat.tags.filter(tag => tag.includes(filterStr));
                 found = foundTags.length > 0;
