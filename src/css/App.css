@@ -53,6 +53,11 @@
     padding-bottom: 10px;
 }
 
+.centerSlotMobile {
+  width: 45%;
+  padding-bottom: 10px;
+}
+
 .listItemLandscape {
     columns: 1;
     

@@ -21,6 +21,11 @@ cordova/IsraeliSignLanguage/platforms/android/.idea
 cordova/IsraeliSignLanguage/platforms/android/.settings
 cordova/IsraeliSignLanguage/platforms/android/build
 cordova/IsraeliSignLanguage/platforms/android/app/release
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets/build/
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets/src/main/assets/
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/build/
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/src/main/assets/
+
 
 
 # language sensitive files

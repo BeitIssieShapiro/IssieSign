@@ -171,6 +171,17 @@
             });
         }
 
+        function getPlayAssetPath2() {
+            window.resolveLocalFileSystemURI("playasset://issiesign_assets3", (obj) => {
+                document.basePath2 = obj.root + "/";
+                console.log("assets path:", obj.root);
+            }, () => {
+                //failed, try in few sec
+                console.log("retry getting playassets path")
+                setTimeout(getPlayAssetPath2, 1500);
+            });
+        }
+
         document.basePath = document.location.href.includes('android_asset') ? "file:///android_asset/" : "/";
         document.preventTouch = true;
         function doNothing(e) {
@@ -196,6 +207,7 @@
             console.log("Device Ready event");
             if (document.basePath !== "/") {
                 getPlayAssetPath();
+                getPlayAssetPath2();
                 window.documents = cordova.file.externalDataDirectory;
                 window.isAndroid = true;
 

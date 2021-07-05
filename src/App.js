@@ -323,7 +323,7 @@ class App extends IssieBase {
                         loading={this.state.busy}
                     />
                 </div>
-                <Shell theme={this.state.theme} id="page1" >
+                <Shell theme={this.state.theme} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />
                     {this.state.allowAddWord && (this.isHome() || this.isWords()) ? <PlusButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleNewClick()} color='white' />

@@ -49,7 +49,12 @@ class Video extends React.Component {
                 videoContent = document.basePath + "www/videos/" + videoName;
             } else {
                 //Android
+                //movie files are shareded between document.basePath and document.basePath2
+                if (decodeURIComponent(videoName)[0] < 'כ') {
                 videoContent = document.basePath + "videos/" + decodeURIComponent(videoName);
+                } else {
+                    videoContent = document.basePath2 + "videos/" + decodeURIComponent(videoName);
+                }
             }
         }
         var videoElem = document.getElementById("player")
@@ -58,7 +63,7 @@ class Video extends React.Component {
         //     videoContent = "cdvfile"+videoContent.substr(4);
         // }
         //alert(videoContent)
-        console.log("video:", videoContent);
+        console.log("video: ", videoContent);
         videoElem.src = videoContent;
 
 
