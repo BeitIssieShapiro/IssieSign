@@ -159,11 +159,17 @@
     <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 
     <script>
-
+        document.assetsReady = false;
+        let assetsInit = false;
+        let assetsInit2 = false;
         function getPlayAssetPath() {
             window.resolveLocalFileSystemURI("playasset://issiesign_assets", (obj) => {
                 document.basePath = obj.root + "/";
                 console.log("assets path:", obj.root);
+                assetsInit = true;
+                if (assetsInit2) {
+                    document.assetsReady = true;
+                }
             }, () => {
                 //failed, try in few sec
                 console.log("retry getting playassets path")
@@ -175,6 +181,11 @@
             window.resolveLocalFileSystemURI("playasset://issiesign_assets3", (obj) => {
                 document.basePath2 = obj.root + "/";
                 console.log("assets path:", obj.root);
+                assetsInit2 = true;
+                if (assetsInit) {
+                    document.assetsReady = true;
+                }
+
             }, () => {
                 //failed, try in few sec
                 console.log("retry getting playassets path")

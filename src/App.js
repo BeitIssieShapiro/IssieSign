@@ -121,6 +121,10 @@ class App extends IssieBase {
         }
 
         reloadAdditionals().then(() => this.forceUpdate());
+
+        if (!document.assetsReady) {
+            alert(translate("RestartApp"));
+        }
     }
 
     componentDidUpdate() {
@@ -128,6 +132,9 @@ class App extends IssieBase {
             this.state.pubSub.subscribe((args) => this.getEvents(args));
         }
     }
+
+    
+
 
     static getDerivedStateFromProps(props, state) {
         if (!props.pubSub) {
