@@ -45,7 +45,13 @@ Note: some features won't work, as it requires device API such as filesystem
 
 * to test locally (on physical device), connect an android device (play asset delivery does not work with simulator), then run `./local-test-android.sh`
 
-
+## Test android locally
+- build app-bundle
+- Launch emulator or connect a device
+```
+cd scripts
+./local-test-android.sh
+```
 
 
 ## .jks file converion

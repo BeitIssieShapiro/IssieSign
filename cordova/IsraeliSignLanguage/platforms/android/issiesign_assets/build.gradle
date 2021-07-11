@@ -3,6 +3,6 @@ apply plugin: 'com.android.asset-pack'
 assetPack {
     packName = "issiesign_assets"
     dynamicDelivery {
-        deliveryType = "install-time"
+        deliveryType = "fast-follow"
     }
 }

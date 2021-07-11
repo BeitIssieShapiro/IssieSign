@@ -68,6 +68,8 @@ platforms/android/CordovaLib/bin
 platforms/android/CordovaLib/gen
 platforms/android/CordovaLib/local.properties
 cordova/IsraeliSignLanguage/platforms/android/app/src/main/assets/www/
+output.apks
+
 
 # wp8
 platforms/wp8/bin

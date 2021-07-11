@@ -13,8 +13,8 @@ import { withAlert } from 'react-alert'
 import { Route, Switch } from "react-router";
 import { VideoToggle } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
-import {translate, setLanguage} from './utils/lang';
-import {gCurrentLanguage} from './current-language';
+import { translate, setLanguage } from './utils/lang';
+import { gCurrentLanguage } from './current-language';
 
 import './css/App.css';
 import './css/style.css';
@@ -31,8 +31,10 @@ import { Menu, OnOffMenu, LineMenu } from './settings'
 import './css/settings.css'
 import { receiveIncomingZip } from './apis/file'
 import { isNumber } from 'util';
-import { PlusButton, SettingsButton, TrashButton, ShareButton,
-    BackButton, PrevButton, NextButton } from './components/ui-elements';
+import {
+    PlusButton, SettingsButton, TrashButton, ShareButton,
+    BackButton, PrevButton, NextButton
+} from './components/ui-elements';
 
 
 
@@ -95,7 +97,7 @@ class App extends IssieBase {
                         this.setState({ busy: false });
 
                         setTimeout(() => {
-                            let msg = translate("NewWords") +":\n";
+                            let msg = translate("NewWords") + ":\n";
                             for (let i = 0; i < data.length; i++) {
                                 if (data[i].words.length > 0) {
                                     let folderName = data[i].name;
@@ -121,10 +123,11 @@ class App extends IssieBase {
         }
 
         reloadAdditionals().then(() => this.forceUpdate());
-
-        if (!document.assetsReady) {
-            alert(translate("RestartApp"));
-        }
+        setTimeout(() => {
+            if (!document.assetsReady) {
+                alert(translate("RestartApp"));
+            }
+        }, 6000);
     }
 
     componentDidUpdate() {
@@ -133,7 +136,7 @@ class App extends IssieBase {
         }
     }
 
-    
+
 
 
     static getDerivedStateFromProps(props, state) {
@@ -220,7 +223,7 @@ class App extends IssieBase {
             saveWordTranslateX(0);
         }
         let video = this.isVideo();
-        
+
 
         if (skipSearch === undefined && this.isSearch()) {
             this.props.history.goBack();
@@ -272,15 +275,15 @@ class App extends IssieBase {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = this.isHome()? null : <BackButton slot="end-bar" onClick={() => this.goBack()}/>
+        let backElement = this.isHome() ? null : <BackButton slot="end-bar" onClick={() => this.goBack()} />
         // <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
         //     onClick={() => this.goBack()} style={{ visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
-        let deleteButton = this.state.showDelete ? 
-            <TrashButton slot="start-bar" onClick={this.state.showDelete}/> : null;
-        let shareButton = this.state.showShare ? 
-            <ShareButton slot="start-bar" onClick={this.state.showShare}/> : null;
+        let deleteButton = this.state.showDelete ?
+            <TrashButton slot="start-bar" onClick={this.state.showDelete} /> : null;
+        let shareButton = this.state.showShare ?
+            <ShareButton slot="start-bar" onClick={this.state.showShare} /> : null;
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
@@ -288,9 +291,9 @@ class App extends IssieBase {
             let searchClassName = narrow ? "" : "sameLine";
             searchInput = (
                 <div slot={narrow ? "title" : "end-bar"} className={"search " + searchClassName} >
-                    <input 
-                    
-                    type="search" onChange={this.handleSearch}
+                    <input
+
+                        type="search" onChange={this.handleSearch}
                         onFocus={this.preventKeyBoardScrollApp} value={this.state.searchStr || ""} />
                 </div>)
         }
@@ -334,7 +337,7 @@ class App extends IssieBase {
 
                     <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />
                     {this.state.allowAddWord && (this.isHome() || this.isWords()) ? <PlusButton slot="start-bar" open={this.state.menuOpen} onClick={() => this.handleNewClick()} color='white' />
-                    : null}
+                        : null}
                     <div slot="title" style={{ display: "inline-block" }}>{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
@@ -343,23 +346,23 @@ class App extends IssieBase {
                     {deleteButton}
                     {shareButton}
                     {this.state.allowAddWord ? <div /> : null}
-                    <Menu id="SettingWindow" 
-                        slot="body" 
-                        open={this.state.menuOpen} 
+                    <Menu id="SettingWindow"
+                        slot="body"
+                        open={this.state.menuOpen}
                         closeSettings={() => this.closeSettings()}
                         showInfo={() => { this.showInfo(); }}>
                         {IssieBase.isMobile() ? null :
-                        <OnOffMenu 
-                            label={translate("SettingsSwipe")} 
-                            checked={this.state.allowSwipe}
-                            onChange={(isOn) => this.allowSwipe(isOn) }
-                        />}
-                        {IssieBase.isMobile() ? null :<LineMenu />}
-                        <OnOffMenu 
-                            label={translate("SettingsEdit")} 
+                            <OnOffMenu
+                                label={translate("SettingsSwipe")}
+                                checked={this.state.allowSwipe}
+                                onChange={(isOn) => this.allowSwipe(isOn)}
+                            />}
+                        {IssieBase.isMobile() ? null : <LineMenu />}
+                        <OnOffMenu
+                            label={translate("SettingsEdit")}
                             subLabel={translate("SettingsAddCatAndWords")}
                             checked={this.state.allowAddWord}
-                            onChange={(isOn) => this.allowAddWord(isOn) }
+                            onChange={(isOn) => this.allowAddWord(isOn)}
                         />
                     </Menu>
                     <div slot="body" className="theBody" style={{
@@ -444,8 +447,8 @@ class App extends IssieBase {
                     path="/video/:videoName/:categoryId/:title/:filePath"
                     render={(props) => {
                         console.log("Render video pane")
-                        if (this.backInProcess) 
-                            return 
+                        if (this.backInProcess)
+                            return
                         VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
                         this.setTitle(props.match.params.title);
 
@@ -475,30 +478,32 @@ class App extends IssieBase {
                     render={(props) => {
                         this.setTitle(translate("TitleAddCategory"));
                         return (
-                        <AddItem
-                            history={props.history}
-                            addWord={false}
-                            pubSub={this.state.pubsub}
-                            isLandscape={IssieBase.isLandscape()}
-                            dimensions={this.state.dimensions}
-                        />
-                    )}
+                            <AddItem
+                                history={props.history}
+                                addWord={false}
+                                pubSub={this.state.pubsub}
+                                isLandscape={IssieBase.isLandscape()}
+                                dimensions={this.state.dimensions}
+                            />
+                        )
+                    }
                     } />
                 <Route
                     path="/add-word/:categoryId"
                     render={(props) => {
                         this.setTitle(translate("TitleAddWord"))
                         return (
-                        <AddItem
-                            addWord="true"
-                            history={props.history}
-                            pubSub={this.state.pubsub}
-                            isLandscape={IssieBase.isLandscape()}
-                            categoryId={props.match.params.categoryId}
-                            categoryId4Theme={props.match.params.categoryId}
-                            dimensions={this.state.dimensions}
-                        />
-                    )}
+                            <AddItem
+                                addWord="true"
+                                history={props.history}
+                                pubSub={this.state.pubsub}
+                                isLandscape={IssieBase.isLandscape()}
+                                categoryId={props.match.params.categoryId}
+                                categoryId4Theme={props.match.params.categoryId}
+                                dimensions={this.state.dimensions}
+                            />
+                        )
+                    }
                     } />
             </Switch>);
     }
