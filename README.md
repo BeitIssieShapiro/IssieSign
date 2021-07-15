@@ -17,7 +17,7 @@ Note: some features won't work, as it requires device API such as filesystem
 ### Run in iOS simulator
 
 - to run in ios simulator, you need a Mac and xcode installed
-- run `script/make.sh`  
+- run `./scripts/make.sh`  
 - Open xcode and open a workspace in `cordova/IsraeliSignLanguage/platforms/ios/IssieSign.xcworkspace`
 - On the project Navigator left panel, select the root (IssieSign)
 - In the "Signing" section, choose the Team (you would need to click on manage-account and add your appleId account before)

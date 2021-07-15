@@ -5,15 +5,38 @@ import "../css/Tile.css";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 
+function trace(a,...optionalParams) {
+    //console.log(a, ...optionalParams);
+}
+
+// safely handles circular references
+JSON.safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      key == "_targetInst" || key == "target" || key == "currentTarget" || key == "view" ? undefined : typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined // Duplicate reference found, discard key
+          : cache.push(value) && value // Store value in our collection
+        : typeof value === 'function' ? "f:" + value.toString() : value,
+    indent
+  );
+  cache = null;
+  return retVal;
+};
+
 
 // onLongPress
-
+//sync state
+let xy = { x: 0, y: 0 }
+const setXY = (obj) => xy = obj;
 
 export default function ISLink(props) {
   const history = useHistory();
   let lpDelay = props.longPressDelay ? props.longPressDelay : 500;
   function handleNavigate() {
-    console.log("navigate to", props.url)
+    trace("navigate to", props.url)
     if (props.url)
       history.push(props.url);
   }
@@ -22,7 +45,7 @@ export default function ISLink(props) {
   const [startEvent, setStartEvent] = useState(undefined);
   const [callBackTriggered, setCallBackTriggered] = useState(false);
   const [moved, setMoved] = useState(false);
-  const [xy, setXY] = useState({ x: 0, y: 0 })
+  //const [xy, setXY] = useState({ x: 0, y: 0 })
 
 
   useEffect(() => {
@@ -30,15 +53,18 @@ export default function ISLink(props) {
     if (startLongPress) {
       setCallBackTriggered(false);
       timerId = setTimeout(() => {
+        trace("long-press detected");
         setCallBackTriggered(true);
-        if (moved)
+        if (moved) {
+          trace("moved - longpress ignored")
           return;
+        }
 
         if (startEvent) {
           try {
             startEvent.preventDefault();
             //startEvent.stopPropagation();
-            console.log("Prevent default on press")
+            trace("Prevent default on press")
           } catch (e) { }
         }
         //calling the onLongPress callback
@@ -58,34 +84,50 @@ export default function ISLink(props) {
 
   const move = useCallback((e) => {
     setMoved(true);
-    console.log("moved")
+    trace("moved detected")
   }, []);
 
   const start = useCallback((e) => {
+    trace("touch started")
+    let event = unify(e)
     setMoved(false);
     try {
-      setXY({ x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY });
+      trace("started at", event.clientX, event.clientY)
+      setXY({ x: event.clientX, y: event.clientY });
 
-    } catch (e) { }
+    } catch (err) { }
     setStartLongPress(true);
     setStartEvent(e);
   }, []);
 
+  const unify = (e) => {
+    return e.changedTouches ? e.changedTouches[0] : e;
+  }
 
   const stop = useCallback((e) => {
+    //e.persist()
+    let event = unify(e);
     let didMove = false;
-    try{
-      didMove = xy.x !== e.changedTouches[0].clientX || xy.y !== e.changedTouches[0].clientY;
-    } catch(e){}
+    try {
+      //trace(JSON.safeStringify(e))
+      trace("changedTouches", JSON.stringify(event))
+      //trace(JSON.safeStringify(event.nativeEvent))
+      if (event.clientX !== undefined) {
+        trace("clientX", xy.x, event.clientX, xy.y, event.clientY)
+        didMove = xy.x !== event.clientX || xy.y !== event.clientY;
+      }
+    } catch (err) { }
 
     let canceled = false;
     if (callBackTriggered) {
-      console.log("prevent default on release")
+      trace("Long press was detected, prevent default on release")
       e.preventDefault();
       canceled = true;
     }
     setStartLongPress(false);
+    trace("touch end: moved:" + (moved ? "true" : false) + ", didMove:" + (didMove ? "true" : "false"))
     if (!canceled && !moved && !didMove) {
+      trace("do click")
       handleNavigate();
       e.preventDefault();
     }
@@ -96,10 +138,26 @@ export default function ISLink(props) {
       className={"tileGroup noTouchCallout"}
       style={props.style}
       onMouseDown={start}
-      onMouseUp={stop}
-      onMouseLeave={stop}
+      onMouseUp={
+        (e) => {
+          trace("mouse up");
+          stop(e)
+        }
+      }
+      onMouseLeave={
+        (e) => {
+          trace("mouse leave");
+          stop(e)
+        }
+      }
       onTouchStart={start}
-      onTouchEnd={stop}
+      onTouchEnd={
+        (e) => {
+          trace("touch end");
+          stop(e)
+        }
+      }
+      on
       onTouchMove={move}
       onScroll={move}
       onScrollCapture={move}

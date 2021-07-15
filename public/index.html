@@ -244,6 +244,7 @@
                 //only in iOS
                 document.basePath = cordova.file.applicationDirectory;
                 window.documents = cordova.file.documentsDirectory;
+                document.assetsReady=true;
             }
             console.log("base path:", document.basePath);
 
