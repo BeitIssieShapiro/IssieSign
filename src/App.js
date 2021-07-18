@@ -13,8 +13,10 @@ import { withAlert } from 'react-alert'
 import { Route, Switch } from "react-router";
 import { VideoToggle } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
-import { translate, setLanguage } from './utils/lang';
+import { translate, setLanguage, fTranslate } from './utils/lang';
 import { gCurrentLanguage } from './current-language';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 import './css/App.css';
 import './css/style.css';
@@ -123,11 +125,27 @@ class App extends IssieBase {
         }
 
         reloadAdditionals().then(() => this.forceUpdate());
+
+        this.loadingMedia();
+
+    }
+
+    loadingMedia = () => {
         setTimeout(() => {
             if (!document.assetsReady) {
-                alert(translate("RestartApp"));
+                //let sizeInMb = Math.floor(document.totalSizeToDownload / (1024*1024));
+                this.setState({
+                    busy: true,
+                    showProgress: true,
+                    progress: document.downloadPercent,
+                    progressText: `${document.downloadPercent}%`,
+                    busyText: fTranslate("LoadingMedia", document.fileIndex, 2)
+                });
+                this.loadingMedia()
+            } else {
+                this.setState({ busy: false, progress: undefined });
             }
-        }, 6000);
+        }, 1500);
     }
 
     componentDidUpdate() {
@@ -325,13 +343,22 @@ class App extends IssieBase {
         return (
             <div className="App">
                 <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
-                    {this.state.busy ? <div style={{ position: 'absolute', direction: 'rtl', top: '60px', width: '100%', color: 'black' }}>{this.state.busyText}</div> : null}
-                    <ClipLoader
-                        sizeUnit={"px"}
-                        size={150}
-                        color={'#123abc'}
-                        loading={this.state.busy}
-                    />
+                    {this.state.busy ? <div style={{ position: 'absolute', alignContent: 'center', direction: 'rtl', top: '60px', left: '15%', right: '15%', color: 'black', fontSize: 30 }}>
+                        {this.state.busyText}
+                        {this.state.showProgress ?
+                            <CircularProgressbar
+                                value={this.state.progress}
+                                text={this.state.progressText}
+                                background={true}
+                                styles={{fontSize:16}}
+                            />
+                            : <ClipLoader
+                                sizeUnit={"px"}
+                                size={150}
+                                color={'#123abc'}
+                                loading={this.state.busy}
+                            />}
+                    </div> : null}
                 </div>
                 <Shell theme={this.state.theme} id="page1" isMobile={IssieBase.isMobile()}>
 

@@ -82,6 +82,7 @@ import com.google.android.play.core.tasks.Task;
 public class FileUtils extends CordovaPlugin {
     private static final String LOG_TAG = "FileUtils";
 
+
     public static int NOT_FOUND_ERR = 1;
     public static int SECURITY_ERR = 2;
     public static int ABORT_ERR = 3;
@@ -131,7 +132,6 @@ public class FileUtils extends CordovaPlugin {
     }
 
     private ArrayList<Filesystem> filesystems;
-    private Map<String,String> playAssets;
 
     public void registerFilesystem(Filesystem fs) {
     	if (fs != null && filesystemForName(fs.name)== null) {
@@ -139,9 +139,6 @@ public class FileUtils extends CordovaPlugin {
     	}
     }
 
-    public void registerPlayAssets(String name, String path) {
-        this.playAssets.put(name, path);
-    }
 
     private Filesystem filesystemForName(String name) {
     	for (Filesystem fs:filesystems) {
@@ -207,7 +204,6 @@ public class FileUtils extends CordovaPlugin {
 
 
         this.filesystems = new ArrayList<Filesystem>();
-        this.playAssets = new ArrayMap<String,String>();
         this.pendingRequests = new PendingRequests();
 
     	String tempRoot = null;
@@ -256,44 +252,6 @@ public class FileUtils extends CordovaPlugin {
     		this.registerFilesystem(new ContentFilesystem(webView.getContext(), webView.getResourceApi()));
             this.registerFilesystem(new AssetFilesystem(webView.getContext().getAssets(), webView.getResourceApi()));
 
-            AssetPackManager assetPackManager;
-            assetPackManager = AssetPackManagerFactory.getInstance(cordova.getActivity().getApplicationContext());
-            FileUtils fu = this;
-            ArrayList<String> pckList = new ArrayList<String>();
-            pckList.add("issiesign_assets");
-            pckList.add("issiesign_assets3");
-
-            assetPackManager.getPackStates(pckList)
-                    .addOnCompleteListener(new OnCompleteListener<AssetPackStates>() {
-                        @Override
-                        public void onComplete(Task<AssetPackStates> task) {
-                            AssetPackStates assetPackStates;
-                            try {
-                                assetPackStates = task.getResult();
-                                AssetPackState assetPackState = assetPackStates.packStates().get("issiesign_assets");
-                                if (assetPackState != null) {
-                                    String name = assetPackState.name();
-                                    String path = assetPackManager.getPackLocation(name).assetsPath();
-
-                                    fu.registerPlayAssets(name, path);
-                                }
-                                assetPackState = assetPackStates.packStates().get("issiesign_assets3");
-                                if (assetPackState != null) {
-                                    String name = assetPackState.name();
-                                    String path = assetPackManager.getPackLocation(name).assetsPath();
-
-                                    fu.registerPlayAssets(name, path);
-                                }
-
-                            }catch (Exception e){
-                                LOG.d("MainActivity", e.getMessage());
-                            }
-                        }
-                    });
-
-
-
-            assetPackManager.fetch(pckList);
 
             registerExtraFileSystems(getExtraFileSystemsPreference(activity), getAvailableFileSystems(activity));
 
@@ -306,6 +264,8 @@ public class FileUtils extends CordovaPlugin {
     		activity.finish();
     	}
     }
+
+
 
     public static FileUtils getFilePlugin() {
 		return filePlugin;
@@ -781,20 +741,6 @@ public class FileUtils extends CordovaPlugin {
         if (uriString == null) {
             throw new MalformedURLException("Unrecognized filesystem URL");
         }
-
-        if (uriString.startsWith("playasset://")) {//PlayAssets
-            String name = uriString.substring(12);
-            String assetPath = this.playAssets.get(name);
-            if (assetPath == null) {
-                throw new MalformedURLException("Play Assets not found");
-            }
-
-            JSONObject fs = new JSONObject();
-            fs.put("name", name);
-            fs.put("root", assetPath);
-            return fs;
-        }
-
 
         Uri uri = Uri.parse(uriString);
         boolean isNativeUri = false;

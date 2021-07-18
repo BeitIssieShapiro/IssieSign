@@ -9,6 +9,10 @@
         "parents": {
           "/*": [
             {
+              "xml": "<feature name=\"PlayAssets\"><param name=\"android-package\" value=\"bentu.playassets.PlayAssets\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
+            },
+            {
               "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
             },
@@ -237,10 +241,21 @@
     },
     "cordova-plugin-media-capture": {
       "PACKAGE_NAME": "com.issieshapiro.signlang"
+    },
+    "cordova-plugin-assets": {
+      "PACKAGE_NAME": "com.issieshapiro.signlang"
     }
   },
   "dependent_plugins": {},
   "modules": [
+    {
+      "id": "cordova-plugin-assets.PlayAssets",
+      "file": "plugins/cordova-plugin-assets/www/playassets.js",
+      "pluginId": "cordova-plugin-assets",
+      "clobbers": [
+        "window.PlayAssets"
+      ]
+    },
     {
       "id": "cordova-plugin-file.DirectoryEntry",
       "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",

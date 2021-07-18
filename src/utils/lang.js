@@ -55,7 +55,9 @@ var strings = {
 
         "AddLoadVideoCameraFailedOrCanceled": "צילום וידאו נכשל או בוטל",
         "AddLoadVideoFailedOrCanceled": "טעינת סרטון בוטלה או נכשלה",
-        "RestartApp"  :"קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות"
+        
+        "RestartApp"  :"קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
+        "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})"
      },
     "ar": {
         "AppTitle": "لغة الإشارة",

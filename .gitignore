@@ -68,6 +68,8 @@ platforms/android/CordovaLib/bin
 platforms/android/CordovaLib/gen
 platforms/android/CordovaLib/local.properties
 cordova/IsraeliSignLanguage/platforms/android/app/src/main/assets/www/
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets/prod/
+cordova/IsraeliSignLanguage/platforms/android/issiesign_assets3/prod/
 output.apks
 
 
@@ -81,3 +83,4 @@ platforms/wp8/*.csproj.user
 
 # res
 resources/signing
+cordova/IsraeliSignLanguage/platforms/android/app/debug/app-debug.aab

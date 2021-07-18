@@ -1,6 +1,13 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
   module.exports = [
-    
+    {
+      "id": "cordova-plugin-assets.PlayAssets",
+      "file": "plugins/cordova-plugin-assets/www/playassets.js",
+      "pluginId": "cordova-plugin-assets",
+      "clobbers": [
+        "window.PlayAssets"
+      ]
+    },
     {
       "id": "cordova-plugin-file.DirectoryEntry",
       "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",

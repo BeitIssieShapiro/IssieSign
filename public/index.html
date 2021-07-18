@@ -210,6 +210,35 @@
             }
         }
 
+        function getAssetsInfo() {
+            console.log("getAssetsInfo");
+            window.PlayAssets.getPlayAssets((assets)=> {
+                if (assets && assets.ready && assets.assets.length === 2) {
+                    document.assetsReady = true;
+                    
+                    if (assets.assets[0].name === "issiesign_assets") {
+                        document.basePath = assets.assets[0].path + "/";
+                        document.basePath2 = assets.assets[1].path + "/";
+                    } else {
+                        document.basePath = assets.assets[1].path + "/";
+                        document.basePath2 = assets.assets[0].path + "/";
+                    }
+                    
+                    
+                } else {
+                    if (assets) {
+                        document.downloadPercent = assets.downloadPercent;
+                        document.totalSizeToDownload = assets.totalSizeToDownload;
+                        document.fileIndex = assets.fileIndex;
+                        
+                        console.log("Downloading...", assets.downloadPercent);
+                    }
+                    console.log("retry getting getAssetsInfo")
+                    setTimeout(getAssetsInfo, 1500);
+                }
+            })
+        }
+
 
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
@@ -217,8 +246,8 @@
             //console.log(cordova.file.applicationDirectory);
             console.log("Device Ready event");
             if (document.basePath !== "/") {
-                getPlayAssetPath();
-                getPlayAssetPath2();
+                window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
+                getAssetsInfo();
                 window.documents = cordova.file.externalDataDirectory;
                 window.isAndroid = true;
 
