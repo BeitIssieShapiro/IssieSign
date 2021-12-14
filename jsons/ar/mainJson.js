@@ -2,7 +2,7 @@
 export const mainJson = {
     "categories": [
       {
-        "name": "איברי גוף",
+        "name": "أجزاء الجسم",
         "id": "1",
         "imageName": "איברי גוף.png",
         "words": [
@@ -13,13 +13,13 @@ export const mainJson = {
             "videoName": "אוזניים.mov"
           },
           {
-            "name": "איברי גוף",
+            "name": "أجزاء الجسم",
             "id": 102,
             "imageName": "איברי גוף.png",
             "videoName": "איברי גוף.mov"
           },
           {
-            "name": "אף",
+            "name": "انف",
             "id": 103,
             "imageName": "אף.png",
             "videoName": "אף.mov"

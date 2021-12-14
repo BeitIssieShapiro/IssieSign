@@ -11,10 +11,9 @@ import AddItem from "./components/add";
 import { withAlert } from 'react-alert'
 
 import { Route, Switch } from "react-router";
-import { VideoToggle } from "./utils/Utils";
+import { VideoToggle, LANG_KEY, getLanguage } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
-import { gCurrentLanguage } from './current-language';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -29,7 +28,7 @@ import {
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import { Menu, OnOffMenu, LineMenu } from './settings'
+import { Menu, OnOffMenu, LineMenu, RadioSetting } from './settings'
 import './css/settings.css'
 import { receiveIncomingZip } from './apis/file'
 import { isNumber } from 'util';
@@ -72,16 +71,18 @@ class App extends IssieBase {
     }
 
     componentDidMount() {
-        setLanguage(gCurrentLanguage)
 
         window.addEventListener("resize", this.resizeListener);
 
         window.goBack = () => this.goBack();
+        let lang = getLanguage();
+        setLanguage(lang)
 
         let pubsub = new PubSub()
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            language : lang,
             pubsub: pubsub,
             busy: false,
             busyText: translate("Working")
@@ -155,7 +156,11 @@ class App extends IssieBase {
     }
 
 
-
+    saveLanguage(lang) {
+        saveSettingKey(LANG_KEY, lang);
+        this.setState({ language: lang });
+        setLanguage(lang);
+    }
 
     static getDerivedStateFromProps(props, state) {
         if (!props.pubSub) {
@@ -350,7 +355,7 @@ class App extends IssieBase {
                                 value={this.state.progress}
                                 text={this.state.progressText}
                                 background={true}
-                                styles={{fontSize:16}}
+                                styles={{ fontSize: 16 }}
                             />
                             : <ClipLoader
                                 sizeUnit={"px"}
@@ -391,6 +396,10 @@ class App extends IssieBase {
                             checked={this.state.allowAddWord}
                             onChange={(isOn) => this.allowAddWord(isOn)}
                         />
+                        <RadioSetting
+                            label={translate("SettingsLanguage")}
+                            value={this.state.language}
+                            onChange={(newVal) => { this.saveLanguage(newVal) }} />
                     </Menu>
                     <div slot="body" className="theBody" style={{
                         paddingLeft: this.shellPadding,

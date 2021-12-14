@@ -12,6 +12,43 @@ export const LineMenu = () => (
   />
 );
 
+export function RadioSetting(props) {
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column', alignItems: 'center'
+    }}>
+      <div style={{ height: 30 }} />
+      <div style={{
+        width: '80%',
+        display: 'flex',
+        flexDirection: 'row',
+        fontSize: '25px',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <input type="radio" id="he" name="lang" value="he" checked={props.value === "he" || !props.value}
+          onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
+        />
+        <label for="he">א ב ג</label><br />
+        <input type="radio" id="en" name="lang" value="en" checked={props.value === "en"}
+          onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
+        />
+        <label for="en">a b c</label><br />
+        <input type="radio" id="ar" name="lang" value="ar" checked={props.value === "ar"}
+          onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
+        />
+        <label for="en">أ ب ج</label><br />
+
+        <div>
+          {props.label}
+        </div>
+      </div>
+      <div style={{ height: 30 }} />
+    </div>
+  )
+}
+
 export function OnOffMenu(props) {
   return (
     <div style={{
@@ -32,21 +69,22 @@ export function OnOffMenu(props) {
           <i></i>
         </label>
 
-          <div>
+        <div>
           {props.label}
-          </div>
+        </div>
       </div>
-      {props.subLabel ? 
-        <div style={{ 
+      {props.subLabel ?
+        <div style={{
           width: '80%',
           display: 'flex',
-          fontSize: '20px', 
-          justifyContent:'flex-end' }}>
-            { props.subLabel}
-          </div> :
-          null}
+          fontSize: '20px',
+          justifyContent: 'flex-end'
+        }}>
+          {props.subLabel}
+        </div> :
+        null}
 
-        
+
       <div style={{ height: 30 }} />
     </div>
   )
@@ -84,7 +122,7 @@ export class Menu extends React.Component {
         position: 'absolute',
         top: '35%',
         left: '10%',
-        height: this.state.open ? 400 : 0,
+        height: this.state.open ? 500 : 0,
         width: '80%',
         display: 'flex',
         flexDirection: 'column',

@@ -1,10 +1,22 @@
+import { gCurrentLanguage } from '../current-language';
+
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
+export const LANG_KEY = "MyIssieSign_Settings_Lang";
+
 
 export function isBrowser() {
     return false;
+}
+
+export function getLanguage() {
+    let value = window.localStorage.getItem(LANG_KEY);
+    if (!value) {
+        return gCurrentLanguage;
+    }
+    return value;
 }
 
 export function saveSettingKey(key, value) {

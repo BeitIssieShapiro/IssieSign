@@ -3,7 +3,7 @@ cp -f jsons/ar/mainJson.js src/mainJson.js
 cp -R Ext-Media/images/ar/ src/images/adt/
 
 rm -rf public/videos
-cp -R Ext-Media/videos/ar/dev public/videos
+cp -R Ext-Media/videos/ar/dev-ios public/videos
 
 npm run build
 

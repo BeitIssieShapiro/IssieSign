@@ -209,6 +209,8 @@ export async function listWordsInFolder(dirEntry) {
     });
 }
 
+
+//old implementation
 export async function zipWord(paths) {
     let zip = new JSZip();
 

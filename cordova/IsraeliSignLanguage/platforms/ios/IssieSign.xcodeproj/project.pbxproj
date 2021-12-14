@@ -60,6 +60,45 @@
 		6A141ABA25B0A25100D58E5C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D292FDF71F64287BED765F2 /* AVFoundation.framework */; };
 		6A141ABB25B0A25100D58E5C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F8236146E1E45278CE5DCC9 /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6A141ADC25B1CC9000D58E5C /* ArabicLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A141ADA25B1CC9000D58E5C /* ArabicLaunchScreen.storyboard */; };
+		6A5BC4852767CD8800759180 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 302D95F014D2391D003F00A1 /* MainViewController.xib */; };
+		6A5BC4862767CD8800759180 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0207DA571B56EA530066E2B4 /* Images.xcassets */; };
+		6A5BC4872767CD8800759180 /* CDVLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AFF5BF81D6E424B00AB3073 /* CDVLaunchScreen.storyboard */; };
+		6A5BC4882767CD8800759180 /* ArabicLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A141ADA25B1CC9000D58E5C /* ArabicLaunchScreen.storyboard */; };
+		6A5BC4892767CD8800759180 /* ELCAlbumPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06B221A780343BB9CDF5958 /* ELCAlbumPickerController.xib */; };
+		6A5BC48A2767CD8800759180 /* ELCAssetPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 257B452E7048453BAAD70FFF /* ELCAssetPicker.xib */; };
+		6A5BC48B2767CD8800759180 /* ELCAssetTablePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F515A100EFF46A5AEDCBEC3 /* ELCAssetTablePicker.xib */; };
+		6A5BC48C2767CD8800759180 /* Overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = BA6B8265ED5041C0B29DFA31 /* Overlay.png */; };
+		6A5BC48D2767CD8800759180 /* Overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F58DE22987424CA8BFBC57B3 /* Overlay@2x.png */; };
+		6A5BC48E2767CD8800759180 /* CDVCapture.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 09BE431C654640839A9532B2 /* CDVCapture.bundle */; };
+		6A5BC4902767CD8800759180 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		6A5BC4912767CD8800759180 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
+		6A5BC4922767CD8800759180 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 302D95EF14D2391D003F00A1 /* MainViewController.m */; };
+		6A5BC4932767CD8800759180 /* UIImage+CropScaleOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF48E928CAA487A8C8340E5 /* UIImage+CropScaleOrientation.m */; };
+		6A5BC4942767CD8800759180 /* CDVCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 49CD32FD1ABD45E3A0B5524A /* CDVCamera.m */; };
+		6A5BC4952767CD8800759180 /* CDVJpegHeaderWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 472FA1218EF841448B2F616E /* CDVJpegHeaderWriter.m */; };
+		6A5BC4962767CD8800759180 /* CDVDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 78B8C3C13B954FDE8C20A20F /* CDVDevice.m */; };
+		6A5BC4972767CD8800759180 /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB8520A8D48406096451C28 /* CDVFile.m */; };
+		6A5BC4982767CD8800759180 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = DA454BA3152E4433A2DD992B /* CDVLocalFilesystem.m */; };
+		6A5BC4992767CD8800759180 /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = C92D0F451B254CEB8A6CD00F /* CDVAssetLibraryFilesystem.m */; };
+		6A5BC49A2767CD8800759180 /* SOSPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B68F5F9A3F445A8A55742F7 /* SOSPicker.m */; };
+		6A5BC49B2767CD8800759180 /* ELCAlbumPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82E32CFF58B4414E8241100B /* ELCAlbumPickerController.m */; };
+		6A5BC49C2767CD8800759180 /* ELCAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 939B9569A55F4DCDB62DB20E /* ELCAsset.m */; };
+		6A5BC49D2767CD8800759180 /* ELCAssetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8074AF9C546A4C6290406E0E /* ELCAssetCell.m */; };
+		6A5BC49E2767CD8800759180 /* ELCAssetTablePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 670FEEEC1CEF4D3991F731CD /* ELCAssetTablePicker.m */; };
+		6A5BC49F2767CD8800759180 /* ELCImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1CE93833A4D494B98DD7BB1 /* ELCImagePickerController.m */; };
+		6A5BC4A02767CD8800759180 /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B623E3B80940829C6B67E5 /* CDVSplashScreen.m */; };
+		6A5BC4A12767CD8800759180 /* CDVViewController+SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FC8357784943B782374FB3 /* CDVViewController+SplashScreen.m */; };
+		6A5BC4A22767CD8800759180 /* MMShare.m in Sources */ = {isa = PBXBuildFile; fileRef = D74E7868A59B4BEB8E4AC48A /* MMShare.m */; };
+		6A5BC4A32767CD8800759180 /* NSString+SSURLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 24208D66E46540A78757D061 /* NSString+SSURLEncoding.m */; };
+		6A5BC4A42767CD8800759180 /* SocialSharing.m in Sources */ = {isa = PBXBuildFile; fileRef = 427033E1B61B45FEA14F1786 /* SocialSharing.m */; };
+		6A5BC4A52767CD8800759180 /* CDVCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55EE07E93A48958CBF7BB7 /* CDVCapture.m */; };
+		6A5BC4A72767CD8800759180 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C54E7B365745ED9B3764F8 /* Social.framework */; };
+		6A5BC4A82767CD8800759180 /* libCordova.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 301BF535109A57CC0062928A /* libCordova.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		6A5BC4A92767CD8800759180 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489E4DBB957046D38BE540AD /* ImageIO.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6A5BC4AA2767CD8800759180 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2A52399B3B47B684B81A0C /* CoreLocation.framework */; };
+		6A5BC4AB2767CD8800759180 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D292FDF71F64287BED765F2 /* AVFoundation.framework */; };
+		6A5BC4AC2767CD8800759180 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F8236146E1E45278CE5DCC9 /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6A5BC4B42767D9B000759180 /* MyIssieSignLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A5BC4B32767D9B000759180 /* MyIssieSignLaunchScreen.storyboard */; };
 		6AFF5BF91D6E424B00AB3073 /* CDVLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AFF5BF81D6E424B00AB3073 /* CDVLaunchScreen.storyboard */; };
 		6E0474CC556948A698FF176A /* ELCAlbumPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06B221A780343BB9CDF5958 /* ELCAlbumPickerController.xib */; };
 		6FF5472A9E524D9AB792CD94 /* CDVCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 49CD32FD1ABD45E3A0B5524A /* CDVCamera.m */; };
@@ -100,6 +139,13 @@
 			remoteInfo = CordovaLib;
 		};
 		6A141A9225B0A25100D58E5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 301BF52D109A57CC0062928A /* CordovaLib/CordovaLib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = CordovaLib;
+		};
+		6A5BC4822767CD8800759180 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 301BF52D109A57CC0062928A /* CordovaLib/CordovaLib.xcodeproj */;
 			proxyType = 1;
@@ -166,6 +212,9 @@
 		6A141ABF25B0A25100D58E5C /* IssieSign Arabic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IssieSign Arabic.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A141AC025B0A25100D58E5C /* IssieSign copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "IssieSign copy-Info.plist"; path = "/Users/i022021/dev/Issie/IssieSign/cordova/IsraeliSignLanguage/platforms/ios/IssieSign copy-Info.plist"; sourceTree = "<absolute>"; };
 		6A141ADA25B1CC9000D58E5C /* ArabicLaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ArabicLaunchScreen.storyboard; sourceTree = "<group>"; };
+		6A5BC4B02767CD8800759180 /* MyIssieSign.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyIssieSign.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A5BC4B22767CD8900759180 /* IssieSign Arabic copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "IssieSign Arabic copy-Info.plist"; path = "/Users/i022021/dev/Issie/IssieSign/cordova/IsraeliSignLanguage/platforms/ios/IssieSign Arabic copy-Info.plist"; sourceTree = "<absolute>"; };
+		6A5BC4B32767D9B000759180 /* MyIssieSignLaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MyIssieSignLaunchScreen.storyboard; sourceTree = "<group>"; };
 		6AFF5BF81D6E424B00AB3073 /* CDVLaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = CDVLaunchScreen.storyboard; path = IssieSign/CDVLaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		78B8C3C13B954FDE8C20A20F /* CDVDevice.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVDevice.m; path = "cordova-plugin-device/CDVDevice.m"; sourceTree = "<group>"; };
 		7E55EE07E93A48958CBF7BB7 /* CDVCapture.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVCapture.m; path = "cordova-plugin-media-capture/CDVCapture.m"; sourceTree = "<group>"; };
@@ -229,6 +278,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6A5BC4A62767CD8800759180 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A5BC4A72767CD8800759180 /* Social.framework in Frameworks */,
+				6A5BC4A82767CD8800759180 /* libCordova.a in Frameworks */,
+				6A5BC4A92767CD8800759180 /* ImageIO.framework in Frameworks */,
+				6A5BC4AA2767CD8800759180 /* CoreLocation.framework in Frameworks */,
+				6A5BC4AB2767CD8800759180 /* AVFoundation.framework in Frameworks */,
+				6A5BC4AC2767CD8800759180 /* MessageUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -250,6 +312,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* IssieSign.app */,
 				6A141ABF25B0A25100D58E5C /* IssieSign Arabic.app */,
+				6A5BC4B02767CD8800759180 /* MyIssieSign.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -272,6 +335,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				6A141AC025B0A25100D58E5C /* IssieSign copy-Info.plist */,
+				6A5BC4B22767CD8900759180 /* IssieSign Arabic copy-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -294,6 +358,7 @@
 				3047A50E1AB8057F00498E2A /* config */,
 				8D1107310486CEB800E47090 /* IssieSign-Info.plist */,
 				6A141ADA25B1CC9000D58E5C /* ArabicLaunchScreen.storyboard */,
+				6A5BC4B32767D9B000759180 /* MyIssieSignLaunchScreen.storyboard */,
 				6AFF5BF81D6E424B00AB3073 /* CDVLaunchScreen.storyboard */,
 				B06B221A780343BB9CDF5958 /* ELCAlbumPickerController.xib */,
 				257B452E7048453BAAD70FFF /* ELCAssetPicker.xib */,
@@ -481,6 +546,25 @@
 			productReference = 6A141ABF25B0A25100D58E5C /* IssieSign Arabic.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6A5BC4802767CD8800759180 /* MyIssieSign */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A5BC4AD2767CD8800759180 /* Build configuration list for PBXNativeTarget "MyIssieSign" */;
+			buildPhases = (
+				6A5BC4832767CD8800759180 /* Copy www directory */,
+				6A5BC4842767CD8800759180 /* Resources */,
+				6A5BC48F2767CD8800759180 /* Sources */,
+				6A5BC4A62767CD8800759180 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6A5BC4812767CD8800759180 /* PBXTargetDependency */,
+			);
+			name = MyIssieSign;
+			productName = IssieSign;
+			productReference = 6A5BC4B02767CD8800759180 /* MyIssieSign.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -495,6 +579,10 @@
 						ProvisioningStyle = Automatic;
 					};
 					6A141A9025B0A25100D58E5C = {
+						DevelopmentTeam = SKNJT9TD9G;
+						ProvisioningStyle = Automatic;
+					};
+					6A5BC4802767CD8800759180 = {
 						DevelopmentTeam = SKNJT9TD9G;
 						ProvisioningStyle = Automatic;
 					};
@@ -520,6 +608,7 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* IssieSign */,
 				6A141A9025B0A25100D58E5C /* IssieSign Arabic */,
+				6A5BC4802767CD8800759180 /* MyIssieSign */,
 			);
 		};
 /* End PBXProject section */
@@ -575,6 +664,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6A5BC4842767CD8800759180 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A5BC4852767CD8800759180 /* MainViewController.xib in Resources */,
+				6A5BC4B42767D9B000759180 /* MyIssieSignLaunchScreen.storyboard in Resources */,
+				6A5BC4862767CD8800759180 /* Images.xcassets in Resources */,
+				6A5BC4872767CD8800759180 /* CDVLaunchScreen.storyboard in Resources */,
+				6A5BC4882767CD8800759180 /* ArabicLaunchScreen.storyboard in Resources */,
+				6A5BC4892767CD8800759180 /* ELCAlbumPickerController.xib in Resources */,
+				6A5BC48A2767CD8800759180 /* ELCAssetPicker.xib in Resources */,
+				6A5BC48B2767CD8800759180 /* ELCAssetTablePicker.xib in Resources */,
+				6A5BC48C2767CD8800759180 /* Overlay.png in Resources */,
+				6A5BC48D2767CD8800759180 /* Overlay@2x.png in Resources */,
+				6A5BC48E2767CD8800759180 /* CDVCapture.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -594,6 +701,21 @@
 			showEnvVarsInLog = 0;
 		};
 		6A141A9325B0A25100D58E5C /* Copy www directory */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy www directory";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/IssieSign/Scripts/copy-www-build-step.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6A5BC4832767CD8800759180 /* Copy www directory */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -669,6 +791,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6A5BC48F2767CD8800759180 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A5BC4902767CD8800759180 /* main.m in Sources */,
+				6A5BC4912767CD8800759180 /* AppDelegate.m in Sources */,
+				6A5BC4922767CD8800759180 /* MainViewController.m in Sources */,
+				6A5BC4932767CD8800759180 /* UIImage+CropScaleOrientation.m in Sources */,
+				6A5BC4942767CD8800759180 /* CDVCamera.m in Sources */,
+				6A5BC4952767CD8800759180 /* CDVJpegHeaderWriter.m in Sources */,
+				6A5BC4962767CD8800759180 /* CDVDevice.m in Sources */,
+				6A5BC4972767CD8800759180 /* CDVFile.m in Sources */,
+				6A5BC4982767CD8800759180 /* CDVLocalFilesystem.m in Sources */,
+				6A5BC4992767CD8800759180 /* CDVAssetLibraryFilesystem.m in Sources */,
+				6A5BC49A2767CD8800759180 /* SOSPicker.m in Sources */,
+				6A5BC49B2767CD8800759180 /* ELCAlbumPickerController.m in Sources */,
+				6A5BC49C2767CD8800759180 /* ELCAsset.m in Sources */,
+				6A5BC49D2767CD8800759180 /* ELCAssetCell.m in Sources */,
+				6A5BC49E2767CD8800759180 /* ELCAssetTablePicker.m in Sources */,
+				6A5BC49F2767CD8800759180 /* ELCImagePickerController.m in Sources */,
+				6A5BC4A02767CD8800759180 /* CDVSplashScreen.m in Sources */,
+				6A5BC4A12767CD8800759180 /* CDVViewController+SplashScreen.m in Sources */,
+				6A5BC4A22767CD8800759180 /* MMShare.m in Sources */,
+				6A5BC4A32767CD8800759180 /* NSString+SSURLEncoding.m in Sources */,
+				6A5BC4A42767CD8800759180 /* SocialSharing.m in Sources */,
+				6A5BC4A52767CD8800759180 /* CDVCapture.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -681,6 +832,11 @@
 			isa = PBXTargetDependency;
 			name = CordovaLib;
 			targetProxy = 6A141A9225B0A25100D58E5C /* PBXContainerItemProxy */;
+		};
+		6A5BC4812767CD8800759180 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CordovaLib;
+			targetProxy = 6A5BC4822767CD8800759180 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -805,6 +961,66 @@
 			};
 			name = Release;
 		};
+		6A5BC4AE2767CD8800759180 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3047A50F1AB8059700498E2A /* build-debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-myissiesign";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1.0.4;
+				DEVELOPMENT_TEAM = SKNJT9TD9G;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "IssieSign/IssieSign-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "IssieSign Arabic copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.issieshapiro.myissiesign;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6A5BC4AF2767CD8800759180 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3047A5101AB8059700498E2A /* build-release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-myissiesign";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1.0.4;
+				DEVELOPMENT_TEAM = SKNJT9TD9G;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "IssieSign/IssieSign-Prefix.pch";
+				GCC_THUMB_SUPPORT = NO;
+				GCC_VERSION = "";
+				INFOPLIST_FILE = "IssieSign Arabic copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.issieshapiro.myissiesign;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3047A5111AB8059700498E2A /* build.xcconfig */;
@@ -906,6 +1122,15 @@
 			buildConfigurations = (
 				6A141ABD25B0A25100D58E5C /* Debug */,
 				6A141ABE25B0A25100D58E5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6A5BC4AD2767CD8800759180 /* Build configuration list for PBXNativeTarget "MyIssieSign" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A5BC4AE2767CD8800759180 /* Debug */,
+				6A5BC4AF2767CD8800759180 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

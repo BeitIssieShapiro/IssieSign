@@ -61,7 +61,111 @@ var strings = {
      },
     "ar": {
         "AppTitle": "لغة الإشارة",
+        "SettingsLanguage": "שפה",
+        "SettingsSwipe": "החלקה",
         "SettingsTitle": "اعدادات",
+        "Working": "עובד על זה...",
+        "ImportWords": "מייבא מילים...",
+        "NewWords": "מילים חדשות",
+        "TitleAbout": "עלינו - About us",
+        "SettingsAbout": "עלינו - About us",
+        "SettingsEdit": "עריכה",
+        "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
+        "TitleAddCategory": "הוספת קטגוריה",
+        "TitleAddWord": "הוספת מילה",
+
+
+        //confirm messages
+        "ConfirmTitleDeleteCategory": "מחיקת תיקיה",
+        "ConfirmDeleteCategoryMessage": "מחיקת תיקיה תמחק גם את כל המילים שבתוכה. האם למחוק את התיקיה '{1}'?",
+        "ConfirmTitleDeleteWord": "מחיקת מילה",
+        "ConfirmDeleteWordMessage": "האם למחוק את המילה '{1}'?",
+
+        "BtnYes": "כן",
+        "BtnCancel": "בטל",
+        "BtnSave": "שמור",
+
+        "InfoDeleteCanceled": "מחיקה בוטלה",
+        "InfoDeleteSucceeded": "מחיקה בוצעה",
+        "InfoDeleteFailed": "מחיקה נכשלה",
+        "InfoSavedSuccessfully": "נשמר בהצלחה",
+        "MissingImageAlt": "ללא תמונה",
+        "InfoSharingWords": "משתף מילים...",
+        "InfoSharingCategory": "משתף קטגוריה...",
+        "InfoSharingFailed": "שיתוף נכשל",
+        "ShareWords": "שיתוף מילים",
+
+
+        "AddVideoSelected": "נבחר וידאו עבור המילה",
+        "AddImageSelected": "נבחרה תמונה",
+        "AddPlaceholderWordName": "שם המילה",
+        "AddPlaceholderCategoryName": "שם הקטגוריה",
+        "AddPlaceholderSelectImage": "בחר צלמית",
+        "AddPlaceholderSelectVideo": "בחר סירטון",
+        "AddLoadingCamera": "טוען מצלמה...",
+        "AddTakePictureFailedOrCanceled": "צילום נכשל או בוטל",
+        "AddLoadingCameraRoll": "טוען...",
+        "AddLoadPictureFailedOrCanceled": "טעינת תמונה נכשלה או בוטלה",
+
+        "AddLoadVideoCameraFailedOrCanceled": "צילום וידאו נכשל או בוטל",
+        "AddLoadVideoFailedOrCanceled": "טעינת סרטון בוטלה או נכשלה",
+        
+        "RestartApp"  :"קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
+        "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})"
+    }, 
+    "en": {
+        "AppTitle": "My IssieSign",
+        "SettingsLanguage": "Language",
+        "SettingsSwipe": "Swipe",
+        "SettingsTitle": "Settings",
+        "Working": "In Progress...",
+        "ImportWords": "Importing words...",
+        "NewWords": "New Words",
+        "TitleAbout": "About us",
+        "SettingsAbout": "About us",
+        "SettingsEdit": "Edit",
+        "SettingsAddCatAndWords": "Add/Delete Categories and Words",
+        "TitleAddCategory": "Add Category",
+        "TitleAddWord": "Add Word",
+
+
+        //confirm messages
+        "ConfirmTitleDeleteCategory": "Delete Category",
+        "ConfirmDeleteCategoryMessage": "Deleting a category will also delete all words in it. Delete '{1}'?",
+        "ConfirmTitleDeleteWord": "Delete Word",
+        "ConfirmDeleteWordMessage": "Deleting word '{1}'. Are you sure?",
+
+        "BtnYes": "Yes",
+        "BtnCancel": "Cancel",
+        "BtnSave": "Save",
+
+        "InfoDeleteCanceled": "Delete cancelled",
+        "InfoDeleteSucceeded": "Successfully deleted",
+        "InfoDeleteFailed": "Dalete failed",
+        "InfoSavedSuccessfully": "Successfully saved",
+        "MissingImageAlt": "Missing image",
+        "InfoSharingWords": "Sharing words...",
+        "InfoSharingCategory": "Sharing category...",
+        "InfoSharingFailed": "Share failed",
+        "ShareWords": "Share Words",
+
+
+        "AddVideoSelected": "Video is selected",
+        "AddImageSelected": "Image is selected",
+        "AddPlaceholderWordName": "Word name",
+        "AddPlaceholderCategoryName": "Category name",
+        "AddPlaceholderSelectImage": "Select image",
+        "AddPlaceholderSelectVideo": "Select video",
+        "AddLoadingCamera": "Loading camera...",
+        "AddTakePictureFailedOrCanceled": "Taking photo failed or cancelled",
+        "AddLoadingCameraRoll": "Loading...",
+        "AddLoadPictureFailedOrCanceled": "Loafing image failed or cancelled",
+
+        "AddLoadVideoCameraFailedOrCanceled": "Shoting video failed or cancelled",
+        "AddLoadVideoFailedOrCanceled": "Loading video failed or cancelled",
+        
+        "RestartApp"  :"Media files are loading, please close the App and retry later",
+        "LoadingMedia": "Media files are loading ({1} of {2})"
     }
 }
 
