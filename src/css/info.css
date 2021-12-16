@@ -1,0 +1,75 @@
+.info { 
+    
+   flex-shrink: 1;
+   flex-grow: 1;
+    position: absolute;
+    left: 150;
+    height: 90%;
+    width: 100%;
+    margin-top: 0px;
+    
+
+    align-self: center;
+    font-size: 16px;
+
+    color: #5c7e9d;
+    text-align: left;
+    white-space: pre-wrap;
+    text-indent: 5px;
+    word-spacing: 2px;
+    background-color: white;
+    z-index: 0;
+    overflow-y: auto;
+    
+}
+
+.infoTitle {
+    display: flex;
+    font-size: 45px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    font-family: cursive;
+    
+}
+
+ul li {
+    /*
+     * We want the bullets outside of the list,
+     * so the text is aligned. Now the actual bullet
+     * is outside of the list’s container
+     */
+    list-style-position: outside;
+
+    /*
+     * Because the bullet is outside of the list’s
+     * container, indent the list entirely
+     */
+    margin-left: 1em;
+    margin-bottom: 10px;
+}
+
+.heb {
+    direction: rtl;
+    text-align: right;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-family: Arial;
+}
+
+.en {
+    direction: ltr;
+    text-align: left;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-family: Arial;
+}
+.highlight {
+    background-color:#f7f7f7;
+}
+
+bold {
+    font-weight: bolder;
+
+}
+

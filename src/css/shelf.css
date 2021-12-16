@@ -1,0 +1,54 @@
+
+
+.container {
+    display: flex;
+    position: relative;
+    flex-direction:  row;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0;
+}
+
+::slotted(*) {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.shelf {
+    background-color: var(--shelf-background-color);
+    height: 22px;
+    position: relative;
+}
+
+.shelfHost {
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.shelf:before {
+    display: block;
+    content: '';
+    height: 84px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate3d(42px, 84px, 0) skew(45deg);
+    background-image: linear-gradient(to bottom, rgba(73,73,73,0.2), rgba(73,73,73,0) 80%);
+    pointer-events: none;
+}
+
+.shelf:after {
+    display: block;
+    content: '';
+    height: 18px;
+    width: 84px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate3d(100%, -3.5px, 0) rotate(45deg) skew(45deg);
+    transform-origin: 0 50%;
+    background-image: linear-gradient(45deg, rgba(73,73,73,0.2), rgba(73,73,73,0));
+    pointer-events: none;
+}
+

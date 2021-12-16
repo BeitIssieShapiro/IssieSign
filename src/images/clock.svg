@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="43px" viewBox="0 0 44 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>FEB3EC64-3FDD-4EF1-9B8D-5A83D8BD83A6</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="17" y="8" width="2" height="14" rx="1"></rect>
+        <path d="M18.8890873,20.3890873 L18.8890873,20.3890873 C19.441372,20.3890873 19.8890873,20.8368025 19.8890873,21.3890873 L19.8890873,28.3890873 C19.8890873,28.941372 19.441372,29.3890873 18.8890873,29.3890873 L18.8890873,29.3890873 C18.3368025,29.3890873 17.8890873,28.941372 17.8890873,28.3890873 L17.8890873,21.3890873 C17.8890873,20.8368025 18.3368025,20.3890873 18.8890873,20.3890873 Z" id="path-2"></path>
+    </defs>
+    <g id="Main-cards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-493.000000, -270.000000)">
+        <g id="Clock" transform="translate(495.000000, 271.000000)">
+            <ellipse id="Oval-3" fill="#FFFFFF" cx="20" cy="20.5" rx="20" ry="19.5"></ellipse>
+            <path d="M4,9.43979318 C7.59355545,4.90724271 13.1480688,2 19.381605,2 C30.2165454,2 39,10.7834546 39,21.618395 C39,27.8519312 36.0927573,33.4064445 31.5602068,37 C34.2128586,33.6542111 35.7969967,29.4228023 35.7969967,24.8213982 C35.7969967,13.9864579 27.0135421,5.20300326 16.1786018,5.20300326 C11.5771977,5.20300326 7.34578888,6.78714144 4,9.43979318 Z" id="Combined-Shape" fill="#DADADA" transform="translate(21.500000, 19.500000) rotate(-6.000000) translate(-21.500000, -19.500000) "></path>
+            <ellipse id="Oval-3" stroke="#F6B832" stroke-width="4" cx="20" cy="20.5" rx="20" ry="19.5"></ellipse>
+            <g id="Rectangle" transform="translate(18.000000, 15.000000) rotate(-29.000000) translate(-18.000000, -15.000000) ">
+                <use fill="#D8D8D8" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <rect stroke="#979797" stroke-width="1" x="17.5" y="8.5" width="1" height="13" rx="0.5"></rect>
+            </g>
+            <g id="Rectangle" transform="translate(18.889087, 24.889087) rotate(-135.000000) translate(-18.889087, -24.889087) ">
+                <use fill="#D8D8D8" fill-rule="evenodd" xlink:href="#path-2"></use>
+                <path stroke="#979797" stroke-width="1" d="M18.8890873,20.8890873 C18.6129449,20.8890873 18.3890873,21.1129449 18.3890873,21.3890873 L18.3890873,28.3890873 C18.3890873,28.6652297 18.6129449,28.8890873 18.8890873,28.8890873 C19.1652297,28.8890873 19.3890873,28.6652297 19.3890873,28.3890873 L19.3890873,21.3890873 C19.3890873,21.1129449 19.1652297,20.8890873 18.8890873,20.8890873 Z"></path>
+            </g>
+            <circle id="Oval-4" fill="#C98880" cx="21.5" cy="21.5" r="2.5"></circle>
+        </g>
+    </g>
+</svg>

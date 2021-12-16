@@ -1,0 +1,35 @@
+// In createConfigurationFromSettings
+
+    [configuration setURLSchemeHandler:self forURLScheme:@"issie-file"];
+
+// Add three functions
+
+- (NSURL *)changeURLScheme:(NSURL *)url toScheme:(NSString *)newScheme {
+    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
+    components.scheme = newScheme;
+    return components.URL;
+}
+
+- (void) webView:(nonnull WKWebView *)webView startURLSchemeTask:(nonnull id<WKURLSchemeTask>)urlSchemeTask {
+    NSURL *customFileURL = urlSchemeTask.request.URL;
+    NSURL *fileURL = [self changeURLScheme:customFileURL toScheme:@"file"];
+    
+    NSURLRequest* fileUrlRequest = [[NSURLRequest alloc] initWithURL:fileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:.1];
+
+        NSURLSession *session = [NSURLSession sharedSession];
+        NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:fileUrlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSURLResponse *response2 = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:response.MIMEType expectedContentLength:data.length textEncodingName:nil];
+            if(error){
+                [urlSchemeTask didFailWithError:error];
+            }
+            [urlSchemeTask didReceiveResponse:response2];
+            [urlSchemeTask didReceiveData:data];
+            [urlSchemeTask didFinish];
+        }];
+
+        [dataTask resume];
+    }
+
+- (void)webView:(nonnull WKWebView *)webView stopURLSchemeTask:(nonnull id<WKURLSchemeTask>)urlSchemeTask {
+    NSLog(@"DUNNO WHAT TO DO HERE");
+}
