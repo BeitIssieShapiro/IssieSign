@@ -5,8 +5,8 @@ import "../css/Tile.css";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
 
-function trace(a,...optionalParams) {
-    //console.log(a, ...optionalParams);
+function trace(a, ...optionalParams) {
+  //console.log(a, ...optionalParams);
 }
 
 // safely handles circular references
@@ -37,8 +37,13 @@ export default function ISLink(props) {
   let lpDelay = props.longPressDelay ? props.longPressDelay : 500;
   function handleNavigate() {
     trace("navigate to", props.url)
+
     if (props.url)
-      history.push(props.url);
+      if (props.onClick) {
+        props.onClick(props.url);
+      } else {
+        history.push(props.url);
+      }
   }
 
   const [startLongPress, setStartLongPress] = useState(false);

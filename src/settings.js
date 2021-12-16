@@ -27,18 +27,24 @@ export function RadioSetting(props) {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <input type="radio" id="he" name="lang" value="he" checked={props.value === "he" || !props.value}
-          onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
-        />
-        <label for="he">א ב ג</label><br />
+        
         <input type="radio" id="en" name="lang" value="en" checked={props.value === "en"}
           onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
         />
         <label for="en">a b c</label><br />
+
+        
         <input type="radio" id="ar" name="lang" value="ar" checked={props.value === "ar"}
           onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
         />
         <label for="en">أ ب ج</label><br />
+
+
+        <input type="radio" id="he" name="lang" value="he" checked={props.value === "he" || !props.value}
+          onChange={(e) => props.onChange ? props.onChange(e.currentTarget.value) : {}}
+        />
+        <label for="he">א ב ג</label><br />
+
 
         <div>
           {props.label}
@@ -120,9 +126,9 @@ export class Menu extends React.Component {
       },
       container: {
         position: 'absolute',
-        top: '35%',
+        top: '15%',
         left: '10%',
-        height: this.state.open ? 500 : 0,
+        height: this.state.open ? 600 : 0,
         width: '80%',
         display: 'flex',
         flexDirection: 'column',

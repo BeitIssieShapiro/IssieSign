@@ -239,7 +239,10 @@
             })
         }
 
-
+        const isBrowser = false;
+        
+        
+        document.assetsReady=isBrowser;
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             //console.log(cordova.file);
@@ -276,8 +279,6 @@
                 document.assetsReady=true;
             }
             console.log("base path:", document.basePath);
-
-
         }
 
     </script>

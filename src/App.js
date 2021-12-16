@@ -3,6 +3,7 @@ import './css/App.css';
 import React from 'react';
 import Word from "./containers/Word";
 import Body from "./containers/Body";
+import WordAdults from "./containers/Word-adult";
 import Video from "./containers/Video";
 import { getAllCategories, getAllWords, reloadAdditionals, getWordsByCategoryID } from "./apis/catalog";
 import Search from './containers/Search'
@@ -14,7 +15,7 @@ import { Route, Switch } from "react-router";
 import { VideoToggle, LANG_KEY, getLanguage } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import './css/App.css';
@@ -24,7 +25,7 @@ import {
     scrollLeft, scrollRight,
     saveWordTranslateX, saveRootTranslateX, setTranslateX,
     getTheme,
-    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, saveSettingKey, getBooleanSettingKey
+    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, saveSettingKey, getBooleanSettingKey
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
@@ -82,6 +83,7 @@ class App extends IssieBase {
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
             language : lang,
             pubsub: pubsub,
             busy: false,
@@ -288,6 +290,12 @@ class App extends IssieBase {
         setTranslateX(0);
     }
 
+    adultMode(on) {
+        saveSettingKey(ADULT_MODE_KEY, on);
+        this.setState({ adultMode: on });
+        setTranslateX(0);
+    }
+
     allowAddWord(allow) {
         saveSettingKey(ALLOW_ADD_KEY, allow);
         this.setState({ allowAddWord: allow });
@@ -321,14 +329,15 @@ class App extends IssieBase {
                 </div>)
         }
 
-        if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe) {
+        if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode) {
             document.preventTouch = false;
             console.log("touch allowed")
         }
 
         if (!IssieBase.isMobile() &&
             (!this.isAddScreen() && !this.isVideo() && !this.isInfo())
-            && !this.state.allowSwipe) {
+            && !this.state.allowSwipe
+            && !this.state.adultMode) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
             rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
         }
@@ -391,6 +400,12 @@ class App extends IssieBase {
                             />}
                         {IssieBase.isMobile() ? null : <LineMenu />}
                         <OnOffMenu
+                            label={translate("SettingsAdultMode")}
+                            subLabel={translate("SettingsAdultModeLbl")}
+                            checked={this.state.adultMode}
+                            onChange={(isOn) => this.adultMode(isOn)}
+                        />
+                        <OnOffMenu
                             label={translate("SettingsEdit")}
                             subLabel={translate("SettingsAddCatAndWords")}
                             checked={this.state.allowAddWord}
@@ -451,6 +466,15 @@ class App extends IssieBase {
                         let words = getWordsByCategoryID(props.match.params.categoryId);
                         //alert(JSON.stringify(words))
                         return (
+                            this.state.adultMode?
+                                <WordAdults 
+                                pubSub={this.state.pubsub}
+                                isMobile={IssieBase.isMobile()}
+                                allowAddWord={this.state.allowAddWord}
+                                words={words}
+                                categoryId={props.match.params.categoryId}
+                                categoryId4Theme={props.match.params.categoryId}
+                                /> :    
                             <Word
                                 pubSub={this.state.pubsub}
                                 isMobile={IssieBase.isMobile()}
@@ -575,7 +599,8 @@ class App extends IssieBase {
     }
 
     isVideo() {
-        return this.props.history.location.pathname.startsWith("/video/");
+        return this.props.history.location.pathname.startsWith("/video/") ||
+        this.props.history.location.pathname.startsWith("/word/") && this.state.adultMode;
     }
 
     isInfo() {

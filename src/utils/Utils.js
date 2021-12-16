@@ -3,6 +3,8 @@ import { gCurrentLanguage } from '../current-language';
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
+export const ADULT_MODE_KEY = "IssieSign_Settings_AdultMode";
+
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 export const LANG_KEY = "MyIssieSign_Settings_Lang";
 

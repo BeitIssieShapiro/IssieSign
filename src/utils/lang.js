@@ -16,6 +16,8 @@ var strings = {
         "TitleAbout": "עלינו - About us",
         "SettingsAbout": "עלינו - About us",
         "SettingsEdit": "עריכה",
+        "SettingsAdultMode":"מצב מבוגרים",
+        "SettingsAdultModeLbl":"תצוגה מותאמת למבוגרים",
         "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
         "TitleAddCategory": "הוספת קטגוריה",
         "TitleAddWord": "הוספת מילה",
@@ -70,6 +72,8 @@ var strings = {
         "TitleAbout": "עלינו - About us",
         "SettingsAbout": "עלינו - About us",
         "SettingsEdit": "עריכה",
+        "SettingsAdultMode":"מצב מבוגרים", //missing
+        "SettingsAdultModeLbl":"תצוגה מותאמת למבוגרים", //missing
         "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
         "TitleAddCategory": "הוספת קטגוריה",
         "TitleAddWord": "הוספת מילה",
@@ -124,6 +128,8 @@ var strings = {
         "TitleAbout": "About us",
         "SettingsAbout": "About us",
         "SettingsEdit": "Edit",
+        "SettingsAdultMode":"Adult mode",
+        "SettingsAdultModeLbl":"Adult adapted display",
         "SettingsAddCatAndWords": "Add/Delete Categories and Words",
         "TitleAddCategory": "Add Category",
         "TitleAddWord": "Add Word",

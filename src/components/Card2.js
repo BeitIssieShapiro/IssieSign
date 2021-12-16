@@ -50,6 +50,7 @@ export default function Card2(props) {
             <ISLink
                 onLongPress={props.longPressCallback}
                 url={url}
+                onClick={props.onClick}
             >
                 {body}
             </ISLink>

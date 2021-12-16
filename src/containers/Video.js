@@ -32,6 +32,11 @@ class Video extends React.Component {
             console.log("not mobile landscape")
             videoElemHost.style.top = "150px";
             backBtn.style.display = "none";
+            if (this.props.adultMode) {
+                videoElemHost.style.width = '85%';
+                //videoElemHost.style.alignSelf = 'center';
+                //videoElemHost.style.right = '150px';
+            }
             //videoElemHost.style.position = "absolute";
             //videoElemHost.style.width = '100%';
         }
