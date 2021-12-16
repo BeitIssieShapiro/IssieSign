@@ -3,35 +3,15 @@ node_modules/
 .DS_Store
 .vscode/
 build
-cordova/app/platforms/ios/www/videos
-cordova/app/platforms/ios/www/static
-cordova/app/platforms/ios/www/asset*
-cordova/app/platforms/ios/www/index.html
-cordova/app/platforms/ios/www/manifest.json
-cordova/app/platforms/ios/www/service-worker.js
-cordova/app/platforms/ios/www/precache*
-
-cordova/app/www/
-cordova/app/plugins/
+cordova/app/
 package-lock.json
 
-#android
-cordova/app/platforms/android/.gradle
-cordova/app/platforms/android/.idea
-cordova/app/platforms/android/.settings
-cordova/app/platforms/android/build
-cordova/app/platforms/android/app/release
-cordova/app/platforms/android/issiesign_assets/build/
-cordova/app/platforms/android/issiesign_assets/src/main/assets/
-cordova/app/platforms/android/issiesign_assets3/build/
-cordova/app/platforms/android/issiesign_assets3/src/main/assets/
-cordova/app/platforms/android/app/src/main/assets/www/
+
 
 # language sensitive files
 src/mainJson.js
 src/images/adt/
 src/current-language.js
-
 
 public/videos
 static
@@ -45,38 +25,9 @@ googleplay/issieSign2.0.jks
 # Mac
 .DS_Store
 
-# iOS
-platforms/ios/build/
-platforms/ios/www/
-platforms/ios/cordova/console.log
+
 *.xcuserdatad
 
-# android
-platforms/android/assets/www
-platforms/android/bin
-platforms/android/gen
-platforms/android/local.properties
-platforms/android/ant-build
-platforms/android/ant-gen
-platforms/android/CordovaLib/ant-build
-platforms/android/CordovaLib/ant-gen
-platforms/android/CordovaLib/bin
-platforms/android/CordovaLib/gen
-platforms/android/CordovaLib/local.properties
-cordova/app/platforms/android/app/src/main/assets/www/
-cordova/app/platforms/android/issiesign_assets/prod/
-cordova/app/platforms/android/issiesign_assets3/prod/
+
 output.apks
 
-
-# wp8
-platforms/wp8/bin
-platforms/wp8/obj
-platforms/wp8/www
-platforms/wp8/.staging
-platforms/wp8/*.suo
-platforms/wp8/*.csproj.user
-
-# res
-resources/signing
-cordova/app/platforms/android/app/debug/app-debug.aab
