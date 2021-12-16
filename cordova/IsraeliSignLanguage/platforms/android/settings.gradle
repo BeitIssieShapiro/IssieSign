@@ -1,6 +1,0 @@
-// GENERATED FILE - DO NOT EDIT
-include ":"
-include ":CordovaLib"
-include ":app"
-include ":issiesign_assets"
-include ":issiesign_assets3"
