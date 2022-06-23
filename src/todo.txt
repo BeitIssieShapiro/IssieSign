@@ -1,0 +1,24 @@
+MyIssieSign
+-----------
+- import seem not to work
+- export folder??
+- export multiple words
+V - default allow edit
+- 
+
+
+IssieSign
+---------
+- allow import even if edit is off?
+
+
+
+Bugs:
+- In iPhone SX, the two columns are not exact in words - resize?
+- settings:
+  - pick a language: radio buttons in new lines
+  - in english - reverse order
+  - Adult mode - no title
+  - word in adult mode - settings in to low on the z-order
+  - back from word-adult mode - after selecting on video - video control is still visible
+  

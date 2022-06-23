@@ -22,8 +22,6 @@ import './css/App.css';
 import './css/style.css';
 
 import {
-    scrollLeft, scrollRight,
-    saveWordTranslateX, saveRootTranslateX, setTranslateX,
     getTheme,
     ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, saveSettingKey, getBooleanSettingKey
 } from "./utils/Utils";
@@ -37,6 +35,7 @@ import {
     PlusButton, SettingsButton, TrashButton, ShareButton,
     BackButton, PrevButton, NextButton
 } from './components/ui-elements';
+import { isMyIssieSign } from './current-language';
 
 
 
@@ -65,16 +64,67 @@ class App extends IssieBase {
         this.handleSearch = this.handleSearch.bind(this);
 
         this.goBack = this.goBack.bind(this);
-        this.savePos = this.savePos.bind(this);
-        this.ScrollLeft = this.ScrollLeft.bind(this);
-        this.ScrollRight = this.ScrollRight.bind(this);
         this.showInfo = this.showInfo.bind(this);
     }
 
     componentDidMount() {
 
         window.addEventListener("resize", this.resizeListener);
+        const getCurrent = () => {
+            if (this.isWords()) {
+                return this.state.wordScroll;
+            } else if (this.isSearch()) {
+                return this.state.searchScroll;
+            } else if (this.isInfo()) {
+                return this.state.infoScroll;
+            } else {
+                return this.state.bodyScroll;
+            }
+        }
+        const setCurrent = ({ x, y }, overwriteSwipeMode) => {
+            if (this.isSwipeAllowed() || overwriteSwipeMode) {
+                let container = document.getElementsByClassName(this.isInfo() ? "info" : "tileContainer")[0];
+                if (container) {
+                    if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
+                        x = window.innerWidth - container.scrollWidth;
+                    }
 
+                    if (y !== 0 && y < window.innerHeight - container.scrollHeight) {
+                        y = window.innerHeight - container.scrollHeight;
+                    }
+                }
+                if (x > 0) {
+                    x = 0;
+                }
+                if (y > 0) {
+                    y = 0;
+                }
+                const newScrollX = { x, y: 0 };
+                const newScrollY = { x: 0, y };
+                if (this.isWords()) {
+                    this.setState({ wordScroll: IssieBase.isMobile() || this.state.adultMode ? newScrollY : newScrollX });
+                } else if (this.isSearch()) {
+                    this.setState({ searchScroll: newScrollX });
+                } else if (this.isInfo()) {
+                    this.setState({ infoScroll: newScrollY });
+                } else {
+                    this.setState({ bodyScroll: IssieBase.isMobile() ? newScrollY : newScrollX });
+                }
+            }
+        }
+
+        document.swipeHandler = {
+            getCurrent,
+            setCurrent,
+            moveButton: (toRight) => {
+                const curr = getCurrent();
+                const absInc = (window.innerWidth - 150)
+                const inc = toRight ? -absInc : absInc;
+                //getScrollIncrement(curr.x, toRight);
+                console.log("move button", curr, inc)
+                setCurrent({ x: curr.x + inc, y: curr.y }, true);
+            },
+        }
         window.goBack = () => this.goBack();
         let lang = getLanguage();
         setLanguage(lang)
@@ -82,12 +132,16 @@ class App extends IssieBase {
         let pubsub = new PubSub()
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
-            allowAddWord: getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            allowAddWord: isMyIssieSign || getBooleanSettingKey(ALLOW_ADD_KEY, false),
             adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
-            language : lang,
+            language: lang,
             pubsub: pubsub,
             busy: false,
-            busyText: translate("Working")
+            busyText: translate("Working"),
+            bodyScroll: { x: 0, y: 0 },
+            wordScroll: { x: 0, y: 0 },
+            searchScroll: { x: 0, y: 0 },
+            infoScroll: { x: 0, y: 0 }
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
@@ -213,7 +267,7 @@ class App extends IssieBase {
         this.setState({ searchStr: e.target.value }, () => {
             if (e.target.value.length > 1 && !this.isSearch()) {
                 this.props.history.push(SEARCH_PATH);
-                saveRootTranslateX(0);
+                this.setState({ bodyScroll: { x: 0, y: 0 } });
                 console.log("Search: " + e.target.value);
             } else if (e.target.value.length < 2) {
                 if (this.isSearch()) {
@@ -245,7 +299,7 @@ class App extends IssieBase {
         this.backInProcess = true;
         if (this.isWords()) {
             //reset words position
-            saveWordTranslateX(0);
+            this.setState({ wordScroll: { x: 0, y: 0 } });
         }
         let video = this.isVideo();
 
@@ -264,19 +318,19 @@ class App extends IssieBase {
             this.backInProcess = false
         }, 50);
     }
-    savePos(newVal) {
-        if (this.isWords()) {
-            saveWordTranslateX(newVal);
-        } else {
-            saveRootTranslateX(newVal);
-        }
-    }
+    // savePos(newVal) {
+    //     if (this.isWords()) {
+    //         saveWordTranslateX(newVal);
+    //     } else {
+    //         saveRootTranslateX(newVal);
+    //     }
+    // }
     ScrollLeft() {
-        this.savePos(scrollLeft());
+        document.swipeHandler.moveButton(false);
     }
 
     ScrollRight() {
-        this.savePos(scrollRight());
+        document.swipeHandler.moveButton(true);
     }
 
     showInfo() {
@@ -287,13 +341,15 @@ class App extends IssieBase {
     allowSwipe(allow) {
         saveSettingKey(ALLOW_SWIPE_KEY, allow);
         this.setState({ allowSwipe: allow });
-        setTranslateX(0);
+    }
+
+    isSwipeAllowed = () => {
+        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode);
     }
 
     adultMode(on) {
         saveSettingKey(ADULT_MODE_KEY, on);
         this.setState({ adultMode: on });
-        setTranslateX(0);
     }
 
     allowAddWord(allow) {
@@ -329,15 +385,13 @@ class App extends IssieBase {
                 </div>)
         }
 
-        if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode) {
-            document.preventTouch = false;
-            console.log("touch allowed")
-        }
+        // if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode) {
+        //     document.preventTouch = false;
+        //     console.log("touch allowed")
+        // }
 
-        if (!IssieBase.isMobile() &&
-            (!this.isAddScreen() && !this.isVideo() && !this.isInfo())
-            && !this.state.allowSwipe
-            && !this.state.adultMode) {
+        if (!this.isSwipeAllowed() &&
+            (!this.isAddScreen() && !this.isVideo())) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
             rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
         }
@@ -405,12 +459,14 @@ class App extends IssieBase {
                             checked={this.state.adultMode}
                             onChange={(isOn) => this.adultMode(isOn)}
                         />
-                        <OnOffMenu
+                        {
+                            !isMyIssieSign &&
+                            <OnOffMenu
                             label={translate("SettingsEdit")}
                             subLabel={translate("SettingsAddCatAndWords")}
                             checked={this.state.allowAddWord}
                             onChange={(isOn) => this.allowAddWord(isOn)}
-                        />
+                            />}
                         <RadioSetting
                             label={translate("SettingsLanguage")}
                             value={this.state.language}
@@ -432,7 +488,6 @@ class App extends IssieBase {
     }
 
     getChildren() {
-        console.log("Render App.js")
         return (
             <Switch>
                 <Route exact path="/" render={(props) => (
@@ -443,6 +498,8 @@ class App extends IssieBase {
                         isMobile={IssieBase.isMobile()}
                         pubSub={this.state.pubsub}
                         dimensions={this.state.dimensions}
+                        allowSwipe={this.isSwipeAllowed()}
+                        scroll={this.state.bodyScroll}
                     />
                 )} />
 
@@ -455,6 +512,8 @@ class App extends IssieBase {
                             isMobile={IssieBase.isMobile()}
                             searchStr={this.state.searchStr}
                             dimensions={this.state.dimensions}
+                            allowSwipe={this.isSwipeAllowed()}
+                            scroll={this.state.searchScroll}
                         />
                     )
                     } />
@@ -466,23 +525,26 @@ class App extends IssieBase {
                         let words = getWordsByCategoryID(props.match.params.categoryId);
                         //alert(JSON.stringify(words))
                         return (
-                            this.state.adultMode?
-                                <WordAdults 
-                                pubSub={this.state.pubsub}
-                                isMobile={IssieBase.isMobile()}
-                                allowAddWord={this.state.allowAddWord}
-                                words={words}
-                                categoryId={props.match.params.categoryId}
-                                categoryId4Theme={props.match.params.categoryId}
-                                /> :    
-                            <Word
-                                pubSub={this.state.pubsub}
-                                isMobile={IssieBase.isMobile()}
-                                allowAddWord={this.state.allowAddWord}
-                                words={words}
-                                categoryId={props.match.params.categoryId}
-                                categoryId4Theme={props.match.params.categoryId}
-                            />)
+                            this.state.adultMode ?
+                                <WordAdults
+                                    pubSub={this.state.pubsub}
+                                    isMobile={IssieBase.isMobile()}
+                                    allowAddWord={this.state.allowAddWord}
+                                    words={words}
+                                    categoryId={props.match.params.categoryId}
+                                    categoryId4Theme={props.match.params.categoryId}
+                                    scroll={this.state.wordScroll}
+                                /> :
+                                <Word
+                                    pubSub={this.state.pubsub}
+                                    isMobile={IssieBase.isMobile()}
+                                    allowAddWord={this.state.allowAddWord}
+                                    words={words}
+                                    categoryId={props.match.params.categoryId}
+                                    categoryId4Theme={props.match.params.categoryId}
+                                    allowSwipe={this.isSwipeAllowed()}
+                                    scroll={this.state.wordScroll}
+                                />)
                     }
                     } />
                 <Route
@@ -499,6 +561,7 @@ class App extends IssieBase {
                                 categoryId={props.match.params.categoryId}
                                 categoryId4Theme={"1"}
                                 dimensions={this.state.dimensions}
+                                scroll={this.state.wordScroll}
                             />
                         )
                     }
@@ -529,7 +592,9 @@ class App extends IssieBase {
                     render={(props) => {
                         this.setTitle(translate("About"))
                         return (
-                            <Info />
+                            <Info
+                                scroll={this.state.infoScroll}
+                            />
                         )
                     }
                     } />
@@ -600,7 +665,7 @@ class App extends IssieBase {
 
     isVideo() {
         return this.props.history.location.pathname.startsWith("/video/") ||
-        this.props.history.location.pathname.startsWith("/word/") && this.state.adultMode;
+            (this.props.history.location.pathname.startsWith("/word/") && this.state.adultMode);
     }
 
     isInfo() {

@@ -19,10 +19,10 @@ export const mainJson = {
             "videoName": "איברי גוף.mov"
           },
           {
-            "name": "انف",
+            "name": "חטיף",
             "id": 103,
             "imageName": "אף.png",
-            "videoName": "אף.mov"
+            "videoName": "חטיף.mp4"
           },
           {
             "name": "אצבעות",

@@ -1,26 +1,16 @@
-.info { 
-    
-   flex-shrink: 1;
-   flex-grow: 1;
-    position: absolute;
-    left: 150;
-    height: 90%;
-    width: 100%;
-    margin-top: 0px;
-    
+.info {
+    display: flex;
+    flex-direction: column;
 
-    align-self: center;
+
     font-size: 16px;
 
     color: #5c7e9d;
-    text-align: left;
-    white-space: pre-wrap;
     text-indent: 5px;
     word-spacing: 2px;
     background-color: white;
-    z-index: 0;
-    overflow-y: auto;
-    
+    z-index: 1;
+
 }
 
 .infoTitle {
@@ -30,7 +20,7 @@
     justify-content: center;
     padding: 15px;
     font-family: cursive;
-    
+
 }
 
 ul li {
@@ -64,12 +54,12 @@ ul li {
     padding-right: 50px;
     font-family: Arial;
 }
+
 .highlight {
-    background-color:#f7f7f7;
+    background-color: #f7f7f7;
 }
 
 bold {
     font-weight: bolder;
 
 }
-

@@ -3,7 +3,7 @@ import '../css/App.css';
 import Tile2 from "../components/Tile2";
 import { withAlert } from 'react-alert'
 
-import { rootTranslateX, getThemeFlavor, calcWidth } from "../utils/Utils";
+import { getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import Shelf from "./Shelf";
 
@@ -117,14 +117,14 @@ class Body extends IssieBase {
 
 
         return (
-            <div className={this.props.InSearch ? "subTileContainer" : "tileContainer"} style={{
+            <div className={[this.props.InSearch ? "subTileContainer" : "tileContainer"]} style={{
                 width: widthStr,
                 flexWrap: 'wrap',
-                transform: 'translateX(' + (this.props.InSearch ? 0 : rootTranslateX) + 'px)',
-
+                transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,
+                transitionDuration: this.props.allowSwipe?'0s':'1.7s',
             }}>
                 {lines.map((line, i) => (
-                    <Shelf>
+                    <Shelf key={i}>
                         {getDecoration(i, tileW, line.length, width)}
                         {line}
                     </Shelf>

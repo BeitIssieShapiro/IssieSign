@@ -1,5 +1,5 @@
 
-BASE_PATH="/Users/i022021/dev/sign_lang/IssieSignMedia/newVideos"
+BASE_PATH="/Users/i022021/Downloads/temp"
 
 function convertDemo() {
     file="$1"
@@ -51,7 +51,7 @@ function main() {
     traverse ${1}
 }
 
-main "."
+main $1
 
 
 

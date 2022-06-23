@@ -5,9 +5,9 @@
     -webkit-align-content: flex-start;
     align-content: flex-start;
     height: 100%;
-    transition-duration: 1.7s;
     z-index: 1;
 }
+
 
 .wordContainer {
     margin: 15px;

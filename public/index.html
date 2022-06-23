@@ -196,12 +196,38 @@
         document.basePath = document.location.href.includes('android_asset') ? "file:///android_asset/" : "/";
         document.preventTouch = true;
         function doNothing(e) {
+            if (document.swipeInProgress) {
+                const dx = e.touches[0].clientX - document.swipeInProgress.initial.x;
+                const dy = e.touches[0].clientY - document.swipeInProgress.initial.y;
+                
+                const arg = {
+                    x: document.swipeInProgress.initialPos.x + dx,
+                    y: document.swipeInProgress.initialPos.y + dy,
+                }
+                document.swipeHandler.setCurrent(arg);
+
+            } else {
+                if (document.swipeHandler) {
+                    console.log("start swipe", e.touches[0].clientX);
+                    document.swipeInProgress = {
+                        initial: {
+                            x: e.touches[0].clientX,
+                            y: e.touches[0].clientY,
+                        },
+                        initialPos: document.swipeHandler.getCurrent(),
+                    }
+                }
+            }
             if (document.preventTouch) {
                 e.preventDefault();
             }
         }
-
+        console.log("touch move registered")
         document.addEventListener("touchmove", doNothing, { passive: false });
+        document.addEventListener("touchend", (e)=>{
+            console.log("touch end");
+            document.swipeInProgress = undefined;
+        }, { passive: false });
 
 
         var handleOpenURL = (url) => {
@@ -239,7 +265,7 @@
             })
         }
 
-        const isBrowser = false;
+        const isBrowser = true;
         
         
         document.assetsReady=isBrowser;

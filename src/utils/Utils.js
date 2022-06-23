@@ -38,76 +38,12 @@ export function getBooleanSettingKey(key, defaultVal) {
     return Boolean(defaultVal);
 }
 
-export function saveWordTranslateX(newValue) {
-    wordsTranslateX = newValue;
-}
-export function saveRootTranslateX(newValue) {
-    rootTranslateX = newValue;
-}
-
-export const scrollRight = (() => {
-    var curr = getTranslateX();
-    var newVal = curr - getIncrement(curr, true);
-    setTranslateX(newVal)
-    return newVal;
-});
-
-export const scrollLeft = (() => {
-    var curr = getTranslateX();
-    var newVal = Number(curr) + getIncrement(curr);
-    if (newVal > 0)
-        newVal = 0;
-
-    setTranslateX(newVal);
-    return newVal;
-});
-
-
-function getIncrement(curr, toRight) {
-    let container = document.getElementsByClassName("tileContainer")[0];
-    if (!container) {
-        return 0;
-    }
-
-    let winWidth = window.innerWidth-150;
-    if (toRight) {
-        let maxInc = 0;
-        var normCurr = curr - window.innerWidth;  //curr is 0 or neg
-        maxInc = container.scrollWidth + normCurr;
-        if (maxInc < 0) {
-            maxInc = 0;
-        }
-        return Math.min(maxInc, winWidth);
-    } else {
-       return winWidth;
-    }
-
-}
-
-function getTranslateX() {
-    let container = document.getElementsByClassName("tileContainer")[0];
-    if (container) {
-        let transform = container.style.transform;
-        if (transform) {
-            var transXRegex = /\.*translateX\((.*)px\)/i;
-            return Number(transXRegex.exec(transform)[1]);
-        }
-    }
-    return 0;
-}
-
-export function setTranslateX(newVal) {
-    let container = document.getElementsByClassName("tileContainer")[0];
-    if (container) {
-        container.style.transform = 'translateX(' + newVal + 'px)';
-    }
-}
 
 export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, inSearch) {
     if (isMobile) {
         //scroll vertically by touch
-        let cols = Math.max(Math.floor((windowWidth) / tileW), 1);
-        console.log("calcWidth: mobile, " + Math.floor(windowWidth/ tileW)+ "cols: "+cols);
+        let cols = Math.max(Math.floor((windowWidth) / tileW), 2);
+        console.log("calcWidth: mobile", windowWidth , tileW, + Math.floor(windowWidth / tileW) + "cols: " + cols);
         return cols * (tileW * 1.05);
     }
 
@@ -165,11 +101,9 @@ export const themeMap = {
 };
 
 var videoMonitor = undefined;
-var gIsLandscape = false;
 
 export const VideoToggle = (on, addButtons, isLandscape) => {
-    console.log("toggle: "+ on)
-    gIsLandscape = isLandscape;
+    console.log("toggle: " + on)
     let video = document.getElementById("player");
     let playerHost = document.getElementById("playerhost")
     playerHost.style.visibility = (on ? "visible" : "hidden");

@@ -15,7 +15,7 @@ JSON.safeStringify = (obj, indent = 2) => {
   const retVal = JSON.stringify(
     obj,
     (key, value) =>
-      key == "_targetInst" || key == "target" || key == "currentTarget" || key == "view" ? undefined : typeof value === "object" && value !== null
+      key === "_targetInst" || key === "target" || key === "currentTarget" || key === "view" ? undefined : typeof value === "object" && value !== null
         ? cache.includes(value)
           ? undefined // Duplicate reference found, discard key
           : cache.push(value) && value // Store value in our collection
@@ -85,7 +85,7 @@ export default function ISLink(props) {
     return () => {
       clearTimeout(timerId);
     };
-  }, [startLongPress]);
+  }, [startLongPress, lpDelay, moved]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const move = useCallback((e) => {
     setMoved(true);
@@ -136,7 +136,7 @@ export default function ISLink(props) {
       handleNavigate();
       e.preventDefault();
     }
-  }, [callBackTriggered]);
+  }, [callBackTriggered]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
@@ -162,7 +162,7 @@ export default function ISLink(props) {
           stop(e)
         }
       }
-      on
+      
       onTouchMove={move}
       onScroll={move}
       onScrollCapture={move}

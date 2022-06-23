@@ -1,4 +1,4 @@
-echo 'export const gCurrentLanguage =  "en"' > ./src/current-language.js
+echo 'export const gCurrentLanguage =  "en";\nexport const isMyIssieSign = true;\n' > ./src/current-language.js
 cp -f jsons/en/mainJson.js src/mainJson.js
 cp -R ../IssieSign-Media/images/en/ src/images/adt/
 

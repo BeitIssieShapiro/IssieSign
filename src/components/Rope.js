@@ -10,6 +10,7 @@ class Rope extends React.Component {
                 addClass = "rope-medium";
                 break;
             case "L":
+            default:
                 addClass = "rope-large";
                 break;
         }

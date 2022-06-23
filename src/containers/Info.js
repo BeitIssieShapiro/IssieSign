@@ -3,9 +3,11 @@ import '../css/info.css';
 
 class Info extends React.Component {
     render() {
-
         return (
-            <div className="info"  >
+            <div className={"info"}  style={{
+                transform: `translateY(${this.props.scroll?.y || 0}px)`,
+                transitionDuration: '0s',
+            }}>
                 <div className="infoTitle">
                     <div style={{ color: '#fbaa19' }}>Issie</div>
                     <div style={{ color: '#18b9ed' }}>Sign</div>

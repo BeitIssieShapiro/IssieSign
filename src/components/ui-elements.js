@@ -120,7 +120,7 @@ const decorations = [
 function getItem(index, left, maxWidth, lastSpot) {
   if (left > maxWidth || index < 0 || index >= decorations.length) return null;
   if (left > 0) {
-    if (left == lastSpot) {
+    if (left === lastSpot) {
       left -= decorWidth+5
     } else {
       left -= decorWidth/2;
@@ -129,7 +129,10 @@ function getItem(index, left, maxWidth, lastSpot) {
     left += 5;
   }
   let item = decorations[index];
-  return <img src={item.src} style={{
+  return <img 
+    key={index}
+    alt=""
+    src={item.src} style={{
     width: decorWidth+"px", height: "50px",
     position: "absolute", left:  left + "px",
     ...item.style
@@ -153,8 +156,8 @@ export function getDecoration(index, tileWidth, itemCount, maxWidth) {
       return [
         getItem(5, 3 * tileWidth, maxWidth, itemCount*tileWidth)];
     case 4:
+    default:
       return [
         getItem(1, 0 * tileWidth, maxWidth, itemCount*tileWidth)];
   }
-  return null;
 }

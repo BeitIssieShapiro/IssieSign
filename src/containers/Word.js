@@ -1,7 +1,7 @@
 import React from "react";
 import '../css/App.css';
 import Card2 from "../components/Card2";
-import { wordsTranslateX, calcWidth } from "../utils/Utils";
+import {  calcWidth } from "../utils/Utils";
 import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
 import { reloadAdditionals } from "../apis/catalog";
@@ -11,7 +11,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { translate, fTranslate } from "../utils/lang";
 
-const getRandomBoolean = () => Math.random() >= 0.5;
+const getBooleanFromString = (str) => str && str.length > 0 && str.charCodeAt(0) % 2 === 0
 
 class Word extends IssieBase {
 
@@ -110,7 +110,7 @@ class Word extends IssieBase {
                 return <Card2 key={word.id} cardType={selectable ? "file" : "default"} cardName={word.name} videoName={word.videoName}
                     imageName={word.imageName} imageName2={word.imageName2}
                     themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected}
-                    binder={getRandomBoolean()} />
+                    binder={getBooleanFromString(word.name)} />
             });
 
 
@@ -170,7 +170,10 @@ class Word extends IssieBase {
             <div className={this.props.InSearch ? "subTileContainer wordContainer" : "tileContainer wordContainer"}
                 style={{
                     flexDirection: 'column',
-                    width: width, transform: 'translateX(' + (this.props.InSearch ? 0 : wordsTranslateX) + 'px)'
+                    width: width, 
+                    transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,
+                    transitionDuration: this.props.allowSwipe?'0s':'1.7s',
+
                 }}>
                 {lines.map((line) => {
                     let ropeSize = line.length < 5 ? "S" : line.length > 15 ? "L" : "M";

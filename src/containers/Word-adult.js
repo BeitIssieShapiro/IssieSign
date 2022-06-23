@@ -130,7 +130,7 @@ class WordAdults extends IssieBase {
                 flex: 1, display: 'flex', flexDirection: 'row', overflow: "auto"
             }}>
                 <div style={{ width: window.innerWidth - 156 }}>
-                    {this.state.selected &&
+                    {this.state.selected ?
                         <Video
                             //categoryId={props.categoryId}
                             isLandscape={IssieBase.isLandscape()}
@@ -138,7 +138,7 @@ class WordAdults extends IssieBase {
                             videoName={this.state.selected}
                             filePath={""}
                             adultMode={true}
-                        /> ||
+                        /> :
                         <div
                             style={{
                                 display: "flex",
@@ -153,10 +153,11 @@ class WordAdults extends IssieBase {
                 <div style={{
                     flexDirection: 'col',
                     width: 155,
-
+                    transform: `translateY(${this.props.scroll?.y || 0}px)`,
+                    transitionDuration: '0s'
                 }}>
-                    {wordsElements.map(word => (
-                        <div style={{ marginTop: 30, marginRight: 15 }}>
+                    {wordsElements.map((word, i) => (
+                        <div key={i} style={{ marginTop: 30, marginRight: 15 }}>
                             {word}
                         </div>
                     ))}

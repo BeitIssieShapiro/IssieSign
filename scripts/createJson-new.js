@@ -2,10 +2,10 @@ console.log("Start building JSON file for sign language app - New");
 
 /*
 Public Function abc()
-    Set s = Application.Sheets("Sheet1")
+    Set s = Application.Sheets("main")
     RowCount = 1
     For Each rw In s.Rows
-        rw.Cells(1, 11).Value = rw.Cells(1, 1).Interior.ColorIndex
+        rw.Cells(1, 15).Value = rw.Cells(1, 1).Interior.ColorIndex
         RowCount = RowCount + 1
         If (RowCount > 1000) Then Stop
     Next
@@ -13,62 +13,135 @@ Public Function abc()
 End Function
 
 */
-const wordMap ={
-    "בועות": "בועות סבון",
-    "אחות (מקצוע)": "אחות",
-    "בתיאבון":"בתאבון",
-    "סליחה (מצטער)":"סליחה",
-    "יופי/טוב":"יופי",
-    "לא/אסור":"לא",
-    "תורי (התור שלי)":"תורי",
-    "מוסיקה":"מוזיקה",
-    "הפסחא":"פסחא",
-    "פינגוון":"פינגווין",
-    "דוב":"דובי",
-    "תרנגולת":"תרנגול",
-    "אזניים":"אוזניים",
-    "רגל":"רגליים",
-    "מברשת שיניים":"מברשת שיניים ומשחה",
-    "טלויזייה":"טלויזיה",
-    "כיסא גלגלים":"כסא גלגלים",
-    "מטרייה":"מטריה",
-    "סיר שירותים":"סיר__2",
-    "ספר/ סיפור":"ספר",
-    "הליקופטר/מסוק":"מסוק",
-    "מכונית/אוטו":"מכונית",
-    "גבינה צהובה*":"גבינה צהובה",
-    "דג למאכל?":"דג",
-    "סוכרייה":"סוכריה",
-    "ספגטי פסטה":"פסטה",
-    "גן ילדים":"גן",
-    "איש ואישה":"איש אישה",
-    "בן דוד/בת דודה":"בן דוד",
-    "דוד / דודה":"דוד ודודה",
-    "ילד child":"ילד ילדה",
-    "נכד / נכדה":"נכד נכדה",
-    "אפשר מותר":"אפשר",
-    "וורוד":"ורוד",
-    "ציבעוני":"צבעוני",
-    "לבכות/בוכה":"בוכה",
-    "משועמם":"משעמם",
-    "איכס/מגעיל/לא טעים":"לא טעים",
-    "ארוך קצר":"ארוך וקצר",
-    "גדול קטן":"גדול וקטן",
-    "דומה שונה":"דומה ושונה",
-    "הרבה קצת":"הרבה וקצת",
-    "ישן חדש":"ישן וחדש",
-    "יבש רטוב":"יבש ורטוב",
-    "לאט מהר":"לאט ומהר",
-    "למטה למעלה":"למטה ולמעלה",
-    "מלא ריק":"מלא וריק",
-    "מלוכלך נקי":"מלוכלך ונקי",
-    "קרוב רחוק":"קרוב ורחוק",
-    "שקט רועש":"שקט ורועש",
-    "בפנים בחוץ":"בפנים ובחוץ",
-    "גבוה נמוך":"גבוה ונמוך",
-    "לפני אחרי":"לפני ואחרי",
-    "חם קר":"חם וקר",
-    "קשה-רך":"קשה ורך",
+const wordMap = {
+    //    "בועות": "בועות סבון",
+    //    "אחות (מקצוע)": "אחות",
+    "בתיאבון": "בתאבון",
+    //    "סליחה (מצטער)": "סליחה",
+    //    "יופי/טוב": "יופי",
+    //    "לא/אסור": "לא",
+    //    "תורי (התור שלי)": "תורי",
+    //    "מוסיקה": "מוזיקה",
+    //    "הפסחא": "פסחא",
+    //    "פינגוון": "פינגווין",
+    // "תרנגולת": "תרנגול",
+    // "אזניים": "אוזניים",
+    // "רגל": "רגליים",
+    // "מברשת שיניים": "מברשת שיניים ומשחה",
+    "טלוויזיה": "טלויזיה",
+    // "כיסא גלגלים": "כסא גלגלים",
+    // "מטרייה": "מטריה",
+    // "סיר שירותים": "סיר__2",
+    // "ספר/ סיפור": "ספר",
+    // "הליקופטר/מסוק": "מסוק",
+    // "מכונית/אוטו": "מכונית",
+    // "גבינה צהובה*": "גבינה צהובה",
+    // "דג למאכל?": "דג",
+    // "דג": "דג__2",
+    // "דוב": "דב",
+    // "סוכרייה": "סוכריה",
+    // "ספגטי פסטה": "פסטה",
+    // "גן ילדים": "גן",
+    // "איש ואישה": "איש אישה",
+    "בן דוד/בת דודה": "בני דודים",
+    "דוד / דודה": "דודים",
+    "ילד וילדה": "ילד ילדה",
+    "נכד / נכדה": "נכדים",
+    // "אפשר מותר": "אפשר",
+    // "וורוד": "ורוד",
+    // "ציבעוני": "צבעוני",
+    // "לבכות/בוכה": "בוכה",
+    // "משועמם": "משעמם",
+    // "איכס/מגעיל/לא טעים": "לא טעים",
+    // "ארוך קצר": "ארוך וקצר",
+    // "גדול קטן": "גדול וקטן",
+    // "דומה שונה": "דומה ושונה",
+    // "הרבה קצת": "הרבה וקצת",
+    // "ישן חדש": "ישן וחדש",
+    // "יבש רטוב": "יבש ורטוב",
+    // "לאט מהר": "לאט ומהר",
+    // "למטה למעלה": "למטה ולמעלה",
+    // "מלא ריק": "מלא וריק",
+    // "מלוכלך נקי": "מלוכלך ונקי",
+    // "קרוב רחוק": "קרוב ורחוק",
+    // "שקט רועש": "שקט ורועש",
+    // "בפנים בחוץ": "בפנים ובחוץ",
+    // "גבוה נמוך": "גבוה ונמוך",
+    // "לפני אחרי": "לפני ואחרי",
+    // "חם קר": "חם וקר",
+    // "קשה-רך": "קשה ורך",
+    // "לבוש": "פריטי לבוש",
+
+    // "אחות": "אחות__2",
+    // "חלקי גוף": "איברי גוף",
+    // "לחייך": "חיוך",
+    // "יום הולדת": "יום הולדת שמח",
+    // "יום הזיכרון (שואה, חיילים?)": "יום הזיכרון",
+
+
+    // "יפה מכוער": "יפה ומכוער",
+    // "ל\"ג בעומר": "לג בעומר",
+    // "ביי ביי / להתראות": "להתראות",
+    // "סיימתי": "לסיים",
+    // "עוגייה": "עוגיה",
+    // "פעולות": "פעלים",
+    // "שמות תואר": "תיאורים",
+    "": "",
+}
+
+const imageWordMap = {
+    "חלקי גוף":
+        ["איברי גוף"],
+    "ארוך וקצר":
+        ["ארוך וקצר", "ארוך וקצר 2"],
+    "הרבה וקצת":
+        ["הרבה וקצת", "הרבה וקצת 2"],
+    "דומה ושונה":
+        ["דומה ושונה", "דומה ושונה 2"],
+    "גבוה ונמוך":
+        ["גבוה ונמוך", "גבוה ונמוך 2"],
+    "בפנים ובחוץ":
+        ["בפנים ובחוץ", "בפנים ובחוץ 2"],
+    "גדול וקטן":
+        ["גדול וקטן", "גדול וקטן 2"],
+    "הרבה וקצת":
+        ["הרבה וקצת", "הרבה וקצת 2"],
+    "דומה ושונה":
+        ["דומה ושונה", "דומה ושונה 2"],
+    "חבר וחברה":
+        ["חבר וחברה", "חבר וחברה 2"],
+    "חם וקר":
+        ["חם וקר", "חם וקר 2"],
+    "יבש ורטוב":
+        ["יבש ורטוב", "יבש ורטוב 2"],
+    "יפה ומכוער":
+        ["יפה ומכוער", "יפה ומכוער 2"],
+    "ישן וחדש":
+        ["ישן וחדש", "ישן וחדש 2"],
+    "לאט ומהר":
+        ["לאט ומהר", "לאט ומהר 2"],
+    "לפני ואחרי":
+        ["לפני ואחרי", "לפני ואחרי 2"],
+    "מלא וריק":
+        ["מלא וריק", "מלא וריק 2"],
+    "מלוכלך ונקי":
+        ["מלוכלך ונקי", "מלוכלך ונקי 2"],
+    "קרוב ורחוק":
+        ["קרוב ורחוק", "קרוב ורחוק 2"],
+    "שקט ורועש":
+        ["שקט ורועש", "שקט ורועש 2"],
+    "למטה ולמעלה":
+        ["למטה ולמעלה", "למטה ולמעלה 2"],
+    "קשה ורך":
+        ["קשה ורך", "קשה ורך 2"],
+    "איש ואישה":
+        ["איש אישה"],
+    "בני דודים":
+        ["בן דוד"],
+    "דודים":
+        ["דוד ודודה"],
+    "נכדים":
+        ["נכד נכדה"],
 }
 
 
@@ -76,6 +149,7 @@ var sourceFile = '/Users/i022021/Downloads/issie-words.xlsx'
 var targetFile = '/Users/i022021/Downloads/issieJson'
 var imagePath = '/Users/i022021/dev/issie/IssieSign-Media/images/he'
 var videoPath = '/Users/i022021/dev/issie/IssieSign-Media/videos/he/prodNew'
+var targetMedia = '/Users/i022021/dev/issie/IssieSign-MediaNew'
 var colors = [
     "#2d9f8e",
     "#d95841",
@@ -117,13 +191,12 @@ const WORD_AR_COL = "D"
 const FILENAME_COL = "G"
 const SEARCH_WORDS_HE_COL = "I"
 const SEARCH_WORDS_AR_COL = "J"
-const STATUS_COL = "K"
+const STATUS_COL = "O"
 
 const issieWordsWB = xlsx.readFile(sourceFile);
-const issieWords = issieWordsWB.Sheets["Sheet1"];
+const issieWords = issieWordsWB.Sheets["main"];
 
 let row = 2;
-let currentCategoryHe = "";
 let categoryIndex = 0;
 let fileIndex = 0;
 
@@ -151,43 +224,134 @@ while (issieWords[FILENAME_COL + row]?.v.length > 0 || emptyRows < 3) {
         categoryAr = { name: issieWords[WORD_AR_COL + row]?.v, id: categoryIndex, words: [] };
         categoryHe = { name: issieWords[CATEGOTY_COL + row].v, id: categoryIndex, words: [] };
 
+        if (categoryHe.name == "לבוש") {
+            console.log("stop")
+        }
+
         if (!categoryAr.name) {
             //console.log("ALERT:", "missing arabic category for ", currentCategoryHe, "row", row);
         }
-        wordHe = currentCategoryHe;
+        wordHe = categoryHe.name;
         //console.log(categoryHe.name, categoryAr.name);
     }
     let wordAr = issieWords[WORD_AR_COL + row]?.v
 
 
-    const imageName = issieWords[FILENAME_COL + row]?.v
+    let imageName = issieWords[FILENAME_COL + row]?.v
+    let imageName2 = undefined;
+    let videoName = imageName;
     if (!imageName) {
         //console.log("ALERT:", "missing Filename", "row", row);
+    } else {
+        imageName = imageName.trim();
+        if (imageName.endsWith(" 1 2") || imageName.endsWith(" 1 2 3")) {
+            let spacePos = imageName.indexOf(" ");
+            videoName = imageName.substr(0, spacePos);
+            imageName = videoName + "_1";
+            imageName2 = videoName + "_2";
+        }
     }
 
-    const wordHeObj = { name: cleanseName(wordHe), id: fileIndex, imageName: imageName + ".png", videoName: imageName + ".mp4" }
+    const wordHeObj = {
+        name: cleanseName(wordHe),
+        id: fileIndex,
+        imageName: imageName + ".png",
+        videoName: videoName + ".mp4"
+    }
+    if (imageName2) {
+        wordHeObj.imageName2 = imageName2 + ".png"
+    }
+
+
+
+    // if (wordHeObj.name == "לבוש") {
+    //     console.log("stop")
+    // }
+
     if (!wordHeObj.name) {
         //console.log("ALERT:", "missing Hebrew word", "row", row);
     } else {
         // find the hebrew movie and icon:
-        if (issieWords[STATUS_COL + row]?.v === 19) {
-            let name = wordMap[wordHeObj.name] ? wordMap[wordHeObj.name] : wordHeObj.name;
+        if (issieWords[STATUS_COL + row]?.v === 19 || issieWords[STATUS_COL + row]?.v === 7
+            || issieWords[STATUS_COL + row]?.v === 24 || issieWords[STATUS_COL + row]?.v === 22
+            || issieWords[STATUS_COL + row]?.v === 53) {
 
-            if (!fileExists(imagePath + "/" + name + ".png")) {
-                console.log(missingFiles, "missing Hebrew image", name + ".png");
-                missingFiles++;
+            let name = wordMap[wordHeObj.name] ? wordMap[wordHeObj.name] : wordHeObj.name;
+            let imgName = name;
+            let imgName2 = undefined;
+            if (imageWordMap[wordHeObj.name]) {
+                imgName = imageWordMap[wordHeObj.name][0];
+                if (imageWordMap[wordHeObj.name].length == 2) {
+                    imgName2 = imageWordMap[wordHeObj.name][1];
+                }
             }
+            let suffix = "missing"
+            if (issieWords[STATUS_COL + row]?.v === 24) {
+                suffix = "wait-for-new"
+            }
+
+
+            if (!fileExists(imagePath + "/" + imgName + ".png")) {
+                console.log(missingFiles, "Need Hebrew image ", imgName + ".png");
+                missingFiles++;
+                //fs.copyFileSync("missing.txt", targetMedia + "/images/he/" + wordHeObj.imageName + "-" + suffix)
+            } else {
+                //fs.copyFileSync(imagePath + "/" + imgName + ".png", targetMedia + "/images/he/" + wordHeObj.imageName)
+                wordHeObj.oldImageName = imgName + ".png";
+            }
+            if (suffix == "missing" && wordHeObj.imageName2) {
+                console.log("stop")
+            }
+
+            if (wordHeObj.imageName2) {
+                if (!fileExists(imagePath + "/" + imgName2 + ".png")) {
+                    console.log(missingFiles, "missing Hebrew image", imgName2 + ".png");
+                    missingFiles++;
+                    //fs.copyFileSync("/Users/i022021/dev/Issie/IssieSign/scripts/missing.txt", targetMedia + "/images/he/" + wordHeObj.imageName2 + "-" + suffix)
+                } else {
+                    //fs.copyFileSync(imagePath + "/" + imgName2 + ".png", targetMedia + "/images/he/" + wordHeObj.imageName2)
+                    wordHeObj.oldImageName2 = imgName2 + ".png";
+                }
+            }
+
+
+            if (imageWordMap[name]) {
+                name = imageWordMap[name][0];
+            }
+
             let videoFilePath = videoPath + "/" + name;
-            if (!fileExists(videoFilePath + ".mov")) {
+            if (issieWords[STATUS_COL + row]?.v !== 24 && !fileExists(videoFilePath + ".mov")) {
                 if (!fileExists(videoFilePath + ".mp4")) {
                     console.log(missingFiles, "missing Hebrew video", name);
                     missingFiles++;
+                    //fs.copyFileSync("missing.txt", targetMedia + "/videos/he/prod/" + wordHeObj.videoName + "-missing")
+                } else {
+                    //fs.copyFileSync(videoFilePath + ".mp4", targetMedia + "/videos/he/prod/" + wordHeObj.videoName)
+                    wordHeObj.oldVideoName = name + ".mp4"
                 }
+
+            } else {
+                if (issieWords[STATUS_COL + row]?.v === 24) {
+                    fs.copyFileSync("missing.txt", targetMedia + "/videos/he/prod/" + wordHeObj.videoName + "-wait-for-new")
+                } else {
+                    fs.copyFileSync(videoFilePath + ".mov", targetMedia + "/videos/he/prod/" + wordHeObj.videoName)
+                }
+                wordHeObj.oldVideoName = name + ".mov"
             }
         }
     }
 
-    const wordArObj = { name: cleanseName(wordAr), id: fileIndex, imageName: imageName + ".png", videoName: imageName + ".mp4" }
+    const wordArObj = {
+        name: cleanseName(wordAr),
+        id: fileIndex,
+        imageName: imageName + ".png",
+        videoName: videoName + ".mp4"
+    }
+
+    if (imageName2) {
+        wordArObj.imageName2 = imageName2 + ".png"
+    }
+
     if (!wordArObj.name) {
         //console.log("ALERT:", "missing Arabic word", "row", row);
     }

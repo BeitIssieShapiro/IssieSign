@@ -181,7 +181,8 @@ export async function listWordsInFolder(dirEntry) {
         var reader = dirEntry.createReader();
         var words = [];
         reader.readEntries(entries => {
-            for (let entry of entries) {
+            
+            for (let entry of entries) { // eslint-disable-line no-unused-vars
                 if (entry.name === "default.jpg") continue;
                 let period = entry.name.lastIndexOf('.');
                 let fileName = entry.name.substring(0, period);

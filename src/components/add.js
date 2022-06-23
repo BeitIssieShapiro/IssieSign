@@ -8,7 +8,7 @@ import '../css/add.css';
 import { AttachButton, CameraButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
-import { translate, fTranslate } from "../utils/lang";
+import { translate } from "../utils/lang";
 
 const imagePickerOptions = {
     //maximumImagesCount: 1,
@@ -28,22 +28,6 @@ const cameraOptions = {
     targetHeight: 336,
     mediaType: 0,
     allowEdit: false,
-}
-
-const videoOptions = {
-    quality: 30,
-    targetWidth: 394,
-    targetHeight: 336,
-    mediaType: 1,
-}
-
-
-function getFileName(pathStr) {
-    if (!pathStr || pathStr.length === 0)
-        return "";
-
-    let parts = pathStr.split("/");
-    return parts[parts.length - 1];
 }
 
 async function selectImage() {
@@ -106,8 +90,8 @@ class AddItem extends React.Component {
     }
 
     IsValidInput = () => {
-        return isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0
-            && (!this.props.addWord || this.state.selectedVideo && this.state.selectedVideo.length > 0);
+        return (isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0
+            && (!this.props.addWord || (this.state.selectedVideo && this.state.selectedVideo.length > 0)));
     }
 
     saveCategory = async () => {
@@ -235,7 +219,7 @@ class AddItem extends React.Component {
 
                                                     setTimeout(async () => navigator.device.capture.captureVideo(
                                                         (mediaFiles) => {
-                                                            if (mediaFiles.length == 1) {
+                                                            if (mediaFiles.length === 1) {
                                                                 let path = mediaFiles[0].fullPath;
                                                                 if (!path.startsWith("file://")) {
                                                                     path = "file://" + path;

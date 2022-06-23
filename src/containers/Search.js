@@ -2,8 +2,6 @@ import React from "react";
 import '../css/App.css';
 import Word from "./Word";
 import Body from "./Body";
-import { rootTranslateX } from "../utils/Utils";
-
 //const levenshtein = require('js-levenshtein');
 
 function fuzzyMatch(str, searchStr) {
@@ -13,8 +11,8 @@ function fuzzyMatch(str, searchStr) {
 function Search(props) {
 
     const filterWords = (filterStr) => {
-        console.log("filterWord:"+filterStr)
-        let res = props.words.filter( word => {
+        console.log("filterWord:" + filterStr)
+        let res = props.words.filter(word => {
             let found = fuzzyMatch(word.name, filterStr);
             if (!found && word.tags) {
                 let foundTags = word.tags.filter(tag => tag.includes(filterStr));
@@ -26,8 +24,8 @@ function Search(props) {
     }
 
     const filterCategories = (filterStr) => {
-        console.log("filterCategories:"+filterStr)
-        return props.categories.filter( cat => {
+        console.log("filterCategories:" + filterStr)
+        return props.categories.filter(cat => {
             let found = fuzzyMatch(cat.name, filterStr);
             if (!found && cat.tags) {
                 let foundTags = cat.tags.filter(tag => tag.includes(filterStr));
@@ -38,22 +36,29 @@ function Search(props) {
     }
 
     return (
-        <div className='tileContainer' style={{ 
-                width: props.isMobile ? '110%' : '100%', 
-                transform: 'translateX(' + rootTranslateX + 'px)',
-                flexDirection: 'column'
-            }}>
-            <Body InSearch={true} categories={
-                    filterCategories(props.searchStr)    
-                } 
+        <div className='tileContainer' style={{
+            width: props.isMobile ? '110%' : '100%',
+            transform: 'translateX(' + props.scroll.x + 'px)',
+            flexDirection: 'column',
+            transitionDuration: props.allowSwipe?'0s':'1.7s',
+
+        }}>
+            <Body InSearch={true}
+                categories={
+                    filterCategories(props.searchStr)
+                }
                 dimensions={props.dimensions}
-                />
-            <Word InSearch={true} 
+                allowSwipe={props.allowSwipe}
+                scroll={{x:0,y:0}}
+            />
+            <Word InSearch={true}
                 words={
                     filterWords(props.searchStr)
-                } 
+                }
                 dimensions={props.dimensions}
-                />
+                allowSwipe={props.allowSwipe}
+                scroll={{x:0,y:0}}
+            />
         </div>
     )
 }
