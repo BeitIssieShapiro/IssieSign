@@ -1,0 +1,37 @@
+{
+  "name": "cordova-plugin-jc-googledrive",
+  "version": "1.1.0",
+  "description": "Cordova Google Drive Plugin",
+  "cordova": {
+    "id":"cordova-plugin-jc-googledrive",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive"
+  },
+  "keywords": [
+    "cordova",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android",
+    "google",
+    "drive"
+  ],
+  "engines": {
+    "cordovaDependencies":{
+      "1.0.0" :{
+        "cordova-plugin-cocoapod-support" : ">1.2.0"
+      }
+    }
+  },
+  "author": "JcDenton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive/issues"
+  },
+  "homepage": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive#readme"
+}
