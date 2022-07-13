@@ -7,18 +7,17 @@ import { getThemeFlavor, calcWidth } from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import Shelf from "./Shelf";
 
-import { deleteCategory } from '../apis/file'
-import { reloadAdditionals } from '../apis/catalog'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import {getDecoration} from "../components/ui-elements"
 import { translate, fTranslate } from "../utils/lang";
+import FileSystem from "../apis/filesystem";
 
 class Body extends IssieBase {
 
 
     toggleSelect = (category, forceOff) => {
-        if (!forceOff && (!category || category.type !== 'added')) return;
+        if (!forceOff && (!category || !category.userContent)) return;
 
         if (forceOff || (this.state.selectedCategory && this.state.selectedCategory.id === category.id)) {
             //toggle off
@@ -36,7 +35,7 @@ class Body extends IssieBase {
                                 buttons: [
                                     {
                                         label: translate("BtnYes"),
-                                        onClick: () => this.deleteCategory(category)
+                                        onClick: () => this.deleteCategory(category.name)
                                     },
                                     {
                                         label: translate("BtnCancel"),
@@ -53,10 +52,9 @@ class Body extends IssieBase {
     }
 
     deleteCategory(category) {
-        deleteCategory(category).then(
+        FileSystem.get().deleteCategory(category).then(
             //Success:
             async () => {
-                await reloadAdditionals();
                 this.props.pubSub.publish({ command: "refresh" })
                 this.toggleSelect(null, true)
                 this.props.alert.success(translate("InfoDeleteSucceeded"));
@@ -71,11 +69,16 @@ class Body extends IssieBase {
             return <Tile2
                 key={category.id}
                 tileName={category.name}
-                tileUrl={"/word/" + encodeURIComponent(category.id) + "/" + encodeURIComponent(category.name)}
+                userContent={category.userContent}
+                pubSub={this.props.pubSub}
+                editMode={this.props.editMode}
+                shareCart = {this.props.shareCart}
+                tileUrl={"/word/" + encodeURIComponent(category.name) + "/" + encodeURIComponent(category.name)}
                 imageName={category.imageName}
-                themeFlavor={getThemeFlavor(category.type === "added" ? "1" : category.id)}
-                onLongPress={category.type === "added" && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
-                selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
+                themeFlavor={getThemeFlavor(category.userContent ? "1" : category.id)}
+                onLongPress={category.userContent && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
+                //selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
+
                 dimensions={this.props.dimensions}
             />
         });
@@ -91,7 +94,7 @@ class Body extends IssieBase {
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
 
         
-
+        width = Math.max(width, window.innerWidth);
         //build array of lines:
         let lineWidth = 0;
         let curLine = -1;

@@ -1,6 +1,6 @@
 import {mainJson} from '../mainJson.js'
 import {listAdditionsFolders, listWordsInFolder} from './file'
-
+/*
 let gWordsFlat
 let gAdditionalExistingCategories = []
 let gAdditionalNewCategories = []
@@ -94,3 +94,4 @@ function safeMergeWordsArray(a1, a2) {
     }
     return [];
 }
+*/

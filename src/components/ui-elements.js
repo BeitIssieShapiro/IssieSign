@@ -1,41 +1,8 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Info } from '@mui/icons-material'
 
-export function PlusButton(props) {
-  const styles = {
-    container: {
-      marginTop: 3,
-      marginLeft: 10,
-      height: '32px',
-      width: '32px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      cursor: 'pointer',
-      padding: '4px',
-      paddingLeft: '25px'
-    },
-    line: {
-      height: '3px',
-      width: '18px',
-    },
-    vertical: {
-      transform: 'translate(0,-3px) rotate(90deg)',
-    }
-  }
-  return (
-    <div style={styles.container} onClick={props.onClick}>
-      <div style={{ ...styles.line, background: props.color }} />
-      <div style={{ ...styles.line, ...styles.vertical, background: props.color }} />
-    </div>);
-
-}
-
-export function SettingsButton(props) {
-  return <div className="settings-button" onClick={props.onClick}></div>
-}
 
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
@@ -55,7 +22,59 @@ export function NextButton(props) {
 
 
 export function ShareButton(props) {
-  return <div className="share-button" {...props}></div>
+  return <div className="share-button" {...props}
+    style={props.selected ? { borderBottom: "white", borderBottomStyle: "solid", borderWidth: 4 } : {}}></div>
+}
+
+export function HeaderButton(props) {
+  const style = {
+    fontSize: 35,
+    marginLeft: 5,
+    marginRight: 5,
+    height: 40,
+    position: "relative"
+  };
+
+  if (props.selected) {
+    style.borderBottom = "white";
+    style.borderBottomStyle = "solid";
+    style.borderWidth = 4;
+  };
+
+  return <div {...props}
+    onClick={props.onClick}
+    style={style}>
+    {props.children}
+  </div>
+}
+
+export function EditButton(props) {
+  return <HeaderButton slot={props.slot} selected={props.selected}
+    onClick={props.onClick}>
+    <Edit style={{ fontSize: 35 }} />
+  </HeaderButton>
+}
+
+export function AddButton(props) {
+  return <HeaderButton slot={props.slot} selected={props.selected}
+    onClick={props.onClick}>
+    <Add style={{ fontSize: 35 }} />
+  </HeaderButton>
+}
+
+export function SettingsButton(props) {
+  return <HeaderButton slot={props.slot} selected={props.selected}
+    onClick={props.onClick}>
+    <Settings style={{ fontSize: 35 }} />
+  </HeaderButton>
+}
+
+export function ShareCartButton(props) {
+  return <HeaderButton slot={props.slot}
+    onClick={props.onClick}>
+    <ShoppingCart style={{ fontSize: 35 }} />
+    <div style={{ fontSize: 18, position: "absolute", left: 13, top: -13 }}>{props.count}</div>
+  </HeaderButton>
 }
 
 export function AttachButton(props) {
@@ -66,6 +85,10 @@ export function CameraButton(props) {
   return <div className="camera-button" onClick={props.onClick}></div>
 }
 
+export function SearchWebButton(props) {
+  return <div className="camera-button" onClick={props.onClick}></div>
+}
+
 export function VideoButton(props) {
   return <div className="video-button" onClick={props.onClick}></div>
 }
@@ -73,6 +96,79 @@ export function VideoButton(props) {
 export function Selected(props) {
   return <div className="selected-icon"></div>
 }
+
+const TILEBUTTON_SIZE = 36;
+
+export function TileButton(props) {
+
+  const prevent = (evt) => evt.stopPropagation();
+  const offSet = props.offSet || 0;
+  return <div
+    className="enable-pointer-events"
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: 'absolute', right: -17 + (props.position * (TILEBUTTON_SIZE + 5)),
+      bottom: -15 + offSet,
+      borderRadius: 18, width: 36, height: 36,
+      backgroundColor: 'gray',
+      zIndex: 1000,
+      ...props.style
+    }}
+
+
+    onMouseDown={prevent}
+    onMouseUp={prevent}
+
+    onTouchStart={prevent}
+    onTouchEnd={prevent}
+
+    onClick={(evt) => {
+      //console.log("tile button clicked")
+      evt.preventDefault();
+      props.onClick()
+    }}
+  >{props.children}</div>
+}
+
+export function Spacer(props) {
+  return <div style={{ width: 5, height: 5, ...props }} />
+}
+
+export function AddToShareButton(props) {
+  return <TileButton
+    {...props}>
+    <Share />
+  </TileButton>
+}
+
+export function InfoButton(props) {
+  return <TileButton
+  {...props}>
+    <Info />
+  </TileButton>
+}
+
+export function RemoveFromShareButton(props) {
+  return <TileButton
+  {...props}>
+    <Share />
+    <div style={{ position: "absolute", left: 2, top: -4 }}>
+      <Delete style={{ fontSize: 17 }} />
+    </div>
+  </TileButton>
+}
+
+export function DeleteTilebutton(props) {
+  return <TileButton
+  {...props}>
+  
+    <Delete />
+  </TileButton>
+}
+
+
 
 const decorWidth = 35;
 const decorations = [
@@ -111,7 +207,7 @@ const decorations = [
   }, {
     style: {
       bottom: "-43px",
-      zIndex:5
+      zIndex: 5
     },
     src: svgLocalCall("sticker.svg")
   },
@@ -121,43 +217,43 @@ function getItem(index, left, maxWidth, lastSpot) {
   if (left > maxWidth || index < 0 || index >= decorations.length) return null;
   if (left > 0) {
     if (left === lastSpot) {
-      left -= decorWidth+5
+      left -= decorWidth + 5
     } else {
-      left -= decorWidth/2;
+      left -= decorWidth / 2;
     }
   } else {
     left += 5;
   }
   let item = decorations[index];
-  return <img 
+  return <img
     key={index}
     alt=""
     src={item.src} style={{
-    width: decorWidth+"px", height: "50px",
-    position: "absolute", left:  left + "px",
-    ...item.style
-  }} />
+      width: decorWidth + "px", height: "50px",
+      position: "absolute", left: left + "px",
+      ...item.style
+    }} />
 }
 
 export function getDecoration(index, tileWidth, itemCount, maxWidth) {
   switch (index) {
     case 0:
       return [
-        getItem(0, 2 * tileWidth, maxWidth, itemCount*tileWidth),
-        getItem(6, 4 * tileWidth, maxWidth, itemCount*tileWidth),
-        getItem(1, 7 * tileWidth, maxWidth, itemCount*tileWidth)];
+        getItem(0, 2 * tileWidth, maxWidth, itemCount * tileWidth),
+        getItem(6, 4 * tileWidth, maxWidth, itemCount * tileWidth),
+        getItem(1, 7 * tileWidth, maxWidth, itemCount * tileWidth)];
     case 1:
       return [
-        getItem(2, 3 * tileWidth, maxWidth, itemCount*tileWidth),
-        getItem(3, 5 * tileWidth, maxWidth, itemCount*tileWidth)];
+        getItem(2, 3 * tileWidth, maxWidth, itemCount * tileWidth),
+        getItem(3, 5 * tileWidth, maxWidth, itemCount * tileWidth)];
     case 2:
-      return getItem(4, 1 * tileWidth, maxWidth, itemCount*tileWidth);
+      return getItem(4, 1 * tileWidth, maxWidth, itemCount * tileWidth);
     case 3:
       return [
-        getItem(5, 3 * tileWidth, maxWidth, itemCount*tileWidth)];
+        getItem(5, 3 * tileWidth, maxWidth, itemCount * tileWidth)];
     case 4:
     default:
       return [
-        getItem(1, 0 * tileWidth, maxWidth, itemCount*tileWidth)];
+        getItem(1, 0 * tileWidth, maxWidth, itemCount * tileWidth)];
   }
 }

@@ -145,7 +145,7 @@ var strings = {
 
         "InfoDeleteCanceled": "Delete cancelled",
         "InfoDeleteSucceeded": "Successfully deleted",
-        "InfoDeleteFailed": "Dalete failed",
+        "InfoDeleteFailed": "Delete failed",
         "InfoSavedSuccessfully": "Successfully saved",
         "MissingImageAlt": "Missing image",
         "InfoSharingWords": "Sharing words...",
@@ -191,6 +191,10 @@ export function setLanguage(lang) {
 
 export function isRTL() {
     return gLang === "he" || gLang === "ar"
+}
+
+export function getLanguage() {
+    return gLang;
 }
 
 export function translate(id, ...args) {

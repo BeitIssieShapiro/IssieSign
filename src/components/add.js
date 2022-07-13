@@ -2,13 +2,13 @@
 import React from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
-import { createDir, mvFileIntoDir } from '../apis/file';
-import { reloadAdditionals } from "../apis/catalog";
 import '../css/add.css';
-import { AttachButton, CameraButton, VideoButton } from "./ui-elements";
+import { AttachButton, CameraButton, SearchWebButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
+import FileSystem from "../apis/filesystem";
+import SearchImage from "./search-image";
 
 const imagePickerOptions = {
     //maximumImagesCount: 1,
@@ -85,7 +85,8 @@ class AddItem extends React.Component {
             label: "",
             selectedImage: "",
             selectedVideo: "",
-            selectInProgress: false
+            selectInProgress: false,
+            showWebSearch: false
         }
     }
 
@@ -95,21 +96,26 @@ class AddItem extends React.Component {
     }
 
     saveCategory = async () => {
-        let dirEntry = await createDir(this.state.label);
-        await mvFileIntoDir(this.state.selectedImage, dirEntry, "default.jpg")
-        this.props.alert.show(translate("InfoSavedSuccessfully"));
-        reloadAdditionals().then(() => this.props.history.goBack())
+        FileSystem.get().saveCategory(this.state.label, this.state.selectedImage).then(
+            () => {
+                this.props.pubSub.publish({ command: 'refresh' });
+                this.props.alert.show(translate("InfoSavedSuccessfully"));
+                this.props.history.goBack()
+            },
+            (err) => this.props.alert.success("Error: " + err)
+        )
     }
 
     saveWord = async () => {
-        let categoryId = this.props.categoryId;
-        let dirEntry = await createDir(categoryId);
-        await mvFileIntoDir(this.state.selectedVideo, dirEntry, this.state.label + ".mov")
-        if (this.state.selectedImage.length > 0) {
-            await mvFileIntoDir(this.state.selectedImage, dirEntry, this.state.label + ".jpg")
-        }
-        this.props.alert.show(translate("InfoSavedSuccessfully"));
-        reloadAdditionals().then(() => this.props.history.goBack());
+        FileSystem.get().saveWord(this.props.categoryId, this.state.label,
+            this.state.selectedImage, this.state.selectedVideo).then(
+                () => {
+                    this.props.pubSub.publish({ command: 'refresh' });
+                    this.props.alert.success(translate("InfoSavedSuccessfully"));
+                    this.props.history.goBack();
+                },
+                (err) => this.props.alert.success("Error: " + err)
+            )
     }
 
     render() {
@@ -126,33 +132,48 @@ class AddItem extends React.Component {
         let imgName = this.state.selectedImage.length > 0 ? translate("AddImageSelected") : ""
         return (
             <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
+                {this.state.showWebSearch && <SearchImage 
+                    onClose={()=>this.setState({ showWebSearch: false })} 
+                    onSelectImage={(url)=>{
+                        this.setState({ showWebSearch: false, selectedImage: url })
+
+                    }}/>}
                 <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
                     <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%' : '100%', zoom: '150%' }}>
                         {addWordMode ?
-                            <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
-                                imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
+                            <div style={{ padding: 40 }}>
+                                <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
+                                    imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
+                            </div>
                             : <Shelf>
                                 <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />
                             </Shelf>}
                     </div>
 
-                    <div style={{ color: 'black', direction: 'rtl', paddingTop: 80, fontSize: 40, textAlign: 'right', width: '100%' }}>
+                    <div style={{ color: 'black', direction: 'rtl', paddingTop: "5vh", fontSize: 40, textAlign: 'right', width: '100%' }}>
                         <table style={{ width: "100%" }}>
                             <tbody>
-                                <tr style={{ height: '120px' }}>
+                                <tr style={{ height: '10vh' }}>
                                     <td width="10%"></td>
                                     <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
                                     <td width="70%">
                                         <input type="text" className="addInput"
                                             placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
                                             onChange={(e) => {
-                                                this.setState({ label: e.target.value })
+                                                const validName = isValid(e.target.value);
+                                                this.setState({ label: e.target.value, invalidName: !validName }, () => {
+
+                                                })
                                             }} />
+                                        {this.state.invalidName && <div style={{
+                                            color: "red",
+                                            fontSize: 20,
+                                        }}>{translate("InvalidCharachtersInName")}</div>}
                                     </td>
 
                                     <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"} /></td>
                                 </tr>
-                                <tr style={{ height: '120px' }}>
+                                <tr style={{ height: '10vh' }}>
                                     <td></td>
                                     <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
                                     <td>
@@ -200,13 +221,15 @@ class AddItem extends React.Component {
                                                             });
                                                 }, 300);
                                             }} />
+
+                                            <SearchWebButton onClick={() => this.setState({ showWebSearch: true })} />
                                         </div>
                                     </td>
 
                                     <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"} /></td>
                                 </tr>
                                 {addWordMode ?
-                                    <tr style={{ height: '120px' }}>
+                                    <tr style={{ height: '10vh' }}>
                                         <td></td>
                                         <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
                                         <td>

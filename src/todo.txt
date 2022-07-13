@@ -1,10 +1,30 @@
 MyIssieSign
 -----------
-- import seem not to work
-- export folder??
-- export multiple words
-V - default allow edit
-- 
+V- import seem not to work
+V- export folder??
+V- export multiple words
+
+V- validate labels to be valid path chars
+V- categories are organized vertically?
+V- Support delete
+- Support update (low)
+V- Support save2server
+V- Support share, share-multi
+V- reimplement import
+V- Busy with message - fix UI
+- add word without image - no error but not saved
+- adult mode - test all edit mode
+- translate all missing texts
+V- choose photo from internet
+  - better design
+  - busy indication
+- select theme to category
+- logout, who am In
+- add root folder IssieSign
+- don't show decoration if no shelf (small)
+
+
+
 
 
 IssieSign

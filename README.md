@@ -78,8 +78,8 @@ cordova plugins add cordova-plugin-x-socialsharing
 
 - Fix cordova.xml:
   - description and author
-  - copy the icons to the platform ios
-  - replace (make sure only once)  - `<preference name="AllowInlineMediaPlayback" value="true" />
+  - copy the icons section to the platform ios and the folder "resources" to the cordova app's root
+  - replace (make sure only once)  - `<preference name="AllowInlineMediaPlayback" value="true" />`
 
 - add ios and android
 ```
@@ -92,15 +92,11 @@ cordova platform add android
 
 ### IOS
 - Open xcode and the ios project
-  - copy from `Images.xcassets` the `header`
-  - replace AppIcon
+//  - copy from `Images.xcassets` the `header`
+//  - replace AppIcon
+under "Resoutrces"
   - copy the CDVLaunchStoryboard (copy , create group)
-  - Copy plist lines:
-    - 4 x Privacy
-    - launch screen
-    - support openning in place = Yes
-    - Document types
-    - Set version/build
+  - Copy IssieSign-info.plist (copy , create group)
     
   - Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
 
@@ -227,3 +223,10 @@ cordova platform add android
     RELEASE_STORE_PASSWORD=issiesign
     RELEASE_KEY_ALIAS=signlang
     RELEASE_KEY_PASSWORD=issiesign
+
+
+## Run on simulator with react dev-server
+- Change your config.xml and make <content src="..." /> point to your local-IP address and your dev-port, e.g. <content src="http://localhost:3000/index.html" />
+- Add a whitelist entry (refer to cordova whitelist-plugin documentation for more details): e.g. <allow-navigation href="http://localhost:3000/*" />
+- run `./scripts/prepareCDVLocal.sh`
+- to revert, run `windownCDVLocalRun.sh`

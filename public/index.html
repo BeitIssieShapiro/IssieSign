@@ -12,6 +12,20 @@
             max-width: 100%;
         }
 
+        @keyframes rotateIcon {
+            0%, 100% { transform: rotate(0)}
+            25% { transform: rotate(-90deg)}
+            50% { transform: rotate(-180deg) }
+            75% { transform: rotate(-270deg)}
+        }
+
+        .rotate {
+            animation-duration: 2s;
+            animation-name: rotateIcon;
+            animation-fill-mode: forwards;
+            animation-iteration-count: infinite;
+        }
+
         .centerWidthAlign {
             margin: auto;
             width: 100%;
@@ -156,9 +170,11 @@
     <title>Sign Language Application</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <!-- <script type="text/javascript" charset="utf-8" src="cordova.js"></script> -->
 
     <script>
+        window.isBrowser = true;
+
         document.assetsReady = false;
         let assetsInit = false;
         let assetsInit2 = false;
@@ -225,12 +241,13 @@
         console.log("touch move registered")
         document.addEventListener("touchmove", doNothing, { passive: false });
         document.addEventListener("touchend", (e)=>{
-            console.log("touch end");
+            // console.log("touch end");
             document.swipeInProgress = undefined;
         }, { passive: false });
 
 
         var handleOpenURL = (url) => {
+            console.log("handleOpenURL", url, window.openWith !== undefined?"open with exists":"missin")
             if (window.openWith) {
                 window.openWith(url);
             }
@@ -265,10 +282,9 @@
             })
         }
 
-        const isBrowser = true;
         
         
-        document.assetsReady=isBrowser;
+        document.assetsReady=window.isBrowser;
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             //console.log(cordova.file);

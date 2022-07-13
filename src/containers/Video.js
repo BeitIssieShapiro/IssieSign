@@ -1,4 +1,5 @@
 import React from "react";
+import FileSystem from "../apis/filesystem";
 
 import '../css/App.css';
 
@@ -47,11 +48,7 @@ class Video extends React.Component {
 
         let videoName = this.props.videoName;
         if (videoName === 'file') {
-            if (window.isAndroid) {
-                videoContent = this.props.filePath;
-            } else {
-                videoContent = "issie-" + this.props.filePath;
-            }
+            videoContent = FileSystem.get().getFilePath(this.props.filePath);
         } else {
             if (document.basePath.startsWith("file")) {
                 //iOS

@@ -101,14 +101,35 @@ export async function shareWord(word) {
     // if (!window['isAndroid']) {
     //     zipPath = zipPath.replace("file://", "")
     // } else {
-        if (!zipPath.startsWith("file://")) {
-            zipPath = "file://" + zipPath;
-        }
+    // if (!zipPath.startsWith("file://")) {
+    //     zipPath = "file://" + zipPath;
+    // }
     //}
-    share(zipPath, "", "", () => { }, (err) => alert(err));
+
+    if (zipPath.startsWith("file://")) {
+        zipPath = zipPath.substr(7);
+    }
+    console.log("upload", zipPath);
+
+    // share(zipPath, "", "", () => { }, (err) => alert(err));
+    // window.cordova.plugins.FirebaseWithAppCheck.upload(zipPath, "/newWord.txt",
+    //     (url) => alert("success:" + url),
+    //     (err) => alert("fail:" + err));
+
+    window.plugins.gdrive.uploadFile(zipPath, false,
+        (response) => {
+            //simple response message with the status
+            alert("success:" + JSON.stringify(response));
+        },
+        (error) => {
+            console.log(error);
+        }
+    );
+
+
 }
 
-function waitForCordova(ms) {
+export function waitForCordova(ms) {
     if (isBrowser() || (window.cordova && window.cordova.file && window.resolveLocalFileSystemURL && getDocDir())) {
         return Promise.resolve(true);
     }
@@ -181,7 +202,7 @@ export async function listWordsInFolder(dirEntry) {
         var reader = dirEntry.createReader();
         var words = [];
         reader.readEntries(entries => {
-            
+
             for (let entry of entries) { // eslint-disable-line no-unused-vars
                 if (entry.name === "default.jpg") continue;
                 let period = entry.name.lastIndexOf('.');

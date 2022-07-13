@@ -4,9 +4,9 @@ import Card2 from "../components/Card2";
 import Video from "../containers/Video";
 
 import { VideoToggle } from "../utils/Utils";
-import { deleteWord, shareWord } from '../apis/file'
+//import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
-import { reloadAdditionals } from "../apis/catalog";
+//import { reloadAdditionals } from "../apis/catalog";
 import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -73,21 +73,24 @@ class WordAdults extends IssieBase {
 
 
                 this.props.pubSub.publish({
-                    command: "show-share", callback: () => {
-                        console.log("Share pressed");
-                        if (this.state.selectedWord) {
-                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("InfoSharingWords") });
-                            shareWord(this.state.selectedWord).then(
-                                //Success:
-                                () => this.toggleSelect(null, true),
-                                //error
-                                (e) => this.props.alert.error(translate("InfoSharingFailed") + "\n" + e)
+                    command: "show-share", 
+                    
+                    // callback: () => {
+                    //     console.log("Share pressed");
+                    //     if (this.state.selectedWord) {
+                    //         this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("InfoSharingWords") });
+                    //         shareWord(this.state.selectedWord).then(
+                    //             //Success:
+                    //             () => this.toggleSelect(null, true),
+                    //             //error
+                    //             (e) => this.props.alert.error(translate("InfoSharingFailed") + "\n" + e)
 
-                            ).finally(() =>
-                                this.props.pubSub.publish({ command: 'set-busy', active: false })
-                            );
-                        }
-                    }
+                    //         ).finally(() =>
+                    //             this.props.pubSub.publish({ command: 'set-busy', active: false })
+                    //         );
+                    //     }
+                    // }
+                    entity: this.state.selectedWord,
                 });
             }
         }
@@ -107,7 +110,9 @@ class WordAdults extends IssieBase {
                 }
                 let selectable = word.type === "file"
                 return <Card2
-
+                editMode={this.props.editMode}
+                    categoty={word.category}
+                    shareCart = {this.props.shareCart}
                     onClick={(url) => {
                         this.setState({ selected: word.videoName });
                     }}

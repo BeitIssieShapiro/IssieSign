@@ -1,0 +1,60 @@
+:root {
+    --hmargin:10vw;
+    --vmargin:10vh;
+}
+
+
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    color:  #4d84bc;
+    z-index: 999;
+}
+.modalTitle {
+    position: absolute;
+    height:56px;
+    top: 0;
+    width:90%;
+    text-align: center;
+    font-size:30px;
+    /* border-bottom-width: 1;
+    border-bottom-color: gray;
+    border-bottom-style: solid; */
+}
+
+.modalInner {
+    position: absolute;
+    left: var(--hmargin);
+    right: var(--hmargin);
+    top:  var(--vmargin);
+    bottom:  var(--vmargin);
+    background-color: lightgrey;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow:  6px 7px 13px 5px #888888;
+}
+
+.modalContent {
+    padding:10px;
+    padding-top: 7vh;
+    max-height: 80vh;
+    overflow-y: auto;
+    
+}
+
+.btnClose {
+    position: absolute;
+    left: 0;
+    height: 56px;
+    line-height: 55px;
+    font-size: 25px;
+    top: 0;
+    width: 40px;
+    background: lightgray;
+    text-align: center;
+    border-top-left-radius: 15px;
+}

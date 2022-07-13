@@ -2,12 +2,9 @@ import React from "react";
 import '../css/App.css';
 import Card2 from "../components/Card2";
 import {  calcWidth } from "../utils/Utils";
-import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
-import { reloadAdditionals } from "../apis/catalog";
 import { withAlert } from 'react-alert'
 import Rope from '../components/Rope'
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { translate, fTranslate } from "../utils/lang";
 
@@ -25,76 +22,6 @@ class Word extends IssieBase {
     }
 
 
-    toggleSelect = async (word, forceOff) => {
-        if (!forceOff && (!word || word.type !== 'file')) return;
-
-        if (forceOff || (this.state.selectedWord && this.state.selectedWord.id === word.id)) {
-            //toggle off
-            this.setState({ selectedWord: undefined });
-            this.props.pubSub.publish({ command: "hide-all-buttons" });
-        } else {
-
-            this.setState({ selectedWord: word });
-            if (this.props.pubSub) {
-                if (this.props.allowAddWord) {
-                    this.props.pubSub.publish({
-                        command: "show-delete", callback: () => {
-                            if (this.state.selectedWord) {
-                                confirmAlert({
-                                    title: translate("ConfirmTitleDeleteWord"),
-                                    message: fTranslate("ConfirmDeleteWordMessage", this.state.selectedWord.name),
-                                    buttons: [
-                                        {
-                                            label: translate("BtnYes"),
-                                            onClick: () => {
-                                                deleteWord(this.state.selectedWord.videoName).then(
-                                                    //Success:
-                                                    async () => {
-                                                        await reloadAdditionals();
-                                                        this.props.pubSub.publish({ command: "refresh" })
-                                                        this.toggleSelect(null, true)
-                                                        this.props.alert.success(translate("InfoDeleteSucceeded"));
-                                                    },
-                                                    //error
-                                                    (e) => this.props.alert.error(translate("InfoDeleteFailed") + "\n" + e)
-                                                );
-                                            }
-                                        },
-                                        {
-                                            label: translate("BtnCancel"),
-                                            onClick: () => this.props.alert.info(translate("InfoDeleteCanceled"))
-                                        }
-                                    ]
-                                });
-                            }
-                        }
-                    });
-                }
-
-
-                this.props.pubSub.publish({
-                    command: "show-share", callback: () => {
-                        console.log("Share pressed");
-                        if (this.state.selectedWord) {
-                            this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("InfoSharingWords") });
-                            shareWord(this.state.selectedWord).then(
-                                //Success:
-                                () => this.toggleSelect(null, true),
-                                //error
-                                (e) => this.props.alert.error(translate("InfoSharingFailed") + "\n" + e)
-
-                            ).finally(() =>
-                                this.props.pubSub.publish({ command: 'set-busy', active: false })
-                            );
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-
-
     render() {
 
         let wordsElements = [];
@@ -106,10 +33,18 @@ class Word extends IssieBase {
                 if (word.categoryId) {
                     themeId = word.categoryId;
                 }
-                let selectable = word.type === "file"
-                return <Card2 key={word.id} cardType={selectable ? "file" : "default"} cardName={word.name} videoName={word.videoName}
+                console.log("word share mode", this.props.editMode)
+                return <Card2 key={word.id} 
+                editMode={this.props.editMode}
+                    category={word.category}
+                    pubSub={this.props.pubSub}
+                    shareCart = {this.props.shareCart}
+                    userContent={word.userContent}
+                    cardType={word.userContent ? "file" : "default"} cardName={word.name} videoName={word.videoName}
                     imageName={word.imageName} imageName2={word.imageName2}
-                    themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected}
+                    themeId={themeId} 
+                    longPressCallback={word.userContent ? () => this.props.pubSub.publish({ command: "edit-mode" }) : undefined} 
+                    selected={selected}
                     binder={getBooleanFromString(word.name)} />
             });
 

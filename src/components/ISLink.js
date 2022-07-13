@@ -2,11 +2,11 @@ import React from "react";
 import "../css/card.css";
 import "../css/Tile.css";
 
-import { useHistory } from "react-router-dom";
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from "react-router";
 
 function trace(a, ...optionalParams) {
-  //console.log(a, ...optionalParams);
+  console.log(a, ...optionalParams);
 }
 
 // safely handles circular references
@@ -33,18 +33,21 @@ let xy = { x: 0, y: 0 }
 const setXY = (obj) => xy = obj;
 
 export default function ISLink(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
+  let location = useLocation();
+
   let lpDelay = props.longPressDelay ? props.longPressDelay : 500;
-  function handleNavigate() {
+  const handleNavigate = useCallback(() =>{
     trace("navigate to", props.url)
+    trace(props.onClick == undefined?"no click":"click")
 
     if (props.url)
       if (props.onClick) {
         props.onClick(props.url);
       } else {
-        history.push(props.url);
+        navigate(location.pathname + "#" + props.url)
       }
-  }
+  }, [props.onClick, props.url]);
 
   const [startLongPress, setStartLongPress] = useState(false);
   const [startEvent, setStartEvent] = useState(undefined);
@@ -52,7 +55,7 @@ export default function ISLink(props) {
   const [moved, setMoved] = useState(false);
   //const [xy, setXY] = useState({ x: 0, y: 0 })
 
-
+  console.log("render ISLink", props.onClick == undefined?"no click":"click")
   useEffect(() => {
     let timerId;
     if (startLongPress) {
@@ -85,7 +88,7 @@ export default function ISLink(props) {
     return () => {
       clearTimeout(timerId);
     };
-  }, [startLongPress, lpDelay, moved]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [startLongPress, lpDelay, moved]); 
 
   const move = useCallback((e) => {
     setMoved(true);
@@ -115,7 +118,7 @@ export default function ISLink(props) {
     let didMove = false;
     try {
       //trace(JSON.safeStringify(e))
-      trace("changedTouches", JSON.stringify(event))
+      //trace("changedTouches", JSON.stringify(event))
       //trace(JSON.safeStringify(event.nativeEvent))
       if (event.clientX !== undefined) {
         trace("clientX", xy.x, event.clientX, xy.y, event.clientY)
@@ -131,12 +134,12 @@ export default function ISLink(props) {
     }
     setStartLongPress(false);
     trace("touch end: moved:" + (moved ? "true" : false) + ", didMove:" + (didMove ? "true" : "false"))
-    if (!canceled && !moved && !didMove) {
+    if (!canceled &&  !didMove) {
       trace("do click")
       handleNavigate();
       e.preventDefault();
     }
-  }, [callBackTriggered]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [callBackTriggered, props]); 
 
   return (
     <div

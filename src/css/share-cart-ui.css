@@ -1,0 +1,23 @@
+.share-cart {
+    width: 100%;
+}
+
+.share-cart,
+.share-cart>tr,
+.share-cart>tr>th,
+.share-cart>tr>td {
+    border: 1px solid;
+    color: black;
+}
+
+.share-cart>tr>th {
+    width: 35%
+}
+
+
+
+button {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 10px 24px;
+    font-size: 18px;
+}

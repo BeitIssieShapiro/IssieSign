@@ -10,7 +10,7 @@ export const LANG_KEY = "MyIssieSign_Settings_Lang";
 
 
 export function isBrowser() {
-    return false;
+    return window.isBrowser;
 }
 
 export function getLanguage() {

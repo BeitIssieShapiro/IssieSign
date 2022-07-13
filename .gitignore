@@ -4,7 +4,9 @@ node_modules/
 .vscode/
 build
 cordova/app/
+cordovaApp/
 package-lock.json
+.DS_Store
 
 
 
