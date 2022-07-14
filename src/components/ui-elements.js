@@ -98,6 +98,16 @@ export function Selected(props) {
   return <div className="selected-icon"></div>
 }
 
+export function RadioBtn(props) {
+  return <div className={props.className}>
+    <label className="form-switch">
+      <input type="checkbox" checked={props.checked} onChange={(e) => props.onChange(e.target.checked)} />
+      <i></i>
+    </label>
+  </div>
+}
+
+
 const TILEBUTTON_SIZE = 36;
 
 export function TileButton(props) {

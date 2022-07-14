@@ -8,6 +8,7 @@ import { Sync } from '@mui/icons-material'
 import "../css/share-info.css"
 
 import "../css/settings.css"
+import { RadioBtn } from "./ui-elements";
 
 
 function ShareInfo(props) {
@@ -38,12 +39,10 @@ function ShareInfo(props) {
         <div className="shareInfo">
             <div className="shareInfoLabel">{translate("SyncToCloud")}</div>
             <div>
-                <label className="form-switch">
-                    <input type="checkbox"
-                        checked={entity.sync == FileSystem.IN_SYNC || entity.sync == FileSystem.SYNC_REQUEST}
-                        onChange={(e) => toggleCloudSync(e.target.checked)} />
-                    <i></i>
-                </label>
+                <RadioBtn
+                    checked={entity.sync == FileSystem.IN_SYNC || entity.sync == FileSystem.SYNC_REQUEST}
+                    onChange={(e) => toggleCloudSync(e.target.checked)}
+                />
             </div>
 
             <div className="shareInfoLabel">status</div>

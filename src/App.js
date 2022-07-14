@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { VideoToggle, LANG_KEY, getLanguage } from "./utils/Utils";
+import { VideoToggle, getLanguage } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -21,15 +21,14 @@ import './css/style.css';
 
 import {
     getTheme,
-    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, saveSettingKey, getBooleanSettingKey
+    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, getBooleanSettingKey
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import { Menu, OnOffMenu, LineMenu, RadioSetting } from './settings'
+import {  Settings } from './settings'
 import './css/settings.css'
-import { receiveIncomingZip } from './apis/file'
 import {
-    PlusButton, SettingsButton, TrashButton, ShareButton,
+    SettingsButton, TrashButton,
     BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton
 } from './components/ui-elements';
 import { isMyIssieSign } from './current-language';
@@ -37,7 +36,6 @@ import { mainJson } from './mainJson';
 import FileSystem from './apis/filesystem';
 import ShareInfo from './components/share-info';
 import { ShareCart } from './share-cart';
-import shareCartUi from './containers/share-cart-ui';
 import ShareCartUI from './containers/share-cart-ui';
 import { Sync } from '@mui/icons-material'
 
@@ -64,7 +62,7 @@ class PubSub {
 
 function splitAndDecodeCompoundName(str) {
     let parts = str.split("/");
-    return parts.map(p=>decodeURIComponent(p));
+    return parts.map(p => decodeURIComponent(p));
 }
 
 class App extends IssieBase {
@@ -157,7 +155,7 @@ class App extends IssieBase {
             wordScroll: { x: 0, y: 0 },
             searchScroll: { x: 0, y: 0 },
             infoScroll: { x: 0, y: 0 },
-            shareCart ,
+            shareCart,
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
@@ -165,17 +163,17 @@ class App extends IssieBase {
             console.log("Importing words");
             //this.setState({ busy: true, busyText: translate("ImportWords") });
 
-            pubsub.publish({command:'long-process', msg: translate("importingWords")});
+            pubsub.publish({ command: 'long-process', msg: translate("importingWords") });
 
             shareCart.importWords(url).then(
-                (addWords)=>{
+                (addWords) => {
                     pubsub.refresh();
                     this.props.alert.success(addWords.join("\n"));
                 },
-                (err)=>this.props.alert.error("Error importing word: "+err)
-            ).finally(()=>pubsub.publish({command:'long-process-done'}));
+                (err) => this.props.alert.error("Error importing word: " + err)
+            ).finally(() => pubsub.publish({ command: 'long-process-done' }));
 
-            
+
         }
 
         this.loadingMedia();
@@ -206,11 +204,6 @@ class App extends IssieBase {
         }
     }
 
-    saveLanguage(lang) {
-        saveSettingKey(LANG_KEY, lang);
-        this.setState({ language: lang });
-        setLanguage(lang);
-    }
 
     static getDerivedStateFromProps(props, state) {
         if (!props.pubSub) {
@@ -341,25 +334,12 @@ class App extends IssieBase {
         this.props.history.push('/info');
     }
 
-    allowSwipe(allow) {
-        saveSettingKey(ALLOW_SWIPE_KEY, allow);
-        this.setState({ allowSwipe: allow });
-    }
-
     isSwipeAllowed = () => {
         return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode);
     }
 
-    adultMode(on) {
-        saveSettingKey(ADULT_MODE_KEY, on);
-        this.setState({ adultMode: on });
-    }
 
-    allowAddWord(allow) {
-        saveSettingKey(ALLOW_ADD_KEY, allow);
-        this.setState({ allowAddWord: allow });
-        window[ALLOW_ADD_KEY] = allow
-    }
+    
 
     render() {
         let path = this.props.history.path;
@@ -425,15 +405,15 @@ class App extends IssieBase {
                 }
 
                 {/** long process */
-                    this.state.longProcess && <div style={{ position: 'absolute', display:"flex", alignItems:"center", bottom: 15, right: 0, fontSize: 15, zIndex:100 }}>
+                    this.state.longProcess && <div style={{ position: 'absolute', display: "flex", alignItems: "center", bottom: 15, right: 0, fontSize: 15, zIndex: 100 }}>
                         {this.state.longProcess.msg}
-                        <Sync className="rotate"/>
+                        <Sync className="rotate" />
                     </div>
                 }
 
                 <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
                     {this.state.busy ? <div style={{ position: 'absolute', alignContent: 'center', direction: 'rtl', top: '60px', left: '15%', right: '15%', color: 'black', fontSize: 30 }}>
-                        <div style={{position:"absolute", top:60, left:"45%"}}>{this.state.busyText}</div>
+                        <div style={{ position: "absolute", top: 60, left: "45%" }}>{this.state.busyText}</div>
                         {this.state.showProgress ?
                             <CircularProgressbar
                                 value={this.state.progress}
@@ -478,37 +458,14 @@ class App extends IssieBase {
                         count={this.state.shareCart.count()}
                         onClick={() => this.props.history.push("/share-cart")} />}
 
-                    <Menu id="SettingWindow"
+                    {this.state.menuOpen && <Settings
                         slot="body"
-                        open={this.state.menuOpen}
-                        closeSettings={() => this.closeSettings()}
-                        showInfo={() => { this.showInfo(); }}>
-                        {IssieBase.isMobile() ? null :
-                            <OnOffMenu
-                                label={translate("SettingsSwipe")}
-                                checked={this.state.allowSwipe}
-                                onChange={(isOn) => this.allowSwipe(isOn)}
-                            />}
-                        {IssieBase.isMobile() ? null : <LineMenu />}
-                        <OnOffMenu
-                            label={translate("SettingsAdultMode")}
-                            subLabel={translate("SettingsAdultModeLbl")}
-                            checked={this.state.adultMode}
-                            onChange={(isOn) => this.adultMode(isOn)}
-                        />
-                        {
-                            !isMyIssieSign &&
-                            <OnOffMenu
-                                label={translate("SettingsEdit")}
-                                subLabel={translate("SettingsAddCatAndWords")}
-                                checked={this.state.allowAddWord}
-                                onChange={(isOn) => this.allowAddWord(isOn)}
-                            />}
-                        <RadioSetting
-                            label={translate("SettingsLanguage")}
-                            value={this.state.language}
-                            onChange={(newVal) => { this.saveLanguage(newVal) }} />
-                    </Menu>
+                        state={this.state}
+                        setState={(obj=>this.setState(obj))}
+                        onClose={() => this.setState({ menuOpen: false })}
+                        showInfo={() => this.showInfo()}
+                    />}
+
                     <div slot="body" className="theBody" style={{
                         paddingLeft: this.shellPadding,
                         paddingRight: this.shellPadding,
