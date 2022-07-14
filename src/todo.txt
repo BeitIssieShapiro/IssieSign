@@ -16,13 +16,14 @@ V- Busy with message - fix UI
 - adult mode - test all edit mode
 - translate all missing texts
 V- choose photo from internet
-  - better design
-  - busy indication
+  V- better design
+  V- busy indication
 - select theme to category
 - logout, who am In
-- add root folder IssieSign
-- don't show decoration if no shelf (small)
-
+V- add root folder IssieSign
+V- don't show decoration if no shelf (small)
+- check for wrong format of import zip
+- sync should be blocking action 
 
 
 

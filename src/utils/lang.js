@@ -143,6 +143,8 @@ var strings = {
         "BtnCancel": "Cancel",
         "BtnSave": "Save",
 
+        "BtnSearchGo": "Go",
+
         "InfoDeleteCanceled": "Delete cancelled",
         "InfoDeleteSucceeded": "Successfully deleted",
         "InfoDeleteFailed": "Delete failed",

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Info } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Info, ImageSearch } from '@mui/icons-material'
 
 
 export function TrashButton(props) {
@@ -86,7 +86,8 @@ export function CameraButton(props) {
 }
 
 export function SearchWebButton(props) {
-  return <div className="camera-button" onClick={props.onClick}></div>
+  //return <ImageSearch onClick={props.onClick}  style={{fontSize:45, paddingLeft:5, strokeWidth: 1}}/>
+  return <div className="search-image-button" onClick={props.onClick}></div>
 }
 
 export function VideoButton(props) {
@@ -146,7 +147,7 @@ export function AddToShareButton(props) {
 export function InfoButton(props) {
   return <TileButton
   {...props}>
-    <Info />
+    i
   </TileButton>
 }
 
@@ -214,7 +215,7 @@ const decorations = [
 ]
 
 function getItem(index, left, maxWidth, lastSpot) {
-  if (left > maxWidth || index < 0 || index >= decorations.length) return null;
+  if (left > maxWidth || index < 0 || index >= decorations.length || left > lastSpot) return null;
   if (left > 0) {
     if (left === lastSpot) {
       left -= decorWidth + 5

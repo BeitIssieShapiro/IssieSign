@@ -66,7 +66,8 @@ function isValid(fileName) {
     if (fileName.length === 0) {
         return false;
     }
-    if (fileName.includes("/") ||
+    if (fileName.includes("%") ||
+        fileName.includes("/") ||
         fileName.includes("*") ||
         fileName.includes("\\")) {
         return false;
@@ -133,6 +134,7 @@ class AddItem extends React.Component {
         return (
             <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
                 {this.state.showWebSearch && <SearchImage 
+                    pubSub={this.props.pubSub}
                     onClose={()=>this.setState({ showWebSearch: false })} 
                     onSelectImage={(url)=>{
                         this.setState({ showWebSearch: false, selectedImage: url })

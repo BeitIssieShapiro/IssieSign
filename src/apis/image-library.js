@@ -15,15 +15,17 @@ export default class ImageLibrary {
     async search(keyword) {
         const locale = getLanguage();
         const searchPath = `/pictograms/${locale}/search/${keyword}`
-        return axios.get(ImageLibrary.BASE_URL + searchPath).then((res)=>{
-            console.log(res)
-            return res.data.
-                filter(item=>( !item.violence)).
-                map(item=>({
-                id:item._id,
-                url: `${ImageLibrary.BASE_URL}/pictograms/${item._id}?download=false`,
-            }))
-        })
+        return axios.get(ImageLibrary.BASE_URL + searchPath).then(
+            (res) => {
+                console.log(res)
+                return res.data.
+                    filter(item => (!item.violence)).
+                    map(item => ({
+                        id: item._id,
+                        url: `${ImageLibrary.BASE_URL}/pictograms/${item._id}?download=false`,
+                    }))
+            },
+            ()=>([]))
 
     }
 }

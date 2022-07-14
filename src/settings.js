@@ -60,7 +60,7 @@ export function OnOffMenu(props) {
     <div style={{
       display: 'flex',
       flexDirection: 'column', alignItems: 'center'
-    }}>
+    }} className={props.className}>
       <div style={{ height: 30 }} />
       <div style={{
         width: '80%',

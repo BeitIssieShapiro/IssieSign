@@ -67,6 +67,23 @@
   height: 40px;
 }
 
+.search-image-button {
+  display: inline-block;
+  margin-top:  2px;
+  margin-left: 25px;
+}
+
+.search-image-button:before {
+  content: ' ';
+  display: inline-block;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-0.5 -0.5 233 194"><g><ellipse cx="151" cy="44" rx="40" ry="40" fill="none" stroke="rgb(0, 0, 0)" stroke-width="8" pointer-events="all"/><path d="M 231 124 L 179.28 72.28" fill="none" stroke="rgb(0, 0, 0)" stroke-width="8" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 81 35 L 3 35" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 5 195 L 5 35" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 3 195 L 173 195" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 171 105 L 171 195" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 68 145 L 48 175" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 67 144 L 87 174" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 97 129 L 77 159" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 95 128 L 127 174" fill="none" stroke="rgb(0, 0, 0)" stroke-width="6" stroke-miterlimit="10" pointer-events="stroke"/></g></svg>');
+  width: 40px;
+  height: 40px;
+}
+
+
+
+
 .share-button {
   display: inline-block;
   margin-top: 2px;

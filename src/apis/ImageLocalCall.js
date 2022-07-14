@@ -12,10 +12,9 @@ const getImageContent = (image):string => {
 
 export const imageLocalCall = (imageName:string, isUserContent) => {
     if (imageName.startsWith("http")) return imageName;
-    const prefix = ""; //window.isAndroid?"":"issie-";
 
     if (imageName.startsWith("file:")) {
-        return prefix + imageName; 
+        return FileSystem.SCHEME_PREFIX + imageName; 
     }
     if (isUserContent) {
         return FileSystem.get().getFilePath(imageName);

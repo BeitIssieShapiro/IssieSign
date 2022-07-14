@@ -2,41 +2,41 @@ import { useState } from "react"
 import ImageLibrary from "../apis/image-library"
 import { isRTL, translate } from "../utils/lang";
 import ModalDialog from "./modal";
+import "../css/search-image.css";
 
 
 
-export default function SearchImage({ onClose, onSelectImage }) {
+export default function SearchImage({ onClose, onSelectImage, pubSub }) {
     const [value, setValue] = useState("")
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState();
 
     return <ModalDialog title={translate("SearchImageTitle")} onClose={onClose}>
-        <div dir={isRTL() ? "rtl" : "ltr"}>
-            <input type="search" className="search"
-                style={{
-                    direction: isRTL() ? "rtl" : "ltr",
-                    fontSize: 35,
-                    lineHeight: 35,
-                    height: 35
-                }}
-                value={value} onChange={(e) => setValue(e.target.value)} />
-            <button className="addButton" disabled={value.length < 2}
-                onClick={() => {
-                    ImageLibrary.get().search(value).then((res) => {
-                        setResults(res)
-                    });
-                }} style={{ width: 150, height: 35 }}>חפש</button>
-        </div>
-        <div>
-            {results?.length > 0 ? results.map((item, i) => (<img
-                style={{ height: 100, width: 100, margin: 10 }}
-                key={i}
-                src={item.url}
-                onClick={() => onSelectImage(item.url)
-                }
-            />)) :
-                <h1>{translate("NoResults")}</h1>}
-        </div>
+        <div className="searchRoot">
+            <div className="searchTextAndBtnContainer">
+                <input type="search" className="searchText"
+                    placeholder={translate("EnterSearchHere")}
+                    value={value} onChange={(e) => setValue(e.target.value)}
+                />
+                {value?.length > 0 && <div className="cleanSearchX" onClick={()=>setValue("")}>x</div>}
+                <button className="searchImageBtn" disabled={value.length < 2}
+                    onClick={() => {
+                        pubSub.publish({command:"set-busy", active:true});
+                        ImageLibrary.get().search(value).then((res) => {
+                            setResults(res)
+                        }).finally(()=>pubSub.publish({command:"set-busy", active:false}))
+                    }}
+                     >{translate("BtnSearchGo")}</button>
+            </div>
+            <div className="resultContainer">
+                {results && (results.length > 0 ? results.map((item, i) => (
+                    <img className="foundItem"
+                        key={i}
+                        src={item.url}
+                        onClick={() => onSelectImage(item.url)}
+                    />)) :
+                    <div className="noResultMsg">{translate("NoResults")}</div>)}
+            </div>
 
-
+        </div>
     </ModalDialog>
 }

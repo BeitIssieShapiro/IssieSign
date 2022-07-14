@@ -6,28 +6,32 @@ let fileSystem;
 export default class FileSystem {
     static INDEX_FILE = "index.json";
 
-    static SCHEME_PREFIX = ""; //window.isAndroid ? "" : "issie-";
+    static SCHEME_PREFIX = window.isAndroid ? "" : "issie-";
 
 
     static IN_SYNC = "in-sync";
     static SYNC_REQUEST = "sync-request";
     static SYNC_OFF_REQUEST = "sync-off-request";
+    syncInProcess = false;
 
     index = isBrowser() ? ({
         categories: [
             {
-                "name": "Tutorials",
-                "id": "Tutorials",
+                "name": "בודק עברית",
+                "id": "בודק עברית",
                 "imageName": "איברי גוף.png",
                 userContent: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
                     {
-                        name: "test",
-                        id: "test",
-                        category: "Tutorials",
-                        imageName: "Tutorials/אוזניים.png",
-                        videoName: "Tutorials/אוזניים.mov",
+                        name: "מילה בעברית",
+                        id: "מילה בעברית",
+                        category: "בודק עברית",
+                        imageName: "בודק עברית/אוזניים.png",
+                        videoName: "בודק עברית/אוזניים.mov",
+                        userContent: true,
+                        sync: "sync-request",
+                        syncErr: "testError"
                     }
                 ]
             },
@@ -319,9 +323,9 @@ export default class FileSystem {
                 axios.get(filePath, {
                     responseType: 'blob',
                     headers: {
-                      'accept': 'image/jpeg'
+                        'accept': 'image/jpeg'
                     }
-                  }).then(
+                }).then(
                     res => {
                         dirEntry.getFile(newFileName, { create: true },
                             //Success
@@ -404,25 +408,33 @@ export default class FileSystem {
 
     // returns only after all sync files are done
     async sync() {
-        const categoriesToUnsync = [];
-        for (let i = 0; i < this.index.categories.length; i++) {
-            const category = this.index.categories[i];
-            if (category.userContent) {
-                await this.syncOne(category, undefined, categoriesToUnsync);
-            }
-
-            console.log("synced category", JSON.stringify(category))
-
-            for (let j = 0; j < category.words.length; j++) {
-                const word = category.words[j];
-                await this.syncOne(word, category, categoriesToUnsync);
-            }
+        if (this.syncInProcess) {
+            return
         }
+        this.syncInProcess = true;
+        try {
+            const categoriesToUnsync = [];
+            for (let i = 0; i < this.index.categories.length; i++) {
+                const category = this.index.categories[i];
+                if (category.userContent) {
+                    await this.syncOne(category, undefined, categoriesToUnsync);
+                }
 
-        for (const cat of categoriesToUnsync) {
-            await FileSystem.gdriveDelete(cat.folderId);
-            delete cat.folderId;
-            await this.saveIndex();
+                console.log("synced category", JSON.stringify(category))
+
+                for (let j = 0; j < category.words.length; j++) {
+                    const word = category.words[j];
+                    await this.syncOne(word, category, categoriesToUnsync);
+                }
+            }
+
+            for (const cat of categoriesToUnsync) {
+                await FileSystem.gdriveDelete(cat.folderId);
+                delete cat.folderId;
+                await this.saveIndex();
+            }
+        } finally {
+            this.syncInProcess = false;
         }
     }
 
@@ -434,7 +446,7 @@ export default class FileSystem {
                 const folderId = entity.folderId ? entity.folderId : "";
 
                 const relPath = entity.name + "/" + "default.jpg";
-                await this.gdriveUpload(this.getFilePath(relPath), relPath, folderId).then(
+                await this.gdriveUpload(this.getFilePath(relPath), relPath, folderId, false).then(
                     async (response) => {
                         entity.sync = FileSystem.IN_SYNC;
                         entity.imageFileId = response.fileId;
@@ -452,11 +464,11 @@ export default class FileSystem {
             } else {
                 try {
                     if (entity.imageName.length > 0) {
-                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName), entity.imageName, parentEntity.folderId)
+                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName), entity.imageName, parentEntity.folderId, false)
                         entity.imageFileId = response.fileId;
                         parentEntity.folderId = response.folderId;
                     }
-                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName), entity.videoName, parentEntity.folderId)
+                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName), entity.videoName, parentEntity.folderId, false)
                     entity.videoFileId = response.fileId;
                     parentEntity.folderId = response.folderId;
                     entity.sync = FileSystem.IN_SYNC;
@@ -490,7 +502,7 @@ export default class FileSystem {
     }
 
     //return file-key
-    async gdriveUpload(filePath, relPath, folderId) {
+    async gdriveUpload(filePath, relPath, folderId, isAppData) {
 
         // remove file:// or issie-file://
         let pos = filePath.indexOf("file://");
@@ -499,9 +511,18 @@ export default class FileSystem {
         }
 
         return new Promise((resolve, reject) => {
-            window.plugins.gdrive.uploadFile(filePath, relPath, folderId, false,
+            const rootFolderId = this.index.rootFolderId, rootFolderName = "MyIssieSign";
+
+            window.plugins.gdrive.uploadFile(filePath, relPath, folderId, rootFolderId, rootFolderName, false,
                 (response) => {
                     console.log("upload response", JSON.stringify(response));
+
+                    // sets the rootFolderId
+                    if (!this.index.rootFolderId) {
+                        this.index.rootFolderId = response.rootFolderId;
+                        this.saveIndex.then(() => response);
+                    }
+
                     resolve(response);
                 },
                 (error) => {

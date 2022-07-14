@@ -62,6 +62,11 @@ class PubSub {
     refresh = () => this.publish({ command: "refresh" })
 }
 
+function splitAndDecodeCompoundName(str) {
+    let parts = str.split("/");
+    return parts.map(p=>decodeURIComponent(p));
+}
+
 class App extends IssieBase {
     constructor(props) {
         super(props);
@@ -555,7 +560,7 @@ class App extends IssieBase {
 
         if (path.startsWith("/word/")) {
             //:categoryId/:title
-            const [categoryId, title] = path.substr(6).split("/");
+            const [categoryId, title] = splitAndDecodeCompoundName(path.substr(6));
             this.setTitle(title);
             let words = FileSystem.get().getCategories().find(c => c.name === categoryId)?.words || [];
 
@@ -578,7 +583,7 @@ class App extends IssieBase {
 
         if (path.startsWith("/word-added/")) {
             //:categoryId/:title
-            const [categoryId, title] = path.substr(12).split("/");
+            const [categoryId, title] = splitAndDecodeCompoundName(path.substr(12));
             this.setTitle(title);
             return <Word
                 pubSub={state.pubSub}
@@ -599,7 +604,7 @@ class App extends IssieBase {
 
         if (path.startsWith("/video/")) {
             //:videoName/:categoryId/:title/:filePath
-            const [videoName, categoryId, title, filePath] = path.substr(7).split("/");
+            const [videoName, categoryId, title, filePath] = splitAndDecodeCompoundName(path.substr(7));
             this.setTitle(title);
 
             if (this.backInProcess)
@@ -647,7 +652,7 @@ class App extends IssieBase {
 
         if (path.startsWith("/add-word/")) {
             //add-word/:categoryId
-            const categoryId = path.substr(10);
+            const [categoryId] = splitAndDecodeCompoundName(path.substr(10));
 
             this.setTitle(translate("TitleAddWord"))
             return (
