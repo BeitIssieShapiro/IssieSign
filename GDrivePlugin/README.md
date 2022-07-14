@@ -37,37 +37,6 @@ Firstly, make sure you have installed [cocoapods](https://cocoapods.org/) becaus
 
 Secondly and after succesfull installation of the dependencies:
 
-Open `AppDelegate.m` file and add 1) these header files along with the rest on the top and 2) the code block before the `@end` command:
-
-```
-#import "AppAuth.h"
-#import "GoogleDrive.h"
-
-//....
-
-- (BOOL)application:(UIApplication *)app
-            openURL:(NSURL *)url
-            options:(NSDictionary<NSString *, id> *)options {
-    
-    if ([_currentAuthorizationFlow resumeAuthorizationFlowWithURL:url]) {
-        _currentAuthorizationFlow = nil;
-        return YES;
-    }
-    
-    return NO;
-}
-//...
-@end
-
-```
-Open `AppDelegate.h` file and paste this code before the `@end` command :
-```
-@protocol OIDAuthorizationFlowSession;
-
-@interface AppDelegate : CDVAppDelegate {}
-@property(nonatomic, strong, nullable) id<OIDAuthorizationFlowSession> currentAuthorizationFlow;
-
-```
 
 That's it! You are ready to use the plugin. 
 

@@ -30,7 +30,6 @@
     </platform>
 
     <platform name="ios">
-        <preference name="IOS_CLIENT_ID" />
         <preference name="IOS_REVERSED_CLIENT_ID" />
 
         <config-file target="config.xml" parent="/*">
@@ -55,14 +54,6 @@
                     <key>CFBundleURLSchemes</key>
                     <array>
                         <string name="reversedClientId">$IOS_REVERSED_CLIENT_ID</string>
-                    </array>
-                </dict>
-                <dict>
-                    <key>CFBundleURLName</key>
-                    <string>clientId</string>
-                    <key>CFBundleURLSchemes</key>
-                    <array>
-                        <string name="clientId">$IOS_CLIENT_ID</string>
                     </array>
                 </dict>
             </array>

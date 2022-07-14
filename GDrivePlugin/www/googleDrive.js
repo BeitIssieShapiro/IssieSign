@@ -1,12 +1,12 @@
 cordova.define("cordova-plugin-jc-googledrive.GoogleDrive", function(require, exports, module) {
     function GoogleDrive() {}
     
-    GoogleDrive.prototype.downloadFile = function (destinationURL,fileid,successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "GoogleDrive", "downloadFile", [destinationURL,fileid]);
+    GoogleDrive.prototype.downloadFile = function (destinationURL,fileid, isAnonymous, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "downloadFile", [destinationURL,fileid, isAnonymous]);
     };
     
-    GoogleDrive.prototype.uploadFile = function (fpath, targetPath, folderId, appfolder, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "GoogleDrive", "uploadFile", [fpath,targetPath, folderId, appfolder]);
+    GoogleDrive.prototype.uploadFile = function (fpath, targetPath, folderId, rootFolderId, rootFolderName, appfolder, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "uploadFile", [fpath,targetPath, folderId, rootFolderId, rootFolderName, appfolder]);
     };
     
     GoogleDrive.prototype.fileList = function (appfolder,successCallback, errorCallback) {
