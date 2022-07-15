@@ -6,7 +6,6 @@ import IssieBase from '../IssieBase'
 import { withAlert } from 'react-alert'
 import Rope from '../components/Rope'
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { translate, fTranslate } from "../utils/lang";
 
 const getBooleanFromString = (str) => str && str.length > 0 && str.charCodeAt(0) % 2 === 0
 
@@ -33,7 +32,6 @@ class Word extends IssieBase {
                 if (word.categoryId) {
                     themeId = word.categoryId;
                 }
-                console.log("word share mode", this.props.editMode)
                 return <Card2 key={word.id} 
                 editMode={this.props.editMode}
                     category={word.category}

@@ -15,7 +15,7 @@ import FileSystem from "../apis/filesystem";
 
 class Body extends IssieBase {
 
-
+    /*
     toggleSelect = (category, forceOff) => {
         if (!forceOff && (!category || !category.userContent)) return;
 
@@ -63,6 +63,7 @@ class Body extends IssieBase {
             (e) => this.props.alert.error(translate("InfoDeleteFailed") +"\n" + e)
         );
     }
+    */
 
     render() {
         let elements = this.props.categories.map((category) => {
@@ -75,7 +76,7 @@ class Body extends IssieBase {
                 shareCart = {this.props.shareCart}
                 tileUrl={"/word/" + encodeURIComponent(category.name) + "/" + encodeURIComponent(category.name)}
                 imageName={category.imageName}
-                themeFlavor={getThemeFlavor(category.userContent ? "1" : category.id)}
+                themeFlavor={getThemeFlavor(category.id)}
                 onLongPress={category.userContent && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
                 //selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
 
@@ -110,7 +111,7 @@ class Body extends IssieBase {
             lines[curLine].push(card);
         }
 
-        console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
+        //console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
         let widthStr = width + 'px';
         if (this.props.isMobile && narrow) {
             widthStr = '100%'

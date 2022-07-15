@@ -9,6 +9,7 @@ import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import SearchImage from "./search-image";
+import { trace } from "../utils/Utils";
 
 const imagePickerOptions = {
     //maximumImagesCount: 1,
@@ -37,10 +38,10 @@ async function selectImage() {
     }
     return new Promise((resolve, reject) => navigator.camera.getPicture(
         function (pic) {
-            console.log('Picked Image URI: ' + pic);
+            trace('Picked Image URI: ' + pic);
             resolve(pic);
         }, function (error) {
-            console.log('Error: ' + error);
+            trace('Error: ' + error);
             resolve("");
         },
         imagePickerOptions
@@ -100,10 +101,11 @@ class AddItem extends React.Component {
         FileSystem.get().saveCategory(this.state.label, this.state.selectedImage).then(
             () => {
                 this.props.pubSub.publish({ command: 'refresh' });
-                this.props.alert.show(translate("InfoSavedSuccessfully"));
+                this.props.alert.show(
+                    ("InfoSavedSuccessfully"));
                 this.props.history.goBack()
             },
-            (err) => this.props.alert.success("Error: " + err)
+            (err) => this.props.alert.error(err)
         )
     }
 
@@ -112,10 +114,11 @@ class AddItem extends React.Component {
             this.state.selectedImage, this.state.selectedVideo).then(
                 () => {
                     this.props.pubSub.publish({ command: 'refresh' });
-                    this.props.alert.success(translate("InfoSavedSuccessfully"));
+                    this.props.alert.success(
+                        ("InfoSavedSuccessfully"));
                     this.props.history.goBack();
                 },
-                (err) => this.props.alert.success("Error: " + err)
+                (err) => this.props.alert.error(err)
             )
     }
 

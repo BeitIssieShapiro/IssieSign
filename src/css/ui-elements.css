@@ -114,6 +114,21 @@
   margin-top: 5px;
 }
 
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #5c7e9d;
+  border: none;
+  font-size: 20px;
+  height: 35px;
+  line-height: 18px;
+  border-radius: 2%;
+  width: 150px;
+  color:white;
+  margin-top: 10px;
+}
+
 .back-button:before {
   content: ' ';
   display: inline-block;

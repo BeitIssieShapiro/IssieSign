@@ -1,4 +1,4 @@
-import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY } from '../utils/Utils';
+import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY, trace } from '../utils/Utils';
 import axios from 'axios';
 
 let fileSystem;
@@ -28,7 +28,7 @@ export default class FileSystem {
                 "name": "בודק עברית",
                 "id": "בודק עברית",
                 "imageName": "איברי גוף.png",
-                tutorial:true,
+                tutorial: true,
                 userContent: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
@@ -113,12 +113,12 @@ export default class FileSystem {
 
     getCategories() {
         if (!this.init) {
-            console.log("fs not init")
+            throw ("FileSystem isnot initialized")
         }
 
         let cat = this.index?.categories;
         if (cat && this.hideTutorial) {
-            cat = cat.filter(c=>!c.tutorial);
+            cat = cat.filter(c => !c.tutorial);
         }
         return cat || [];
     }
@@ -146,8 +146,6 @@ export default class FileSystem {
         let indexCategory = this.index.categories.find(c => c.name === label)
 
         if (indexCategory !== undefined) {
-            // already exists -  unexpected
-            console.log("Category already exists", label);
             throw ("Category already exists");
         }
         return this.addCategory(label);
@@ -182,7 +180,6 @@ export default class FileSystem {
         let indexCategory = this.index.categories.find(c => c.name === category)
 
         if (indexCategory === undefined) {
-            console.log("Missing Category", category);
             throw ("Missing Category: " + category);
         }
         const newWord = {
@@ -205,11 +202,11 @@ export default class FileSystem {
         // todo delete from cloud
         let word = this.findWord(categoryName, wordName);
         if (!word) {
-            throw "word not found: " + wordName;
+            throw "Word not found: " + wordName;
         }
         let dirEntry = await this.getDir(categoryName, false);
         if (word.imageName.length > 0) {
-            console.log("deleting: ", word.imageName)
+            trace("deleting: ", word.imageName)
             let imgParts = word.imageName.split("/");
             dirEntry.getFile(imgParts[1], { create: false },
                 //Success
@@ -230,12 +227,10 @@ export default class FileSystem {
     }
 
     findCategory(name) {
-        console.log("find category", name)
         return this.index.categories.find(c => c.name === name);
     }
 
     findWord(category, name) {
-        console.log("find", category, name)
         let indexCat = this.index.categories.find(c => c.name === category);
         if (indexCat) {
             return indexCat.words.find(w => w.name == name)
@@ -266,7 +261,7 @@ export default class FileSystem {
                         indexFileWriter.write(JSON.stringify(this.index));
                     })
                     , (err) => {
-                        console.log("failed saving index file", JSON.stringify(err));
+                        trace("Failed saving the index file", JSON.stringify(err));
                         reject(err)
                     }
                 )
@@ -286,7 +281,7 @@ export default class FileSystem {
                         fileWriter.write(fileContents);
                     })
                     , (err) => {
-                        console.log("save to file failed", JSON.stringify(err));
+                        trace("Save to file failed", JSON.stringify(err));
                         reject(err)
                     }
                 )
@@ -328,9 +323,8 @@ export default class FileSystem {
     }
 
     async mvFileIntoDir(filePath, dirEntry, newFileName) {
-        console.log("move " + JSON.stringify(filePath) + " to " + dirEntry);
 
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             if (filePath.startsWith("http")) {
                 // Downloads the content
                 axios.get(filePath, {
@@ -350,27 +344,24 @@ export default class FileSystem {
                                 fileWriter.write(res.data);
                             })
                             , (err) => {
-                                console.log("save file from URL failed", JSON.stringify(err));
                                 reject(err)
                             }
                         )
                     })
             }
-            window.resolveLocalFileSystemURL(filePath, (file) => {
-                console.log("resolve local file to " + file);
 
-                file.moveTo(dirEntry, newFileName, (res) => {
-                    console.log("move success");
-                    resolve(res);
-                },
-                    (err) => console.log("move failed" + err));
-            }, (err) => console.log("resolve local file failed" + JSON.stringify(err)))
+            window.resolveLocalFileSystemURL(filePath, (file) =>
+                file.moveTo(dirEntry, newFileName,
+                    (res) => resolve(res),
+                    (err) => reject(err)
+                ),
+                (err) => reject(err)
+            )
         });
     }
 
 
     async setSync(entity, isOn, triggerSync) {
-        console.log("set sync", entity.name, isOn ? "on" : "off")
         const getNewState = (currentState) => {
             if (isOn) {
                 if (currentState === FileSystem.IN_SYNC) {
@@ -433,7 +424,7 @@ export default class FileSystem {
                     await this.syncOne(category, undefined, categoriesToUnsync);
                 }
 
-                console.log("synced category", JSON.stringify(category))
+                trace("Sync category", JSON.stringify(category))
 
                 for (let j = 0; j < category.words.length; j++) {
                     const word = category.words[j];
@@ -452,8 +443,7 @@ export default class FileSystem {
     }
 
     async syncOne(entity, parentEntity, categoriesToUnsync) {
-        // Start syncing entity
-        console.log("Sync entity", entity)
+        trace("SyncOne entity", entity)
         if (entity.sync === FileSystem.SYNC_REQUEST) {
             if (entity.words) {
                 const folderId = entity.folderId ? entity.folderId : "";
@@ -528,8 +518,6 @@ export default class FileSystem {
 
             window.plugins.gdrive.uploadFile(filePath, relPath, folderId, rootFolderId, rootFolderName, false,
                 (response) => {
-                    console.log("upload response", JSON.stringify(response));
-
                     // sets the rootFolderId
                     if (!this.index.rootFolderId) {
                         this.index.rootFolderId = response.rootFolderId;
@@ -555,7 +543,6 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             window.plugins.gdrive.downloadFile(targetPath, fileId, isAnonymous,
                 (response) => {
-                    console.log("Download response", JSON.stringify(response));
                     resolve(response);
                 },
                 (error) => {
@@ -569,11 +556,38 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             window.plugins.gdrive.deleteFile(fileId,
                 (response) => {
-                    console.log("Delete response", JSON.stringify(response));
                     resolve(response);
                 },
                 (error) => {
                     reject(error);
+                }
+            );
+        })
+    }
+
+    static async whoAmI() {
+        trace("Who Am I")
+        return new Promise((resolve, reject) => {
+            window.plugins.gdrive.whoAmI(
+                (response) => {
+                    resolve(response);
+                    trace("WhoAmI returned", response);
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        })
+    }
+
+    static async logout() {
+        return new Promise((resolve, reject) => {
+            window.plugins.gdrive.logout(
+                (response) => {
+                    resolve(response);
+                },
+                (error) => {
+                    resolve(error);
                 }
             );
         })

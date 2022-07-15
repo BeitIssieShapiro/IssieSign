@@ -5,9 +5,9 @@ import "../css/Tile.css";
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from "react-router";
 
-function trace(a, ...optionalParams) {
-  console.log(a, ...optionalParams);
-}
+// comment out to inherit the real trace
+//import {trace} from "../utils/Utils"
+let trace = ()=>{}
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
@@ -38,8 +38,7 @@ export default function ISLink(props) {
 
   let lpDelay = props.longPressDelay ? props.longPressDelay : 500;
   const handleNavigate = useCallback(() =>{
-    trace("navigate to", props.url)
-    trace(props.onClick == undefined?"no click":"click")
+    trace("Navigate to", props.url)
 
     if (props.url)
       if (props.onClick) {
@@ -55,23 +54,21 @@ export default function ISLink(props) {
   const [moved, setMoved] = useState(false);
   //const [xy, setXY] = useState({ x: 0, y: 0 })
 
-  console.log("render ISLink", props.onClick == undefined?"no click":"click")
   useEffect(() => {
     let timerId;
     if (startLongPress) {
       setCallBackTriggered(false);
       timerId = setTimeout(() => {
-        trace("long-press detected");
+        trace("Long-press detected");
         setCallBackTriggered(true);
         if (moved) {
-          trace("moved - longpress ignored")
+          trace("Moved - longpress ignored")
           return;
         }
 
         if (startEvent) {
           try {
             startEvent.preventDefault();
-            //startEvent.stopPropagation();
             trace("Prevent default on press")
           } catch (e) { }
         }

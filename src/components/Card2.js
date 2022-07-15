@@ -14,9 +14,6 @@ import FileSystem from "../apis/filesystem";
 
 
 function Card2(props) {
-
-    //const [reload, setReload] = useState(0);
-
     const reload = () => props.pubSub.refresh();
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
@@ -41,12 +38,13 @@ function Card2(props) {
 
         if (props.shareCart?.exists(sharedName)) {
             props.shareCart.remove(sharedName);
+            props.alert.success(translate("ItemRemovedFromShare"));
         } else {
             props.shareCart.add({
                 name: sharedName,
             })
+            props.alert.success(translate("ItemAddedToShare"));
         }
-        //setReload(prev=>prev+1);
         reload();
     }
 
@@ -106,7 +104,6 @@ function Card2(props) {
 
             {innerBody}
         </div>
-    console.log("render card")
     return (
         <React.Fragment>
             <ISLink

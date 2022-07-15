@@ -69,6 +69,33 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 
 
 
+- (void)whoAmI:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult* pluginResult = nil;
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+
+    if (_authorization.canAuthorize) {
+        // logged in
+        [result setObject:_authorization.userEmail forKey:@"email"];
+    } else {
+        [result setObject:@"Not logged in" forKey:@"message"];
+    }
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)logout:(CDVInvokedUrlCommand*)command {
+    [GTMAppAuthFetcherAuthorization removeAuthorizationFromKeychainForName:kAuthorizerKey];
+    [self setGtmAuthorization:nil];
+
+    [self saveState];
+    
+    CDVPluginResult* pluginResult = nil;
+    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+    [result setObject:@"Logout Successful" forKey:@"message"];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
 
 - (void)downloadFile:(CDVInvokedUrlCommand*)command
 {
@@ -530,9 +557,6 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 }
 
 - (void)loadState {
-   //[GTMAppAuthFetcherAuthorization removeAuthorizationFromKeychainForName:kAuthorizerKey];
-
-    
     
     GTMAppAuthFetcherAuthorization* authorization = [GTMAppAuthFetcherAuthorization authorizationFromKeychainForName:kAuthorizerKey];
     [self setGtmAuthorization:authorization];

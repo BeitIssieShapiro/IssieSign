@@ -1,5 +1,7 @@
 import FileSystem from "./apis/filesystem";
 import JSZip from 'jszip'
+import { translate } from "./utils/lang";
+import { trace } from "./utils/Utils";
 
 
 /** 
@@ -52,7 +54,7 @@ export class ShareCart {
 
             let fCategory = FileSystem.get().findCategory(category);
             if (!fCategory) {
-                throw "missing category: " + category;
+                throw "Missing category: " + category;
             }
             if (fCategory.userContent && fCategory.sync !== FileSystem.IN_SYNC)
                 return false;
@@ -65,7 +67,7 @@ export class ShareCart {
             } else {
                 let word = FileSystem.get().findWord(category, name);
                 if (!word) {
-                    throw "missing word: " + name;
+                    throw "Missing word: " + name;
                 }
                 if (word.userContent && word.sync !== FileSystem.IN_SYNC) {
                     return false;
@@ -76,7 +78,6 @@ export class ShareCart {
     }
 
     async setAllSynced() {
-        console.log("set all sync")
         this.items.forEach(item => {
             const [category, name] = item.name.split("/");
 
@@ -86,9 +87,9 @@ export class ShareCart {
                 FileSystem.get().findCategory(category);
 
             if (!entity) {
-                throw "missing word or category: " + category + "/" + name;
+                throw "Missing word or category: " + category + "/" + name;
             }
-            console.log("set sync", entity.name)
+            trace("Set sync", entity.name)
             FileSystem.get().setSync(entity, true, false);
         });
 
@@ -157,7 +158,7 @@ export class ShareCart {
 
         return FileSystem.readFile(filePath).then((fileContents) => {
             if (!fileContents.startsWith(base64Prefix)) {
-                throw ("unknown format of an imported zip file");
+                throw ("Unknown format of an imported zip file");
             }
             let zip = new JSZip();
 
@@ -166,11 +167,11 @@ export class ShareCart {
                 const fileAndFoldersCount = Object.keys(zipEntry.files).length;
 
                 if (fileAndFoldersCount !== 1) {
-                    throw ("wrong imported zip format");
+                    throw (translate(ErrWrongImportFile));
                 }
                 const zipFileObject = zipEntry.file(ShareCart.LIST_FILE_NAME);
                 if (!zipFileObject) {
-                    throw ("wrong imported zip format");
+                    throw (translate(ErrWrongImportFile));
                 }
                 return zipFileObject.async('string');
             })
@@ -191,11 +192,10 @@ export class ShareCart {
     }
 
     async importWords(url) {
-        console.log("import words", url);
         const addedWords = [];
 
         return this.unzipFile(url).then(async fileContents => {
-            console.log("import words content", fileContents);
+            trace("Import words content", fileContents);
             const importJson = JSON.parse(fileContents);
 
             let existingCategories = FileSystem.get().getCategories();
@@ -221,7 +221,7 @@ export class ShareCart {
                     let existingWord = FileSystem.get().findWord(cat.name, word.name);
                     if (existingWord) return;
 
-                    console.log("add new word", word.name);
+                    trace("Add new imported word", word.name);
 
                     if (word.imageFileId) {
                         let imageName = cat.name + "/" + word.name + ".jpg";

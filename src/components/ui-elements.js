@@ -1,7 +1,8 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Info, ImageSearch } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout } from '@mui/icons-material'
+import { translate } from '../utils/lang';
 
 
 export function TrashButton(props) {
@@ -107,6 +108,9 @@ export function RadioBtn(props) {
   </div>
 }
 
+export function ButtonLogout(props) {
+  return <div className="logout-button" onClick={props.onClick}><Logout/>{translate("BtnLogout")}</div>
+}
 
 const TILEBUTTON_SIZE = 36;
 
@@ -157,7 +161,7 @@ export function AddToShareButton(props) {
 export function InfoButton(props) {
   return <TileButton
   {...props}>
-    i
+    <div style={{fontSize:20}}>i</div>
   </TileButton>
 }
 

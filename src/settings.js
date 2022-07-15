@@ -1,15 +1,20 @@
 import './css/settings.css';
-import React, { useState } from 'react';
-import { getLanguage, setLanguage, translate } from './utils/lang';
+import React, { useEffect, useState } from 'react';
+import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import { isMyIssieSign } from './current-language';
 import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, LANG_KEY, saveSettingKey } from './utils/Utils';
-import { RadioBtn } from './components/ui-elements';
+import { ButtonLogout, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 
 export function Settings({ onClose, state, setState, slot, showInfo }) {
   const [reload, setReload] = useState(0);
+  const [email, setEmail] = useState(undefined);
   const currLanguage = getLanguage()
+
+  useEffect(() => {
+    FileSystem.whoAmI().then((res) => setEmail(res.email));
+  }, [reload]);
 
   const changeLanguage = (lang) => {
     saveSettingKey(LANG_KEY, lang);
@@ -17,7 +22,9 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
     setLanguage(lang);
   }
 
-  return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}>
+  return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}
+  style={{ "--hmargin": "5vw", "--vmargin": "5vw" }}
+  >
     <div className="settingsContainer">
       <lbl onClick={showInfo} className="lblCentered">
         <div className="info-button" />
@@ -70,6 +77,12 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
           setReload(prev => prev + 1);
         }}
       />}
+
+      <lbl>{translate("SettingsConnectedGDrive")}</lbl>
+      <div>
+        <div className="conn-text">{email?.length > 0 ? fTranslate("LoggedIn", email) : translate("NotLoggedIn")}</div>
+        {email?.length > 0 && <ButtonLogout onClick={() => FileSystem.logout().finally(()=>setReload(prev=prev+1))} />}
+      </div>
 
       <lbl>{translate("SettingsLanguage")}</lbl>
 

@@ -2,6 +2,7 @@ const mainJson = {
     "categories": [
       {
         "name": "Tutorials",
+        tutorial: true,
         "id": "1",
         "imageName": "איברי גוף.png",
         "words": [

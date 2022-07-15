@@ -13,6 +13,10 @@ export function isBrowser() {
     return window.isBrowser;
 }
 
+export function trace(a, ...optionalParams) {
+    console.log(a, ...optionalParams);
+}
+
 export function getLanguage() {
     let value = window.localStorage.getItem(LANG_KEY);
     if (!value) {
@@ -43,7 +47,7 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
     if (isMobile) {
         //scroll vertically by touch
         let cols = Math.max(Math.floor((windowWidth) / tileW), 2);
-        console.log("calcWidth: mobile", windowWidth , tileW, + Math.floor(windowWidth / tileW) + "cols: " + cols);
+        console.log("calcWidth: mobile", windowWidth, tileW, + Math.floor(windowWidth / tileW) + "cols: " + cols);
         return cols * (tileW * 1.05);
     }
 
@@ -58,19 +62,26 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
 //exluded: 8,12,20,14,6
 var themes = [0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 13, 15, 16, 17, 18, 19, 21, 22, 23];
 export const getTheme = (categoryID) => {
-    let mapIndex = 1;
-    if (!isNaN(categoryID)) {
-        let count = themes.length;
-        let index = (Number(categoryID) - 1) % count;
-        mapIndex = Number(themes[index]) + 1;
-    }
+    let mapIndex = hashId(categoryID, themes.length) + 1;
     return themeMap[mapIndex.toString()];
 }
 
+function hashId(id, themeCount) {
+    if (!isNaN(id)) {
+        return (Number(id) - 1) % themeCount;
+    }
+
+    let sum = 0;
+    for (let i = 0; i < id.length; i++) {
+        sum += id.charCodeAt(i);
+    }
+    return sum % themeCount;
+}
+
 export const getThemeFlavor = (categoryID) => {
-    let count = themes.length;
-    let index = (Number(categoryID) - 1) % count;
-    return Number(themes[index]);
+    return Number(themes[
+        hashId(categoryID, themes.length)
+    ]);
 }
 
 export const themeMap = {

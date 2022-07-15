@@ -24,7 +24,7 @@ class WordAdults extends IssieBase {
         return null;
     }
 
-
+    /*
     toggleSelect = async (word, forceOff) => {
         if (!forceOff && (!word || word.type !== 'file')) return;
 
@@ -95,7 +95,7 @@ class WordAdults extends IssieBase {
             }
         }
     }
-
+*/
 
 
     render() {
@@ -152,7 +152,7 @@ class WordAdults extends IssieBase {
                                 alignItems:"center",
                                 fontSize: 45, color: "black"
                             }}
-                        >לא נבחרה מילה</div>
+                        >{translate("NoWordSelected")}</div>
                     }
                 </div>
                 <div style={{

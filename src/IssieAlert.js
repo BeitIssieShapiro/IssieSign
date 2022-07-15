@@ -88,6 +88,7 @@ export default function AlertTemplate(_ref) {
         options = _ref.options,
         style = _ref.style;
   
+    // todo make rtl/ltr aware
     return React.createElement(
       'div',
       { style: _extends({}, alertStyle, style) },
@@ -96,7 +97,7 @@ export default function AlertTemplate(_ref) {
       options.type === 'error' && React.createElement(ErrorIcon, null),
       React.createElement(
         'span',
-        { style: { flex: 2 }, dir:"rtl" },
+        { class: "alert-message" },
         message
       )
     );

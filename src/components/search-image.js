@@ -1,6 +1,6 @@
 import { useState } from "react"
 import ImageLibrary from "../apis/image-library"
-import { isRTL, translate } from "../utils/lang";
+import { translate } from "../utils/lang";
 import ModalDialog from "./modal";
 import "../css/search-image.css";
 
@@ -18,14 +18,14 @@ export default function SearchImage({ onClose, onSelectImage, pubSub }) {
                     value={value} onChange={(e) => setValue(e.target.value)}
                 />
                 {value?.length > 0 && <div className="cleanSearchX" onClick={()=>setValue("")}>x</div>}
-                <button className="searchImageBtn" disabled={value.length < 2}
+                <div className="searchImageBtn" disabled={value.length < 2}
                     onClick={() => {
                         pubSub.publish({command:"set-busy", active:true});
                         ImageLibrary.get().search(value).then((res) => {
                             setResults(res)
                         }).finally(()=>pubSub.publish({command:"set-busy", active:false}))
                     }}
-                     >{translate("BtnSearchGo")}</button>
+                     >{translate("BtnSearch")}</div>
             </div>
             <div className="resultContainer">
                 {results && (results.length > 0 ? results.map((item, i) => (
@@ -34,7 +34,7 @@ export default function SearchImage({ onClose, onSelectImage, pubSub }) {
                         src={item.url}
                         onClick={() => onSelectImage(item.url)}
                     />)) :
-                    <div className="noResultMsg">{translate("NoResults")}</div>)}
+                    <div className="noResultMsg">{translate("NoResultsMsg")}</div>)}
             </div>
 
         </div>

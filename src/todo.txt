@@ -14,19 +14,25 @@ V- Busy with message - fix UI
 V- choose photo from internet
   V- better design
   V- busy indication
-- select theme to category
-- logout, who am In
 V- add root folder IssieSign
 V- don't show decoration if no shelf (small)
 V- check for wrong format of import zip
 V- sync should be blocking action
+V- translate all missing texts
+V- logout, who am In
 
+no search in add.js
+V - add to cart message
+V longer message
+V ltr message
+
+- launch-screen for MyIssieSign
 - add word without image - no error but not saved
 - adult mode - test all edit mode
-- translate all missing texts
 - rethink always sharing to anyone with a link??
 - Support update (low)
-
+- reconcile, search MyIssieSign root
+- login ?
 
 
 

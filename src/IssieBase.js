@@ -57,7 +57,6 @@ class IssieBase extends Component {
 
     resizeListener() {
         this.setState(IssieBase.getDerivedStateFromProps());
-        console.log("resize detected");
     }
     
 }

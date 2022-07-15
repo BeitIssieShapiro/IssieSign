@@ -1,3 +1,4 @@
+/*
 import JSZip from 'jszip'
 import { translate } from '../utils/lang';
 import { isBrowser } from '../utils/Utils';
@@ -173,7 +174,7 @@ export async function listAdditionsFolders() {
                 }
             );
         },
-            err => /*not a folder?*/ resolve([])
+            err =>  resolve([]) //not a folder?
         )
     }
     );
@@ -257,7 +258,9 @@ export async function zipWord(paths) {
                 let defaultJpg = dataURL2Blob(await readFile(defaultJpgPath));
                 console.log('Found default.jpg');
                 folderZip.file("default.jpg", defaultJpg);
-            } catch (e) {/*ok if missing*/ }
+            } catch (e) {
+                //ok if missing
+             }
         }
 
         folderZip.file(fileName, dataURL2Blob(await readFile(paths[i])));
@@ -440,7 +443,7 @@ function saveZipEntryToFile(dirEntry, relativePath, zipFileObj) {
 function getDocDir() {
     return window['documents'];
 }
-
+*/
 
 /**
  * Convert a base64 string in a Blob according to the data and contentType.
@@ -451,6 +454,7 @@ function getDocDir() {
  * @see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
  * @return Blob
  */
+/*
 function b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
@@ -500,3 +504,4 @@ function getContentType(fileName) {
     }
 
 }
+*/

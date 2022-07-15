@@ -2,7 +2,7 @@
   direction: var(--dir);
   display: grid;
   row-gap: 25px;
-  padding-left: 13vw;
+  padding-left: 11vw;
   padding-right: 10vw;
   grid-template-columns: 2fr 1fr;
 }
@@ -11,6 +11,13 @@
   .settingsContainer {
     grid-template-columns: 1fr;
     row-gap: 10px;
+  }
+}
+
+@media (max-height: 700px) {
+  .settingsContainer {
+    row-gap: 5px;
+    max-height: 55vh;
   }
 }
 
@@ -58,7 +65,11 @@
 
 .info-button {
   display: inline-block;
+}
 
+.conn-text {
+  font-size: 22px;
+  text-align: start;
 }
 
 .info-button:before {

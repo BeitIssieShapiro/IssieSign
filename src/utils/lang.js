@@ -6,6 +6,7 @@ let gLang = "he"
 
 var strings = {
     "he": {
+
         "AppTitle": "שפת הסימנים",
         "SettingsLanguage": "שפה",
         "SettingsSwipe": "החלקה",
@@ -59,7 +60,38 @@ var strings = {
         "AddLoadVideoFailedOrCanceled": "טעינת סרטון בוטלה או נכשלה",
 
         "RestartApp": "קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
-        "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})"
+        "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})",
+
+        "ImportWordsErr": "שגיאה ביבוא מילים {1}",
+        "SettingsHideTutorial": "הסתר קטגורית הדרכה",
+        "ErrWrongImportFile": "קובץ אינו בפורמט מתאים",
+        "SearchImageTitle": "חפש תמונה",
+        "EnterSearchHere":"הכנס מילות חיפוש",
+        "BtnSearch": "חפש",
+        "NoResultsMsg": "לא נמצאו תוצאות",
+        "SyncToCloudMsg": "סנכרן עם חשבון גוגל דרייב",
+        "SyncToCloudTitle":"סינכרון עם חשבון גוגל דרייב",
+        "ErrSyncFail": "סנכרון נכשל\n {1}",
+        "SyncStatusNone": "אינו מסונכרן",
+        "SyncStatusLbl":"מצב סינכרון",
+        "SyncErrorLbl":"שגיאת סנכרון",
+        "ShareCartTitle":"רשימת שיתוף",
+        "ShareCartCategoryColumnTitle":"קטגוריה",
+        "ShareCartWordNameColumnTitle":"מילה",
+        "ItemRemovedFromShare":"הוסר מרשימת השיתוף",
+        "ItemAddedToShare":"הוסף לרשימת השיתוף",
+
+        "ConfirmTitleSyncToServer": "סינכרון המילים לחשבון גוגל דרייב",
+        "ConfirmMsgSyncToServer":"כל המילים יעלו לגוגל דרייב שלך. ולכולן תיקבע הרשאת קריאה בלבד לכל מי ממקבל את הלינק אליהם. אישור?",
+        "ShareCancelled":"שיתוף בוטל",
+        "InfoSharingSucceeded":"שיתוף הסתיים בהצלחה",
+        "InfoSharingFailed":"שיתוף נכשל\n {1}",
+        "NoWordSelected": "לא נבחרה מילה",
+        "SettingsConnectedGDrive":"גוגל דרייב",
+        "NotLoggedIn":"עדיין לא מחובר",
+        "LoggedIn":"מחובר ל: {1}",
+        "BtnLogout":"התנתק",
+
     },
     "ar": {
         "AppTitle": "لغة الإشارة",
@@ -143,8 +175,6 @@ var strings = {
         "BtnCancel": "Cancel",
         "BtnSave": "Save",
 
-        "BtnSearchGo": "Go",
-
         "InfoDeleteCanceled": "Delete cancelled",
         "InfoDeleteSucceeded": "Successfully deleted",
         "InfoDeleteFailed": "Delete failed",
@@ -171,7 +201,38 @@ var strings = {
         "AddLoadVideoFailedOrCanceled": "Loading video failed or cancelled",
 
         "RestartApp": "Media files are loading, please close the App and retry later",
-        "LoadingMedia": "Media files are loading ({1} of {2})"
+        "LoadingMedia": "Media files are loading ({1} of {2})",
+
+        "ImportWordsErr": "Error importing words {1}",
+        "SettingsHideTutorial": "Hide Tutorials category",
+        "ErrWrongImportFile": "Wrong imported file format",
+        "SearchImageTitle": "Search Image",
+        "EnterSearchHere":"enter search keywords here",
+        "BtnSearch": "Search",
+        "NoResultsMsg": "No Results Found",
+        "SyncToCloudMsg": "Syncronizes with your Google Drive",
+        "SyncToCloudTitle":"Sync with your Google Drive",
+        "ErrSyncFail": "Sync Failed\n {1}",
+        "SyncStatusNone": "Not Syncronized",
+        "SyncStatusLbl":"Sync Status",
+        "SyncErrorLbl":"Sync Error",
+        "ShareCartTitle":"Share List",
+        "ShareCartCategoryColumnTitle":"Category",
+        "ShareCartWordNameColumnTitle":"Word",
+        "ItemRemovedFromShare":"Removed from the Sharing List",
+        "ItemAddedToShare":"Added to the Sharing List",
+
+        "ConfirmTitleSyncToServer": "Syncronizing all shared word to Google Drive",
+        "ConfirmMsgSyncToServer":"All shared words will be syncronized to your Google Drive and will be given read permission to anyone with a link. Do you approve?",
+        "ShareCancelled":"Share Cancelled",
+        "InfoSharingSucceeded":"Sharing completed successfully",
+        "InfoSharingFailed":"Sharing Failed\n {1}",
+        "NoWordSelected": "No Word Selected",
+        "SettingsConnectedGDrive":"Google Drive",
+        "NotLoggedIn":"Not connected yet",
+        "LoggedIn":"Connected to {1}",
+        "BtnLogout":"Logout",
+
     }
 }
 

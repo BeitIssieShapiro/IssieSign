@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FileSystem from "../apis/filesystem";
-import { translate } from "../utils/lang";
+import { fTranslate, translate } from "../utils/lang";
 import { withAlert } from 'react-alert'
 import ModalDialog from "./modal";
 import { Sync } from '@mui/icons-material'
@@ -16,11 +16,11 @@ function ShareInfo(props) {
     const [syncInProcess, setSyncInProcess] = useState(false);
 
     const toggleCloudSync = (isOn) => {
-        props.pubSub.publish({ command: "long-process", msg: "SyncToCloud" });
+        props.pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
         setSyncInProcess(true);
         FileSystem.get().setSync(entity, isOn, true).then(
             () => props.pubSub.refresh(),
-            (err) => props.alert.error("Change failed" + err)
+            (err) => props.alert.error(fTranslate("ErrSyncFail", err))
         ).finally(
             () => {
                 props.pubSub.publish({ command: "long-process-done" })
@@ -37,7 +37,7 @@ function ShareInfo(props) {
 
     return <ModalDialog onClose={props.onClose} style={{ "--hmargin": "20vw", "--vmargin": "20vw" }} title={translate("SyncToCloud")}>
         <div className="shareInfo">
-            <div className="shareInfoLabel">{translate("SyncToCloud")}</div>
+            <div className="shareInfoLabel">{translate("SyncToCloudTitle")}</div>
             <div>
                 <RadioBtn
                     checked={entity.sync == FileSystem.IN_SYNC || entity.sync == FileSystem.SYNC_REQUEST}
@@ -45,12 +45,12 @@ function ShareInfo(props) {
                 />
             </div>
 
-            <div className="shareInfoLabel">status</div>
-            <div>{entity.sync ? entity.sync : "not synced"}</div>
-            {entity.syncErr && <div className="shareInfoLabel">Error</div>}
+            <div className="shareInfoLabel">{translate("SyncStatusLbl")}</div>
+            <div>{entity.sync ? entity.sync : translate("SyncStatusNone")}</div>
+            {entity.syncErr && <div className="shareInfoLabel">{translate("SyncErrorLbl")}</div>}
             {entity.syncErr && <div>{entity.syncErr}</div>}
 
-            {syncInProcess && <div className="syncinProcess" ><Sync className="rotate" /><div> in process</div></div>}
+            {syncInProcess && <div className="syncinProcess" ><Sync className="rotate" /><div>{translate("SyncToCloudMsg")}</div></div>}
 
         </div>
     </ModalDialog>

@@ -2,16 +2,16 @@ import { Delete } from '@mui/icons-material'
 import { confirmAlert } from 'react-confirm-alert';
 import { Spacer } from '../components/ui-elements'
 import "../css/share-cart-ui.css"
-import { translate } from '../utils/lang';
+import { fTranslate, translate } from '../utils/lang';
+import { trace } from "../utils/Utils";
 import { withAlert } from 'react-alert'
 
 function ShareCartUI({ shareCart, pubSub, alert }) {
-    return <div style={{ width: "100%", color: "black" }}>
-        <h1>Share List</h1>
+    return <div className="share-cart-container">
         <table className="share-cart">
             <tr>
-                <th className="category">Category</th>
-                <th className="name">Name</th>
+                <th className="category">{translate("ShareCartCategoryColumnTitle")}</th>
+                <th className="name">{translate("ShareCartWordNameColumnTitle")}</th>
                 <th></th>
             </tr>
             {
@@ -35,8 +35,8 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
                 // Verify all files are sync-ed to cloud:
                 if (!shareCart.isAllSynced()) {
                     confirmAlert({
-                        title: translate("ConfirmSyncToServerTitle"),
-                        message: translate("ConfirmSyncToServer"),
+                        title: translate("ConfirmTitleSyncToServer"),
+                        message: translate("ConfirmMsgSyncToServer"),
                         buttons: [
                             {
                                 label: translate("BtnYes"),
@@ -44,18 +44,17 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
                                     // triger syncing - long process
                                     pubSub.publish({
                                         command: "long-process",
-                                        msg: translate("syncWordsToCloud")
+                                        msg: translate("SyncToCloudMsg")
                                     });
 
-                                    console.log("not all synced - set sync and wait")
+                                    trace("Not all synced - set sync and wait")
                                     shareCart.setAllSynced().then(() => {
-                                        console.log("set all sync done, share the cart")
                                         pubSub.publish({
                                             command: "long-process-done"
                                         })
                                         shareTheCart(shareCart, alert);
                                     },
-                                        (e) => alert.error(translate("InfoSharingFailed") + "\n" + e)
+                                        (e) => alert.error(fTranslate("ErrSyncFail", e))
                                     ).finally(() => pubSub.publish({
                                         command: "long-process-done"
                                     }));
@@ -63,12 +62,12 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
                             },
                             {
                                 label: translate("BtnCancel"),
-                                onClick: () => alert.info(translate("InfoSharingCencelled"))
+                                onClick: () => alert.info(translate("ShareCancelled"))
                             }
                         ]
                     });
                 } else {
-                    console.log("all was synced - start share")
+                    trace("all was synced - start share")
                     shareTheCart(shareCart, alert);
                 }
             }
@@ -78,11 +77,11 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
 
 
 function shareTheCart(shareCart, alert) {
-    console.log("sharing cart")
+    trace("Sharing cart")
     shareCart.generateFile().then((filePath) =>
         share(filePath, "Share", "",
             () => alert.success(translate("InfoSharingSucceeded")),
-            (e) => alert.error(translate("InfoSharingFailed") + "\n" + e)
+            (e) => alert.error(fTranslate("InfoSharingFailed", e))
         ));
 }
 
@@ -106,7 +105,6 @@ function share(filePath, title, mimetype, onSuccess, onError) {
         iPadCoordinates: '0,0,0,0' //IOS only iPadCoordinates for where the popover should be point.  Format with x,y,width,height
     };
 
-    console.log("about to share via shareWithOptions:", JSON.stringify(options));
     window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
 };
 

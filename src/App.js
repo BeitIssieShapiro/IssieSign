@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { VideoToggle, getLanguage } from "./utils/Utils";
+import { VideoToggle, getLanguage, trace } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -129,8 +129,6 @@ class App extends IssieBase {
                 const curr = getCurrent();
                 const absInc = (window.innerWidth - 150)
                 const inc = toRight ? -absInc : absInc;
-                //getScrollIncrement(curr.x, toRight);
-                console.log("move button", curr, inc)
                 setCurrent({ x: curr.x + inc, y: curr.y }, true);
             },
         }
@@ -139,7 +137,7 @@ class App extends IssieBase {
         setLanguage(lang)
 
         const pubsub = new PubSub()
-        console.log("init file system from App")
+        trace("App: Init file system");
         await FileSystem.get().init(mainJson, pubsub).then(() => this.setState({ fs: FileSystem.get() }));
 
         const shareCart = new ShareCart()
@@ -160,17 +158,17 @@ class App extends IssieBase {
         pubsub.subscribe((args) => this.getEvents(args));
 
         window.importWords = (url) => {
-            console.log("Importing words");
-            //this.setState({ busy: true, busyText: translate("ImportWords") });
+            trace("App: Importing words");
 
-            pubsub.publish({ command: 'long-process', msg: translate("importingWords") });
+            pubsub.publish({ command: 'long-process', msg: translate("ImportWords") });
 
             shareCart.importWords(url).then(
                 (addWords) => {
                     pubsub.refresh();
+                    // todo format
                     this.props.alert.success(addWords.join("\n"));
                 },
-                (err) => this.props.alert.error("Error importing word: " + err)
+                (err) => this.props.alert.error(fTranslate(ImportWordsErr,err))
             ).finally(() => pubsub.publish({ command: 'long-process-done' }));
 
 
@@ -231,7 +229,7 @@ class App extends IssieBase {
             case 'set-categoryId':
                 if (args.categoryId !== this.state.categoryId) {
                     this.setState({ theme: getTheme(args.categoryId), categoryId: args.categoryId })
-                    console.log("catId:" + args.categoryId + ", theme:" + getTheme(args.categoryId))
+                    trace("Set Category: catId:" + args.categoryId + ", theme:" + getTheme(args.categoryId))
                 }
                 break;
             case 'set-title':
@@ -264,7 +262,7 @@ class App extends IssieBase {
             if (e.target.value.length > 1 && !this.isSearch()) {
                 this.props.history.push(SEARCH_PATH);
                 this.setState({ bodyScroll: { x: 0, y: 0 } });
-                console.log("Search: " + e.target.value);
+                trace("Search: " + e.target.value);
             } else if (e.target.value.length < 2) {
                 if (this.isSearch()) {
                     this.goBack(true);
@@ -314,13 +312,7 @@ class App extends IssieBase {
             this.backInProcess = false
         }, 50);
     }
-    // savePos(newVal) {
-    //     if (this.isWords()) {
-    //         saveWordTranslateX(newVal);
-    //     } else {
-    //         saveRootTranslateX(newVal);
-    //     }
-    // }
+
     ScrollLeft() {
         document.swipeHandler.moveButton(false);
     }
@@ -349,8 +341,6 @@ class App extends IssieBase {
         let rightArrow = "";
 
         let backElement = App.isHome(this.props) ? null : <BackButton slot="end-bar" onClick={() => this.goBack()} />
-        // <div slot="end-bar" style={{ height: 50 }}><button className="roundbutton backBtn"
-        //     onClick={() => this.goBack()} style={{ visibility: (!this.isHome() ? "visible" : "hidden"), "--radius": "50px" }}><div className="arrow-right" /></button></div>
         let searchInput = "";
 
         let deleteButton = this.state.showDelete ?
@@ -358,8 +348,6 @@ class App extends IssieBase {
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
-            let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-            //let searchClassName = narrow ? "" : "sameLine";
             searchInput = (
                 <div slot="center-bar" className="search shellSearch">
                     <input
@@ -368,12 +356,7 @@ class App extends IssieBase {
                 </div>)
         }
 
-        // if (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode) {
-        //     document.preventTouch = false;
-        //     console.log("touch allowed")
-        // }
-
-        if (!this.isSwipeAllowed() &&
+        if (!this.isSwipeAllowed() && !this.isShareScreen() &&
             (!this.isAddScreen() && !this.isVideo())) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
             rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
@@ -391,8 +374,7 @@ class App extends IssieBase {
         if (this.isSearch() || this.isWords()) {
             overFlowX = 'visible';
         }
-        if (this.state.longProcess)
-            console.log("long process", this.state.longProcess.msg)
+
         return (
             <div className="App">
                 {/**Word Info */
@@ -441,7 +423,6 @@ class App extends IssieBase {
 
                     {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) &&
                         <AddButton slot="start-bar"
-                            //selected={path.startsWith("/add")} 
                             onClick={() => this.handleNewClick()} color='white'
                         />
                     }
@@ -477,7 +458,6 @@ class App extends IssieBase {
 
             </div >
         );
-        //        }} />
     }
 
     getChildren(path, props, state) {
@@ -508,11 +488,14 @@ class App extends IssieBase {
                 scroll={this.state.searchScroll}
             />
 
-        if (path === "/share-cart")
+        if (path === "/share-cart") {
+            this.setTitle(translate("ShareCartTitle"));
+
             return <ShareCartUI
                 pubSub={state.pubSub}
                 shareCart={state.shareCart}
             />
+        }
 
         if (path.startsWith("/word/")) {
             //:categoryId/:title
@@ -646,6 +629,10 @@ class App extends IssieBase {
 
     isAddScreen() {
         return this.props.history.path.startsWith("/add-");
+    }
+
+    isShareScreen() {
+        return this.props.history.path.startsWith("/share-cart");
     }
 
     isVideo() {

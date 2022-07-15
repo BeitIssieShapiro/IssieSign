@@ -23,10 +23,12 @@ function Tile2(props) {
 
         if (props.shareCart?.exists(props.tileName)) {
             props.shareCart.remove(props.tileName);
+            props.alert.success(translate("ItemRemovedFromShare"));
         } else {
             props.shareCart.add({
                 name: props.tileName,
             })
+            props.alert.success(translate("ItemAddedToShare"));
         }
         props.pubSub.refresh()
     }

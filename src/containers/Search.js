@@ -3,6 +3,7 @@ import '../css/App.css';
 import Word from "./Word";
 import Body from "./Body";
 //const levenshtein = require('js-levenshtein');
+import { trace } from "../utils/Utils";
 
 function fuzzyMatch(str, searchStr) {
     return str.includes(searchStr);// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
@@ -11,7 +12,7 @@ function fuzzyMatch(str, searchStr) {
 function Search(props) {
 
     const filterWords = (filterStr) => {
-        console.log("filterWord:" + filterStr)
+        trace("filterWord:" + filterStr)
         let res = props.words.filter(word => {
             let found = fuzzyMatch(word.name, filterStr);
             if (!found && word.tags) {
@@ -24,7 +25,7 @@ function Search(props) {
     }
 
     const filterCategories = (filterStr) => {
-        console.log("filterCategories:" + filterStr)
+        trace("filterCategories:" + filterStr)
         return props.categories.filter(cat => {
             let found = fuzzyMatch(cat.name, filterStr);
             if (!found && cat.tags) {
