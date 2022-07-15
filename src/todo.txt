@@ -7,14 +7,10 @@ V- export multiple words
 V- validate labels to be valid path chars
 V- categories are organized vertically?
 V- Support delete
-- Support update (low)
 V- Support save2server
 V- Support share, share-multi
 V- reimplement import
 V- Busy with message - fix UI
-- add word without image - no error but not saved
-- adult mode - test all edit mode
-- translate all missing texts
 V- choose photo from internet
   V- better design
   V- busy indication
@@ -22,8 +18,14 @@ V- choose photo from internet
 - logout, who am In
 V- add root folder IssieSign
 V- don't show decoration if no shelf (small)
-- check for wrong format of import zip
-- sync should be blocking action 
+V- check for wrong format of import zip
+V- sync should be blocking action
+
+- add word without image - no error but not saved
+- adult mode - test all edit mode
+- translate all missing texts
+- rethink always sharing to anyone with a link??
+- Support update (low)
 
 
 

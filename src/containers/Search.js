@@ -48,9 +48,9 @@ function Search(props) {
                     filterCategories(props.searchStr)
                 }
                 dimensions={props.dimensions}
-                pubSub={this.state.pubSub}
-                editMode={this.state.editMode}
-                shareCart={this.state.shareCart}
+                pubSub={props.pubSub}
+                editMode={props.editMode}
+                shareCart={props.shareCart}
                 allowSwipe={props.allowSwipe}
                 scroll={{x:0,y:0}}
             />
@@ -58,9 +58,9 @@ function Search(props) {
                 words={
                     filterWords(props.searchStr)
                 }
-                pubSub={this.state.pubSub}
-                editMode={this.state.editMode}
-                shareCart={this.state.shareCart}
+                pubSub={props.pubSub}
+                editMode={props.editMode}
+                shareCart={props.shareCart}
 
                 dimensions={props.dimensions}
                 allowSwipe={props.allowSwipe}

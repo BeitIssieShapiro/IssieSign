@@ -359,11 +359,10 @@ class App extends IssieBase {
 
         if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
             let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-            let searchClassName = narrow ? "" : "sameLine";
+            //let searchClassName = narrow ? "" : "sameLine";
             searchInput = (
-                <div slot={narrow ? "title" : "end-bar"} className={"search " + searchClassName} >
+                <div slot="center-bar" className="search shellSearch">
                     <input
-
                         type="search" onChange={this.handleSearch}
                         onFocus={this.preventKeyBoardScrollApp} value={this.state.searchStr || ""} />
                 </div>)
@@ -447,7 +446,7 @@ class App extends IssieBase {
                         />
                     }
 
-                    <div slot="title" style={{ display: "inline-block" }}>{this.state.title}</div>
+                    <div slot="center-bar" className="shelltitle">{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}

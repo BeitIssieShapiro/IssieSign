@@ -73,6 +73,7 @@ cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
+cordova plugins add ../GDrivePlugin/
 ```
 
 
@@ -89,6 +90,7 @@ cordova platform add android
 
 - Copy `src`, `public`, ...
 - run `npm install`
+- Add the cordova folder to the .gitignore
 
 ### IOS
 - Open xcode and the ios project
@@ -115,6 +117,7 @@ under "Resoutrces"
     - set version & build
     - change launch storyboard
     - change appicon and header
+
 
 ### Android
 - Import project (app/platforms/android)

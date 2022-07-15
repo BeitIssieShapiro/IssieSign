@@ -16,8 +16,8 @@ var strings = {
         "TitleAbout": "עלינו - About us",
         "SettingsAbout": "עלינו - About us",
         "SettingsEdit": "עריכה",
-        "SettingsAdultMode":"מצב מבוגרים",
-        "SettingsAdultModeLbl":"תצוגה מותאמת למבוגרים",
+        "SettingsAdultMode": "מצב מבוגרים",
+        "SettingsAdultModeLbl": "תצוגה מותאמת למבוגרים",
         "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
         "TitleAddCategory": "הוספת קטגוריה",
         "TitleAddWord": "הוספת מילה",
@@ -57,10 +57,10 @@ var strings = {
 
         "AddLoadVideoCameraFailedOrCanceled": "צילום וידאו נכשל או בוטל",
         "AddLoadVideoFailedOrCanceled": "טעינת סרטון בוטלה או נכשלה",
-        
-        "RestartApp"  :"קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
+
+        "RestartApp": "קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
         "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})"
-     },
+    },
     "ar": {
         "AppTitle": "لغة الإشارة",
         "SettingsLanguage": "اللغة",
@@ -111,10 +111,10 @@ var strings = {
 
         "AddLoadVideoCameraFailedOrCanceled": "فشل او الغاء تصوير الفيديو",
         "AddLoadVideoFailedOrCanceled": "فشل او الغاء تحميل الفيديو",
-        
-        "RestartApp"  :" الملفات قيد التحميل، مفضل اغلاق التطبيق واعادة المحاولة بعد عدة دقائق",
+
+        "RestartApp": " الملفات قيد التحميل، مفضل اغلاق التطبيق واعادة المحاولة بعد عدة دقائق",
         "LoadingMedia": "يتم تحميل الملفات ({1} מתוך {2})"
-    }, 
+    },
     "en": {
         "AppTitle": "My IssieSign",
         "SettingsLanguage": "Language",
@@ -126,8 +126,8 @@ var strings = {
         "TitleAbout": "About us",
         "SettingsAbout": "About us",
         "SettingsEdit": "Edit",
-        "SettingsAdultMode":"Adult mode",
-        "SettingsAdultModeLbl":"Adult adapted display",
+        "SettingsAdultMode": "Adult mode",
+        "SettingsAdultModeLbl": "Adult adapted display",
         "SettingsAddCatAndWords": "Add/Delete Categories and Words",
         "TitleAddCategory": "Add Category",
         "TitleAddWord": "Add Word",
@@ -169,8 +169,8 @@ var strings = {
 
         "AddLoadVideoCameraFailedOrCanceled": "Shoting video failed or cancelled",
         "AddLoadVideoFailedOrCanceled": "Loading video failed or cancelled",
-        
-        "RestartApp"  :"Media files are loading, please close the App and retry later",
+
+        "RestartApp": "Media files are loading, please close the App and retry later",
         "LoadingMedia": "Media files are loading ({1} of {2})"
     }
 }
@@ -189,6 +189,10 @@ export function setLanguage(lang) {
     if (isBrowser()) {
         gPrefix = "."
     }
+
+    window?.document.documentElement.style.setProperty('--dir', isRTL() ? "rtl" : "ltr");
+    window?.document.documentElement.style.setProperty('--rtl_f', isRTL() ? 1 : 0);
+    window?.document.documentElement.style.setProperty('--ltr_f', isRTL() ? 0 : 1);
 }
 
 export function isRTL() {
@@ -205,9 +209,9 @@ export function translate(id, ...args) {
         //not found, defaults to default lang
         s = strings[DEFAULT_LANG][id];
         if (!s) {
-            s = gPrefix + id;
+            s = id;
         } else {
-            s = gPrefix + s;
+            s = s;
         }
     }
 

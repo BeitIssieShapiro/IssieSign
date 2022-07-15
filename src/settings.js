@@ -1,13 +1,14 @@
 import './css/settings.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { getLanguage, setLanguage, translate } from './utils/lang';
 import ModalDialog from './components/modal';
 import { isMyIssieSign } from './current-language';
 import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, LANG_KEY, saveSettingKey } from './utils/Utils';
 import { RadioBtn } from './components/ui-elements';
+import FileSystem from './apis/filesystem';
 
 export function Settings({ onClose, state, setState, slot, showInfo }) {
-
+  const [reload, setReload] = useState(0);
   const currLanguage = getLanguage()
 
   const changeLanguage = (lang) => {
@@ -18,7 +19,7 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
 
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}>
     <div className="settingsContainer">
-      <lbl onClick={showInfo}>
+      <lbl onClick={showInfo} className="lblCentered">
         <div className="info-button" />
         <lbl>{translate("SettingsAbout")}</lbl>
       </lbl>
@@ -58,6 +59,15 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
           saveSettingKey(ALLOW_ADD_KEY, isOn);
           setState({ allowAddWord: isOn });
           window[ALLOW_ADD_KEY] = isOn
+        }}
+      />}
+
+      {isMyIssieSign && <lbl>{translate("SettingsHideTutorial")}</lbl>}
+      {isMyIssieSign && <RadioBtn className="settingsAction"
+        checked={FileSystem.get().hideTutorial}
+        onChange={(isOn) => {
+          FileSystem.get().setHideTutorial(isOn)
+          setReload(prev => prev + 1);
         }}
       />}
 

@@ -1,4 +1,4 @@
-import { isBrowser } from '../utils/Utils';
+import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY } from '../utils/Utils';
 import axios from 'axios';
 
 let fileSystem;
@@ -13,6 +13,14 @@ export default class FileSystem {
     static SYNC_REQUEST = "sync-request";
     static SYNC_OFF_REQUEST = "sync-off-request";
     syncInProcess = false;
+    hideTutorial = window.localStorage.getItem(HIDE_TUTORIAL_KEY) || false;
+
+    setHideTutorial(isOn) {
+        saveSettingKey(HIDE_TUTORIAL_KEY, isOn);
+        this.hideTutorial = isOn;
+    }
+
+
 
     index = isBrowser() ? ({
         categories: [
@@ -20,6 +28,7 @@ export default class FileSystem {
                 "name": "בודק עברית",
                 "id": "בודק עברית",
                 "imageName": "איברי גוף.png",
+                tutorial:true,
                 userContent: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
@@ -107,7 +116,11 @@ export default class FileSystem {
             console.log("fs not init")
         }
 
-        return this.index?.categories || [];
+        let cat = this.index?.categories;
+        if (cat && this.hideTutorial) {
+            cat = cat.filter(c=>!c.tutorial);
+        }
+        return cat || [];
     }
 
     getAllWords() {

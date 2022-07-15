@@ -54,6 +54,15 @@
   text-shadow: 0px 1px 0px #ced9bf;
 }
 
+.addCardHost {
+  padding-top: 40px;
+}
+
+@media (max-height: 850px) {
+  .addCardHost {
+    padding-top: 10px;
+  }
+}
 
 .browserButton:hover {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #9ba892), color-stop(1, #dbe6c4));

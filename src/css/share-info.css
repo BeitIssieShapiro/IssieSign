@@ -1,21 +1,31 @@
 .shareInfo {
-    display:grid;
-    grid-template-columns:  1fr 2fr;
-    direction: ltr;
+    display: grid;
+    direction: var(--dir);
+    grid-template-columns: 1fr 2fr;
     row-gap: 10px;
     margin-left: 10vw;
     margin-right: 5vw;
 }
 
+@media (max-width: 550px) {
+    .shareInfo {
+      /* grid-template-columns: 1fr; */
+      row-gap: 5px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  
+
 .syncinProcess {
-position: absolute;
-display: flex;
-align-items: center;
-bottom: 15px;
-align-self: center;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    bottom: 15px;
+    align-self: center;
 }
 
 .shareInfoLabel {
     font-size: 22px;
-    text-align: left;
+    text-align: start;
 }

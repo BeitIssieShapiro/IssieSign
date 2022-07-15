@@ -4,9 +4,9 @@
     --shell-header-text-color: rgb(255, 255, 255);
     --shell-main-background-color-0: rgb(250, 250, 250);
     --shell-main-background-color-1: rgb(184, 184, 184);
-    --shell-decor-background-color-0: rgb(255,255,255);
-    --shell-decor-background-color-1: rgb(132,132,132);
-    --shell-decor-shade-color-0: rgb(96,96,96);
+    --shell-decor-background-color-0: rgb(255, 255, 255);
+    --shell-decor-background-color-1: rgb(132, 132, 132);
+    --shell-decor-shade-color-0: rgb(96, 96, 96);
 
     display: flex;
     flex-direction: column;
@@ -15,7 +15,9 @@
     left: 0;
     right: 0;
     bottom: 0;
+    --header-height: 131px
 }
+
 
 .shellTopBlueBar {
     position: absolute;
@@ -27,50 +29,76 @@
     z-index: 1001;
 }
 
+
 .shellheader {
+    display: grid;
     flex-shrink: 0;
     flex-grow: 0;
-    min-height: 131px;
-    max-height: 131px;
+    min-height: var(--header-height);
+    max-height: var(--header-height);
     background-image: linear-gradient(to bottom,
-        var(--shell-header-background-color-0),
-        var(--shell-header-background-color-1)
-    );
+            var(--shell-header-background-color-0),
+            var(--shell-header-background-color-1));
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     position: relative;
+}
+
+.shellheaderTop {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 100px 1fr 100px;
+    width: 100vw;
+    min-height: 76px;
+    padding: 20px 14px;
+    color: var(--shell-header-text-color);
+    
 }
 
 .startBar {
     display: flex;
     justify-content: flex-start;
 }
+
+.centerBar {
+    font-size: xx-large;
+}
+
 .endBar {
     display: flex;
     justify-content: flex-end;
- 
 }
+
 .shelltitle {
-    position: relative;
-    font-size: 24px;
-    font-weight: 200;
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
-    padding-top: 11px;
-    
 }
 
-.shellheaderTop {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    flex-shrink: 1;
-    flex-grow: 1;
-    min-height: 76px;
-    padding: 0 14px;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--shell-header-text-color);
+.shellSearch {
+    position: absolute;
+    right:100px;
+    top:14px;
+}
+
+
+
+
+
+@media (max-width: 665px) {
+    .shellheader {
+        --header-height: 160px
+    }
+
+    .shellheaderTop {
+        min-height: 105px;
+    }
+
+    .shellSearch {
+        top:unset;
+        right: 27px;
+        bottom: 5px;
+    }
 }
 
 .shellheader.button {
@@ -101,17 +129,16 @@
     flex-grow: 1;
     padding: 8px 0px 0;
     background-image: radial-gradient(circle at 49% -14%,
-        var(--shell-main-background-color-0),
-        var(--shell-main-background-color-1)
-    );
+            var(--shell-main-background-color-0),
+            var(--shell-main-background-color-1));
     overflow: scroll;
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch;
 }
 
 .projectors {
     display: flex;
     flex-direction: row;
-    
+
     justify-content: space-between;
     height: 30px;
     margin: -25px 20px 0 20px;
@@ -120,7 +147,8 @@
     z-index: 1;
     pointer-events: none;
 }
-.projectors > li {
+
+.projectors>li {
     flex-shrink: 0;
     flex-grow: 0;
     display: block;
@@ -130,7 +158,8 @@
     position: relative;
     margin-left: 0;
 }
-.projectors > li:after {
+
+.projectors>li:after {
     position: absolute;
     display: block;
     content: '';
@@ -140,12 +169,14 @@
     left: -33px;
     background: url('data:image/svg+xml;utf8,<svg width="134" height="194" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.33"/><stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:0"/></linearGradient></defs><g><path stroke="%23fff" d="m47,0L87,0L134,194L0,194Z" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="url(%23grad1)"/></g></svg>')
 }
+
 .prev {
     position: absolute;
     top: 145px;
     left: 18px;
     z-index: 100;
 }
+
 .next {
     position: absolute;
     top: 145px;
@@ -163,11 +194,12 @@
     width: 35px;
     height: 35px;
 }
+
 .center {
     text-align: center;
     border: 1px solid;
     width: 100%;
-    margin-left:auto;
+    margin-left: auto;
     margin-right: auto;
 }
 
@@ -184,4 +216,3 @@
     flex-grow: 1;
     flex-shrink: 1;
 }
-

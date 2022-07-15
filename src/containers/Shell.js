@@ -41,10 +41,10 @@ function Shell (props) {
                     <div className="startBar right">
                         <Slot slot="start-bar">{props.children}</Slot>
                     </div>
-                    <div className={centerSlotClass}>
-                        <Slot slot="title">{props.children}</Slot>
+                    <div className="centerBar">
+                        <Slot slot="center-bar">{props.children}</Slot>
                     </div>
-                    <div className="endBar left">
+                    <div className="endBar">
                         <Slot slot="end-bar">{props.children}</Slot>
                     </div>
                 </div>

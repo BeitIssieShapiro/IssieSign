@@ -166,9 +166,12 @@ export class ShareCart {
                 const fileAndFoldersCount = Object.keys(zipEntry.files).length;
 
                 if (fileAndFoldersCount !== 1) {
-                    throw ("wrong imported zip format")
+                    throw ("wrong imported zip format");
                 }
                 const zipFileObject = zipEntry.file(ShareCart.LIST_FILE_NAME);
+                if (!zipFileObject) {
+                    throw ("wrong imported zip format");
+                }
                 return zipFileObject.async('string');
             })
         })
@@ -202,7 +205,7 @@ export class ShareCart {
                 let fullPath = FileSystem.getDocDir() + "Categories/";
                 if (!importedCat) {
                     if (!cat.imageFileId) {
-                        throw "Unexpected missing Category FileID";
+                        throw "Unexpected missing Category's FileID";
                     }
                     //create the folder
                     await FileSystem.get().getDir(cat.name, true);

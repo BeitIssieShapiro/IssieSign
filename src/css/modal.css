@@ -3,9 +3,9 @@
     --vmargin:10vh;
 }
 
-
 .modal {
     position: absolute;
+    direction: var(--dir);
     top: 0;
     left: 0;
     width: 100vw;

@@ -143,7 +143,7 @@ class AddItem extends React.Component {
                 <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
                     <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%' : '100%', zoom: '150%' }}>
                         {addWordMode ?
-                            <div style={{ padding: 40 }}>
+                            <div className="addCardHost">
                                 <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
                                     imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
                             </div>
