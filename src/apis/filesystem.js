@@ -1,4 +1,4 @@
-import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY, trace } from '../utils/Utils';
+import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY, trace, getAppName } from '../utils/Utils';
 import axios from 'axios';
 
 let fileSystem;
@@ -151,13 +151,14 @@ export default class FileSystem {
         return this.addCategory(label);
     }
 
-    async addCategory(name) {
+    async addCategory(name, addProps) {
         this.index.categories.push({
             name,
             id: name,
             imageName: name + "/default.jpg",
             words: [],
             userContent: true,
+            ...addProps
         });
         return this.saveIndex();
     }
@@ -175,7 +176,7 @@ export default class FileSystem {
         return this.addWord(category, label)
     }
 
-    async addWord(category, name) {
+    async addWord(category, name, addProps) {
         // update index
         let indexCategory = this.index.categories.find(c => c.name === category)
 
@@ -189,7 +190,7 @@ export default class FileSystem {
             imageName: category + "/" + name + ".jpg",
             videoName: category + "/" + name + ".mov",
             userContent: true,
-
+            ...addProps
         };
         if (indexCategory.sync == FileSystem.IN_SYNC || indexCategory.sync == FileSystem.SYNC_REQUEST) {
             newWord.sync = FileSystem.SYNC_REQUEST;
@@ -327,7 +328,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             if (filePath.startsWith("http")) {
                 // Downloads the content
-                axios.get(filePath, {
+                return axios.get(filePath, {
                     responseType: 'blob',
                     headers: {
                         'accept': 'image/jpeg'
@@ -385,6 +386,7 @@ export default class FileSystem {
                 return;
 
             indexCat.sync = getNewState(indexCat.sync)
+            await this.saveIndex();
 
             // implicitly set all category to same
             for (const word of indexCat.words) {
@@ -513,15 +515,21 @@ export default class FileSystem {
             filePath = filePath.substr(pos + 7);
         }
 
-        return new Promise((resolve, reject) => {
-            const rootFolderId = this.index.rootFolderId, rootFolderName = "MyIssieSign";
+        return new Promise(async (resolve, reject) => {
+            let rootFolderId = this.index.rootFolderId, rootFolderName = getAppName();
+
+            if (!rootFolderId) {
+                // try to find it in the users' Drive first
+                rootFolderId = await this.findRootFolder();
+            }
+
 
             window.plugins.gdrive.uploadFile(filePath, relPath, folderId, rootFolderId, rootFolderName, false,
                 (response) => {
                     // sets the rootFolderId
                     if (!this.index.rootFolderId) {
                         this.index.rootFolderId = response.rootFolderId;
-                        this.saveIndex.then(() => response);
+                        this.saveIndex().then(() => response);
                     }
 
                     resolve(response);
@@ -592,6 +600,122 @@ export default class FileSystem {
             );
         })
     }
+
+    // if not found, return undefined
+    async findRootFolder() {
+        return new Promise((resolve, reject) => {
+            window.plugins.gdrive.findFolder(getAppName(), "",
+                (response) => {
+                    trace("Found root folders", response.folders.length)
+                    if (response.folders.length == 0) {
+                        resolve(undefined);
+                        return;
+                    }
+                    if (response.folders.length > 1 && this.index.rootFolderId) {
+                        // look for one that matches the rootFolderId
+                        if (response.folders.some(f => f.id === this.index.rootFolderId)) {
+                            resolve(this.index.rootFolderId);
+                            return;
+                        }
+                    }
+                    resolve(response.folders[0].id);
+                },
+                (err) => {
+                    trace("Error root folders", err)
+                    reject(err);
+                }
+            );
+        })
+    }
+
+    async listFiles(parentFolderId) {
+        return new Promise((resolve, reject) => {
+            window.plugins.gdrive.fileList(parentFolderId,
+                (response) => {
+                    trace("list files", response?.files?.length)
+                    resolve(response?.files);
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        })
+    }
+    async sile() {
+
+        const rootFolderId = await this.findRootFolder(getAppName());
+        trace("Found root ID", rootFolderId)
+        if (!rootFolderId) {
+            // If not found - nothing to reconsile
+            return
+        }
+
+        //save it
+        this.index.rootFolderId = rootFolderId;
+        await this.saveIndex();
+
+        const filesAndFolder = await this.listFiles(rootFolderId);
+        const seenFolders = []
+        const fullPath = FileSystem.getDocDir() + "Categories/";
+        for (const f of filesAndFolder) {
+            // skip files at this level
+            trace("process folder", JSON.stringify(f))
+            if (f.mimeType !== "application/vnd.google-apps.folder") continue;
+            const catName = f.name;
+            if (seenFolders.find(seenF => seenF == catName)) continue;
+
+            seenFolders.push(catName);
+
+            // Get folder's files
+            const catFiles = await this.listFiles(f.id);
+            if (catFiles?.length > 0) {
+                // get the category image
+                const defFile = catFiles.find(catFile => catFile.name == "default.jpg")
+                if (defFile) {
+                    // download the file
+                    
+                    const localCat = this.findCategory(catName);
+                    if (!localCat) {
+                        // create it locally
+                        // verify folder exists
+                        await this.getDir(catName, true);
+                        await FileSystem.gdriveDownload(defFile.id, fullPath + catName + "/default.jpg", false);
+                        await this.addCategory(catName, {sync: FileSystem.IN_SYNC});
+                    }
+                }
+
+                for (const catFile of catFiles) {
+                    if (!catFile.name.endsWith(".mov")) continue;
+                    const wordName = catFile.name.substring(0, catFile.name.length - 4);
+                    trace("process word", wordName);
+
+                    let localWord = this.findWord(catName, wordName);
+                    if (!localWord) {
+                        await FileSystem.gdriveDownload(catFile.id, fullPath + catName + "/" + catFile.name, false);
+
+                        await this.addWord(catName, wordName);
+                        localWord = this.findWord(catName, wordName);
+                        localWord.videoFileId = catFile.id;
+
+                        const imageFile = catFiles.find(f => f.name == wordName + ".jpg");
+                        if (imageFile) {
+                            await FileSystem.gdriveDownload(imageFile.id, fullPath + catName + "/" + imageFile.name, false);
+                            localWord.imageFileId = imageFile.id;
+                        } else {
+                            localWord.imageName = "";
+                        }
+                        localWord.sync = FileSystem.IN_SYNC;
+                        await this.saveIndex();
+                    }
+                }
+            }
+
+            console.log("folder", JSON.stringify(f));
+        }
+
+    }
+
+
 }
 
 

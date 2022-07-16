@@ -17,7 +17,7 @@
 @media (max-height: 700px) {
   .settingsContainer {
     row-gap: 5px;
-    max-height: 55vh;
+    max-height: 65vh;
   }
 }
 
@@ -70,6 +70,11 @@
 .conn-text {
   font-size: 22px;
   text-align: start;
+}
+
+.conn-buttons {
+  display: flex;
+  flex-direction: row;
 }
 
 .info-button:before {

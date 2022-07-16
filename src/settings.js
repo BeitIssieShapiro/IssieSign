@@ -2,12 +2,13 @@ import './css/settings.css';
 import React, { useEffect, useState } from 'react';
 import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
-import { isMyIssieSign } from './current-language';
-import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, LANG_KEY, saveSettingKey } from './utils/Utils';
-import { ButtonLogout, RadioBtn } from './components/ui-elements';
+import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey } from './utils/Utils';
+import { ButtonLogout, ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
+import { withAlert } from 'react-alert'
 
-export function Settings({ onClose, state, setState, slot, showInfo }) {
+
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
   const currLanguage = getLanguage()
@@ -23,7 +24,7 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
   }
 
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}
-  style={{ "--hmargin": "5vw", "--vmargin": "5vw" }}
+    style={{ "--hmargin": "5vw", "--vmargin": "5vw" }}
   >
     <div className="settingsContainer">
       <lbl onClick={showInfo} className="lblCentered">
@@ -55,12 +56,12 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
         }}
       />
 
-      {!isMyIssieSign &&
+      {!isMyIssieSign() &&
         <lbl>
           <div>{translate("SettingsEdit")}</div>
           <div className="settingsSubTitle">{translate("SettingsAddCatAndWords")}</div>
         </lbl>}
-      {!isMyIssieSign && <RadioBtn className="settingsAction"
+      {!isMyIssieSign() && <RadioBtn className="settingsAction"
         checked={state.allowAddWord}
         onChange={(isOn) => {
           saveSettingKey(ALLOW_ADD_KEY, isOn);
@@ -69,8 +70,8 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
         }}
       />}
 
-      {isMyIssieSign && <lbl>{translate("SettingsHideTutorial")}</lbl>}
-      {isMyIssieSign && <RadioBtn className="settingsAction"
+      {isMyIssieSign() && <lbl>{translate("SettingsHideTutorial")}</lbl>}
+      {isMyIssieSign() && <RadioBtn className="settingsAction"
         checked={FileSystem.get().hideTutorial}
         onChange={(isOn) => {
           FileSystem.get().setHideTutorial(isOn)
@@ -81,7 +82,21 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
       <lbl>{translate("SettingsConnectedGDrive")}</lbl>
       <div>
         <div className="conn-text">{email?.length > 0 ? fTranslate("LoggedIn", email) : translate("NotLoggedIn")}</div>
-        {email?.length > 0 && <ButtonLogout onClick={() => FileSystem.logout().finally(()=>setReload(prev=prev+1))} />}
+        <div className="conn-buttons">
+        {email?.length > 0 && 
+        <ButtonLogout onClick={() => FileSystem.logout().finally(() => setReload(prev => prev + 1))} />
+        }
+        <ButtonReconsile onClick={() => {
+          pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
+          alert.info(translate("ReconsileStarted"));
+          FileSystem.get().reconsile().catch(
+            (err)=>alert.error(err)
+          ).finally(() => {
+            pubSub.publish({ command: "long-process-done" });
+            setReload(prev => prev + 1)
+          })
+        }} />
+        </div>
       </div>
 
       <lbl>{translate("SettingsLanguage")}</lbl>
@@ -110,4 +125,5 @@ export function Settings({ onClose, state, setState, slot, showInfo }) {
 }
 
 
+export default withAlert()(Settings);
 

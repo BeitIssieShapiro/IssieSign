@@ -37,6 +37,8 @@ class Video extends React.Component {
                 videoElemHost.style.width = '85%';
                 //videoElemHost.style.alignSelf = 'center';
                 //videoElemHost.style.right = '150px';
+            } else {
+                videoElemHost.style.width = '100%';
             }
             //videoElemHost.style.position = "absolute";
             //videoElemHost.style.width = '100%';
@@ -64,6 +66,12 @@ class Video extends React.Component {
             }
         }
         var videoElem = document.getElementById("player")
+        if (videoElem.dataset.state === "off") {
+            console.log("video is off - return");
+            return;
+        } else {
+            console.log("video is on", JSON.stringify(videoElem.dataset));
+        }
 
         // if (videoContent.startsWith("file")) {
         //     videoContent = "cdvfile"+videoContent.substr(4);

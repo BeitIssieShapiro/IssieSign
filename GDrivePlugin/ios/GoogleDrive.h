@@ -11,11 +11,15 @@
 @property(nonatomic, nullable) GTMAppAuthFetcherAuthorization *authorization;
 - (void)downloadFile:(CDVInvokedUrlCommand*)command;
 - (void)uploadFile:(CDVInvokedUrlCommand*)command;
-- (void)fileList:(CDVInvokedUrlCommand*)command;
 - (void)deleteFile:(CDVInvokedUrlCommand*)command;
 
 - (void)whoAmI:(CDVInvokedUrlCommand*)command;
 - (void)logout:(CDVInvokedUrlCommand*)command;
+
+
+- (void)findFolder:(CDVInvokedUrlCommand*)command;
+- (void)fileList:(CDVInvokedUrlCommand*)command;
+
 
 
 @end

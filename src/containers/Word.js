@@ -1,7 +1,7 @@
 import React from "react";
 import '../css/App.css';
 import Card2 from "../components/Card2";
-import {  calcWidth } from "../utils/Utils";
+import { calcWidth } from "../utils/Utils";
 import IssieBase from '../IssieBase'
 import { withAlert } from 'react-alert'
 import Rope from '../components/Rope'
@@ -32,17 +32,17 @@ class Word extends IssieBase {
                 if (word.categoryId) {
                     themeId = word.categoryId;
                 }
-                return <Card2 key={word.id} 
-                editMode={this.props.editMode}
+                return <Card2 key={word.id}
+                    editMode={this.props.editMode}
                     category={word.category}
                     pubSub={this.props.pubSub}
-                    shareCart = {this.props.shareCart}
+                    shareCart={this.props.shareCart}
                     userContent={word.userContent}
                     cardType={word.userContent ? "file" : "default"} cardName={word.name} videoName={word.videoName}
                     imageName={word.imageName} imageName2={word.imageName2}
-                    themeId={themeId} 
-                    longPressCallback={word.userContent ? () => this.props.pubSub.publish({ command: "edit-mode" }) : undefined} 
-                    selected={selected}
+                    themeId={themeId}
+                    //longPressCallback={word.userContent ? () => this.props.pubSub.publish({ command: "edit-mode" }) : undefined} 
+                    //selected={selected}
                     binder={getBooleanFromString(word.name)} />
             });
 
@@ -103,9 +103,9 @@ class Word extends IssieBase {
             <div className={this.props.InSearch ? "subTileContainer wordContainer" : "tileContainer wordContainer"}
                 style={{
                     flexDirection: 'column',
-                    width: width, 
+                    width: width,
                     transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,
-                    transitionDuration: this.props.allowSwipe?'0s':'1.7s',
+                    transitionDuration: this.props.allowSwipe ? '0s' : '1.7s',
 
                 }}>
                 {lines.map((line) => {

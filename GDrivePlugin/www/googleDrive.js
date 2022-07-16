@@ -17,8 +17,13 @@ cordova.define("cordova-plugin-jc-googledrive.GoogleDrive", function(require, ex
         cordova.exec(successCallback, errorCallback, "GoogleDrive", "uploadFile", [fpath,targetPath, folderId, rootFolderId, rootFolderName, appfolder]);
     };
     
-    GoogleDrive.prototype.fileList = function (appfolder,successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "GoogleDrive", "fileList", [appfolder]);
+    GoogleDrive.prototype.findFolder = function (folderName, parentFolderId, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "findFolder", [folderName, parentFolderId]);
+    };
+    
+        
+    GoogleDrive.prototype.fileList = function (parentFolderId, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "fileList", [parentFolderId]);
     };
     
     GoogleDrive.prototype.deleteFile = function (fileid,successCallback, errorCallback) {

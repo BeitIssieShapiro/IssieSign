@@ -1,4 +1,4 @@
-import { gCurrentLanguage } from '../current-language';
+import { AppName, gCurrentLanguage } from '../current-language';
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
@@ -12,6 +12,15 @@ export const HIDE_TUTORIAL_KEY = "MyIssieSign_Settings_Hide_Tutorial";
 export function isBrowser() {
     return window.isBrowser;
 }
+
+export function isMyIssieSign() {
+    return AppName == "MyIssieSign";
+}
+
+export function getAppName() {
+    return AppName;
+}
+
 
 export function trace(a, ...optionalParams) {
     console.log(a, ...optionalParams);
@@ -114,7 +123,7 @@ export const themeMap = {
 var videoMonitor = undefined;
 
 export const VideoToggle = (on, addButtons, isLandscape) => {
-    console.log("toggle: " + on)
+    console.log("toggle video: " + on)
     let video = document.getElementById("player");
     let playerHost = document.getElementById("playerhost")
     playerHost.style.visibility = (on ? "visible" : "hidden");
@@ -123,14 +132,19 @@ export const VideoToggle = (on, addButtons, isLandscape) => {
     videoButtons.classList = isLandscape ? ["replayhost"] : ["replayhost-landscape"];
     let backBtn = document.getElementById("backBtn");
     if (!on) {
+        video.dataset.state = "off";
         video.pause();
         clearInterval(videoMonitor);
         videoMonitor = undefined
         setButtons(0, 0, 0);
         backBtn.style.display = "none";
-    } else if (addButtons) {
-        if (videoMonitor === undefined)
-            videoMonitor = setInterval(monitorVideo, 250);
+    } else {
+        video.dataset.state = "on";
+
+        if (addButtons) {
+            if (videoMonitor === undefined)
+                videoMonitor = setInterval(monitorVideo, 250);
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync } from '@mui/icons-material'
 import { translate } from '../utils/lang';
 
 
@@ -110,6 +110,10 @@ export function RadioBtn(props) {
 
 export function ButtonLogout(props) {
   return <div className="logout-button" onClick={props.onClick}><Logout/>{translate("BtnLogout")}</div>
+}
+
+export function ButtonReconsile(props) {
+  return <div className="logout-button" onClick={props.onClick}><CloudSync/>{translate("BtnReconsile")}</div>
 }
 
 const TILEBUTTON_SIZE = 36;

@@ -101,11 +101,10 @@ class AddItem extends React.Component {
         FileSystem.get().saveCategory(this.state.label, this.state.selectedImage).then(
             () => {
                 this.props.pubSub.publish({ command: 'refresh' });
-                this.props.alert.show(
-                    ("InfoSavedSuccessfully"));
+                this.props.alert.success(translate("InfoSavedSuccessfully"));
                 this.props.history.goBack()
             },
-            (err) => this.props.alert.error(err)
+            (err) => this.props.alert.error(JSON.stringify(err))
         )
     }
 
@@ -114,11 +113,10 @@ class AddItem extends React.Component {
             this.state.selectedImage, this.state.selectedVideo).then(
                 () => {
                     this.props.pubSub.publish({ command: 'refresh' });
-                    this.props.alert.success(
-                        ("InfoSavedSuccessfully"));
+                    this.props.alert.success(translate("InfoSavedSuccessfully"));
                     this.props.history.goBack();
                 },
-                (err) => this.props.alert.error(err)
+                (err) => this.props.alert.error(JSON.stringify(err))
             )
     }
 
@@ -136,13 +134,13 @@ class AddItem extends React.Component {
         let imgName = this.state.selectedImage.length > 0 ? translate("AddImageSelected") : ""
         return (
             <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
-                {this.state.showWebSearch && <SearchImage 
+                {this.state.showWebSearch && <SearchImage
                     pubSub={this.props.pubSub}
-                    onClose={()=>this.setState({ showWebSearch: false })} 
-                    onSelectImage={(url)=>{
+                    onClose={() => this.setState({ showWebSearch: false })}
+                    onSelectImage={(url) => {
                         this.setState({ showWebSearch: false, selectedImage: url })
 
-                    }}/>}
+                    }} />}
                 <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
                     <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%' : '100%', zoom: '150%' }}>
                         {addWordMode ?

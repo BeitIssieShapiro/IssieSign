@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { VideoToggle, getLanguage, trace } from "./utils/Utils";
+import { VideoToggle, getLanguage, trace, isMyIssieSign } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -25,13 +25,12 @@ import {
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import {  Settings } from './settings'
+import   Settings  from './settings'
 import './css/settings.css'
 import {
     SettingsButton, TrashButton,
     BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton
 } from './components/ui-elements';
-import { isMyIssieSign } from './current-language';
 import { mainJson } from './mainJson';
 import FileSystem from './apis/filesystem';
 import ShareInfo from './components/share-info';
@@ -143,7 +142,7 @@ class App extends IssieBase {
         const shareCart = new ShareCart()
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
-            allowAddWord: isMyIssieSign || getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, false),
             adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
             language: lang,
             pubSub: pubsub,
@@ -305,6 +304,7 @@ class App extends IssieBase {
             this.props.history.goBack();
         }
         if (video) {
+            trace("GoBack: toggle video off")
             VideoToggle(false);
         }
         setTimeout(() => {
@@ -444,6 +444,7 @@ class App extends IssieBase {
                         setState={(obj=>this.setState(obj))}
                         onClose={() => this.setState({ menuOpen: false })}
                         showInfo={() => this.showInfo()}
+                        pubSub={this.state.pubSub}
                     />}
 
                     <div slot="body" className="theBody" style={{

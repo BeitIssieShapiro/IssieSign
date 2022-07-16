@@ -70,7 +70,7 @@ var strings = {
         "BtnSearch": "חפש",
         "NoResultsMsg": "לא נמצאו תוצאות",
         "SyncToCloudMsg": "סנכרן עם חשבון גוגל דרייב",
-        "SyncToCloudTitle":"סינכרון עם חשבון גוגל דרייב",
+        "SyncToCloudTitle":"סינכרון לגוגל דרייב",
         "ErrSyncFail": "סנכרון נכשל\n {1}",
         "SyncStatusNone": "אינו מסונכרן",
         "SyncStatusLbl":"מצב סינכרון",
@@ -91,6 +91,8 @@ var strings = {
         "NotLoggedIn":"עדיין לא מחובר",
         "LoggedIn":"מחובר ל: {1}",
         "BtnLogout":"התנתק",
+        "BtnReconsile":"הסתנכרן",
+        "ReconsileStarted":"סינכרון החל",
 
     },
     "ar": {
@@ -232,6 +234,8 @@ var strings = {
         "NotLoggedIn":"Not connected yet",
         "LoggedIn":"Connected to {1}",
         "BtnLogout":"Logout",
+        "BtnReconsile":"Reconsile",
+        "ReconsileStarted":"Reconsile started",
 
     }
 }

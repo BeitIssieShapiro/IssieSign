@@ -24,80 +24,6 @@ class WordAdults extends IssieBase {
         return null;
     }
 
-    /*
-    toggleSelect = async (word, forceOff) => {
-        if (!forceOff && (!word || word.type !== 'file')) return;
-
-        if (forceOff || (this.state.selectedWord && this.state.selectedWord.id === word.id)) {
-            //toggle off
-            this.setState({ selectedWord: undefined });
-            this.props.pubSub.publish({ command: "hide-all-buttons" });
-        } else {
-
-            this.setState({ selectedWord: word });
-            if (this.props.pubSub) {
-                if (this.props.allowAddWord) {
-                    this.props.pubSub.publish({
-                        command: "show-delete", callback: () => {
-                            if (this.state.selectedWord) {
-                                confirmAlert({
-                                    title: translate("ConfirmTitleDeleteWord"),
-                                    message: fTranslate("ConfirmDeleteWordMessage", this.state.selectedWord.name),
-                                    buttons: [
-                                        {
-                                            label: translate("BtnYes"),
-                                            onClick: () => {
-                                                deleteWord(this.state.selectedWord.videoName).then(
-                                                    //Success:
-                                                    async () => {
-                                                        await reloadAdditionals();
-                                                        this.props.pubSub.publish({ command: "refresh" })
-                                                        this.toggleSelect(null, true)
-                                                        this.props.alert.success(translate("InfoDeleteSucceeded"));
-                                                    },
-                                                    //error
-                                                    (e) => this.props.alert.error(translate("InfoDeleteFailed") + "\n" + e)
-                                                );
-                                            }
-                                        },
-                                        {
-                                            label: translate("BtnCancel"),
-                                            onClick: () => this.props.alert.info(translate("InfoDeleteCanceled"))
-                                        }
-                                    ]
-                                });
-                            }
-                        }
-                    });
-                }
-
-
-                this.props.pubSub.publish({
-                    command: "show-share", 
-                    
-                    // callback: () => {
-                    //     console.log("Share pressed");
-                    //     if (this.state.selectedWord) {
-                    //         this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("InfoSharingWords") });
-                    //         shareWord(this.state.selectedWord).then(
-                    //             //Success:
-                    //             () => this.toggleSelect(null, true),
-                    //             //error
-                    //             (e) => this.props.alert.error(translate("InfoSharingFailed") + "\n" + e)
-
-                    //         ).finally(() =>
-                    //             this.props.pubSub.publish({ command: 'set-busy', active: false })
-                    //         );
-                    //     }
-                    // }
-                    entity: this.state.selectedWord,
-                });
-            }
-        }
-    }
-*/
-
-
     render() {
 
         let wordsElements = [];
@@ -110,25 +36,26 @@ class WordAdults extends IssieBase {
                 }
                 let selectable = word.type === "file"
                 return <Card2
-                editMode={this.props.editMode}
+                    editMode={this.props.editMode}
                     categoty={word.category}
-                    shareCart = {this.props.shareCart}
+                    pubSub={this.props.pubSub}
+                    shareCart={this.props.shareCart}
+                    userContent={word.userContent}
+                    cardType={word.userContent ? "file" : "default"}
                     onClick={(url) => {
-                        this.setState({ selected: word.videoName });
+                        this.setState({ selected: word });
+                        VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
                     }}
-                    key={word.id} cardType={selectable ? "file" : "default"}
+                    key={word.id}
                     cardName={word.name}
                     videoName={word.videoName}
                     imageName={word.imageName} imageName2={word.imageName2}
-                    themeId={themeId} longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} selected={selected}
+                    themeId={themeId}
+                    //longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} 
+                    selected={selected}
                     binder={true} />
             });
-
-
-
         }
-
-        VideoToggle(this.state.selected, !IssieBase.isMobile(), IssieBase.isLandscape());
 
         return (
             <div style={{
@@ -140,16 +67,16 @@ class WordAdults extends IssieBase {
                             //categoryId={props.categoryId}
                             isLandscape={IssieBase.isLandscape()}
                             isMobile={IssieBase.isMobile()}
-                            videoName={this.state.selected}
-                            filePath={""}
+                            videoName={this.state.selected?.userContent?"file":this.state.selected?.videoName}
+                            filePath={this.state.selected?.userContent ? this.state.selected?.videoName:""}
                             adultMode={true}
                         /> :
                         <div
                             style={{
                                 display: "flex",
                                 height: "100%",
-                                justifyContent:"center",
-                                alignItems:"center",
+                                justifyContent: "center",
+                                alignItems: "center",
                                 fontSize: 45, color: "black"
                             }}
                         >{translate("NoWordSelected")}</div>

@@ -108,6 +108,7 @@ function Card2(props) {
         <React.Fragment>
             <ISLink
                 onLongPress={props.longPressCallback}
+                onClick={props.onClick}
                 url={url}
             >
                 {body}

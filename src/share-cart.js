@@ -211,7 +211,7 @@ export class ShareCart {
                     await FileSystem.get().getDir(cat.name, true);
 
                     await FileSystem.gdriveDownload(cat.imageFileId, fullPath + cat.name + "/default.jpg", true);
-                    await FileSystem.get().addCategory(cat.name);
+                    await FileSystem.get().addCategory(cat.name, {imported: true});
                     existingCategories = FileSystem.get().getCategories();
                     importedCat = existingCategories.find(c => c.name === cat.name);
                 }
@@ -231,7 +231,7 @@ export class ShareCart {
                     let videoName = cat.name + "/" + word.name + ".mov";
                     await FileSystem.gdriveDownload(word.videoFileId, fullPath + videoName, true);
 
-                    await FileSystem.get().addWord(cat.name, word.name);
+                    await FileSystem.get().addWord(cat.name, word.name, {imported: true});
                     addedWords.push(cat.name + "/" + word.name);
                 }
 

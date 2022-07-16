@@ -10,6 +10,9 @@
 ### Run in Browser 
 Note: some features won't work, as it requires device API such as filesystem
 
+- change `window.isBrowser = true`
+- comment out `<script type="text/javascript" charset="utf-8" src="cordova.js"></script>`
+
 - run `npm start`
 - browser will open with the App.
 - On every file change, the browser will reload the App.

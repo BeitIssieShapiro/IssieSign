@@ -79,7 +79,8 @@ var InfoIcon = function InfoIcon() {
     fontFamily: 'Arial',
     fontSize: 18,
     width: '300px',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    dir: 'var(--dir)',
   };
 
 
@@ -97,7 +98,7 @@ export default function AlertTemplate(_ref) {
       options.type === 'error' && React.createElement(ErrorIcon, null),
       React.createElement(
         'span',
-        { class: "alert-message" },
+        { style: { flex: 2 }, dir:"var(--dir)" },
         message
       )
     );

@@ -97,6 +97,24 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)findFolder:(CDVInvokedUrlCommand*)command {
+
+    NSString* folderName = [command.arguments objectAtIndex:0];
+    NSString* parentFolderId = [command.arguments objectAtIndex:1];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(self.authorization.canAuthorize){
+            [self findAFolder:command folderName:folderName parentFolderId:parentFolderId];
+                NSLog(@"Already authorized app. No need to ask user again");
+        } else{
+            [self runSigninThenHandler:command onComplete:^{
+                [self findAFolder:command folderName:folderName parentFolderId:parentFolderId];
+            }];
+        }
+    });
+}
+
+
 - (void)downloadFile:(CDVInvokedUrlCommand*)command
 {
     NSString* destPath = [command.arguments objectAtIndex:0];
@@ -153,14 +171,14 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 
 - (void)fileList:(CDVInvokedUrlCommand*)command{
 
-    BOOL appfolder = [[command.arguments objectAtIndex:0] boolValue];
+    NSString * parentFolderId = [command.arguments objectAtIndex:0];
     dispatch_async(dispatch_get_main_queue(), ^{
         if(self.authorization.canAuthorize){
-            [self fetchFileList:command appFolder:appfolder];
+            [self fetchFileList:command parentFolderId:parentFolderId];
             NSLog(@"Already authorized app. No need to ask user again");
         } else{
             [self runSigninThenHandler:command onComplete:^{
-                [self fetchFileList:command appFolder:appfolder];
+                [self fetchFileList:command parentFolderId:parentFolderId];
             }];
         }
     });
@@ -233,33 +251,66 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
         }];
 }
 
-- (void)fetchFileList:(CDVInvokedUrlCommand*)command appFolder:(BOOL)appfolder {
+
+// find a folder, optionally can pass a parent folderId
+- (void)findAFolder:(CDVInvokedUrlCommand*)command folderName:(NSString*)folderName parentFolderId:(NSString*)parentFolderId {
     GTLRDriveService *service = self.driveService;
     GTLRDriveQuery_FilesList *query = [GTLRDriveQuery_FilesList query];
-
-    query.fields = @"nextPageToken,files(id,name,trashed,modifiedTime)";
-    if(appfolder)
-        query.spaces = @"appDataFolder";
-
-    //query.orderBy=@"modifiedDate";
+    query.fields = @"nextPageToken,files(id,name,modifiedTime,trashed)";
+    NSString* parentQueryAddition = @"";
+    if (![self IsEmpty:parentFolderId]) {
+        parentQueryAddition = [NSString stringWithFormat:@" and '%@' in parents", parentFolderId];
+    }
+    
+    query.q = [NSString stringWithFormat:@"name = '%@' and mimeType = 'application/vnd.google-apps.folder' and trashed = false %@" , folderName ,parentQueryAddition];
 
     [service executeQuery:query
         completionHandler:^(GTLRServiceTicket *callbackTicket,
                             GTLRDrive_FileList *fileList,
                             NSError *callbackError) {
-            // Callback
-            NSArray *notTrashed = [[fileList files] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"trashed == %d", 0]];
-            NSMutableArray *res = [[NSMutableArray alloc] init];
-            if (notTrashed.count > 0) {
-                for (GTLRDrive_File *file in notTrashed) {
-                    [res addObject:file.JSON];
-                }
-            }
+
             CDVPluginResult* pluginResult = nil;
             if (callbackError == nil) {
                 NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-                [result setObject:@"Retrived file list succesfully!" forKey:@"message"];
-                [result setObject:res forKey:@"flist"];
+                NSMutableArray *filesArray = [[NSMutableArray alloc] init];
+
+                for (GTLRDrive_File *file in [fileList files]) {
+                    [filesArray addObject:file.JSON];
+                }
+                
+                [result setObject:filesArray forKey:@"folders"];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+            } else {
+                [callbackTicket cancelTicket];
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[callbackError localizedDescription]];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+}
+
+
+- (void)fetchFileList:(CDVInvokedUrlCommand*)command parentFolderId:(NSString*)parentFolderId {
+    GTLRDriveService *service = self.driveService;
+    GTLRDriveQuery_FilesList *query = [GTLRDriveQuery_FilesList query];
+
+    query.fields = @"nextPageToken,files(id,name,modifiedTime,mimeType  )";
+
+    query.q = [NSString stringWithFormat:@"trashed = false and '%@' in parents", parentFolderId];
+    query.orderBy = @"modifiedTime desc";
+    [service executeQuery:query
+        completionHandler:^(GTLRServiceTicket *callbackTicket,
+                            GTLRDrive_FileList *fileList,
+                            NSError *callbackError) {
+            CDVPluginResult* pluginResult = nil;
+            if (callbackError == nil) {
+                NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+                NSMutableArray *filesArray = [[NSMutableArray alloc] init];
+
+                for (GTLRDrive_File *file in [fileList files]) {
+                    [filesArray addObject:file.JSON];
+                }
+                
+                [result setObject:filesArray forKey:@"files"];
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
             } else {
                 [callbackTicket cancelTicket];
@@ -309,6 +360,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
                 CDVPluginResult* pluginResult = nil;
                 [callbackTicket cancelTicket];
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[callbackError localizedDescription]];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }
         }];
         return;
@@ -358,6 +410,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
                     CDVPluginResult* pluginResult = nil;
                     [callbackTicket cancelTicket];
                     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[callbackError localizedDescription]];
+                    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                 }
             }];
             return;
@@ -497,8 +550,9 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 
     OIDServiceConfiguration *configuration = [GTMAppAuthFetcherAuthorization configurationForGoogle];
     NSArray<NSString *> *scopes = @[ kGTLRAuthScopeDriveFile, OIDScopeEmail,
-                                     kGTLRAuthScopeDriveAppdata,
-                                     kGTLRAuthScopeDrive];
+                                     //kGTLRAuthScopeDriveAppdata,
+                                     //kGTLRAuthScopeDrive
+                                    ];
     OIDAuthorizationRequest *request = [[OIDAuthorizationRequest alloc] initWithConfiguration:configuration
                                                                                      clientId:kClientID
                                                                                  clientSecret:nil

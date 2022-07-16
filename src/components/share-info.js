@@ -41,7 +41,7 @@ function ShareInfo(props) {
             <div>
                 <RadioBtn
                     checked={entity.sync == FileSystem.IN_SYNC || entity.sync == FileSystem.SYNC_REQUEST}
-                    onChange={(e) => toggleCloudSync(e.target.checked)}
+                    onChange={(isOn) => toggleCloudSync(isOn)}
                 />
             </div>
 

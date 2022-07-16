@@ -20,18 +20,22 @@ V- check for wrong format of import zip
 V- sync should be blocking action
 V- translate all missing texts
 V- logout, who am In
+V- reconcile, search MyIssieSign root
 
-no search in add.js
 V - add to cart message
 V longer message
-V ltr message
+V- adult mode - test all edit mode
 
+
+?? ltr message
+cordova-plugin-network-information
+
+??- delete when deleting cat/word
 - launch-screen for MyIssieSign
 - add word without image - no error but not saved
-- adult mode - test all edit mode
 - rethink always sharing to anyone with a link??
 - Support update (low)
-- reconcile, search MyIssieSign root
+- no search in add.js
 - login ?
 
 
