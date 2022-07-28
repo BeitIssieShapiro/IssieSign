@@ -13,7 +13,7 @@ export default function SearchImage({ onClose, onSelectImage, pubSub }) {
     return <ModalDialog title={translate("SearchImageTitle")} onClose={onClose}>
         <div className="searchRoot">
             <div className="searchTextAndBtnContainer">
-                <input type="search" className="searchText"
+                <input type="search"
                     placeholder={translate("EnterSearchHere")}
                     value={value} onChange={(e) => setValue(e.target.value)}
                 />

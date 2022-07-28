@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; img-src * filesystem: cdvfile: data:; media-src * filesystem:"> -->
 
     <style>
         html,
@@ -179,9 +180,9 @@
     <script>
         window.isBrowser = false;
 
-        document.assetsReady = false;
         let assetsInit = false;
         let assetsInit2 = false;
+
         function getPlayAssetPath() {
             window.resolveLocalFileSystemURI("playasset://issiesign_assets", (obj) => {
                 document.basePath = obj.root + "/";
@@ -212,9 +213,6 @@
                 setTimeout(getPlayAssetPath2, 1500);
             });
         }
-
-        document.basePath = document.location.href.includes('android_asset') ? "file:///android_asset/" : "/";
-        document.preventTouch = true;
         function doNothing(e) {
             if (document.swipeInProgress) {
                 const dx = e.touches[0].clientX - document.swipeInProgress.initial.x;
@@ -242,12 +240,6 @@
                 e.preventDefault();
             }
         }
-        console.log("touch move registered")
-        document.addEventListener("touchmove", doNothing, { passive: false });
-        document.addEventListener("touchend", (e)=>{
-            // console.log("touch end");
-            document.swipeInProgress = undefined;
-        }, { passive: false });
 
 
         var handleOpenURL = (url) => {
@@ -259,6 +251,7 @@
 
         function getAssetsInfo() {
             console.log("getAssetsInfo");
+
             window.PlayAssets.getPlayAssets((assets)=> {
                 if (assets && assets.ready && assets.assets.length === 2) {
                     document.assetsReady = true;
@@ -286,21 +279,37 @@
             })
         }
 
-        
-        
-        document.assetsReady=window.isBrowser;
-        document.addEventListener("deviceready", onDeviceReady, false);
-        function onDeviceReady() {
-            //console.log(cordova.file);
-            //console.log(cordova.file.applicationDirectory);
-            console.log("Device Ready event");
-            if (document.basePath !== "/") {
-                window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
-                getAssetsInfo();
-                window.documents = cordova.file.externalDataDirectory;
-                window.isAndroid = true;
 
-                cordova.openwith.init(
+        function onDeviceReady() {
+            console.log("Cordova: Device Is Ready");
+            window.isBrowser = false;
+
+            
+            if (cordova.file.applicationDirectory.includes('android_asset')) {
+                // Android:
+                console.log("Device is Android")
+                window.isAndroid = true;
+                
+                //https://localhost/__cdvfile_assets__/ == assets/www
+                window.documents = cordova.file.dataDirectory;
+                // would be file:///data/user/0/com.issieshapiro.myissiesign/files/
+
+                // todo - adjust once issie sign has own app-id
+                const isMyIssieSign = window.documents.includes("com.issieshapiro.myissiesign"); 
+
+
+                document.basePath = "https://localhost/__cdvfile_assets__/";
+                if (!isMyIssieSign) {
+                    document.assetsReady = false;
+
+                    window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
+                    getAssetsInfo();
+                } 
+                
+                if (!cordova.openwith) {
+                    console.log("cordova.openwith is undefined");
+                }
+                cordova.openwith?.init(
                     () => {
                         console.log("open with init success");
                         cordova.openwith.addHandler((intent) => {
@@ -320,13 +329,21 @@
 
             } else {
                 //only in iOS
+                console.log("Device is iOS");
+                window.isAndroid = false;
                 document.basePath = cordova.file.applicationDirectory;
                 window.documents = cordova.file.documentsDirectory;
                 document.assetsReady=true;
             }
-            console.log("base path:", document.basePath);
+            console.log("base path:", document.basePath, "window.documents:", window.documents);
         }
 
+        document.assetsReady = true;
+        document.preventTouch = true;
+
+        document.addEventListener("touchmove", doNothing, { passive: false });
+        document.addEventListener("touchend", (e)=>{document.swipeInProgress = undefined;}, { passive: false });
+        document.addEventListener("deviceready", onDeviceReady, false);
     </script>
 </head>
 

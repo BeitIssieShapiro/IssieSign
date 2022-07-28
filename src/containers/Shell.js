@@ -38,7 +38,7 @@ function Shell (props) {
             <div className="shellTopBlueBar"/>
             <div className="shellheader parent" theme={props.theme}>
                 <div className="shellheaderTop">
-                    <div className="startBar right">
+                    <div className="startBar">
                         <Slot slot="start-bar">{props.children}</Slot>
                     </div>
                     <div className="centerBar">

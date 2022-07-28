@@ -50,28 +50,28 @@ export function HeaderButton(props) {
 }
 
 export function EditButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected}
+  return <HeaderButton slot={props.slot} selected={props.selected} className="b"
     onClick={props.onClick}>
     <Edit style={{ fontSize: 35 }} />
   </HeaderButton>
 }
 
 export function AddButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected}
+  return <HeaderButton slot={props.slot} selected={props.selected} className="c"
     onClick={props.onClick}>
     <Add style={{ fontSize: 35 }} />
   </HeaderButton>
 }
 
 export function SettingsButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected}
+  return <HeaderButton slot={props.slot} selected={props.selected} className="a"
     onClick={props.onClick}>
     <Settings style={{ fontSize: 35 }} />
   </HeaderButton>
 }
 
 export function ShareCartButton(props) {
-  return <HeaderButton slot={props.slot}
+  return <HeaderButton slot={props.slot} className="d"
     onClick={props.onClick}>
     <ShoppingCart style={{ fontSize: 35 }} />
     <div style={{ fontSize: 18, position: "absolute", left: 13, top: -13 }}>{props.count}</div>

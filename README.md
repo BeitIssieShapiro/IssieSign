@@ -61,6 +61,10 @@ cd scripts
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
 
 
+play's MyIssieSign SHA1: 4B:09:C4:C8:C4:48:D4:27:5E:7F:2E:62:54:E4:D9:C7:FA:48:F1:4C
+
+
+
 # Licence
 IssieSign is avaiable under the GPL Licence. See the following link: https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -77,6 +81,7 @@ cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
 cordova plugins add ../GDrivePlugin/
+cordova plugins add ../PlayAssetsPlugin/
 ```
 
 
@@ -124,68 +129,39 @@ under "Resoutrces"
 
 ### Android
 - Import project (app/platforms/android)
-- android/app/src/main/AndroidManifest.xml: `android:versionCode="21" android:versionName="1.1.11"` - adjust version
-- Install playassets own plugin:
-  - in `cordova/app/platforms/android/android.json`
-    - add 
+
+
+- android/app/src/main/AndroidManifest.xml: `android:versionCode="21" android:versionName="1.1.11"` 
+  - adjust version
+  - add `< application ...android:usesCleartextTraffic="true" ...`
+  - add intent-filter (for open with)
     ```
-      "config_munge": {
-    "files": {
-       "res/xml/config.xml": {
-         "parents": {
-           "/*": [
-             {
-               "xml": "<feature name=\"PlayAssets\"><param name=\"android-package\" value=\"bentu.playassets.PlayAssets\" /><param name=\"onload\" value=\"true\" /></feature>",
-               "count": 1
-             },
+    <intent-filter android:label="Import Words" android:priority="1">
+        <action android:name="android.intent.action.VIEW" />
+        <action android:name="android.intent.action.EDIT" />
+        <action android:name="android.intent.action.PICK" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:mimeType="*/*" />
+        <data android:pathPattern="*.zip" />
+    </intent-filter>
     ```
-    - add
-    ```
-    },
-     "cordova-plugin-assets": {
-       "PACKAGE_NAME": "com.issieshapiro.signlang"
-     }
-    ```
-    - add 
-    ```
-    "modules": [
-     {
-       "id": "cordova-plugin-assets.PlayAssets",
-       "file": "plugins/cordova-plugin-assets/www/playassets.js",
-       "pluginId": "cordova-plugin-assets",
-       "clobbers": [
-         "window.PlayAssets"
-       ]
-     },
-     ```
-  - in `cordova/app/platforms/android/platform_www/cordova_plugins.js`
-    - add
-    ```
-    {
-       "id": "cordova-plugin-assets.PlayAssets",
-       "file": "plugins/cordova-plugin-assets/www/playassets.js",
-       "pluginId": "cordova-plugin-assets",
-       "clobbers": [
-         "window.PlayAssets"
-       ]
-     },
-    ```
-  - copy `code-changes/AndroidAssets/cordova-plugin-assets` to `cordova/app/platforms/android/platform_www/plugins/`
-  - copy `code-changes/AndroidAssets/bentu` to  `cordova/IsraeliSignLanguage/platforms/android/app/src/main/java/`
-  - in `cordova/app/platforms/android/app/src/main/res/xml/config.xml`
-    - add
-    ```
-     <feature name="PlayAssets">
-         <param name="android-package" value="bentu.playassets.PlayAssets" />
-     </feature>
-    ```
+
 - Create playassets folders:
-  - Copy `code-changes/AndroidAssets/issiesign_assets*` to `cordova/app/platforms/android/`
+  Copy `code-changes/AndroidAssets/issiesign_assets*` to `/platforms/android/`
+
+- in `android/gradle.properties`
+  add `org.gradle.java.home=/usr/local/Cellar/openjdk/18.0.1.1/`
+
+
 -  in `android/app/build.gradle`: 
-  - add at root
+  add at root
   ```
   dependencies {
-        implementation 'com.google.android.play:core:1.10.0'
+    implementation 'com.google.android.play:core:1.10.3'
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'    
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation 'com.google.apis:google-api-services-drive:v3-rev75-1.22.0'
     }
   ```
   - in `android {}`
@@ -207,25 +183,27 @@ under "Resoutrces"
         }
     }
     ```
-  - in `platforms/android/project.properties`:
-    add
-    ```
-    android.library.reference.3=:issiesign_assets
-    android.library.reference.4=:issiesign_assets3
+ 
+- in `platforms/android/settings.gradle`
+  add
+  ```
+include ':issiesign_assets'
+include ':issiesign_assets3'
 
-    ```
-  - add new file at root `local.properties`
-    `sdk.dir=/home/myFolder/androidSdk`
-  - CameraLauncher: 
   ```
-  //import android.support.v4.content.FileProvider;
+
+
+  - add new file `platforms/android/local.properties`
+
+    `sdk.dir=</path to android sdk. e.g. on Mac ~/Library/Android/sdk>`
+  
+  - in ContentFileSystem.java , function toNativeUri
+    first line: `String authorityAndPath = inputURL.uri.getEncodedPath().substring(12 + this.name.length() + 2);`
+    - see [issue](https://github.com/apache/cordova-plugin-file/issues/525)
   ```
-  - Camera/FileProvider
-  ```
-  public class FileProvider extends androidx.core.content.FileProvider {}
-  ```
-  - set the signing info ??
-    RELEASE_STORE_FILE={path to your keystore}
+  
+  - In the IDE, select 'Generate Signed Bundle /APK' and set the following:
+    RELEASE_STORE_FILE={path to your keystore [the file named `issieSign2.0-pkc12.jks`]}
     RELEASE_STORE_PASSWORD=issiesign
     RELEASE_KEY_ALIAS=signlang
     RELEASE_KEY_PASSWORD=issiesign

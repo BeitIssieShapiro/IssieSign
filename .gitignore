@@ -20,8 +20,8 @@ static
 android-gen
 
 #pk
-googleplay/issieSign2.0-pkc12.jks
-googleplay/issieSign2.0.jks
+googleplay/*.jks
+googleplay/export/
 
 
 # Mac

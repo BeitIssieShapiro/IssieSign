@@ -37,7 +37,7 @@ cordova-plugin-network-information
 - Support update (low)
 - no search in add.js
 - login ?
-
+- when setting sync to off , ask before delete
 
 
 IssieSign

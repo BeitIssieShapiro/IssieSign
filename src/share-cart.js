@@ -54,7 +54,7 @@ export class ShareCart {
 
             let fCategory = FileSystem.get().findCategory(category);
             if (!fCategory) {
-                throw "Missing category: " + category;
+                throw new Error("Missing category: " + category);
             }
             if (fCategory.userContent && fCategory.sync !== FileSystem.IN_SYNC)
                 return false;
@@ -67,7 +67,7 @@ export class ShareCart {
             } else {
                 let word = FileSystem.get().findWord(category, name);
                 if (!word) {
-                    throw "Missing word: " + name;
+                    throw new Error("Missing word: " + name);
                 }
                 if (word.userContent && word.sync !== FileSystem.IN_SYNC) {
                     return false;
@@ -87,7 +87,7 @@ export class ShareCart {
                 FileSystem.get().findCategory(category);
 
             if (!entity) {
-                throw "Missing word or category: " + category + "/" + name;
+                throw new Error("Missing word or category: " + category + "/" + name);
             }
             trace("Set sync", entity.name)
             FileSystem.get().setSync(entity, true, false);
@@ -155,14 +155,22 @@ export class ShareCart {
 
     async unzipFile(filePath) {
         const base64Prefix = "data:application/zip;base64,";
+        const base64Prefix2 = "data:application/x-zip-compressed;base64,";
 
         return FileSystem.readFile(filePath).then((fileContents) => {
-            if (!fileContents.startsWith(base64Prefix)) {
+            let skip = 0;
+            if (fileContents.startsWith(base64Prefix)) {
+                skip = base64Prefix.length;
+            } else if (fileContents.startsWith(base64Prefix2)) {
+                skip = base64Prefix2.length;
+            } else {
+                console.log("zip starts with " + fileContents.substring(0, 100));
                 throw ("Unknown format of an imported zip file");
             }
+
             let zip = new JSZip();
 
-            return zip.loadAsync(fileContents.substr(base64Prefix.length), { base64: true }).then(zipEntry => {
+            return zip.loadAsync(fileContents.substr(skip), { base64: true }).then(zipEntry => {
                 // only expect one file
                 const fileAndFoldersCount = Object.keys(zipEntry.files).length;
 
@@ -205,13 +213,13 @@ export class ShareCart {
                 let fullPath = FileSystem.getDocDir() + "Categories/";
                 if (!importedCat) {
                     if (!cat.imageFileId) {
-                        throw "Unexpected missing Category's FileID";
+                        throw new Error("Unexpected missing Category's FileID");
                     }
                     //create the folder
                     await FileSystem.get().getDir(cat.name, true);
 
                     await FileSystem.gdriveDownload(cat.imageFileId, fullPath + cat.name + "/default.jpg", true);
-                    await FileSystem.get().addCategory(cat.name, {imported: true});
+                    await FileSystem.get().addCategory(cat.name, { imported: true });
                     existingCategories = FileSystem.get().getCategories();
                     importedCat = existingCategories.find(c => c.name === cat.name);
                 }
@@ -231,7 +239,7 @@ export class ShareCart {
                     let videoName = cat.name + "/" + word.name + ".mov";
                     await FileSystem.gdriveDownload(word.videoFileId, fullPath + videoName, true);
 
-                    await FileSystem.get().addWord(cat.name, word.name, {imported: true});
+                    await FileSystem.get().addWord(cat.name, word.name, { imported: true });
                     addedWords.push(cat.name + "/" + word.name);
                 }
 

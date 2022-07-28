@@ -1,0 +1,29 @@
+{
+  "name": "cordova-plugin-assets",
+  "version": "1.0",
+  "description": "Cordova Google Play Assets Plugin",
+  "cordova": {
+    "id":"cordova-plugin-assets",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ariel-bentu/AndroidPlayAssetsPlugin"
+  },
+  "keywords": [
+    "cordova",
+    "ecosystem:cordova",
+    "cordova-android",
+    "google",
+    "play-assets"
+  ],
+  
+  "author": "Ariel Bentolila",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ariel-bentu/AndroidPlayAssetsPlugin/issues"
+  },
+  "homepage": "https://github.com/ariel-bentu/AndroidPlayAssetsPlugin#readme"
+}

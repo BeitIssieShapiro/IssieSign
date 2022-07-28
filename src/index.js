@@ -18,6 +18,9 @@ window.openWith = async (url) => {
 
   if (window.importWords) {
     window.importWords(url);
+  } else {
+    console.log("importWords is not ready", url);
+    window.awaitingImport = url;
   }
 }
 

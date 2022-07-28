@@ -6,7 +6,7 @@ let fileSystem;
 export default class FileSystem {
     static INDEX_FILE = "index.json";
 
-    static SCHEME_PREFIX = window.isAndroid ? "" : "issie-";
+    static SCHEME_PREFIX = "";
 
 
     static IN_SYNC = "in-sync";
@@ -68,6 +68,9 @@ export default class FileSystem {
         console.log("Init file system");
         this.pubSub = pubSub;
         if (isBrowser()) return;
+
+        //FileSystem.SCHEME_PREFIX = window.isAndroid ? "" : "issie-";
+
         return new Promise(async (resolve, reject) => {
             let attempts = 0;
             while (attempts < 5 && !(await waitForCordova(1000))) {
@@ -98,6 +101,17 @@ export default class FileSystem {
                         },
                         () => {
                             this.index = { ...defaultContent };
+
+                            // if (window.isAndroid) {
+                            //     // copy tutorial videos to the docs:
+                            //     this.index.categories.forEach(cat=> {
+                            //         cat.words.forEach(word=> {
+
+                            //         })
+                            //     })
+                            // }
+
+
                             this.saveIndex().then(
                                 () => {
                                     this.init = true;
@@ -203,7 +217,7 @@ export default class FileSystem {
         // todo delete from cloud
         let word = this.findWord(categoryName, wordName);
         if (!word) {
-            throw "Word not found: " + wordName;
+            throw new Error("Word not found: " + wordName);
         }
         let dirEntry = await this.getDir(categoryName, false);
         if (word.imageName.length > 0) {
@@ -300,13 +314,45 @@ export default class FileSystem {
                         resolve(evt.target.result);
                     }
                     reader.readAsDataURL(file);
-                }
-            )
+                },
+                (err) => reject(err)
+            ),
+            (err) => reject(err)
         ));
     }
 
-    getFilePath(name) {
-        return FileSystem.SCHEME_PREFIX + FileSystem.getDocDir() + "Categories/" + decodeURIComponent(name);
+    getFilePath(name, forUpload) {
+        if (name.startsWith("file://")) {
+            if (window.isAndroid) {
+                // const assetPrefix = "file://android_asset/";
+                // let skip = 7;
+                // if (name.startsWith(assetPrefix)) {
+                //     // option 1: file://android_asset/...
+                //     skip = assetPrefix.length;
+                // } else if (name.startsWith(window.filesPrefix)) {
+                //     // option 2: file:///data/user/0/com.issieshapiro.myissiesign/
+                //     skip = window.filesPrefix.length;
+                // }
+                // return document.basePath + name.substr(skip);
+                trace("not expected to arrive here!")
+                throw new Error("getFilePath with file:// in android - not expected")
+            }
+            return "issie-" + name;
+        }
+
+        const relPath = "Categories/" + decodeURIComponent(name);
+
+        if (forUpload && window.isAndroid) {
+            let filePath = window.documents + relPath;
+            if (filePath.startsWith("file://")) {
+                filePath = filePath.substr(7);
+            }
+            return filePath;
+        }
+        if (window.isAndroid) {
+            return "https://localhost/__cdvfile_files__/" + relPath;
+        }
+        return "issie-" + FileSystem.getDocDir() + relPath;
     }
 
     async getDir(dirName, createIfMissing) {
@@ -348,7 +394,8 @@ export default class FileSystem {
                                 reject(err)
                             }
                         )
-                    })
+                    },
+                    err => reject(err))
             }
 
             window.resolveLocalFileSystemURL(filePath, (file) =>
@@ -359,6 +406,17 @@ export default class FileSystem {
                 (err) => reject(err)
             )
         });
+    }
+
+    static async getHttpURLForFile(filePath) {
+        trace("getHttpURLForFile", filePath);
+        return new Promise((resolve, reject)=> window.resolveLocalFileSystemURL(filePath, 
+            (file) => {
+                trace("getHttpURLForFile -result", file.toURL(), file.fullPath);
+                resolve (file.toURL())
+            },
+            (err)=>reject(err)
+        ));
     }
 
 
@@ -451,7 +509,7 @@ export default class FileSystem {
                 const folderId = entity.folderId ? entity.folderId : "";
 
                 const relPath = entity.name + "/" + "default.jpg";
-                await this.gdriveUpload(this.getFilePath(relPath), relPath, folderId, false).then(
+                await this.gdriveUpload(this.getFilePath(relPath, true), relPath, folderId, false).then(
                     async (response) => {
                         entity.sync = FileSystem.IN_SYNC;
                         entity.imageFileId = response.fileId;
@@ -469,11 +527,11 @@ export default class FileSystem {
             } else {
                 try {
                     if (entity.imageName.length > 0) {
-                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName), entity.imageName, parentEntity.folderId, false)
+                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName, true), entity.imageName, parentEntity.folderId, false)
                         entity.imageFileId = response.fileId;
                         parentEntity.folderId = response.folderId;
                     }
-                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName), entity.videoName, parentEntity.folderId, false)
+                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName, true), entity.videoName, parentEntity.folderId, false)
                     entity.videoFileId = response.fileId;
                     parentEntity.folderId = response.folderId;
                     entity.sync = FileSystem.IN_SYNC;
@@ -641,7 +699,7 @@ export default class FileSystem {
             );
         })
     }
-    async sile() {
+    async reconsile() {
 
         const rootFolderId = await this.findRootFolder(getAppName());
         trace("Found root ID", rootFolderId)
@@ -673,14 +731,19 @@ export default class FileSystem {
                 const defFile = catFiles.find(catFile => catFile.name == "default.jpg")
                 if (defFile) {
                     // download the file
-                    
+
                     const localCat = this.findCategory(catName);
                     if (!localCat) {
                         // create it locally
                         // verify folder exists
                         await this.getDir(catName, true);
                         await FileSystem.gdriveDownload(defFile.id, fullPath + catName + "/default.jpg", false);
-                        await this.addCategory(catName, {sync: FileSystem.IN_SYNC});
+                        await this.addCategory(catName, 
+                            { 
+                                sync: FileSystem.IN_SYNC,
+                                imageFileId: defFile.id,
+                                folderId: f.id,
+                            });
                     }
                 }
 

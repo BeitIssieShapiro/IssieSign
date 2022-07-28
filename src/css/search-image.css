@@ -9,6 +9,7 @@
     position: relative;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
+    grid-template-areas: 'a a b';
     background-color: white;
     width: 60%;
     max-height: 70px;
@@ -23,19 +24,22 @@
     background-color: transparent;
     border: none;
     font-size: 30px;
-    /* line-height: 30px; */
+
     height: 35px;
     line-height: 35px;
-    padding-top:0;
+    padding-top: 0;
     padding-bottom: 0;
     border-radius: 0%;
     width: 100%;
-    grid-row: 1;
-    grid-column-start: 1;
-    grid-column-end: 3;
     color: black;
     direction: var(--dir);
+    grid-area: a;
 }
+
+::placeholder {
+    text-align: center;
+}
+
 
 .searchImageBtn {
     background-color: #5c7e9d;
@@ -46,21 +50,27 @@
     border-radius: 2%;
     width: 100%;
     color: white;
-    grid-row: 1;
-    grid-column: 3;
+    grid-area: b;
 }
 
 
 @media (max-width: 700px) {
     .searchTextAndBtnContainer {
+        width: 90%;
+        grid-template-areas:
+            'a a a'
+            '. b .';
         max-height: 100px;
         min-height: 100px;
 
     }
 
+    .searchTextAndBtnContainer>input[type=search] {
+        font-size: 25px;
+    }
+
     .searchImageBtn {
-        grid-row: 2;
-        grid-column: 2;
+        font-size: 18px;
     }
 }
 

@@ -13,10 +13,7 @@ const getImageContent = (image):string => {
 export const imageLocalCall = (imageName:string, isUserContent) => {
     if (imageName.startsWith("http")) return imageName;
 
-    if (imageName.startsWith("file:")) {
-        return FileSystem.SCHEME_PREFIX + imageName; 
-    }
-    if (isUserContent) {
+    if (isUserContent || imageName.startsWith("file:")) {
         return FileSystem.get().getFilePath(imageName);
     }
     let res = getImageContent(imageName);

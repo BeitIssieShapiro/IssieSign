@@ -1,4 +1,4 @@
-cordova.define("cordova-plugin-assets.PlayAssets", function (require, exports, module) {
+//cordova.define("cordova-plugin-assets.PlayAssets", function (require, exports, module) {
     /**
      * @module PlayAssets
      */
@@ -20,4 +20,4 @@ cordova.define("cordova-plugin-assets.PlayAssets", function (require, exports, m
         }
 
     };
-});
+//});

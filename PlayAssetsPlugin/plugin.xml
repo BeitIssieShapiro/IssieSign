@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-assets" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>PlayAssets</name>
+    <description>Cordova Google Play Assets Plugin</description>
+    <author></author>
+    <keywords>google play assets</keywords>
+    <license>MIT</license>
+
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <js-module src="www/playassets.js" name="PlayAssets">
+        <clobbers target="window.PlayAssets" />
+    </js-module>
+
+    <platform name="android">
+        <!--<framework src="com.android.support:appcompat-v7:23.0.1" />-->
+        <!-- Gradle recommends fixed versions, see build.gradle in IntelliJ -->
+        <framework src="com.google.android.gms:play-services-drive:11.6.0" type="gradleReference" />
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="PlayAssets" >
+                <param name="android-package" value="bentu.playassets.PlayAssets"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <!--No classes atm-->
+        <source-file src="android/PlayAssets.java" target-dir="src/bentu.playassets" />
+    </platform>
+
+    
+</plugin>

@@ -167,10 +167,19 @@ class App extends IssieBase {
                     // todo format
                     this.props.alert.success(addWords.join("\n"));
                 },
-                (err) => this.props.alert.error(fTranslate(ImportWordsErr,err))
+                (err) => {
+                    this.props.alert.error(fTranslate("ImportWordsErr",err))
+                    console.log(fTranslate("ImportWordsErr",err));
+                }
             ).finally(() => pubsub.publish({ command: 'long-process-done' }));
+        }
 
+        if (window.awaitingImport) {
+            setTimeout(()=>{
+                window.importWords(window.awaitingImport);
+                window.awaitingImport = undefined;
 
+            }, 100);
         }
 
         this.loadingMedia();

@@ -191,7 +191,8 @@ class AddItem extends React.Component {
 
                                                 setTimeout(async () => navigator.camera.getPicture(
                                                     img => {
-                                                        this.setState({ selectedImage: img, selectInProgress: false });
+                                                        
+                                                        FileSystem.getHttpURLForFile(img).then(imgUrl=> this.setState({ selectedImage: imgUrl, selectInProgress: false }))
                                                         this.props.pubSub.publish({ command: 'set-busy', active: false });
                                                     },
                                                     err => {
@@ -210,7 +211,7 @@ class AddItem extends React.Component {
                                                     selectImage().then(
                                                         img => {
                                                             if (img && img.length > 0) {
-                                                                this.setState({ selectedImage: img })
+                                                                FileSystem.getHttpURLForFile(img).then(imgUrl=> this.setState({ selectedImage: imgUrl }))
                                                             } else {
                                                                 this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
                                                             }
