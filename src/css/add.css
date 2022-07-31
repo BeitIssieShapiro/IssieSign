@@ -1,3 +1,34 @@
+.addContainer {
+  width: 100%;
+  height: 120%;
+  background-color: lightgray;
+  direction: var(--dir);
+}
+
+/* style={{ display: 'flex', flexDirection: props.isLandscape ? 'row-reverse' : 'column', }} */
+/* style={{ display: 'flex', justifyContent: 'center', width: props.isLandscape ? '35%' : '100%', zoom: '150%' }} */
+/* style={{ color: 'black', direction: 'rtl', paddingTop: "5vh", fontSize: 40, textAlign: 'right', width: '100%' }} */
+.tileCardContainer {
+  zoom: 150%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+.fieldsContainer {
+  color:black;
+  padding-top: 5vh;
+  font-size: 40px;
+  text-align: start;
+
+}
+
+input[type="text"]::placeholder {
+  text-align: start;
+}
+
+
 .addInput {
   font-size: 1em;
   color: #5c7e9d;
@@ -20,6 +51,8 @@
   border-bottom: 2px solid;
   border-bottom-color: grey;
 }
+
+
 
 .addInput::-webkit-input-placeholder {
   /* WebKit browsers */
@@ -175,4 +208,25 @@
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="red" d="M11.469,10l7.08-7.08c0.406-0.406,0.406-1.064,0-1.469c-0.406-0.406-1.063-0.406-1.469,0L10,8.53l-7.081-7.08 c-0.406-0.406-1.064-0.406-1.469,0c-0.406,0.406-0.406,1.063,0,1.469L8.531,10L1.45,17.081c-0.406,0.406-0.406,1.064,0,1.469 c0.203,0.203,0.469,0.304,0.735,0.304c0.266,0,0.531-0.101,0.735-0.304L10,11.469l7.08,7.081c0.203,0.203,0.469,0.304,0.735,0.304 c0.267,0,0.532-0.101,0.735-0.304c0.406-0.406,0.406-1.064,0-1.469L11.469,10z"></path></svg>');
   width: 20px;
   height: 20px;
+}
+
+.syncContainer {
+  direction: var(--dir);
+  padding-left: 8vw;
+  padding-right: 8vw;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.syncCaption {
+  font-size: 20px;
+  color:black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.syncLine {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
 }

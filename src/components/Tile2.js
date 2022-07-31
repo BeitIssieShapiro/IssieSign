@@ -34,7 +34,9 @@ function Tile2(props) {
     }
 
     const showCategoryInfo = () => {
+        console.log("info", props.tileName)
         props.pubSub.publish({ command: 'show-entity-info', name: props.tileName });
+        //props.history.push("/add-category");
     }
 
     const deleteCategory = () => {

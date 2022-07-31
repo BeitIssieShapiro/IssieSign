@@ -165,7 +165,8 @@ export function AddToShareButton(props) {
 export function InfoButton(props) {
   return <TileButton
   {...props}>
-    <div style={{fontSize:20}}>i</div>
+    {/* <div style={{fontSize:20}}>i</div> */}
+    <Edit />
   </TileButton>
 }
 

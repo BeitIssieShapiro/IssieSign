@@ -1,5 +1,6 @@
 import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY, trace, getAppName } from '../utils/Utils';
 import axios from 'axios';
+import { translate } from '../utils/lang';
 
 let fileSystem;
 
@@ -8,7 +9,7 @@ export default class FileSystem {
 
     static SCHEME_PREFIX = "";
 
-
+    static cacheBuster = 0;
     static IN_SYNC = "in-sync";
     static SYNC_REQUEST = "sync-request";
     static SYNC_OFF_REQUEST = "sync-off-request";
@@ -19,8 +20,6 @@ export default class FileSystem {
         saveSettingKey(HIDE_TUTORIAL_KEY, isOn);
         this.hideTutorial = isOn;
     }
-
-
 
     index = isBrowser() ? ({
         categories: [
@@ -49,7 +48,19 @@ export default class FileSystem {
                 "id": "test2",
                 "imageName": "איברי גוף.png",
                 userContent: true,
-                "words": []
+                "words": [
+                    {
+                        name: "מילה בעברית",
+                        id: "מילה בעברית",
+                        category: "בודק עברית",
+                        imageName: "בודק עברית/אוזניים.png",
+                        videoName: "בודק עברית/אוזניים.mov",
+                        userContent: true,
+                        sync: "sync-request",
+                        syncErr: "testError"
+                    }
+
+                ]
             }
         ]
 
@@ -152,17 +163,138 @@ export default class FileSystem {
         return words;
     }
 
-    async saveCategory(label, imagePath) {
-        let dirEntry = await this.getDir(label, true);
-        await this.mvFileIntoDir(imagePath, dirEntry, "default.jpg")
+    saveCategory(label, imagePath, originalElem, syncOn, pubSub) {
+        trace("saveCategory", label, imagePath, originalElem, syncOn)
+        return new Promise(async (resolve, reject) => {
+            if (!originalElem) {
+                // New Category
 
-        // Update index.json
-        let indexCategory = this.index.categories.find(c => c.name === label)
+                let dirEntry = await this.getDir(label, true);
+                this.mvFileIntoDir(imagePath, dirEntry, "default.jpg").then(
+                    () => {
+                        // Update index.json
+                        let indexCategory = this.findCategory(label)
 
-        if (indexCategory !== undefined) {
-            throw ("Category already exists");
-        }
-        return this.addCategory(label);
+                        if (indexCategory !== undefined) {
+                            reject("unexpected new category already exists")
+                            return;
+                        }
+                        let addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST } : undefined;
+
+                        return this.addCategory(label, addProps).then(() => {
+                            if (syncOn) {
+                                this.sync(pubSub)
+                            }
+                            resolve()
+                        });
+                    }
+                ).catch(err => reject(err))
+            } else {
+
+                // Editing Category
+                let indexCategory = this.index.categories.find(c => c.name === originalElem.name);
+                if (!indexCategory) {
+                    throw new Error("Edit Category not found");
+                }
+
+                const origUrl = this.getFilePath(indexCategory.imageName);
+                if (origUrl === imagePath &&
+                    label === indexCategory.name &&
+                    (syncOn && (indexCategory.sync === FileSystem.SYNC_REQUEST || indexCategory.sync === FileSystem.IN_SYNC) ||
+                        !syncOn && (indexCategory.sync === FileSystem.SYNC_OFF_REQUEST || !indexCategory.sync)
+                    )) {
+                    // no change:
+                    trace("save category - no change")
+                    resolve();
+                    return;
+                }
+
+                indexCategory.sync = FileSystem.getNewSyncState(indexCategory.sync, syncOn);
+                indexCategory.words.forEach(word => {
+                    word.sync = FileSystem.getNewSyncState(word.sync, syncOn);
+                });
+
+                let dirEntry = await this.getDir(indexCategory.name, false);
+                if (label !== indexCategory.name) {
+                    indexCategory.name = label;
+                    indexCategory.id = label;
+                    //update the image names
+                    indexCategory.imageName = label + "/default.jpg";
+
+                    // change all words' image/video names
+                    indexCategory.words.forEach(word => {
+                        word.category = label;
+                        if (word.imageName) {
+                            const parts = word.imageName.split("/");
+                            word.imageName = label + "/" + parts[1];
+                        }
+                        const videoParts = word.videoName.split("/");
+                        word.videoName = label + "/" + videoParts[1];
+                    })
+
+                    if (indexCategory.folderId) {
+                        indexCategory.renamed = true;
+                    }
+                    dirEntry.getParent(
+                        (parentDir => {
+                            dirEntry.moveTo(parentDir, label,
+                                (movedEntry) => {
+                                    if (origUrl !== imagePath) {
+                                        //now replaces the image
+                                        return this.mvFileIntoDir(imagePath, movedEntry, "default.jpg")
+                                            .then(() => this.saveIndex().then(() => {
+                                                if (indexCategory.imageFileId) {
+                                                    indexCategory.imageFileIdReplaced = true;
+                                                }
+                                                resolve()
+                                                this.sync(pubSub);
+                                                return;
+                                            }))
+                                            .catch(err => reject(err))
+                                    } else {
+                                        return this.saveIndex().then(() => {
+                                            resolve();
+                                            this.sync(pubSub);
+                                            return;
+                                        });
+                                    }
+                                },
+                                (err) => {
+                                    reject(err)
+                                    return;
+                                }
+                            )
+                        }),
+                        (err) => {
+                            reject(err)
+                            return;
+                        })
+
+                } else {
+                    // no change to name
+                    if (origUrl !== imagePath) {
+                        //replaces the image
+                        if (indexCategory.imageFileId) {
+                            indexCategory.imageFileIdReplaced = true;
+                        }
+                        FileSystem.cacheBuster++;
+
+                        return this.mvFileIntoDir(imagePath, dirEntry, "default.jpg")
+                            .then(() => this.saveIndex().then(() => {
+                                resolve();
+                                return this.sync(pubSub);
+                            }))
+                            .catch(err => reject(err))
+                    } else {
+                        // only sync changed
+                        return this.saveIndex().then(() => {
+                            resolve()
+                            this.sync(pubSub);
+                        });
+                    }
+                }
+            }
+        })
     }
 
     async addCategory(name, addProps) {
@@ -177,17 +309,93 @@ export default class FileSystem {
         return this.saveIndex();
     }
 
-    async saveWord(category, label, imagePath, videoPath) {
-        let dirEntry = await this.getDir(category, true);
-        let imageName = "";
-        await this.mvFileIntoDir(videoPath, dirEntry, label + ".mov")
-        if (imagePath.length > 0) {
-            imageName = label + ".jpg";
-            await this.mvFileIntoDir(imagePath, dirEntry, imageName);
-        }
+    async saveWord(category, label, imagePath, videoPath, originalElem, syncOn, pubSub) {
+        trace("saveWord", label, imagePath, videoPath, originalElem, syncOn);
 
+        return new Promise(async (resolve, reject) => {
+            try {
+                if (!originalElem) {
+                    // New Word
+                    let dirEntry = await this.getDir(category, true);
+                    let imageName = "";
+                    await this.mvFileIntoDir(videoPath, dirEntry, label + ".mov")
+                    if (imagePath.length > 0) {
+                        imageName = label + ".jpg";
+                        await this.mvFileIntoDir(imagePath, dirEntry, imageName);
+                    }
 
-        return this.addWord(category, label)
+                    const addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST } : undefined;
+
+                    return this.addWord(category, label, addProps).then(() => {
+                        if (syncOn) {
+                            // trigger and not wait for it
+                            this.sync(pubSub)
+                        }
+                        resolve()
+                    });
+                } else {
+                    let indexWord = this.findWord(originalElem.category, originalElem.name);
+                    if (!indexWord) {
+                        reject(new Error("Edited word not found"));
+                        return;
+                    }
+
+                    const origImageUrl = this.getFilePath(indexWord.imageName);
+                    const origVideoUrl = this.getFilePath(indexWord.videoName);
+                    if (origImageUrl === imagePath &&
+                        origVideoUrl === videoPath &&
+                        label === indexWord.name &&
+                        (syncOn && (indexWord.sync === FileSystem.SYNC_REQUEST || indexWord.sync === FileSystem.IN_SYNC) ||
+                            !syncOn && (indexWord.sync === FileSystem.SYNC_OFF_REQUEST || !indexWord.sync)
+                        )) {
+                        // no change:
+                        trace("save word - no change")
+                        resolve();
+                        return;
+                    }
+
+                    let dirEntry = await this.getDir(indexWord.category, false);
+                    if (label !== indexWord.name) {
+                        indexWord.name = label;
+                        indexWord.id = label;
+
+                        indexWord.renamed = true;
+                    }
+
+                    if (origImageUrl?.length > 0 && imagePath?.length > 0 && origImageUrl !== imagePath) {
+                        await this.mvFileIntoDir(imagePath, dirEntry, label + ".jpg");
+                        indexWord.imageFileIdReplaced = true;
+                    } else if (indexWord.renamed) {
+                        await this.mvFileIntoDir(origImageUrl, dirEntry, label + ".jpg");
+                    }
+                    indexWord.imageName = indexWord.category + "/" + label + ".jpg";
+
+                    if (origVideoUrl?.length > 0 && videoPath?.length > 0 && origVideoUrl !== videoPath) {
+                        await this.mvFileIntoDir(imagePath, dirEntry, label + ".mov");
+                        indexWord.videoFileIdReplaced = true;
+                    } else if (indexWord.renamed) {
+                        await this.mvFileIntoDir(origVideoUrl, dirEntry, label + ".mov");
+                    }
+                    indexWord.videoName = indexWord.category + "/" + label + ".mov";
+
+                    if (label !== indexWord.name) {
+                        indexWord.name = label;
+                        indexWord.id = label;
+
+                        indexWord.renamed = true;
+                    }
+
+                    indexWord.sync = FileSystem.getNewSyncState(indexWord.sync, syncOn);
+                    return this.saveIndex().then(
+                        () => {
+                            this.sync(pubSub);
+                            resolve()
+                        },
+                        (err) => reject(err)
+                    )
+                }
+            } catch (e) { reject(e) }
+        });
     }
 
     async addWord(category, name, addProps) {
@@ -262,6 +470,8 @@ export default class FileSystem {
     }
 
     async saveIndex() {
+        if (isBrowser()) return;
+
         return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
 
             (docDir) => {
@@ -273,7 +483,8 @@ export default class FileSystem {
                             resolve();
                         };
 
-                        indexFileWriter.write(JSON.stringify(this.index));
+                        var blob = new Blob([JSON.stringify(this.index)], { type: "text/plain" });
+                        indexFileWriter.write(blob);
                     })
                     , (err) => {
                         trace("Failed saving the index file", JSON.stringify(err));
@@ -352,6 +563,7 @@ export default class FileSystem {
         if (window.isAndroid) {
             return "https://localhost/__cdvfile_files__/" + relPath;
         }
+        //return "https://localhost/__cdvfile_documents__/" + relPath;
         return "issie-" + FileSystem.getDocDir() + relPath;
     }
 
@@ -392,17 +604,27 @@ export default class FileSystem {
                             })
                             , (err) => {
                                 reject(err)
+
                             }
                         )
                     },
                     err => reject(err))
             }
 
-            window.resolveLocalFileSystemURL(filePath, (file) =>
+            trace("move file", filePath)
+            if (filePath.startsWith("issie-")) {
+                filePath = filePath.substr(6);
+            }
+            window.resolveLocalFileSystemURL(filePath, (file) => {
+                trace("found file")
                 file.moveTo(dirEntry, newFileName,
-                    (res) => resolve(res),
+                    (res) => {
+                        trace("move succeeded", dirEntry.fullPath, newFileName);
+                        resolve(res)
+                    },
                     (err) => reject(err)
-                ),
+                )
+            },
                 (err) => reject(err)
             )
         });
@@ -410,40 +632,39 @@ export default class FileSystem {
 
     static async getHttpURLForFile(filePath) {
         trace("getHttpURLForFile", filePath);
-        return new Promise((resolve, reject)=> window.resolveLocalFileSystemURL(filePath, 
+        return new Promise((resolve, reject) => window.resolveLocalFileSystemURL(filePath,
             (file) => {
                 trace("getHttpURLForFile -result", file.toURL(), file.fullPath);
-                resolve (file.toURL())
+                resolve(file.toURL())
             },
-            (err)=>reject(err)
+            (err) => reject(err)
         ));
     }
 
-
-    async setSync(entity, isOn, triggerSync) {
-        const getNewState = (currentState) => {
-            if (isOn) {
-                if (currentState === FileSystem.IN_SYNC) {
-                    return FileSystem.IN_SYNC;
-                } else {
-                    return FileSystem.SYNC_REQUEST;
-                }
+    static getNewSyncState = (currentState, isOn) => {
+        if (isOn) {
+            if (currentState === FileSystem.IN_SYNC || currentState === FileSystem.SYNC_OFF_REQUEST) {
+                return FileSystem.IN_SYNC;
             } else {
-                if (!currentState || currentState === FileSystem.SYNC_REQUEST) {
-                    return undefined;
-                } else {
-                    return FileSystem.SYNC_OFF_REQUEST
-                }
+                return FileSystem.SYNC_REQUEST;
+            }
+        } else {
+            if (!currentState || currentState === FileSystem.SYNC_REQUEST) {
+                return undefined;
+            } else {
+                return FileSystem.SYNC_OFF_REQUEST
             }
         }
+    }
 
+    async setSync(entity, isOn, triggerSync) {
         if (entity.words) {
             //category
             const indexCat = this.index.categories.find(c => c.name === entity.name);
             if (!indexCat.userContent)
                 return;
 
-            indexCat.sync = getNewState(indexCat.sync)
+            indexCat.sync = FileSystem.getNewSyncState(indexCat.sync, isOn)
             await this.saveIndex();
 
             // implicitly set all category to same
@@ -457,12 +678,12 @@ export default class FileSystem {
 
             // Implicit set the category to sync
             if (indexCat.userContent && isOn)
-                indexCat.sync = getNewState(indexCat.sync)
+                indexCat.sync = FileSystem.getNewSyncState(indexCat.sync, isOn)
 
             const word = indexCat.words.find(w => w.name === entity.name);
             if (!word.userContent)
                 return;
-            word.sync = getNewState(word.sync);
+            word.sync = FileSystem.getNewSyncState(word.sync, isOn);
         }
 
         if (triggerSync) {
@@ -471,11 +692,16 @@ export default class FileSystem {
     }
 
     // returns only after all sync files are done
-    async sync() {
+    async sync(pubSub) {
         if (this.syncInProcess) {
             return
         }
         this.syncInProcess = true;
+
+        if (pubSub) {
+            pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
+        }
+
         try {
             const categoriesToUnsync = [];
             for (let i = 0; i < this.index.categories.length; i++) {
@@ -499,11 +725,49 @@ export default class FileSystem {
             }
         } finally {
             this.syncInProcess = false;
+            if (pubSub) {
+                pubSub.publish({ command: "long-process-done" });
+            }
         }
     }
 
     async syncOne(entity, parentEntity, categoriesToUnsync) {
         trace("SyncOne entity", entity)
+        if (entity.sync === FileSystem.IN_SYNC) {
+            if (entity.imageFileIdReplaced || entity.renamed || entity.videoFileIdReplaced) {
+                if (entity.imageFileIdReplaced) {
+                    await FileSystem.gdriveDelete(entity.imageFileId);
+                    delete entity.imageFileIdReplaced;
+                    delete entity.imageFileId;
+                    entity.sync = FileSystem.SYNC_REQUEST;
+                }
+
+                if (entity.videoFileIdReplaced) {
+                    await FileSystem.gdriveDelete(entity.videoFileId);
+                    delete entity.videoFileIdReplaced;
+                    delete entity.videoFileId;
+                    entity.sync = FileSystem.SYNC_REQUEST;
+                }
+                
+                if (entity.renamed) {
+                    if (entity.words) {
+                        // Category renamed
+                        await FileSystem.gdriveRename(entity.folderId, entity.name);
+                    } else {
+                        // Word renamed - rename both files
+                        if (entity.imageFileId) {
+                            await FileSystem.gdriveRename(entity.imageFileId, entity.name + ".jpg");
+                        }
+                        if (entity.videoFileId) {
+                            await FileSystem.gdriveRename(entity.videoFileId, entity.name + ".mov");
+                        }
+                    }
+                    delete entity.renamed;
+                }
+                await this.saveIndex();
+            } 
+        }
+
         if (entity.sync === FileSystem.SYNC_REQUEST) {
             if (entity.words) {
                 const folderId = entity.folderId ? entity.folderId : "";
@@ -579,6 +843,10 @@ export default class FileSystem {
             if (!rootFolderId) {
                 // try to find it in the users' Drive first
                 rootFolderId = await this.findRootFolder();
+                if (!rootFolderId) {
+                    trace("No root folder found");
+                    rootFolderId = "";
+                }
             }
 
 
@@ -621,6 +889,19 @@ export default class FileSystem {
     static async gdriveDelete(fileId) {
         return new Promise((resolve, reject) => {
             window.plugins.gdrive.deleteFile(fileId,
+                (response) => {
+                    resolve(response);
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        })
+    }
+
+    static async gdriveRename(id, newName) {
+        return new Promise((resolve, reject) => {
+            window.plugins.gdrive.rename(id, newName,
                 (response) => {
                     resolve(response);
                 },
@@ -738,8 +1019,8 @@ export default class FileSystem {
                         // verify folder exists
                         await this.getDir(catName, true);
                         await FileSystem.gdriveDownload(defFile.id, fullPath + catName + "/default.jpg", false);
-                        await this.addCategory(catName, 
-                            { 
+                        await this.addCategory(catName,
+                            {
                                 sync: FileSystem.IN_SYNC,
                                 imageFileId: defFile.id,
                                 folderId: f.id,

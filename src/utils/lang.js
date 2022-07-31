@@ -21,8 +21,9 @@ var strings = {
         "SettingsAdultModeLbl": "תצוגה מותאמת למבוגרים",
         "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
         "TitleAddCategory": "הוספת קטגוריה",
+        "TitleEditCategory":"עריכת קטגוריה",
         "TitleAddWord": "הוספת מילה",
-
+        "TitleEditWord":"עריכת מילה",
 
         //confirm messages
         "ConfirmTitleDeleteCategory": "מחיקת תיקיה",
@@ -164,7 +165,9 @@ var strings = {
         "SettingsAdultModeLbl": "Adult adapted display",
         "SettingsAddCatAndWords": "Add/Delete Categories and Words",
         "TitleAddCategory": "Add Category",
+        "TitleEditCategory": "Edit Category",
         "TitleAddWord": "Add Word",
+        "TitleEditWord":"Edit Word",
 
 
         //confirm messages

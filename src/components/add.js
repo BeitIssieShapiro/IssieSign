@@ -1,9 +1,9 @@
 
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import '../css/add.css';
-import { AttachButton, CameraButton, SearchWebButton, VideoButton } from "./ui-elements";
+import { AttachButton, CameraButton, RadioBtn, SearchWebButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
@@ -79,230 +79,294 @@ function isValid(fileName) {
     return true;
 }
 
-class AddItem extends React.Component {
+function AddEditItem(props) {
+    const [label, setLabel] = useState("");
+    const [selectedImage, setSelectedImage] = useState("");
+    const [selectedVideo, setSelectedVideo] = useState("");
+    const [syncOn, setSyncOn] = useState(false);
+    const [selectInProgress, setSelectInProgress] = useState(false);
+    const [showWebSearch, setShowWebSearch] = useState(false);
+    const [invalidName, setInvalidName] = useState(false);
+    const [edit, setEdit] = useState(false);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            label: "",
-            selectedImage: "",
-            selectedVideo: "",
-            selectInProgress: false,
-            showWebSearch: false
+    const [imageDirty, setImageDirty] = useState(false);
+    const [labelDirty, setLabelDirty] = useState(false);
+    const [videoDirty, setVideoDirty] = useState(false);
+    const [syncDirty, setSyncDirty] = useState(false);
+    const [origElem, setOrigElem] = useState(undefined);
+
+
+    useEffect(() => {
+        if (props.addWord && props.wordId || !props.addWord && props.categoryId) {
+            setEdit(true);
+            if (props.addWord) {
+                const word = FileSystem.get().findWord(props.categoryId, props.wordId);
+                if (word) {
+                    setOrigElem(word);
+                    setLabel(word.name);
+                    setSelectedImage(FileSystem.get().getFilePath(word.imageName));
+                    setSelectedVideo(FileSystem.get().getFilePath(word.videoName));
+                    setSyncOn(word.sync == FileSystem.IN_SYNC || word.sync == FileSystem.SYNC_REQUEST)
+
+                }
+            } else {
+                const cat = FileSystem.get().findCategory(props.categoryId);
+                if (cat) {
+                    setOrigElem(cat);
+                    setLabel(cat.name);
+                    setSelectedImage(FileSystem.get().getFilePath(cat.imageName));
+                    setSyncOn(cat.sync == FileSystem.IN_SYNC || cat.sync == FileSystem.SYNC_REQUEST)
+                }
+            }
         }
+    }, [props.categoryId, props.wordId])
+
+
+    const IsValidInput = () => {
+        return (isValid(label) && selectedImage && selectedImage.length > 0
+            && (!props.addWord || (selectedVideo && selectedVideo.length > 0)));
     }
 
-    IsValidInput = () => {
-        return (isValid(this.state.label) && this.state.selectedImage && this.state.selectedImage.length > 0
-            && (!this.props.addWord || (this.state.selectedVideo && this.state.selectedVideo.length > 0)));
-    }
-
-    saveCategory = async () => {
-        FileSystem.get().saveCategory(this.state.label, this.state.selectedImage).then(
+    const saveCategory = useCallback( () => {
+        FileSystem.get().saveCategory(label, selectedImage, origElem, syncOn, props.pubSub).then(
             () => {
-                this.props.pubSub.publish({ command: 'refresh' });
-                this.props.alert.success(translate("InfoSavedSuccessfully"));
-                this.props.history.goBack()
+                props.pubSub.publish({ command: 'refresh' });
+                props.alert.success(translate("InfoSavedSuccessfully"));
+                props.history.goBack()
             },
-            (err) => this.props.alert.error(JSON.stringify(err))
+            (err) => props.alert.error(JSON.stringify(err))
         )
-    }
+    }, [label, selectedImage, origElem, syncOn]);
 
-    saveWord = async () => {
-        FileSystem.get().saveWord(this.props.categoryId, this.state.label,
-            this.state.selectedImage, this.state.selectedVideo).then(
+    const saveWord = useCallback( () => {
+        FileSystem.get().saveWord(props.categoryId, label,
+            selectedImage, selectedVideo, origElem, syncOn, props.pubSub).then(
                 () => {
-                    this.props.pubSub.publish({ command: 'refresh' });
-                    this.props.alert.success(translate("InfoSavedSuccessfully"));
-                    this.props.history.goBack();
+                    props.pubSub.publish({ command: 'refresh' });
+                    props.alert.success(translate("InfoSavedSuccessfully"));
+                    props.history.goBack();
                 },
-                (err) => this.props.alert.error(JSON.stringify(err))
+                (err) => props.alert.error(err.description)
             )
+    }, [props.categoryId, label, selectedImage, selectedVideo, origElem, syncOn]);
+
+
+    let themeId = "3";
+    if (props.categoryId4Theme) {
+        themeId = props.categoryId4Theme;
     }
 
-    render() {
-        let themeId = "3";
-        if (this.props.categoryId4Theme) {
-            themeId = this.props.categoryId4Theme;
-        }
+    let addWordMode = props.addWord;
+    //let vidName = getFileName(selectedVideo);
+    //let imgName = getFileName(selectedImage);
 
-        let addWordMode = this.props.addWord;
-        //let vidName = getFileName(this.state.selectedVideo);
-        //let imgName = getFileName(this.state.selectedImage);
+    let vidName = selectedVideo.length > 0 ? translate("AddVideoSelected") : ""
+    let imgName = selectedImage.length > 0 ? translate("AddImageSelected") : ""
+    return (
+        <div className="addContainer">
+            {showWebSearch && <SearchImage
+                pubSub={props.pubSub}
+                onClose={() => setShowWebSearch(false)}
+                onSelectImage={(url) => {
+                    setShowWebSearch(false);
+                    setSelectedImage(url);
+                    setImageDirty(true);
+                }} />}
+            <div >
+                <div className="tileCardContainer">
+                    {addWordMode ?
+                        <div className="addCardHost">
+                            <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={label} videoName={selectedVideo}
+                                imageName={selectedImage} themeId={themeId} noLink="true" />
+                        </div>
+                        : <Shelf>
+                            <Tile2 key="1" dimensions={props.dimensions} tileName={label} imageName={selectedImage} themeFlavor={themeId} />
+                        </Shelf>}
+                </div>
 
-        let vidName = this.state.selectedVideo.length > 0 ? translate("AddVideoSelected") : ""
-        let imgName = this.state.selectedImage.length > 0 ? translate("AddImageSelected") : ""
-        return (
-            <div style={{ width: '100%', height: '120%', backgroundColor: 'lightgray' }}>
-                {this.state.showWebSearch && <SearchImage
-                    pubSub={this.props.pubSub}
-                    onClose={() => this.setState({ showWebSearch: false })}
-                    onSelectImage={(url) => {
-                        this.setState({ showWebSearch: false, selectedImage: url })
+                <div className="fieldsContainer">
+                    <table style={{ width: "100%" }}>
+                        <tbody>
+                            <tr style={{ height: '10vh' }}>
+                                <td width="10%"></td>
+                                <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
+                                <td width="70%">
+                                    <input type="text" className="addInput"
+                                        placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
+                                        onChange={(e) => {
+                                            const validName = isValid(e.target.value);
+                                            setLabel(e.target.value);
+                                            setLabelDirty(true);
+                                            setInvalidName(!validName);
+                                        }} value={label} />
+                                    {invalidName && <div style={{
+                                        color: "red",
+                                        fontSize: 20,
+                                    }}>{translate("InvalidCharachtersInName")}</div>}
+                                </td>
 
-                    }} />}
-                <div style={{ display: 'flex', flexDirection: this.props.isLandscape ? 'row-reverse' : 'column', }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', width: this.props.isLandscape ? '35%' : '100%', zoom: '150%' }}>
-                        {addWordMode ?
-                            <div className="addCardHost">
-                                <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={this.state.label} videoName={this.state.selectedVideo}
-                                    imageName={this.state.selectedImage} themeId={themeId} noLink="true" />
-                            </div>
-                            : <Shelf>
-                                <Tile2 key="1" dimensions={this.props.dimensions} tileName={this.state.label} imageName={this.state.selectedImage} themeFlavor={themeId} />
-                            </Shelf>}
-                    </div>
+                                <td><div className={isValid(label) ? "v-icon" : "x-icon"} /></td>
+                            </tr>
+                            <tr style={{ height: '10vh' }}>
+                                <td></td>
+                                <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
+                                <td>
+                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <input type="text" className="addInputReadonly" readOnly placeholder={translate("AddPlaceholderSelectImage")} style={{ width: '90%' }}
+                                            value={imgName} />
 
-                    <div style={{ color: 'black', direction: 'rtl', paddingTop: "5vh", fontSize: 40, textAlign: 'right', width: '100%' }}>
-                        <table style={{ width: "100%" }}>
-                            <tbody>
-                                <tr style={{ height: '10vh' }}>
-                                    <td width="10%"></td>
-                                    <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
-                                    <td width="70%">
-                                        <input type="text" className="addInput"
-                                            placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
-                                            onChange={(e) => {
-                                                const validName = isValid(e.target.value);
-                                                this.setState({ label: e.target.value, invalidName: !validName }, () => {
+                                        <CameraButton onClick={() => {
+                                            if (selectInProgress) return;
+                                            setSelectInProgress(true);
+                                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
 
-                                                })
-                                            }} />
-                                        {this.state.invalidName && <div style={{
-                                            color: "red",
-                                            fontSize: 20,
-                                        }}>{translate("InvalidCharachtersInName")}</div>}
-                                    </td>
+                                            setTimeout(async () => navigator.camera.getPicture(
+                                                img => {
 
-                                    <td><div className={isValid(this.state.label) ? "v-icon" : "x-icon"} /></td>
-                                </tr>
+                                                    FileSystem.getHttpURLForFile(img).then(imgUrl => {
+                                                        setSelectedImage(imgUrl);
+                                                        setImageDirty(true);
+                                                    }).finally(() => setSelectInProgress(false))
+                                                    props.pubSub.publish({ command: 'set-busy', active: false });
+                                                },
+                                                err => {
+                                                    props.alert.error(translate("AddTakePictureFailedOrCanceled"));
+                                                    setSelectInProgress(false);
+                                                    props.pubSub.publish({ command: 'set-busy', active: false });
+                                                },
+                                                cameraOptions), 300);
+                                        }}
+                                        />
+                                        <AttachButton onClick={async () => {
+                                            if (selectInProgress) return;
+                                            setSelectInProgress(true)
+                                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
+                                            setTimeout(async () => {
+                                                selectImage().then(
+                                                    img => {
+                                                        if (img && img.length > 0) {
+                                                            FileSystem.getHttpURLForFile(img).then(imgUrl => {
+                                                                setSelectedImage(imgUrl)
+                                                                setImageDirty(true);
+                                                            })
+                                                        } else {
+                                                            props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
+                                                        }
+                                                    },
+                                                    err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))).catch(
+                                                        err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))
+                                                    ).finally(
+                                                        () => {
+                                                            props.pubSub.publish({ command: 'set-busy', active: false })
+                                                            setSelectInProgress(false);
+                                                        });
+                                            }, 300);
+                                        }} />
+
+                                        <SearchWebButton onClick={() => setShowWebSearch(true)} />
+                                    </div>
+                                </td>
+
+                                <td><div className={selectedImage ? "v-icon" : "x-icon"} /></td>
+                            </tr>
+                            {addWordMode ?
                                 <tr style={{ height: '10vh' }}>
                                     <td></td>
-                                    <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
+                                    <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
                                     <td>
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <input type="text" className="addInputReadonly" readOnly placeholder={translate("AddPlaceholderSelectImage")} style={{ width: '90%' }}
-                                                value={imgName} />
+                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
+                                            <VideoButton onClick={() => {
+                                                if (selectInProgress) return;
+                                                setSelectInProgress(true);
 
-                                            <CameraButton onClick={() => {
-                                                if (this.state.selectInProgress) return;
-                                                this.setState({ selectInProgress: true });
-                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
+                                                props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
 
-                                                setTimeout(async () => navigator.camera.getPicture(
-                                                    img => {
-                                                        
-                                                        FileSystem.getHttpURLForFile(img).then(imgUrl=> this.setState({ selectedImage: imgUrl, selectInProgress: false }))
-                                                        this.props.pubSub.publish({ command: 'set-busy', active: false });
-                                                    },
-                                                    err => {
-                                                        this.props.alert.error(translate("AddTakePictureFailedOrCanceled"));
-                                                        this.setState({ selectInProgress: false });
-                                                        this.props.pubSub.publish({ command: 'set-busy', active: false });
-                                                    },
-                                                    cameraOptions), 300);
-                                            }}
-                                            />
-                                            <AttachButton onClick={async () => {
-                                                if (this.state.selectInProgress) return;
-                                                this.setState({ selectInProgress: true });
-                                                this.props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
-                                                setTimeout(async () => {
-                                                    selectImage().then(
-                                                        img => {
-                                                            if (img && img.length > 0) {
-                                                                FileSystem.getHttpURLForFile(img).then(imgUrl=> this.setState({ selectedImage: imgUrl }))
-                                                            } else {
-                                                                this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
-                                                            }
-                                                        },
-                                                        err => this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"))).catch(
-                                                            err => this.props.alert.error(translate("AddLoadPictureFailedOrCanceled"))
-                                                        ).finally(
-                                                            () => {
-                                                                this.props.pubSub.publish({ command: 'set-busy', active: false })
-                                                                this.setState({ selectInProgress: false })
-                                                            });
-                                                }, 300);
-                                            }} />
-
-                                            <SearchWebButton onClick={() => this.setState({ showWebSearch: true })} />
-                                        </div>
-                                    </td>
-
-                                    <td><div className={this.state.selectedImage ? "v-icon" : "x-icon"} /></td>
-                                </tr>
-                                {addWordMode ?
-                                    <tr style={{ height: '10vh' }}>
-                                        <td></td>
-                                        <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
-                                        <td>
-                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
-                                                <VideoButton onClick={() => {
-                                                    if (this.state.selectInProgress) return;
-                                                    this.setState({ selectInProgress: true });
-                                                    this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-
-                                                    setTimeout(async () => navigator.device.capture.captureVideo(
-                                                        (mediaFiles) => {
-                                                            if (mediaFiles.length === 1) {
-                                                                let path = mediaFiles[0].fullPath;
-                                                                if (!path.startsWith("file://")) {
-                                                                    path = "file://" + path;
-                                                                }
-                                                                this.setState({ selectedVideo: (path), selectInProgress: false })
-                                                            }
-                                                            this.props.pubSub.publish({ command: 'set-busy', active: false })
-                                                        },
-                                                        (err) => {
-                                                            this.props.alert.error(translate("AddLoadVideoCameraFailedOrCanceled"));
-                                                            this.setState({ selectInProgress: false });
-                                                            this.props.pubSub.publish({ command: 'set-busy', active: false })
-                                                        },
-                                                        { limit: 1, duration: 15 }), 300);
-                                                }} />
-                                                <AttachButton onClick={async () => {
-                                                    if (this.state.selectInProgress) return;
-                                                    this.setState({ selectInProgress: true });
-                                                    this.props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-                                                    setTimeout(async () => {
-                                                        selectVideo().then(video => {
-                                                            let path = video;
+                                                setTimeout(async () => navigator.device.capture.captureVideo(
+                                                    (mediaFiles) => {
+                                                        if (mediaFiles.length === 1) {
+                                                            let path = mediaFiles[0].fullPath;
                                                             if (!path.startsWith("file://")) {
                                                                 path = "file://" + path;
                                                             }
-                                                            this.setState({ selectedVideo: path })
-                                                        },
-                                                            err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
-                                                            .catch(err => this.props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
-                                                            .finally(
-                                                                () => {
-                                                                    this.props.pubSub.publish({ command: 'set-busy', active: false })
-                                                                    this.setState({ selectInProgress: false })
-                                                                });
-                                                    }, 300);
-                                                }} />
-                                            </div>
+                                                            setSelectedVideo(path);
+                                                            setVideoDirty(true);
+                                                            setSelectInProgress(false);
+                                                        }
+                                                        props.pubSub.publish({ command: 'set-busy', active: false })
+                                                    },
+                                                    (err) => {
+                                                        props.alert.error(translate("AddLoadVideoCameraFailedOrCanceled"));
+                                                        setSelectInProgress(false);
+                                                        props.pubSub.publish({ command: 'set-busy', active: false })
+                                                    },
+                                                    { limit: 1, duration: 15 }), 300);
+                                            }} />
+                                            <AttachButton onClick={async () => {
+                                                if (selectInProgress) return;
+                                                setSelectInProgress(true);
+                                                props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
+                                                setTimeout(async () => {
+                                                    selectVideo().then(video => {
+                                                        let path = video;
+                                                        if (!path.startsWith("file://")) {
+                                                            path = "file://" + path;
+                                                        }
+                                                        setSelectedVideo(path);
+                                                        setVideoDirty(true);
+                                                    },
+                                                        err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                                        .catch(err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                                        .finally(
+                                                            () => {
+                                                                props.pubSub.publish({ command: 'set-busy', active: false })
+                                                                setSelectInProgress(false);
+                                                            });
+                                                }, 300);
+                                            }} />
+                                        </div>
 
-                                        </td>
-                                        <td><div className={this.state.selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
-                                    </tr>
-                                    : null}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div style={{ paddingTop: 20 }}>
-                    <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!this.IsValidInput()} onClick={async () =>
-                        this.props.addWord ? this.saveWord() : this.saveCategory()
-                    } />
-
+                                    </td>
+                                    <td><div className={selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
+                                </tr>
+                                : null}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        )
-    }
+            <div className="syncContainer">
+                <div className="syncLine">
+                    <RadioBtn
+                        checked={syncOn}
+                        onChange={(isOn) => { 
+                            setSyncOn(isOn);
+                            setSyncDirty(true);
+                         }}
+                    />
+                    <div className="syncCaption">{translate("SyncToCloudTitle")}</div>
+                </div>
+                <div className="syncLine">
+                    <div className="syncCaption">{translate("SyncStatusLbl")}</div>
+                    <div className="syncCaption">{origElem?.sync ? origElem.sync : translate("SyncStatusNone")}</div>
+                </div>
+                <div className="syncLine">
+                    {origElem?.syncErr && <div className="syncCaption">{translate("SyncErrorLbl")}</div>}
+                    {origElem?.syncErr && <div>{origElem.syncErr}</div>}
+                </div>
+                {/* {syncInProcess && <div className="syncinProcess" ><Sync className="rotate" /><div>{translate("SyncToCloudMsg")}</div></div>} */}
+
+
+
+            </div>
+            <div style={{ paddingTop: 20 }}>
+                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!IsValidInput() || (!labelDirty && !imageDirty && !syncDirty && !videoDirty)} 
+                onClick={props.addWord ? saveWord : saveCategory} />
+
+            </div>
+        </div>
+    )
+
 }
 
 
-export default withAlert()(AddItem);
+export default withAlert()(AddEditItem);

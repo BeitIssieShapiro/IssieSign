@@ -21,6 +21,7 @@
             NSURLResponse *response2 = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:response.MIMEType expectedContentLength:data.length textEncodingName:nil];
             if(error){
                 [urlSchemeTask didFailWithError:error];
+                return;
             }
             [urlSchemeTask didReceiveResponse:response2];
             [urlSchemeTask didReceiveData:data];

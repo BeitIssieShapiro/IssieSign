@@ -30,6 +30,10 @@ cordova.define("cordova-plugin-jc-googledrive.GoogleDrive", function(require, ex
         cordova.exec(successCallback, errorCallback, "GoogleDrive", "deleteFile", [fileid]);
     };
     
+    GoogleDrive.prototype.rename = function (id, newName,successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "rename", [id, newName]);
+    };
+    
     GoogleDrive.prototype.requestSync = function(returnFiles,successCallback,errorCallback){
         cordova.exec(successCallback,errorCallback,"GoogleDrive","requestSync",[returnFiles]);
     };

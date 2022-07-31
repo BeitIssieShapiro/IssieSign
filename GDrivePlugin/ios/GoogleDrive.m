@@ -206,6 +206,31 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     }
 }
 
+
+- (void)rename:(CDVInvokedUrlCommand*)command{
+
+    NSString* id = [command.arguments objectAtIndex:0];
+    NSString* newName = [command.arguments objectAtIndex:1];
+    
+    if([id stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length>0){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(self.authorization.canAuthorize){
+                    [self renameSelectedFile:command fid:id newName:newName];
+                    NSLog(@"Already authorized app. No need to ask user again");
+                } else{
+                    [self runSigninThenHandler:command onComplete:^{
+                        [self renameSelectedFile:command fid:id newName:newName];
+                    }];
+                }
+        });
+    } else{
+        [self.commandDelegate sendPluginResult:[CDVPluginResult
+                                                resultWithStatus:CDVCommandStatus_ERROR
+                                                messageAsString:@"One of the parameters is empty"]
+                                    callbackId:command.callbackId];
+    }
+}
+
 - (void)downloadAFile:(CDVInvokedUrlCommand*)command destPath:(NSString*)destPath fid:(NSString*)fileid  anonymousAccess:(BOOL) anonymousAccess {
     NSURL *fileToDownloadURL = [NSURL fileURLWithPath:destPath];
     //NSLog(@"%@", fileToDownloadURL);
@@ -517,6 +542,29 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
+
+
+- (void)renameSelectedFile:(CDVInvokedUrlCommand*)command fid:(NSString*) fid newName:(NSString*) newName {
+    GTLRDriveService *service = self.driveService;
+
+    
+    GTLRDrive_File *fileObj = [GTLRDrive_File object];
+    fileObj.name = newName;
+    GTLRDriveQuery_FilesUpdate *query = [GTLRDriveQuery_FilesUpdate queryWithObject:fileObj fileId:fid uploadParameters:nil];
+    
+    [service executeQuery:query completionHandler:^(GTLRServiceTicket *callbackTicket,
+                                                    id nilObject,
+                                                    NSError *callbackError) {
+        CDVPluginResult* pluginResult = nil;
+        if (callbackError == nil) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[callbackError localizedDescription]];
+        }
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
 
 - (void)createAFolder:(CDVInvokedUrlCommand*)command dirName:(NSString*) title{
     GTLRDriveService *service = self.driveService;

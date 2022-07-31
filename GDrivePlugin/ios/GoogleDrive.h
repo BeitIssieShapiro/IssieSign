@@ -12,6 +12,7 @@
 - (void)downloadFile:(CDVInvokedUrlCommand*)command;
 - (void)uploadFile:(CDVInvokedUrlCommand*)command;
 - (void)deleteFile:(CDVInvokedUrlCommand*)command;
+- (void)rename:(CDVInvokedUrlCommand*)command;
 
 - (void)whoAmI:(CDVInvokedUrlCommand*)command;
 - (void)logout:(CDVInvokedUrlCommand*)command;

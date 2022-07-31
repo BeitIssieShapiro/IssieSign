@@ -7,7 +7,7 @@ import WordAdults from "./containers/Word-adult";
 import Video from "./containers/Video";
 import Search from './containers/Search'
 import Info from "./containers/Info";
-import AddItem from "./components/add";
+import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
 import { VideoToggle, getLanguage, trace, isMyIssieSign } from "./utils/Utils";
@@ -25,7 +25,7 @@ import {
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
-import   Settings  from './settings'
+import Settings from './settings'
 import './css/settings.css'
 import {
     SettingsButton, TrashButton,
@@ -168,14 +168,14 @@ class App extends IssieBase {
                     this.props.alert.success(addWords.join("\n"));
                 },
                 (err) => {
-                    this.props.alert.error(fTranslate("ImportWordsErr",err))
-                    console.log(fTranslate("ImportWordsErr",err));
+                    this.props.alert.error(fTranslate("ImportWordsErr", err))
+                    console.log(fTranslate("ImportWordsErr", err));
                 }
             ).finally(() => pubsub.publish({ command: 'long-process-done' }));
         }
 
         if (window.awaitingImport) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 window.importWords(window.awaitingImport);
                 window.awaitingImport = undefined;
 
@@ -229,7 +229,15 @@ class App extends IssieBase {
                 this.setState({ showDelete: args.callback });
                 break;
             case 'show-entity-info':
-                this.setState({ showEntityInfo: args.name });
+                //this.setState({ showEntityInfo: args.name });
+                console.log("info", args);
+                const nameParts = args.name.split("/");
+                if (nameParts.length === 1) {
+                    this.props.history.push("/add-category/" + encodeURIComponent(nameParts[0]));
+
+                } else {
+                    this.props.history.push("/add-word/" + encodeURIComponent(nameParts[0]) + "/" + encodeURIComponent(nameParts[1]));
+                }
                 break;
             case 'hide-all-buttons':
                 this.setState({ showDelete: undefined, showShare: undefined })
@@ -340,12 +348,12 @@ class App extends IssieBase {
     }
 
 
-    
+
 
     render() {
         let path = this.props.history.path;
 
-        console.log("render app")
+        //console.log("render app")
         let leftArrow = "";
         let rightArrow = "";
 
@@ -356,7 +364,7 @@ class App extends IssieBase {
             <TrashButton slot="start-bar" onClick={this.state.showDelete} /> : null;
         document.preventTouch = true;
 
-        if (!this.isInfo() && !this.isVideo() && !this.state.showShare) {
+        if (!this.isInfo() && !this.isVideo() &&!this.isAddScreen() && !this.state.showShare) {
             searchInput = (
                 <div slot="center-bar" className="search shellSearch">
                     <input
@@ -443,14 +451,16 @@ class App extends IssieBase {
                     {backElement}
                     {deleteButton}
 
-                    {this.state.editMode && <ShareCartButton slot="start-bar"
+                    {this.state.editMode &&
+                    !this.isAddScreen() &&
+                    <ShareCartButton slot="start-bar"
                         count={this.state.shareCart.count()}
                         onClick={() => this.props.history.push("/share-cart")} />}
 
                     {this.state.menuOpen && <Settings
                         slot="body"
                         state={this.state}
-                        setState={(obj=>this.setState(obj))}
+                        setState={(obj => this.setState(obj))}
                         onClose={() => this.setState({ menuOpen: false })}
                         showInfo={() => this.showInfo()}
                         pubSub={this.state.pubSub}
@@ -471,7 +481,7 @@ class App extends IssieBase {
     }
 
     getChildren(path, props, state) {
-        console.log("get children, path", path)
+        //console.log("get children, path", path)
 
         if (path === "/" || path === "")
             return <Body
@@ -581,15 +591,18 @@ class App extends IssieBase {
 
             )
         }
-        if (path === "/add-category") {
+        if (path.startsWith("/add-category")) {
+            //add-category [/:categoryId]
+            const [categoryId] = splitAndDecodeCompoundName(path.substr(14));
 
 
-            this.setTitle(translate("TitleAddCategory"));
+            this.setTitle(categoryId?.length > 0 ? translate("TitleEditCategory"):translate("TitleAddCategory"));
             return (
-                <AddItem
+                <AddEditItem
                     history={props.history}
                     addWord={false}
                     pubSub={state.pubSub}
+                    categoryId={categoryId?.length > 0 ? categoryId : undefined}
                     isLandscape={IssieBase.isLandscape()}
                     dimensions={state.dimensions}
                 />
@@ -600,13 +613,14 @@ class App extends IssieBase {
 
 
         if (path.startsWith("/add-word/")) {
-            //add-word/:categoryId
-            const [categoryId] = splitAndDecodeCompoundName(path.substr(10));
+            //add-word/:categoryId [/?:wordId]
+            const [categoryId, wordId] = splitAndDecodeCompoundName(path.substr(10));
 
-            this.setTitle(translate("TitleAddWord"))
+            this.setTitle(wordId?.length > 0 ? translate("TitleEditWord"): translate("TitleAddWord"))
             return (
-                <AddItem
-                    addWord="true"
+                <AddEditItem
+                    addWord={true}
+                    wordId={wordId}
                     history={props.history}
                     pubSub={state.pubSub}
                     isLandscape={IssieBase.isLandscape()}
