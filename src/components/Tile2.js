@@ -6,12 +6,13 @@ import '../css/App.css';
 import { confirmAlert } from 'react-confirm-alert';
 import { withAlert } from 'react-alert'
 
-import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected } from "./ui-elements";
+import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected, TileButton } from "./ui-elements";
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import ISLink from "./ISLink";
 
 import { fTranslate, translate } from '../utils/lang';
 import FileSystem from "../apis/filesystem";
+import { Delete, Edit, MoreHoriz, Share } from "@mui/icons-material";
 
 
 function Tile2(props) {
@@ -79,23 +80,49 @@ function Tile2(props) {
                         {imageSrc ? <img className="tileImg" src={imageSrc} alt={translate("MissingImageAlt")} /> : null}
                         {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -25, zIndex: 5 }}><Selected /></div> : null}
                     </div>
-                    {props.editMode && props.userContent && (isShared ?
-                        <RemoveFromShareButton onClick={addToShare} position={0} offSet={10} />
-                        : <AddToShareButton onClick={addToShare} position={0} offSet={10} />)}
 
-                    {props.editMode && props.userContent && <DeleteTilebutton onClick={deleteCategory} position={1} offSet={10} />}
+                    {/* {props.editMode && props.userContent && <div className="tileEditButtons">
 
-                    {props.editMode && props.userContent &&
+                        {isShared ?
+                            <RemoveFromShareButton onClick={addToShare} position={0} offSet={10} />
+                            : <AddToShareButton onClick={addToShare} position={0} offSet={10} />}
+
+                        <DeleteTilebutton onClick={deleteCategory} position={1} offSet={10} />
+
                         <InfoButton onClick={showCategoryInfo} position={2} offSet={10} />
-                    }
+                    </div>} */}
                 </main>
 
             </div>
             <div className="tileText"  >
                 {props.tileName}
             </div>
-        </div>
+            {!props.noMoreMenu && props.userContent && <div className="moreButton">
+                <TileButton size={24} onClick={() => {
+                    props.pubSub.publish({
+                        command: "open-slideup-menu", props: {
+                            label: props.tileName,
+                            image: imageSrc,
+                            type: "tile",
+                            //todo translate
 
+                            buttons: [
+                                { caption: "עריכה", icon: <Edit />, callback: showCategoryInfo },
+                                {
+                                    caption: isShared ?
+                                        "בטל שיתוף" :
+                                        "שיתוף", icon: <Share />, callback: addToShare
+                                }, //todo unshare icon
+                                { caption: "מחיקה", icon: <Delete />, callback: deleteCategory }
+                            ]
+                        }
+                    });
+                }}
+                >
+                    <MoreHoriz />
+                </TileButton>
+            </div>}
+        </div>
     </div>
 
 

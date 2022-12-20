@@ -37,6 +37,7 @@ import ShareInfo from './components/share-info';
 import { ShareCart } from './share-cart';
 import ShareCartUI from './containers/share-cart-ui';
 import { Sync } from '@mui/icons-material'
+import { SlideupMenu } from './components/slideup-menu';
 
 
 
@@ -139,7 +140,9 @@ class App extends IssieBase {
         trace("App: Init file system");
         await FileSystem.get().init(mainJson, pubsub).then(() => this.setState({ fs: FileSystem.get() }));
 
-        const shareCart = new ShareCart()
+        const shareCart = new ShareCart();
+
+
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, false),
@@ -153,6 +156,9 @@ class App extends IssieBase {
             searchScroll: { x: 0, y: 0 },
             infoScroll: { x: 0, y: 0 },
             shareCart,
+
+            slideupMenuOpen:false,
+
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
@@ -268,6 +274,10 @@ class App extends IssieBase {
             case 'long-process-done':
                 this.setState({ longProcess: undefined });
                 break;
+            case 'open-slideup-menu':
+                this.setState({ slideupMenuOpen: true, slideupMenuProps: args.props });
+                break;
+
             default:
         }
     }
@@ -350,6 +360,7 @@ class App extends IssieBase {
 
 
 
+
     render() {
         let path = this.props.history.path;
 
@@ -364,7 +375,7 @@ class App extends IssieBase {
             <TrashButton slot="start-bar" onClick={this.state.showDelete} /> : null;
         document.preventTouch = true;
 
-        if (!this.isInfo() && !this.isVideo() &&!this.isAddScreen() && !this.state.showShare) {
+        if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.state.showShare) {
             searchInput = (
                 <div slot="center-bar" className="search shellSearch">
                     <input
@@ -394,6 +405,13 @@ class App extends IssieBase {
 
         return (
             <div className="App">
+
+                {<SlideupMenu 
+                    {...this.state.slideupMenuProps}
+                    height={(this.state.slideupMenuOpen ? 350 : 0)} 
+                    dimensions={this.state.dimensions}
+                    onClose={() => this.setState({ slideupMenuOpen: false })} />}
+
                 {/**Word Info */
                     this.state.showEntityInfo && <ShareInfo
                         pubSub={this.state.pubSub}
@@ -452,10 +470,10 @@ class App extends IssieBase {
                     {deleteButton}
 
                     {this.state.editMode &&
-                    !this.isAddScreen() &&
-                    <ShareCartButton slot="start-bar"
-                        count={this.state.shareCart.count()}
-                        onClick={() => this.props.history.push("/share-cart")} />}
+                        !this.isAddScreen() &&
+                        <ShareCartButton slot="start-bar"
+                            count={this.state.shareCart.count()}
+                            onClick={() => this.props.history.push("/share-cart")} />}
 
                     {this.state.menuOpen && <Settings
                         slot="body"
@@ -596,7 +614,7 @@ class App extends IssieBase {
             const [categoryId] = splitAndDecodeCompoundName(path.substr(14));
 
 
-            this.setTitle(categoryId?.length > 0 ? translate("TitleEditCategory"):translate("TitleAddCategory"));
+            this.setTitle(categoryId?.length > 0 ? translate("TitleEditCategory") : translate("TitleAddCategory"));
             return (
                 <AddEditItem
                     history={props.history}
@@ -616,7 +634,7 @@ class App extends IssieBase {
             //add-word/:categoryId [/?:wordId]
             const [categoryId, wordId] = splitAndDecodeCompoundName(path.substr(10));
 
-            this.setTitle(wordId?.length > 0 ? translate("TitleEditWord"): translate("TitleAddWord"))
+            this.setTitle(wordId?.length > 0 ? translate("TitleEditWord") : translate("TitleAddWord"))
             return (
                 <AddEditItem
                     addWord={true}

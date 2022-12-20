@@ -7,10 +7,11 @@ import { confirmAlert } from 'react-confirm-alert';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import { getTheme } from "../utils/Utils";
-import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected } from "./ui-elements";
+import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected, TileButton } from "./ui-elements";
 import ISLink from "./ISLink";
 import { fTranslate, translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
+import { Delete, Edit, MoreHoriz, Share } from "@mui/icons-material";
 
 
 function Card2(props) {
@@ -49,7 +50,7 @@ function Card2(props) {
     }
 
     const showWordInfo = () => {
-        props.pubSub.publish({command:'show-entity-info', name: sharedName});
+        props.pubSub.publish({ command: 'show-entity-info', name: sharedName });
     }
 
     const deleteWord = () => {
@@ -82,26 +83,50 @@ function Card2(props) {
         <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
             <div className={"header" + (props.binder ? " binder" : " clip")}></div>
             <div className="main">
+                {!props.noMoreMenu && props.userContent && <div className="cardMoreButton">
+                    <TileButton size={24} onClick={() => {
+                        props.pubSub.publish({
+                            command: "open-slideup-menu", props: {
+                                label: props.cardName,
+                                image: imageSrc,
+                                type:"card",
+                                //todo translate
+                                buttons: [
+                                    { caption: "עריכה", icon: <Edit />, callback: showWordInfo },
+                                    {
+                                        caption: isShared ?
+                                            "בטל שיתוף" :
+                                            "שיתוף", icon: <Share />, callback: addToShare
+                                    }, //todo unshare icon
+                                    { caption: "מחיקה", icon: <Delete />, callback: deleteWord }
+                                ]
+                            }
+                        });
+                    }}
+                    >
+                        <MoreHoriz />
+                    </TileButton>
+                </div>}
+
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
             </div>
             <div className="footer">
                 <h2 className="rtl tileFont">{props.cardName}</h2>
             </div>
-            {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -10, zIndex: 0 }}><Selected /></div> : null}
-            {props.editMode && props.userContent && (isShared ?
-                <RemoveFromShareButton onClick={addToShare} position={0} />
-                : <AddToShareButton onClick={addToShare} position={0} />)}
-            {props.editMode && props.userContent &&
+            {/* {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -10, zIndex: 0 }}><Selected /></div> : null} */}
+            {/* {props.editMode && props.userContent && <div className="cardEditButtons">
+                {isShared ? <RemoveFromShareButton onClick={addToShare} position={0} />
+                    : <AddToShareButton onClick={addToShare} position={0} />}
                 <InfoButton onClick={showWordInfo} position={2} />
-            }
 
-            {props.editMode && props.userContent && <DeleteTilebutton onClick={deleteWord} position={1} />}
+                <DeleteTilebutton onClick={deleteWord} position={1} />
+            </div>
+            } */}
 
         </div>)
     let body =
         <div className="rope-container">
-
             {innerBody}
         </div>
     return (

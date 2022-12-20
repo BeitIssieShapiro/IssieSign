@@ -73,8 +73,9 @@ export function SettingsButton(props) {
 export function ShareCartButton(props) {
   return <HeaderButton slot={props.slot} className="d"
     onClick={props.onClick}>
-    <ShoppingCart style={{ fontSize: 35 }} />
-    <div style={{ fontSize: 18, position: "absolute", left: 13, top: -13 }}>{props.count}</div>
+    {/* <ShoppingCart style={{ fontSize: 35 }} /> */}
+    <div className="shareListIcon" />
+    <div className="shareBadge">{props.count}</div>
   </HeaderButton>
 }
 
@@ -109,11 +110,11 @@ export function RadioBtn(props) {
 }
 
 export function ButtonLogout(props) {
-  return <div className="logout-button" onClick={props.onClick}><Logout/>{translate("BtnLogout")}</div>
+  return <div className="logout-button" onClick={props.onClick}><Logout />{translate("BtnLogout")}</div>
 }
 
 export function ButtonReconsile(props) {
-  return <div className="logout-button" onClick={props.onClick}><CloudSync/>{translate("BtnReconsile")}</div>
+  return <div className="logout-button" onClick={props.onClick}><CloudSync />{translate("BtnReconsile")}</div>
 }
 
 const TILEBUTTON_SIZE = 36;
@@ -128,9 +129,7 @@ export function TileButton(props) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      position: 'absolute', right: -17 + (props.position * (TILEBUTTON_SIZE + 5)),
-      bottom: -15 + offSet,
-      borderRadius: 18, width: 36, height: 36,
+      borderRadius: props.size ? props.size / 2 : 18, width: props.size || 36, height: props.size || 36,
       backgroundColor: 'gray',
       zIndex: 1000,
       ...props.style
@@ -164,7 +163,7 @@ export function AddToShareButton(props) {
 
 export function InfoButton(props) {
   return <TileButton
-  {...props}>
+    {...props}>
     {/* <div style={{fontSize:20}}>i</div> */}
     <Edit />
   </TileButton>
@@ -172,7 +171,7 @@ export function InfoButton(props) {
 
 export function RemoveFromShareButton(props) {
   return <TileButton
-  {...props}>
+    {...props}>
     <Share />
     <div style={{ position: "absolute", left: 2, top: -4 }}>
       <Delete style={{ fontSize: 17 }} />
@@ -182,8 +181,8 @@ export function RemoveFromShareButton(props) {
 
 export function DeleteTilebutton(props) {
   return <TileButton
-  {...props}>
-  
+    {...props}>
+
     <Delete />
   </TileButton>
 }

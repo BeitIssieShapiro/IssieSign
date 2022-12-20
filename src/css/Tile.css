@@ -27,6 +27,17 @@
     z-index: 1;
 }
 
+.moreButton {
+    position:absolute;
+    bottom: -22px;
+    left: -15;
+    z-index: 1;
+    height: 22px;
+    width: 22px;
+    
+    color: black;
+}
+
 
 .fgStatusIcon {
     padding: 10px 0 0 35px;
@@ -142,4 +153,15 @@
     margin-top: 50px;
     width:180px;
     align-content: center;
+}
+
+.tileEditButtons {
+    position: absolute;
+    bottom:-25px;
+    right:-2px;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: transparent;
 }
