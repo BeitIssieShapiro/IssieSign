@@ -127,7 +127,7 @@ function AddEditItem(props) {
             && (!props.addWord || (selectedVideo && selectedVideo.length > 0)));
     }
 
-    const saveCategory = useCallback( () => {
+    const saveCategory = useCallback(() => {
         FileSystem.get().saveCategory(label, selectedImage, origElem, syncOn, props.pubSub).then(
             () => {
                 props.pubSub.publish({ command: 'refresh' });
@@ -138,7 +138,7 @@ function AddEditItem(props) {
         )
     }, [label, selectedImage, origElem, syncOn]);
 
-    const saveWord = useCallback( () => {
+    const saveWord = useCallback(() => {
         FileSystem.get().saveWord(props.categoryId, label,
             selectedImage, selectedVideo, origElem, syncOn, props.pubSub).then(
                 () => {
@@ -336,17 +336,17 @@ function AddEditItem(props) {
             </div>
             <div className="syncContainer">
                 <div className="syncLine">
+                    <div className="syncCaption">{translate("SyncToCloudTitle")}</div>
                     <RadioBtn
                         checked={syncOn}
-                        onChange={(isOn) => { 
+                        onChange={(isOn) => {
                             setSyncOn(isOn);
                             setSyncDirty(true);
-                         }}
+                        }}
                     />
-                    <div className="syncCaption">{translate("SyncToCloudTitle")}</div>
                 </div>
                 <div className="syncLine">
-                    <div className="syncCaption">{translate("SyncStatusLbl")}</div>
+                    <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
                     <div className="syncCaption">{origElem?.sync ? origElem.sync : translate("SyncStatusNone")}</div>
                 </div>
                 <div className="syncLine">
@@ -359,8 +359,8 @@ function AddEditItem(props) {
 
             </div>
             <div style={{ paddingTop: 20 }}>
-                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!IsValidInput() || (!labelDirty && !imageDirty && !syncDirty && !videoDirty)} 
-                onClick={props.addWord ? saveWord : saveCategory} />
+                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!IsValidInput() || (!labelDirty && !imageDirty && !syncDirty && !videoDirty)}
+                    onClick={props.addWord ? saveWord : saveCategory} />
 
             </div>
         </div>

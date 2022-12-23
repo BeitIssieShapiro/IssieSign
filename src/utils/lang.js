@@ -9,16 +9,20 @@ var strings = {
 
         "AppTitle": "שפת הסימנים",
         "SettingsLanguage": "שפה",
-        "SettingsSwipe": "החלקה",
+        "SettingsSwipe": "ניווט בהחלקה",
+        "Yes": "כן",
+        "No": "לא",
+
         "SettingsTitle": "הגדרות",
         "Working": "עובד על זה...",
         "ImportWords": "מייבא מילים...",
         "NewWords": "מילים חדשות",
-        "TitleAbout": "עלינו - About us",
-        "SettingsAbout": "עלינו - About us",
+        "TitleAbout": "אודות - About us",
+        "SettingsAbout": "אודות - About us",
         "SettingsEdit": "עריכה",
-        "SettingsAdultMode": "מצב מבוגרים",
-        "SettingsAdultModeLbl": "תצוגה מותאמת למבוגרים",
+        "SettingsAdultMode": "מצב תצוגת תיקיה",
+        "AdultModeOn": "שורות",
+        "AdultModeOff": "משבצות",
         "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
         "TitleAddCategory": "הוספת קטגוריה",
         "TitleEditCategory":"עריכת קטגוריה",
@@ -45,12 +49,22 @@ var strings = {
         "InfoSharingFailed": "שיתוף נכשל",
         "ShareWords": "שיתוף מילים",
 
+        "sharingAllWords": "כל המילים",
+        "EmptyShareCart": "עדיין לא נבחרו קטגוריות ו/או מילים לשיתוף",
+        "ShareButton":"שיתוף...",
+
+        //Quick Menu
+        "AddToShareMenu":"הוספה לרשימת השיתוף",
+        "RemoveFromShareMenu":"הסרה מרשימת השיתוף",
+        "EditMenu":"עריכה...",
+        "DeleteMenu":"מחיקה",
+
 
         "AddVideoSelected": "נבחר וידאו עבור המילה",
         "AddImageSelected": "נבחרה תמונה",
         "AddPlaceholderWordName": "שם המילה",
         "AddPlaceholderCategoryName": "שם הקטגוריה",
-        "AddPlaceholderSelectImage": "בחר צלמית",
+        "AddPlaceholderSelectImage": "בחר סמל",
         "AddPlaceholderSelectVideo": "בחר סירטון",
         "AddLoadingCamera": "טוען מצלמה...",
         "AddTakePictureFailedOrCanceled": "צילום נכשל או בוטל",
@@ -64,7 +78,7 @@ var strings = {
         "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})",
 
         "ImportWordsErr": "שגיאה ביבוא מילים {1}",
-        "SettingsHideTutorial": "הסתר קטגורית הדרכה",
+        "SettingsHideTutorial": "הסתר תיקיית הדרכה",
         "ErrWrongImportFile": "קובץ אינו בפורמט מתאים",
         "SearchImageTitle": "חפש תמונה",
         "EnterSearchHere":"הכנס מילות חיפוש",
@@ -107,6 +121,14 @@ var strings = {
         "TitleAbout": "من نحن ",
         "SettingsAbout": "تعرف علينا",
         "SettingsEdit": "تحرير",
+        "SettingsAdultMode": "מצב תצוגת תיקיה", //todo
+        "AdultModeOn": "שורות",//todo
+        "AdultModeOff": "משבצות",//todo
+        "SettingsHideTutorial": "הסתר קטגורית הדרכה - ar",
+        "Yes": "כן", //todo
+        "No": "לא", //todo
+
+
         "SettingsAddCatAndWords": "اضافه/ازالة مجموعات وكلمات",
         "TitleAddCategory": "اضافة مجموعة",
         "TitleAddWord": "اضافة كلمة",
@@ -131,6 +153,7 @@ var strings = {
         "InfoSharingCategory": "مشاركة مجموعة...",
         "InfoSharingFailed": "فشلت المشاركة",
         "ShareWords": "مشاركة كلمات",
+        "sharingAllWords": "all words", //todo
 
 
         "AddVideoSelected": "تم اختيار الفيديو ",
@@ -161,14 +184,17 @@ var strings = {
         "TitleAbout": "About us",
         "SettingsAbout": "About us",
         "SettingsEdit": "Edit",
-        "SettingsAdultMode": "Adult mode",
-        "SettingsAdultModeLbl": "Adult adapted display",
+        "SettingsAdultMode": "Category View Mode",
+        "AdultModeOn": "Lines",
+        "AdultModeOff": "Tiles",
         "SettingsAddCatAndWords": "Add/Delete Categories and Words",
         "TitleAddCategory": "Add Category",
         "TitleEditCategory": "Edit Category",
         "TitleAddWord": "Add Word",
         "TitleEditWord":"Edit Word",
 
+        "Yes": "yes",
+        "No": "no",
 
         //confirm messages
         "ConfirmTitleDeleteCategory": "Delete Category",
@@ -189,6 +215,7 @@ var strings = {
         "InfoSharingCategory": "Sharing category...",
         "InfoSharingFailed": "Share failed",
         "ShareWords": "Share Words",
+        "sharingAllWords": "all words", 
 
 
         "AddVideoSelected": "Video is selected",
@@ -237,8 +264,8 @@ var strings = {
         "NotLoggedIn":"Not connected yet",
         "LoggedIn":"Connected to {1}",
         "BtnLogout":"Logout",
-        "BtnReconsile":"Reconsile",
-        "ReconsileStarted":"Reconsile started",
+        "BtnReconsile":"Sync",
+        "ReconsileStarted":"Sync started",
 
     }
 }

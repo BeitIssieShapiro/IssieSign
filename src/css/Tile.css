@@ -29,8 +29,8 @@
 
 .moreButton {
     position:absolute;
-    bottom: -22px;
-    left: -15;
+    bottom: -3px;
+    left: -25px;
     z-index: 1;
     height: 22px;
     width: 22px;

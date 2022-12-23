@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu } from '@mui/icons-material'
 import { translate } from '../utils/lang';
 
 
@@ -39,7 +39,7 @@ export function HeaderButton(props) {
   if (props.selected) {
     style.borderBottom = "white";
     style.borderBottomStyle = "solid";
-    style.borderWidth = 4;
+    style.borderWidth = 3;
   };
 
   return <div {...props}
@@ -50,32 +50,31 @@ export function HeaderButton(props) {
 }
 
 export function EditButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className="b"
+  return <HeaderButton slot={props.slot} selected={props.selected} className="a"
     onClick={props.onClick}>
-    <Edit style={{ fontSize: 35 }} />
+    <Edit style={{ fontSize: 40 }} />
   </HeaderButton>
 }
 
 export function AddButton(props) {
   return <HeaderButton slot={props.slot} selected={props.selected} className="c"
     onClick={props.onClick}>
-    <Add style={{ fontSize: 35 }} />
+    <Add style={{ fontSize: 40, borderColor: 'white', borderStyle: "solid", borderWidth: 1, borderRadius: 20 }} />
   </HeaderButton>
 }
 
 export function SettingsButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className="a"
+  return <HeaderButton slot={props.slot} selected={props.selected} className="b"
     onClick={props.onClick}>
-    <Settings style={{ fontSize: 35 }} />
+    <Menu style={{ fontSize: 40, minHeight: 40 }} />
   </HeaderButton>
 }
 
 export function ShareCartButton(props) {
   return <HeaderButton slot={props.slot} className="d"
     onClick={props.onClick}>
-    {/* <ShoppingCart style={{ fontSize: 35 }} /> */}
-    <div className="shareListIcon" />
-    <div className="shareBadge">{props.count}</div>
+    <ShoppingBasket style={{ fontSize: 40 }} />
+    {props.count > 0 && <div className="shareBadge">{props.count}</div>}
   </HeaderButton>
 }
 
@@ -100,7 +99,7 @@ export function Selected(props) {
   return <div className="selected-icon"></div>
 }
 
-export function RadioBtn(props) {
+export function RadioBtn2(props) {
   return <div className={props.className}>
     <label className="form-switch">
       <input type="checkbox" checked={props.checked} onChange={(e) => props.onChange(e.target.checked)} />
@@ -109,12 +108,27 @@ export function RadioBtn(props) {
   </div>
 }
 
+export function RadioBtn(props) {
+  const on = props.onText || "on";
+  const off = props.offText || "off";
+
+  return <div className={props.className} style={{ position: "relative" }}
+    onClick={() => props.onChange(!props.checked)}
+  >
+    <div className={"switch-base-elipce " + (props.checked ? "switch-base-on" : "switch-base-off")} >
+    {props.checked?on:off}
+    </div>
+    <div className={"switch-elipce " + (props.checked ? "switch-on" : "switch-off")} />
+  </div>
+}
+
+
 export function ButtonLogout(props) {
   return <div className="logout-button" onClick={props.onClick}><Logout />{translate("BtnLogout")}</div>
 }
 
 export function ButtonReconsile(props) {
-  return <div className="logout-button" onClick={props.onClick}><CloudSync />{translate("BtnReconsile")}</div>
+  return <div className="sync-button" onClick={props.onClick}><CloudSync />{translate("BtnReconsile")}</div>
 }
 
 const TILEBUTTON_SIZE = 36;
@@ -124,16 +138,8 @@ export function TileButton(props) {
   const prevent = (evt) => evt.stopPropagation();
   const offSet = props.offSet || 0;
   return <div
-    className="enable-pointer-events"
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: props.size ? props.size / 2 : 18, width: props.size || 36, height: props.size || 36,
-      backgroundColor: 'gray',
-      zIndex: 1000,
-      ...props.style
-    }}
+    className="enable-pointer-events tile-button"
+    
 
 
     onMouseDown={prevent}

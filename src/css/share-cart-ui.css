@@ -1,28 +1,108 @@
 .share-cart-container {
-    width:90vw;
-    margin-left:5vw;
-    margin-right:5vw;
-    margin-top: 5vh;
-    color: black;
+    width: 100vw;
+    direction: var(--dir);
+    color: #585A5A;
+    background-color: #EAE5DA;
 }
 
+.share-cart-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2em;
+    padding-left: 7vw;
+    padding-right: 7vw;
+    margin-bottom: 30px;
+}
+
+.share-btn {
+    background-color: #59626b;
+    height: 40px;
+    width: 120px;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    line-height: 2.1rem;
+    color: #fff
+}
 
 .share-cart {
-    width:100%;
+    background-color: #fff;
+    color: #8B8F8F;
+    text-align: start;
+
+    border-radius: 10px;
+    margin-right: 7vw;
+    width: 86vw;
 }
 
-.share-cart,
-.share-cart>tr,
-.share-cart>tr>th,
-.share-cart>tr>td {
-    border: 1px solid;
-    color: black;
+.share-cart-table-title {
+
+    display: grid;
+    height: 50px;
+    grid-template-columns: 1fr 4fr 4fr 1fr;
+
+
+    background-color: #8B8F8F;
+    color: #fff;
+    font-size: 1.7rem;
+
+
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+
 }
 
-.share-cart>tr>th {
-    width: 35%
+
+.share-cart-item {
+    display: grid;
+    height: 50px;
+    font-size: 1.4rem;
+    line-height: 2em;
+    grid-template-columns: 1fr 4fr 4fr 1fr;
 }
 
+.share-cart-item>item {
+    border-inline-end: solid #8B8F8F 1px;
+    border-block-start: solid #8B8F8F 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+
+.share-cart-item>image {
+
+    border-block-start: solid #8B8F8F 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.share-cart-item>image>img {
+    height: 25px;
+    width: 25px;
+}
+
+.empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+
+}
+
+.empty-cart > img {
+    height: 160px;
+    width: 160px;
+}
+
+.empty-cart > text {
+    font-size: 1.5rem;
+    padding-top:10px;
+    padding-bottom: 100px;
+}
 
 
 button {

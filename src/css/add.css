@@ -212,10 +212,14 @@ input[type="text"]::placeholder {
 
 .syncContainer {
   direction: var(--dir);
-  padding-left: 8vw;
-  padding-right: 8vw;
-  padding-top: 25px;
+  margin-inline-start: 18%;
+  margin-inline-end: 18%;
+  padding-inline-end: 15%;
+  border-top: solid gray 1px;
+  margin-top: 35px;
+  padding-top:15px;
   padding-bottom: 25px;
+  color: black;
 }
 
 .syncCaption {
@@ -229,4 +233,5 @@ input[type="text"]::placeholder {
   display: flex;
   flex-direction: row;
   padding-bottom: 10px;
+  justify-content: space-between;
 }

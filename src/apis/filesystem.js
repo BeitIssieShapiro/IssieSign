@@ -44,7 +44,7 @@ export default class FileSystem {
                 ]
             },
             {
-                "name": "test2",
+                "name": "פירות וירקות",
                 "id": "test2",
                 "imageName": "איברי גוף.png",
                 userContent: true,

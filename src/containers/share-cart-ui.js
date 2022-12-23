@@ -6,72 +6,88 @@ import { fTranslate, translate } from '../utils/lang';
 import { trace } from "../utils/Utils";
 import { withAlert } from 'react-alert'
 
+const emptyCart = require("../images/empty-share-list.png");
+
 function ShareCartUI({ shareCart, pubSub, alert }) {
     return <div className="share-cart-container">
-        <table className="share-cart">
-            <tr>
-                <th className="category">{translate("ShareCartCategoryColumnTitle")}</th>
-                <th className="name">{translate("ShareCartWordNameColumnTitle")}</th>
-                <th></th>
-            </tr>
+        <div className="share-cart-title">
+            {translate("ShareCartTitle")}
+            <div className="share-btn" onClick={() => {
+                if (shareCart?.count() > 0) {
+                    // Verify all files are sync-ed to cloud:
+                    if (!shareCart.isAllSynced()) {
+                        confirmAlert({
+                            title: translate("ConfirmTitleSyncToServer"),
+                            message: translate("ConfirmMsgSyncToServer"),
+                            buttons: [
+                                {
+                                    label: translate("BtnYes"),
+                                    onClick: () => {
+                                        // triger syncing - long process
+                                        pubSub.publish({
+                                            command: "long-process",
+                                            msg: translate("SyncToCloudMsg")
+                                        });
+
+                                        trace("Not all synced - set sync and wait")
+                                        shareCart.setAllSynced().then(() => {
+                                            pubSub.publish({
+                                                command: "long-process-done"
+                                            })
+                                            shareTheCart(shareCart, alert);
+                                        },
+                                            (e) => alert.error(fTranslate("ErrSyncFail", e))
+                                        ).finally(() => pubSub.publish({
+                                            command: "long-process-done"
+                                        }));
+                                    }
+                                },
+                                {
+                                    label: translate("BtnCancel"),
+                                    onClick: () => alert.info(translate("ShareCancelled"))
+                                }
+                            ]
+                        });
+                    } else {
+                        trace("all was synced - start share")
+                        shareTheCart(shareCart, alert);
+                    }
+                }
+            }}>Share...</div>
+        </div>
+
+        <div className="share-cart">
+            <div className="share-cart-table-title">
+                <div></div>
+                <div>{translate("ShareCartCategoryColumnTitle")}</div>
+                <div>{translate("ShareCartWordNameColumnTitle")}</div>
+            </div>
+            <div className="share-cart-body">
             {
                 shareCart?.items.map((si, i) => {
                     const item = shareCart.get(i);
-                    return (<tr key={i}>
-                        <td>{item.category}</td>
-                        <td>{item.name}</td>
-                        <td><Delete onClick={() => {
+                    return (<div className="share-cart-item">
+                        <image><img src={item.image}/></image>
+                        <item>{item.category}</item>
+                        <item>{item.name}</item>
+                        <image>
+                            <Delete onClick={() => {
                             shareCart.remove(si.name);
                             pubSub.refresh();
-                        }} /></td>
-                    </tr>
+                        }} />
+                        </image>
+                    </div>
                     )
                 })
             }
-        </table>
+            {shareCart?.items.length === 0 && <div className="empty-cart">
+                <img src={emptyCart}/>
+                <text>{translate("EmptyShareCart")}</text>
+            </div>}
+            </div>
+        </div>
         <Spacer height={15} />
-        <button onClick={() => {
-            if (shareCart?.count() > 0) {
-                // Verify all files are sync-ed to cloud:
-                if (!shareCart.isAllSynced()) {
-                    confirmAlert({
-                        title: translate("ConfirmTitleSyncToServer"),
-                        message: translate("ConfirmMsgSyncToServer"),
-                        buttons: [
-                            {
-                                label: translate("BtnYes"),
-                                onClick: () => {
-                                    // triger syncing - long process
-                                    pubSub.publish({
-                                        command: "long-process",
-                                        msg: translate("SyncToCloudMsg")
-                                    });
 
-                                    trace("Not all synced - set sync and wait")
-                                    shareCart.setAllSynced().then(() => {
-                                        pubSub.publish({
-                                            command: "long-process-done"
-                                        })
-                                        shareTheCart(shareCart, alert);
-                                    },
-                                        (e) => alert.error(fTranslate("ErrSyncFail", e))
-                                    ).finally(() => pubSub.publish({
-                                        command: "long-process-done"
-                                    }));
-                                }
-                            },
-                            {
-                                label: translate("BtnCancel"),
-                                onClick: () => alert.info(translate("ShareCancelled"))
-                            }
-                        ]
-                    });
-                } else {
-                    trace("all was synced - start share")
-                    shareTheCart(shareCart, alert);
-                }
-            }
-        }}>Share ...</button>
     </div >
 }
 

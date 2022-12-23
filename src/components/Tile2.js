@@ -28,6 +28,7 @@ function Tile2(props) {
         } else {
             props.shareCart.add({
                 name: props.tileName,
+                image: imageSrc,
             })
             props.alert.success(translate("ItemAddedToShare"));
         }
@@ -96,32 +97,33 @@ function Tile2(props) {
             </div>
             <div className="tileText"  >
                 {props.tileName}
-            </div>
-            {!props.noMoreMenu && props.userContent && <div className="moreButton">
-                <TileButton size={24} onClick={() => {
-                    props.pubSub.publish({
-                        command: "open-slideup-menu", props: {
-                            label: props.tileName,
-                            image: imageSrc,
-                            type: "tile",
-                            //todo translate
+                {props.editMode && !props.noMoreMenu && props.userContent && <div className="moreButton">
+                    <TileButton size={24} onClick={() => {
+                        props.pubSub.publish({
+                            command: "open-slideup-menu", props: {
+                                label: props.tileName,
+                                image: imageSrc,
+                                type: "tile",
+                                //todo translate
 
-                            buttons: [
-                                { caption: "עריכה", icon: <Edit />, callback: showCategoryInfo },
-                                {
-                                    caption: isShared ?
-                                        "בטל שיתוף" :
-                                        "שיתוף", icon: <Share />, callback: addToShare
-                                }, //todo unshare icon
-                                { caption: "מחיקה", icon: <Delete />, callback: deleteCategory }
-                            ]
-                        }
-                    });
-                }}
-                >
-                    <MoreHoriz />
-                </TileButton>
-            </div>}
+                                buttons: [
+                                    { caption: translate("EditMenu"), icon: <Edit />, callback: showCategoryInfo },
+                                    {
+                                        caption: isShared ?
+                                            translate("RemoveFromShareMenu") :
+                                            translate("AddToShareMenu"), icon: <Share />, callback: addToShare
+                                    }, //todo unshare icon
+                                    { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteCategory }
+                                ]
+                            }
+                        });
+                    }}
+                    >
+                        <MoreHoriz style={{fontSize:35, color: "#493A25"}}/>
+                    </TileButton>
+                </div>} 
+            </div>
+
         </div>
     </div>
 

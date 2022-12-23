@@ -43,6 +43,7 @@ function Card2(props) {
         } else {
             props.shareCart.add({
                 name: sharedName,
+                image: imageSrc,
             })
             props.alert.success(translate("ItemAddedToShare"));
         }
@@ -83,36 +84,37 @@ function Card2(props) {
         <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
             <div className={"header" + (props.binder ? " binder" : " clip")}></div>
             <div className="main">
-                {!props.noMoreMenu && props.userContent && <div className="cardMoreButton">
-                    <TileButton size={24} onClick={() => {
-                        props.pubSub.publish({
-                            command: "open-slideup-menu", props: {
-                                label: props.cardName,
-                                image: imageSrc,
-                                type:"card",
-                                //todo translate
-                                buttons: [
-                                    { caption: "עריכה", icon: <Edit />, callback: showWordInfo },
-                                    {
-                                        caption: isShared ?
-                                            "בטל שיתוף" :
-                                            "שיתוף", icon: <Share />, callback: addToShare
-                                    }, //todo unshare icon
-                                    { caption: "מחיקה", icon: <Delete />, callback: deleteWord }
-                                ]
-                            }
-                        });
-                    }}
-                    >
-                        <MoreHoriz />
-                    </TileButton>
-                </div>}
+
 
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
             </div>
             <div className="footer">
                 <h2 className="rtl tileFont">{props.cardName}</h2>
+                {props.editMode && !props.noMoreMenu && props.userContent &&
+                    <TileButton size={24} onClick={() => {
+                        props.pubSub.publish({
+                            command: "open-slideup-menu", props: {
+                                label: props.cardName,
+                                image: imageSrc,
+                                type: "card",
+                                //todo translate
+                                buttons: [
+                                    { caption: translate("EditMenu"), icon: <Edit />, callback: showWordInfo },
+                                    {
+                                        caption: isShared ?
+                                            translate("RemoveFromShareMenu") :
+                                            translate("AddToShareMenu"), icon: <Share />, callback: addToShare
+                                    }, //todo unshare icon
+                                    { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteWord }
+                                ]
+                            }
+                        });
+                    }}
+                    >
+                        <MoreHoriz style={{fontSize:35, color:'white'}}/>
+                    </TileButton>
+                }
             </div>
             {/* {props.selected ? <div style={{ display: 'flex', position: 'absolute', right: -17, bottom: -10, zIndex: 0 }}><Selected /></div> : null} */}
             {/* {props.editMode && props.userContent && <div className="cardEditButtons">

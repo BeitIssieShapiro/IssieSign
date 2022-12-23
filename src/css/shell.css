@@ -45,7 +45,6 @@
 
 .shellheaderTop {
     position: relative;
-
     display: grid;
     grid-template-columns: 100px 1fr 100px;
     width: 100vw;
@@ -99,8 +98,10 @@
 
 .shellSearch {
     position: absolute;
+    align-items: center;
+    display: flex;
     right: 70px;
-    top: 14px;
+    top: 27px;
 }
 
 @media (max-width: 665px) {

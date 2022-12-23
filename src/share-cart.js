@@ -33,7 +33,7 @@ export class ShareCart {
     get(i) {
         if (i < this.items.length) {
             const [category, name] = this.items[i].name.split("/");
-            return { category, name };
+            return { category, name: name || translate("sharingAllWords"), image: this.items[i].image };
         }
     }
 

@@ -45,7 +45,7 @@ function ShareInfo(props) {
                 />
             </div>
 
-            <div className="shareInfoLabel">{translate("SyncStatusLbl")}</div>
+            <div className="shareInfoLabel">{translate("SyncStatusLbl")+":"}</div>
             <div>{entity.sync ? entity.sync : translate("SyncStatusNone")}</div>
             {entity.syncErr && <div className="shareInfoLabel">{translate("SyncErrorLbl")}</div>}
             {entity.syncErr && <div>{entity.syncErr}</div>}

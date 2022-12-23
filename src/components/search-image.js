@@ -10,22 +10,24 @@ export default function SearchImage({ onClose, onSelectImage, pubSub }) {
     const [value, setValue] = useState("")
     const [results, setResults] = useState();
 
-    return <ModalDialog title={translate("SearchImageTitle")} onClose={onClose}>
+    return <ModalDialog title={translate("SearchImageTitle")} onClose={onClose} style={{ left: "5vh", right: "5vh", "--vmargin": "5vw" }}>
         <div className="searchRoot">
             <div className="searchTextAndBtnContainer">
                 <input type="search"
                     placeholder={translate("EnterSearchHere")}
-                    value={value} onChange={(e) => setValue(e.target.value)}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
                 />
-                {value?.length > 0 && <div className="cleanSearchX" onClick={()=>setValue("")}>x</div>}
+                {/* {value?.length > 0 && <div className="cleanSearchX" onClick={()=>setValue("")}>x</div>} */}
                 <div className="searchImageBtn" disabled={value.length < 2}
                     onClick={() => {
-                        pubSub.publish({command:"set-busy", active:true});
+                        pubSub.publish({ command: "set-busy", active: true });
                         ImageLibrary.get().search(value).then((res) => {
                             setResults(res)
-                        }).finally(()=>pubSub.publish({command:"set-busy", active:false}))
+                        }).finally(() => pubSub.publish({ command: "set-busy", active: false }))
                     }}
-                     >{translate("BtnSearch")}</div>
+                >{translate("BtnSearch")}
+                </div>
             </div>
             <div className="resultContainer">
                 {results && (results.length > 0 ? results.map((item, i) => (

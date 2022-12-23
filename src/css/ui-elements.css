@@ -101,21 +101,23 @@
 
 
 .shareListIcon {
-background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="UTF-8" standalone="no"%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width="32" height="32" viewBox="0 0 68.907623 80.386169" version="1.1" id="svg5" inkscape:version="1.2.1 (9c6d41e4, 2022-07-14)" sodipodi:docname="share-list.svg" inkscape:export-filename="share-list2.svg" inkscape:export-xdpi="96" inkscape:export-ydpi="96" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"%3E%3Cg inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(-15.834178,-11.782441)"%3E%3Crect style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="rect4570" width="37.787106" height="11.576398" x="31.016008" y="13.105356" ry="2.2198601" rx="2.2198601" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:4.44732;stroke-opacity:1" d="M 30.754199,18.122101 C 13.932028,19.008434 19.542206,9.9740973 18.098338,89.84737 l 64.328289,0.09419 C 79.183056,9.4168126 88.525575,19.314339 69.695889,18.022505" id="path5300" sodipodi:nodetypes="cccc" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="path7696" cx="51.397354" cy="45.40852" rx="4.0361094" ry="4.137012" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="ellipse7698" cx="69.963455" cy="54.691574" rx="4.0361094" ry="4.137012" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="ellipse7700" cx="51.39735" cy="63.772812" rx="4.0361094" ry="4.137012" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.71869;stroke-opacity:1" d="M 66.687065,56.09476 55.884568,61.966011" id="path7702" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.88848;stroke-opacity:1" d="M 66.22128,53.2225 54.937717,46.877585" id="path7706" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,40.613576 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7762" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,46.820239 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7764" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,53.026902 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7766" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,59.157315 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7768" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,65.489534 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7770" /%3E%3C/g%3E%3C/svg%3E%0A');  background-repeat: no-repeat;
+  /* background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="UTF-8" standalone="no"%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width="32" height="32" viewBox="0 0 68.907623 80.386169" version="1.1" id="svg5" inkscape:version="1.2.1 (9c6d41e4, 2022-07-14)" sodipodi:docname="share-list.svg" inkscape:export-filename="share-list2.svg" inkscape:export-xdpi="96" inkscape:export-ydpi="96" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"%3E%3Cg inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(-15.834178,-11.782441)"%3E%3Crect style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="rect4570" width="37.787106" height="11.576398" x="31.016008" y="13.105356" ry="2.2198601" rx="2.2198601" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:4.44732;stroke-opacity:1" d="M 30.754199,18.122101 C 13.932028,19.008434 19.542206,9.9740973 18.098338,89.84737 l 64.328289,0.09419 C 79.183056,9.4168126 88.525575,19.314339 69.695889,18.022505" id="path5300" sodipodi:nodetypes="cccc" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="path7696" cx="51.397354" cy="45.40852" rx="4.0361094" ry="4.137012" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="ellipse7698" cx="69.963455" cy="54.691574" rx="4.0361094" ry="4.137012" /%3E%3Cellipse style="fill:none;stroke:%23FFFFFF;stroke-width:2.64583;stroke-opacity:1" id="ellipse7700" cx="51.39735" cy="63.772812" rx="4.0361094" ry="4.137012" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.71869;stroke-opacity:1" d="M 66.687065,56.09476 55.884568,61.966011" id="path7702" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.88848;stroke-opacity:1" d="M 66.22128,53.2225 54.937717,46.877585" id="path7706" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,40.613576 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7762" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,46.820239 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7764" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,53.026902 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7766" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,59.157315 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7768" /%3E%3Cpath style="fill:none;stroke:%23FFFFFF;stroke-width:2.89915;stroke-opacity:1" d="m 26.218376,65.489534 c 13.755438,0.199063 13.755438,0.199063 13.755438,0.199063 v 0 0" id="path7770" /%3E%3C/g%3E%3C/svg%3E%0A');  background-repeat: no-repeat; */
   width: 40px;
   height: 40px;
+  font-size: 40px;
+  size: 40px;
 }
 
 .shareBadge {
-  font-size: 13px;
+  font-size: 18px;
   position: absolute;
-  right:3px;
-  bottom:5px;
-  line-height: 10px;
+  right: -3px;
+  top: 5px;
+  line-height: 17px;
   background-color: red;
-  width:14px;
-  height:14px;
-  border-radius: 7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
 }
 
 .selected-icon {
@@ -192,11 +194,56 @@ background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="UTF-
   pointer-events: auto;
 }
 
+.switch-base-elipce {
+  width: 80px;
+  height: 26px;
+  border-radius: 15px;
+  border: solid #9CA2A9 1px;
+  text-align: right;
+  padding: 2px;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.switch-base-on {
+  text-align: left;
+}
+
+.switch-elipce {
+  position: absolute;
+  top: -5px;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: white;
+  border: solid #9CA2A9 1px;
+  left: 0;
+  transition: all 800ms;
+}
+
+.switch-on {
+  background-color: #0654A1;
+  right: 0;
+  left: unset;
+}
+
 
 .form-switch {
   display: inline-block;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+.tile-button {
+  display: flex;
+  height: 16px;
+  width: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.4);
+  
+  z-index: 1000;
 }
 
 .form-switch i {

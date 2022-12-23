@@ -157,7 +157,7 @@ class App extends IssieBase {
             infoScroll: { x: 0, y: 0 },
             shareCart,
 
-            slideupMenuOpen:false,
+            slideupMenuOpen: false,
 
         });
         pubsub.subscribe((args) => this.getEvents(args));
@@ -357,10 +357,6 @@ class App extends IssieBase {
         return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode);
     }
 
-
-
-
-
     render() {
         let path = this.props.history.path;
 
@@ -406,9 +402,9 @@ class App extends IssieBase {
         return (
             <div className="App">
 
-                {<SlideupMenu 
+                {<SlideupMenu
                     {...this.state.slideupMenuProps}
-                    height={(this.state.slideupMenuOpen ? 350 : 0)} 
+                    height={(this.state.slideupMenuOpen ? 350 : 0)}
                     dimensions={this.state.dimensions}
                     onClose={() => this.setState({ slideupMenuOpen: false })} />}
 
@@ -447,8 +443,6 @@ class App extends IssieBase {
                 </div>
                 <Shell theme={this.state.theme} id="page1" isMobile={IssieBase.isMobile()}>
 
-                    <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />
-
                     <EditButton
                         slot="start-bar"
                         selected={this.state.editMode}
@@ -456,7 +450,9 @@ class App extends IssieBase {
                             this.setState({ editMode: this.state.editMode === true ? false : true })
                         }} />
 
-                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) &&
+                    {this.state.editMode && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
+
+                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode &&
                         <AddButton slot="start-bar"
                             onClick={() => this.handleNewClick()} color='white'
                         />
@@ -472,7 +468,7 @@ class App extends IssieBase {
                     {this.state.editMode &&
                         !this.isAddScreen() &&
                         <ShareCartButton slot="start-bar"
-                            count={this.state.shareCart.count()}
+                            count={this.state?.shareCart?.count()}
                             onClick={() => this.props.history.push("/share-cart")} />}
 
                     {this.state.menuOpen && <Settings
