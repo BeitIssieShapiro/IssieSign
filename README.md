@@ -208,6 +208,15 @@ include ':issiesign_assets3'
     RELEASE_KEY_ALIAS=signlang
     RELEASE_KEY_PASSWORD=issiesign
 
+## Create IssieSign, MyIssieSign, IssieSignArabic
+- Duplicate the target and rename as needed
+- Change bundle identified and version/build
+- Change info->bundle display name
+- Duplicate IssieLaunchScreen.storyboard and change as needed
+- Change info->Launch screen interface base file name
+
+
+
 
 ## Run on simulator with react dev-server
 - Change your config.xml and make <content src="..." /> point to your local-IP address and your dev-port, e.g. <content src="http://localhost:3000/index.html" />

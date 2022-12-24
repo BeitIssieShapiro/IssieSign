@@ -3,14 +3,14 @@ cp -f jsons/he/mainJson.js src/mainJson.js
 cp -R ../IssieSign-Media/images/he/ src/images/adt/
 
 rm -rf public/videos
-#cp -R ../IssieSign-Media/videos/he/dev-ios public/videos
-cp -R ../IssieSign-Media/videos/he/prod public/videos
+cp -R ../IssieSign-Media/videos/he/dev-ios public/videos
+#cp -R ../IssieSign-Media/videos/he/prod public/videos
 
 npm run build
 
-rm cordova/app/platforms/ios/www/precache-*.*
-rm -rf cordova/app/platforms/ios/www/static
-cp -R build/* cordova/app/platforms/ios/www
+rm cordovaApp/platforms/ios/www/precache-*.*
+rm -rf cordovaApp/platforms/ios/www/static
+cp -R build/* cordovaApp/platforms/ios/www
 
 #cp -R build/static cordova/app/platforms/ios/www/
 #cp  build/* cordova/app/platforms/ios/www/
