@@ -14,7 +14,7 @@ class Word extends IssieBase {
     static getDerivedStateFromProps(props, state) {
         if (props.pubSub && props.categoryId) {
             props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
-            console.log("set-catId " + props.categoryId)
+            props.pubSub.publish({ command: "set-themeId", themeId: props.themeId });
         }
 
         return null;
@@ -25,13 +25,12 @@ class Word extends IssieBase {
 
         let wordsElements = [];
         let elementWidths = [];
-        let themeId = this.props.categoryId4Theme;
         if (Array.isArray(this.props.words)) {
             wordsElements = this.props.words.map((word) => {
-                let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
-                if (word.categoryId) {
-                    themeId = word.categoryId;
-                }
+                //let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
+                const themeId = word.themeId || this.props.themeId;
+
+
                 return <Card2 key={word.id}
                     editMode={this.props.editMode}
                     category={word.category}
@@ -108,7 +107,7 @@ class Word extends IssieBase {
                     transitionDuration: this.props.allowSwipe ? '0s' : '1.7s',
 
                 }}>
-                {lines.map((line) => {
+                {lines.map((line, i) => {
                     let ropeSize = line.length < 5 ? "S" : line.length > 15 ? "L" : "M";
                     //on high res go one up
                     // if (IssieBase.isHighResolution()) {
@@ -116,7 +115,7 @@ class Word extends IssieBase {
                     //         ropeSize = "M";
                     //     } 
                     // }
-                    return <Rope size={ropeSize}>
+                    return <Rope size={ropeSize} key={i}>
                         {line}
                     </Rope>
                 })}

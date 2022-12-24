@@ -9,7 +9,8 @@ import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import SearchImage from "./search-image";
-import { trace } from "../utils/Utils";
+import { getAvailableThemes, getTheme, trace } from "../utils/Utils";
+import { Check } from "@mui/icons-material";
 
 const imagePickerOptions = {
     //maximumImagesCount: 1,
@@ -80,6 +81,7 @@ function isValid(fileName) {
 }
 
 function AddEditItem(props) {
+    const [themeId, setThemeId] = useState(props.themeId || "3");
     const [label, setLabel] = useState("");
     const [selectedImage, setSelectedImage] = useState("");
     const [selectedVideo, setSelectedVideo] = useState("");
@@ -91,6 +93,7 @@ function AddEditItem(props) {
 
     const [imageDirty, setImageDirty] = useState(false);
     const [labelDirty, setLabelDirty] = useState(false);
+    const [themeDirty, setThemeDirty] = useState(false);
     const [videoDirty, setVideoDirty] = useState(false);
     const [syncDirty, setSyncDirty] = useState(false);
     const [origElem, setOrigElem] = useState(undefined);
@@ -113,6 +116,7 @@ function AddEditItem(props) {
                 const cat = FileSystem.get().findCategory(props.categoryId);
                 if (cat) {
                     setOrigElem(cat);
+                    setThemeId(cat.themeId);
                     setLabel(cat.name);
                     setSelectedImage(FileSystem.get().getFilePath(cat.imageName));
                     setSyncOn(cat.sync == FileSystem.IN_SYNC || cat.sync == FileSystem.SYNC_REQUEST)
@@ -121,6 +125,9 @@ function AddEditItem(props) {
         }
     }, [props.categoryId, props.wordId])
 
+    useEffect(() => {
+        props.pubSub.publish({ command: "set-themeId", themeId: themeId });
+    },[themeId]);
 
     const IsValidInput = () => {
         return (isValid(label) && selectedImage && selectedImage.length > 0
@@ -128,7 +135,7 @@ function AddEditItem(props) {
     }
 
     const saveCategory = useCallback(() => {
-        FileSystem.get().saveCategory(label, selectedImage, origElem, syncOn, props.pubSub).then(
+        FileSystem.get().saveCategory(label, themeId, selectedImage, origElem, syncOn, props.pubSub).then(
             () => {
                 props.pubSub.publish({ command: 'refresh' });
                 props.alert.success(translate("InfoSavedSuccessfully"));
@@ -136,7 +143,7 @@ function AddEditItem(props) {
             },
             (err) => props.alert.error(JSON.stringify(err))
         )
-    }, [label, selectedImage, origElem, syncOn]);
+    }, [label, selectedImage, origElem, syncOn, themeId]);
 
     const saveWord = useCallback(() => {
         FileSystem.get().saveWord(props.categoryId, label,
@@ -151,10 +158,7 @@ function AddEditItem(props) {
     }, [props.categoryId, label, selectedImage, selectedVideo, origElem, syncOn]);
 
 
-    let themeId = "3";
-    if (props.categoryId4Theme) {
-        themeId = props.categoryId4Theme;
-    }
+    
 
     let addWordMode = props.addWord;
     //let vidName = getFileName(selectedVideo);
@@ -163,16 +167,17 @@ function AddEditItem(props) {
     let vidName = selectedVideo.length > 0 ? translate("AddVideoSelected") : ""
     let imgName = selectedImage.length > 0 ? translate("AddImageSelected") : ""
     return (
-        <div className="addContainer">
+        <div className="addContainer showScroll">
             {showWebSearch && <SearchImage
                 pubSub={props.pubSub}
                 onClose={() => setShowWebSearch(false)}
                 onSelectImage={(url) => {
                     setShowWebSearch(false);
+                    console.log("web image selected", utl)
                     setSelectedImage(url);
                     setImageDirty(true);
                 }} />}
-            <div >
+            <div>
                 <div className="tileCardContainer">
                     {addWordMode ?
                         <div className="addCardHost">
@@ -180,8 +185,22 @@ function AddEditItem(props) {
                                 imageName={selectedImage} themeId={themeId} noLink="true" />
                         </div>
                         : <Shelf>
-                            <Tile2 key="1" dimensions={props.dimensions} tileName={label} imageName={selectedImage} themeFlavor={themeId} />
+                            <Tile2 key="1" dimensions={props.dimensions} tileName={label} imageName={selectedImage} themeId={themeId} />
                         </Shelf>}
+
+                    {!addWordMode && <div className="tileColorBtns showScroll">
+                        {getAvailableThemes().map((theme) => (
+                            <div theme="blue" theme-flavor={theme+""} 
+                            onClick={()=>{
+                                setThemeId(theme);
+                                setThemeDirty(true);
+                            }}>
+                                <div className="tileColorBtn" style={{
+                                    backgroundColor: "var(--box-background-color-1)"
+                                }} >{themeId == theme && <Check/>}</div>
+                            </div>))
+                        }</div>
+                    }
                 </div>
 
                 <div className="fieldsContainer">
@@ -359,7 +378,7 @@ function AddEditItem(props) {
 
             </div>
             <div style={{ paddingTop: 20 }}>
-                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!IsValidInput() || (!labelDirty && !imageDirty && !syncDirty && !videoDirty)}
+                <input type="button" value={translate("BtnSave")} className="addButton" style={{ width: '150px' }} disabled={!IsValidInput() || (!labelDirty && !imageDirty && !syncDirty && !videoDirty && !themeDirty)}
                     onClick={props.addWord ? saveWord : saveCategory} />
 
             </div>

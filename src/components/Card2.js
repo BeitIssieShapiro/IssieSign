@@ -6,7 +6,7 @@ import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
-import { getTheme } from "../utils/Utils";
+import { getTheme, getThemeName } from "../utils/Utils";
 import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected, TileButton } from "./ui-elements";
 import ISLink from "./ISLink";
 import { fTranslate, translate } from "../utils/lang";
@@ -81,11 +81,9 @@ function Card2(props) {
     }
 
     let innerBody = (
-        <div className="card" style={cardDouble} theme={getTheme(props.themeId)}>
+        <div className="card" style={cardDouble} theme={getThemeName(props.themeId)}>
             <div className={"header" + (props.binder ? " binder" : " clip")}></div>
             <div className="main">
-
-
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
             </div>

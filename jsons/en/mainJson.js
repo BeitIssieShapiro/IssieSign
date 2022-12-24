@@ -4,6 +4,7 @@ const mainJson = {
         "name": "Tutorials",
         tutorial: true,
         "id": "1",
+        "themeId":"3",
         "imageName": "איברי גוף.png",
         "words": [
           {

@@ -6,7 +6,6 @@ let gLang = "he"
 
 var strings = {
     "he": {
-
         "AppTitle": "שפת הסימנים",
         "SettingsLanguage": "שפה",
         "SettingsSwipe": "ניווט בהחלקה",
@@ -23,9 +22,9 @@ var strings = {
         "SettingsAdultMode": "מצב תצוגת תיקיה",
         "AdultModeOn": "שורות",
         "AdultModeOff": "משבצות",
-        "SettingsAddCatAndWords": "הוספת/מחיקת קטגוריות ומילים",
-        "TitleAddCategory": "הוספת קטגוריה",
-        "TitleEditCategory":"עריכת קטגוריה",
+        "SettingsAddCatAndWords": "הוספת/מחיקת תיקיות ומילים",
+        "TitleAddCategory": "הוספת תיקיה",
+        "TitleEditCategory":"עריכת תיקיה",
         "TitleAddWord": "הוספת מילה",
         "TitleEditWord":"עריכת מילה",
 
@@ -45,12 +44,12 @@ var strings = {
         "InfoSavedSuccessfully": "נשמר בהצלחה",
         "MissingImageAlt": "ללא תמונה",
         "InfoSharingWords": "משתף מילים...",
-        "InfoSharingCategory": "משתף קטגוריה...",
+        "InfoSharingCategory": "משתף תיקיה...",
         "InfoSharingFailed": "שיתוף נכשל",
         "ShareWords": "שיתוף מילים",
 
         "sharingAllWords": "כל המילים",
-        "EmptyShareCart": "עדיין לא נבחרו קטגוריות ו/או מילים לשיתוף",
+        "EmptyShareCart": "עדיין לא נבחרו תיקיות ו/או מילים לשיתוף",
         "ShareButton":"שיתוף...",
 
         //Quick Menu
@@ -63,7 +62,7 @@ var strings = {
         "AddVideoSelected": "נבחר וידאו עבור המילה",
         "AddImageSelected": "נבחרה תמונה",
         "AddPlaceholderWordName": "שם המילה",
-        "AddPlaceholderCategoryName": "שם הקטגוריה",
+        "AddPlaceholderCategoryName": "שם התיקיה",
         "AddPlaceholderSelectImage": "בחר סמל",
         "AddPlaceholderSelectVideo": "בחר סירטון",
         "AddLoadingCamera": "טוען מצלמה...",
@@ -91,13 +90,14 @@ var strings = {
         "SyncStatusLbl":"מצב סינכרון",
         "SyncErrorLbl":"שגיאת סנכרון",
         "ShareCartTitle":"רשימת שיתוף",
-        "ShareCartCategoryColumnTitle":"קטגוריה",
+        "ShareCartCategoryColumnTitle":"תיקיה",
         "ShareCartWordNameColumnTitle":"מילה",
         "ItemRemovedFromShare":"הוסר מרשימת השיתוף",
         "ItemAddedToShare":"הוסף לרשימת השיתוף",
+        "SearchTitle":"חיפוש: {1}",
 
         "ConfirmTitleSyncToServer": "סינכרון המילים לחשבון גוגל דרייב",
-        "ConfirmMsgSyncToServer":"כל המילים יעלו לגוגל דרייב שלך. ולכולן תיקבע הרשאת קריאה בלבד לכל מי ממקבל את הלינק אליהם. אישור?",
+        "ConfirmMsgSyncToServer":"כל המילים יעלו לגוגל דרייב שלך. ולכולן תיקבע הרשאת קריאה בלבד לכל מי שמקבל את הלינק אליהם. אישור?",
         "ShareCancelled":"שיתוף בוטל",
         "InfoSharingSucceeded":"שיתוף הסתיים בהצלחה",
         "InfoSharingFailed":"שיתוף נכשל\n {1}",
@@ -121,12 +121,6 @@ var strings = {
         "TitleAbout": "من نحن ",
         "SettingsAbout": "تعرف علينا",
         "SettingsEdit": "تحرير",
-        "SettingsAdultMode": "מצב תצוגת תיקיה", //todo
-        "AdultModeOn": "שורות",//todo
-        "AdultModeOff": "משבצות",//todo
-        "SettingsHideTutorial": "הסתר קטגורית הדרכה - ar",
-        "Yes": "כן", //todo
-        "No": "לא", //todo
 
 
         "SettingsAddCatAndWords": "اضافه/ازالة مجموعات وكلمات",
@@ -153,7 +147,6 @@ var strings = {
         "InfoSharingCategory": "مشاركة مجموعة...",
         "InfoSharingFailed": "فشلت المشاركة",
         "ShareWords": "مشاركة كلمات",
-        "sharingAllWords": "all words", //todo
 
 
         "AddVideoSelected": "تم اختيار الفيديو ",
@@ -187,18 +180,18 @@ var strings = {
         "SettingsAdultMode": "Category View Mode",
         "AdultModeOn": "Lines",
         "AdultModeOff": "Tiles",
-        "SettingsAddCatAndWords": "Add/Delete Categories and Words",
-        "TitleAddCategory": "Add Category",
-        "TitleEditCategory": "Edit Category",
+        "SettingsAddCatAndWords": "Add/Delete Folders and Words",
+        "TitleAddCategory": "Add Folder",
+        "TitleEditCategory": "Edit Folder",
         "TitleAddWord": "Add Word",
         "TitleEditWord":"Edit Word",
-
+        "SearchTitle":"Search: {1}",
         "Yes": "yes",
         "No": "no",
 
         //confirm messages
-        "ConfirmTitleDeleteCategory": "Delete Category",
-        "ConfirmDeleteCategoryMessage": "Deleting a category will also delete all words in it. Delete '{1}'?",
+        "ConfirmTitleDeleteCategory": "Delete Folder",
+        "ConfirmDeleteCategoryMessage": "Deleting a folder will also delete all words in it. Delete '{1}'?",
         "ConfirmTitleDeleteWord": "Delete Word",
         "ConfirmDeleteWordMessage": "Deleting word '{1}'. Are you sure?",
 
@@ -212,16 +205,22 @@ var strings = {
         "InfoSavedSuccessfully": "Successfully saved",
         "MissingImageAlt": "Missing image",
         "InfoSharingWords": "Sharing words...",
-        "InfoSharingCategory": "Sharing category...",
+        "InfoSharingCategory": "Sharing folder...",
         "InfoSharingFailed": "Share failed",
         "ShareWords": "Share Words",
         "sharingAllWords": "all words", 
 
+        "EmptyShareCart":"No folders or words were selected for sharing yet",
+        "ShareButton":"Share...",
+        "AddToShareMenu":"Add To Sharing List",
+        "RemoveFromShareMenu":"Remove From Sharing List",
+        "EditMenu":"Edit...",
+        "DeleteMenu":"Delete",
 
         "AddVideoSelected": "Video is selected",
         "AddImageSelected": "Image is selected",
         "AddPlaceholderWordName": "Word name",
-        "AddPlaceholderCategoryName": "Category name",
+        "AddPlaceholderCategoryName": "Folder name",
         "AddPlaceholderSelectImage": "Select image",
         "AddPlaceholderSelectVideo": "Select video",
         "AddLoadingCamera": "Loading camera...",
@@ -236,7 +235,7 @@ var strings = {
         "LoadingMedia": "Media files are loading ({1} of {2})",
 
         "ImportWordsErr": "Error importing words {1}",
-        "SettingsHideTutorial": "Hide Tutorials category",
+        "SettingsHideTutorial": "Hide Tutorials folder",
         "ErrWrongImportFile": "Wrong imported file format",
         "SearchImageTitle": "Search Image",
         "EnterSearchHere":"enter search keywords here",
@@ -249,7 +248,7 @@ var strings = {
         "SyncStatusLbl":"Sync Status",
         "SyncErrorLbl":"Sync Error",
         "ShareCartTitle":"Share List",
-        "ShareCartCategoryColumnTitle":"Category",
+        "ShareCartCategoryColumnTitle":"Folder",
         "ShareCartWordNameColumnTitle":"Word",
         "ItemRemovedFromShare":"Removed from the Sharing List",
         "ItemAddedToShare":"Added to the Sharing List",
@@ -269,6 +268,29 @@ var strings = {
 
     }
 }
+
+function findMissing() {
+    let missing = ""
+    //English
+    console.log("Missing in English:")
+    Object.entries(strings.he).forEach(([key, value])=>{
+        if (!strings.en[key]) {
+            missing += "\""+key+"\":" + "\""+value+"\",\n";
+        }
+    })
+    console.log(missing);
+    missing = "";
+    console.log("\n\nMissing in Arabic:")
+    Object.entries(strings.he).forEach(([key, value])=>{
+        if (!strings.ar[key]) {
+            missing += "\""+key+"\":" + "\""+value+"\",\n";
+        }
+    })
+    console.log(missing);
+
+}
+//findMissing();
+
 
 var currStrings = strings[DEFAULT_LANG];
 
@@ -325,3 +347,5 @@ function replaceArgs(s, args) {
             ;
     });
 }
+
+

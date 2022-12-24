@@ -17,7 +17,7 @@ export default class ImageLibrary {
         const searchPath = `/pictograms/${locale}/search/${keyword}`
         return axios.get(ImageLibrary.BASE_URL + searchPath).then(
             (res) => {
-                console.log(res)
+                //console.log(res)
                 return res.data.
                     filter(item => (!item.violence)).
                     map(item => ({

@@ -5,15 +5,56 @@
   direction: var(--dir);
 }
 
-/* style={{ display: 'flex', flexDirection: props.isLandscape ? 'row-reverse' : 'column', }} */
-/* style={{ display: 'flex', justifyContent: 'center', width: props.isLandscape ? '35%' : '100%', zoom: '150%' }} */
-/* style={{ color: 'black', direction: 'rtl', paddingTop: "5vh", fontSize: 40, textAlign: 'right', width: '100%' }} */
+
+.showScroll::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+.showScroll::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+
 .tileCardContainer {
   zoom: 150%;
-  width: 100%;
+  margin-left: 10%;
+  margin-right: 10%;
   display: flex;
+  flex-direction: row;
   justify-content: center;
 }
+
+.tileColorBtns {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  padding-inline-start: 10px;
+  width: 40%;
+  max-height: 162px;
+}
+
+@media (max-width: 520px) {
+  .tileCardContainer {
+    margin:0;
+  }
+  .tileColorBtns {
+    padding:0;
+  }
+}
+
+.tileColorBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin:5px;
+  width:30px;
+  height:30px;
+  border-radius: 50%;
+}
+
 
 
 .fieldsContainer {
@@ -97,6 +138,7 @@ input[type="text"]::placeholder {
     padding-top: 10px;
   }
 }
+
 
 .browserButton:hover {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #9ba892), color-stop(1, #dbe6c4));

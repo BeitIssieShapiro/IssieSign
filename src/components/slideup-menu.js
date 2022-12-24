@@ -6,7 +6,6 @@ import Tile2 from './Tile2';
 
 
 export function SlideupMenu(props) {
-    console.log("slideup menu open", props.height)
     return <div className={props.height > 0 ? "slideup-menu-outer" : ""} onClick={props.onClose}>
         <AnimateHeight
             className="slideup-menu-main"
@@ -16,13 +15,14 @@ export function SlideupMenu(props) {
             <div className="slideup-menu-title">
                 {props.type === "tile" && <div className="slideup-menu-title-tile-img" >
 
-                    <Tile2 key="1" dimensions={props.dimensions} tileName={""} imageName={props.image} themeFlavor={"3"} noMoreMenu={true} /> :
+                    <Tile2 key="1" dimensions={props.dimensions} tileName={""} imageName={props.image} 
+                        themeId={props.themeId} noMoreMenu={true} /> :
                 </div>}
                 {props.type === "tile" && <div className="slideup-menu-title-tile-text">
                     {props.label}
                 </div>}
                 {props.type !== "tile" && <div className="slideup-menu-title-img" >
-                    <img src={props.image} />
+                    <img src={props.image} style={{width:60, height:60 }}/>
                 </div>}
                 {props.type !== "tile" && <div className="slideup-menu-title-text">
                     {props.label}

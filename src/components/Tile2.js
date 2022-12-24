@@ -65,9 +65,8 @@ function Tile2(props) {
         });
     }
     const isShared = props.editMode && props.userContent && props.shareCart?.exists(props.tileName);
-
     let body = <div >
-        <div className="tileBox boxhost" theme="blue" theme-flavor={props.themeFlavor}
+        <div className="tileBox boxhost" theme="blue" theme-flavor={props.themeId}
             style={{
                 width: props.dimensions.boxWidth
             }}>
@@ -103,8 +102,8 @@ function Tile2(props) {
                             command: "open-slideup-menu", props: {
                                 label: props.tileName,
                                 image: imageSrc,
+                                themeId: props.themeId,
                                 type: "tile",
-                                //todo translate
 
                                 buttons: [
                                     { caption: translate("EditMenu"), icon: <Edit />, callback: showCategoryInfo },

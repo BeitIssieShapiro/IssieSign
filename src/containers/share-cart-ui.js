@@ -53,7 +53,7 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
                         shareTheCart(shareCart, alert);
                     }
                 }
-            }}>Share...</div>
+            }}> {translate("ShareButton")}</div>
         </div>
 
         <div className="share-cart">
@@ -95,7 +95,7 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
 function shareTheCart(shareCart, alert) {
     trace("Sharing cart")
     shareCart.generateFile().then((filePath) =>
-        share(filePath, "Share", "",
+        share(filePath,  translate("ShareWords"), "",
             () => alert.success(translate("InfoSharingSucceeded")),
             (e) => alert.error(fTranslate("InfoSharingFailed", e))
         ));
@@ -106,7 +106,7 @@ function share(filePath, title, mimetype, onSuccess, onError) {
         filePath = "";
     }
     if (typeof title !== "string") {
-        title = "Share";
+        title =  translate("ShareWords");
     }
     if (typeof mimetype !== "string") {
         mimetype = "text/plain";

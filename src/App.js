@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { VideoToggle, getLanguage, trace, isMyIssieSign } from "./utils/Utils";
+import { VideoToggle, getLanguage, trace, isMyIssieSign, getThemeName } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -250,8 +250,14 @@ class App extends IssieBase {
                 break;
             case 'set-categoryId':
                 if (args.categoryId !== this.state.categoryId) {
-                    this.setState({ theme: getTheme(args.categoryId), categoryId: args.categoryId })
-                    trace("Set Category: catId:" + args.categoryId + ", theme:" + getTheme(args.categoryId))
+                    this.setState({ categoryId: args.categoryId })
+                    trace("Set Category: catId:" + args.categoryId)
+                }
+                break;
+            case 'set-themeId':
+                if (args.themeId !== this.state.theme) {
+                    this.setState({ theme: args.themeId })
+                    trace("Set Theme ID:" + args.themeId);
                 }
                 break;
             case 'set-title':
@@ -441,7 +447,7 @@ class App extends IssieBase {
                             />}
                     </div> : null}
                 </div>
-                <Shell theme={this.state.theme} id="page1" isMobile={IssieBase.isMobile()}>
+                <Shell theme={App.isHome(this.props) ?  "blue" : getThemeName( this.state.theme)}  id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
                         slot="start-bar"
@@ -511,16 +517,25 @@ class App extends IssieBase {
                 scroll={this.state.bodyScroll}
             />
 
-        if (path === SEARCH_PATH)
+        if (path === SEARCH_PATH) {
+            const categories = FileSystem.get().getCategories();
+            const words =  this.state.categoryId ? 
+                categories.find(cat=>cat.name == this.state.categoryId)?.words:
+                FileSystem.get().getAllWords();
+            console.log("search themeId",this.state.theme )
             return <Search
-                words={FileSystem.get().getAllWords()}
-                categories={FileSystem.get().getCategories()}
+                words={words}
+                categories={categories}
+                currentCategory={this.state.categoryId}
                 isMobile={IssieBase.isMobile()}
                 searchStr={this.state.searchStr}
                 dimensions={this.state.dimensions}
                 allowSwipe={this.isSwipeAllowed()}
                 scroll={this.state.searchScroll}
+                pubSub={state.pubSub}
+                themeId={this.state.theme}
             />
+        }
 
         if (path === "/share-cart") {
             this.setTitle(translate("ShareCartTitle"));
@@ -535,6 +550,8 @@ class App extends IssieBase {
             //:categoryId/:title
             const [categoryId, title] = splitAndDecodeCompoundName(path.substr(6));
             this.setTitle(title);
+            const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
+            const themeId = cat.userContent && cat.themeId ? cat.themeId : getTheme(cat.id)
             let words = FileSystem.get().getCategories().find(c => c.name === categoryId)?.words || [];
 
             const wordProps = {
@@ -545,7 +562,7 @@ class App extends IssieBase {
                 allowAddWord: state.allowAddWord,
                 words,
                 categoryId,
-                categoryId4Theme: categoryId,
+                themeId,
                 scroll: state.wordScroll,
             }
             return (
@@ -554,26 +571,26 @@ class App extends IssieBase {
                     <Word  {...wordProps} />)
         }
 
-        if (path.startsWith("/word-added/")) {
-            //:categoryId/:title
-            const [categoryId, title] = splitAndDecodeCompoundName(path.substr(12));
-            this.setTitle(title);
-            return <Word
-                pubSub={state.pubSub}
-                editMode={state.editMode}
-                shareCart={state.shareCart}
-                isMobile={IssieBase.isMobile()}
-                allowAddWord={state.allowAddWord}
-                type="added"
-                words={
-                    FileSystem.get().getCategories().find(c => c.id === categoryId)?.words || []
-                }
-                categoryId={categoryId}
-                categoryId4Theme={"1"}
-                dimensions={state.dimensions}
-                scroll={state.wordScroll}
-            />
-        }
+        // if (path.startsWith("/word-added/")) {
+        //     //:categoryId/:title
+        //     const [categoryId, title] = splitAndDecodeCompoundName(path.substr(12));
+        //     this.setTitle(title);
+        //     return <Word
+        //         pubSub={state.pubSub}
+        //         editMode={state.editMode}
+        //         shareCart={state.shareCart}
+        //         isMobile={IssieBase.isMobile()}
+        //         allowAddWord={state.allowAddWord}
+        //         type="added"
+        //         words={
+        //             FileSystem.get().getCategories().find(c => c.id === categoryId)?.words || []
+        //         }
+        //         categoryId={categoryId}
+        //         themeId={"1"}
+        //         dimensions={state.dimensions}
+        //         scroll={state.wordScroll}
+        //     />
+        // }
 
         if (path.startsWith("/video/")) {
             //:videoName/:categoryId/:title/:filePath
@@ -629,7 +646,8 @@ class App extends IssieBase {
         if (path.startsWith("/add-word/")) {
             //add-word/:categoryId [/?:wordId]
             const [categoryId, wordId] = splitAndDecodeCompoundName(path.substr(10));
-
+            const cat = FileSystem.get().getCategories().find(c => c.name === categoryId)
+            const themeId = cat.userContent && cat.themeId ? cat.themeId : getTheme(cat.id);
             this.setTitle(wordId?.length > 0 ? translate("TitleEditWord") : translate("TitleAddWord"))
             return (
                 <AddEditItem
@@ -639,7 +657,7 @@ class App extends IssieBase {
                     pubSub={state.pubSub}
                     isLandscape={IssieBase.isLandscape()}
                     categoryId={categoryId}
-                    categoryId4Theme={categoryId}
+                    themeId={themeId}
                     dimensions={state.dimensions}
                 />
             )

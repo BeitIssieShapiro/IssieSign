@@ -385,9 +385,10 @@ public class GoogleDrive extends CordovaPlugin  {
         private String rootFolderId;
         private String rootFolderName;
         private String srcPath;
+        private JSONObject properties;
 
         UploadFile(String bearerToken, CallbackContext callbackContext,
-                   String srcPath, String folderId, String targetPath, String rootFolderId, String rootFolderName) {
+                   String srcPath, String folderId, String targetPath, String rootFolderId, String rootFolderName, JSONObject properties) {
             this.bearerToken = bearerToken;
             this.callbackContext = callbackContext;
             this.srcPath = srcPath;
@@ -395,6 +396,7 @@ public class GoogleDrive extends CordovaPlugin  {
             this.targetPath = targetPath;
             this.rootFolderId = rootFolderId;
             this.rootFolderName = rootFolderName;
+            this.properties = properties;
         }
 
         @Override
@@ -478,6 +480,9 @@ public class GoogleDrive extends CordovaPlugin  {
                 JSONArray parents = new JSONArray();
                 parents.put(folderId);
                 metadata.putOpt("parents", parents);
+                if (properties != null) {
+                    metadata.put("properties", properties);
+                }
 
                 RequestBody metaDataBody = RequestBody.create(MediaType.parse("application/json"), metadata.toString());
 
@@ -577,7 +582,8 @@ public class GoogleDrive extends CordovaPlugin  {
             String rootFolderId = mArgs.getString(3);
             String rootFolderName = mArgs.getString(4);
             boolean appFolder = mArgs.getBoolean(5);
-            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName);
+            Map properties = mArgs.getJSONObject(6);
+            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName, properties);
             cordova.getThreadPool().execute(uf);
 
             return true;

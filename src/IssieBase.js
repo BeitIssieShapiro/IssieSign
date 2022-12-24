@@ -22,10 +22,11 @@ class IssieBase extends Component {
 
     static updateDimensions() {
         let ret = {};
-        if (IssieBase.isMobile()) {
-            let numBoxSize = Math.round(window.innerWidth / 230);
+        let numBoxSize = Math.round(window.innerWidth / 230);
 
-            let boxSize = window.innerWidth / numBoxSize;
+        if (IssieBase.isMobile() ) {
+
+            let boxSize = Math.min(200, window.innerWidth / numBoxSize);
 
             ret.imageBoxWidth = (.4 * boxSize) + 'px';
             //ret.marginLeftBox = (.1 * boxSize) + 'px';

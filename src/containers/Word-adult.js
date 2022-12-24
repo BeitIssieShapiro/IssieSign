@@ -18,7 +18,7 @@ class WordAdults extends IssieBase {
     static getDerivedStateFromProps(props, state) {
         if (props.pubSub && props.categoryId) {
             props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
-            console.log("set-catId " + props.categoryId)
+            props.pubSub.publish({ command: "set-themeId", themeId: props.themeId });
         }
 
         return null;
@@ -27,14 +27,11 @@ class WordAdults extends IssieBase {
     render() {
 
         let wordsElements = [];
-        let themeId = this.props.categoryId4Theme;
+        let themeId = this.props.themeId;
         if (Array.isArray(this.props.words)) {
             wordsElements = this.props.words.map((word) => {
                 let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
-                if (word.categoryId) {
-                    themeId = word.categoryId;
-                }
-                let selectable = word.type === "file"
+                
                 return <Card2
                     editMode={this.props.editMode}
                     categoty={word.category}

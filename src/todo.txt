@@ -1,3 +1,10 @@
+Still missing:
+-------------
+- Save themeId to cloud-sync in Android
+- check mic permission
+
+
+
 MyIssieSign
 -----------
 V- import seem not to work
@@ -49,9 +56,6 @@ IssieSign
 Bugs:
 - In iPhone SX, the two columns are not exact in words - resize?
 - settings:
-  - pick a language: radio buttons in new lines
-  - in english - reverse order
-  - Adult mode - no title
   - word in adult mode - settings in to low on the z-order
   - back from word-adult mode - after selecting on video - video control is still visible
   

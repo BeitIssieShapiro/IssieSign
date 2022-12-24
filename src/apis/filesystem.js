@@ -24,11 +24,10 @@ export default class FileSystem {
     index = isBrowser() ? ({
         categories: [
             {
-                "name": "בודק עברית",
-                "id": "בודק עברית",
+                "name": "הדרכה",
+                "id": "1",
                 "imageName": "איברי גוף.png",
                 tutorial: true,
-                userContent: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
                     {
@@ -45,8 +44,9 @@ export default class FileSystem {
             },
             {
                 "name": "פירות וירקות",
-                "id": "test2",
+                "id": "פירות וירקות",
                 "imageName": "איברי גוף.png",
+                themeId:"4",
                 userContent: true,
                 "words": [
                     {
@@ -163,7 +163,7 @@ export default class FileSystem {
         return words;
     }
 
-    saveCategory(label, imagePath, originalElem, syncOn, pubSub) {
+    saveCategory(label, themeId, imagePath, originalElem, syncOn, pubSub) {
         trace("saveCategory", label, imagePath, originalElem, syncOn)
         return new Promise(async (resolve, reject) => {
             if (!originalElem) {
@@ -179,7 +179,7 @@ export default class FileSystem {
                             reject("unexpected new category already exists")
                             return;
                         }
-                        let addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST } : undefined;
+                        let addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST, themeId } : {themeId};
 
                         return this.addCategory(label, addProps).then(() => {
                             if (syncOn) {
@@ -198,7 +198,7 @@ export default class FileSystem {
                 }
 
                 const origUrl = this.getFilePath(indexCategory.imageName);
-                if (origUrl === imagePath &&
+                if (origUrl === imagePath && indexCategory.themeId == themeId &&
                     label === indexCategory.name &&
                     (syncOn && (indexCategory.sync === FileSystem.SYNC_REQUEST || indexCategory.sync === FileSystem.IN_SYNC) ||
                         !syncOn && (indexCategory.sync === FileSystem.SYNC_OFF_REQUEST || !indexCategory.sync)
@@ -210,6 +210,7 @@ export default class FileSystem {
                 }
 
                 indexCategory.sync = FileSystem.getNewSyncState(indexCategory.sync, syncOn);
+                indexCategory.themeId = themeId;
                 indexCategory.words.forEach(word => {
                     word.sync = FileSystem.getNewSyncState(word.sync, syncOn);
                 });
@@ -773,7 +774,10 @@ export default class FileSystem {
                 const folderId = entity.folderId ? entity.folderId : "";
 
                 const relPath = entity.name + "/" + "default.jpg";
-                await this.gdriveUpload(this.getFilePath(relPath, true), relPath, folderId, false).then(
+                const properties = {
+                    themeId:entity.themeId,
+                }
+                await this.gdriveUpload(this.getFilePath(relPath, true), relPath, folderId, false, properties).then(
                     async (response) => {
                         entity.sync = FileSystem.IN_SYNC;
                         entity.imageFileId = response.fileId;
@@ -791,11 +795,11 @@ export default class FileSystem {
             } else {
                 try {
                     if (entity.imageName.length > 0) {
-                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName, true), entity.imageName, parentEntity.folderId, false)
+                        const response = await this.gdriveUpload(this.getFilePath(entity.imageName, true), entity.imageName, parentEntity.folderId, false, null)
                         entity.imageFileId = response.fileId;
                         parentEntity.folderId = response.folderId;
                     }
-                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName, true), entity.videoName, parentEntity.folderId, false)
+                    const response = await this.gdriveUpload(this.getFilePath(entity.videoName, true), entity.videoName, parentEntity.folderId, false, null)
                     entity.videoFileId = response.fileId;
                     parentEntity.folderId = response.folderId;
                     entity.sync = FileSystem.IN_SYNC;
@@ -829,7 +833,7 @@ export default class FileSystem {
     }
 
     //return file-key
-    async gdriveUpload(filePath, relPath, folderId, isAppData) {
+    async gdriveUpload(filePath, relPath, folderId, isAppData, properties) {
 
         // remove file:// or issie-file://
         let pos = filePath.indexOf("file://");
@@ -850,7 +854,7 @@ export default class FileSystem {
             }
 
 
-            window.plugins.gdrive.uploadFile(filePath, relPath, folderId, rootFolderId, rootFolderName, false,
+            window.plugins.gdrive.uploadFile(filePath, relPath, folderId, rootFolderId, rootFolderName, false, properties,
                 (response) => {
                     // sets the rootFolderId
                     if (!this.index.rootFolderId) {
@@ -1012,9 +1016,10 @@ export default class FileSystem {
                 const defFile = catFiles.find(catFile => catFile.name == "default.jpg")
                 if (defFile) {
                     // download the file
-
+                    console.log("download def file", defFile)
                     const localCat = this.findCategory(catName);
                     if (!localCat) {
+
                         // create it locally
                         // verify folder exists
                         await this.getDir(catName, true);
@@ -1024,6 +1029,7 @@ export default class FileSystem {
                                 sync: FileSystem.IN_SYNC,
                                 imageFileId: defFile.id,
                                 folderId: f.id,
+                                themeId: defFile.properties?.themeId || "3",
                             });
                     }
                 }

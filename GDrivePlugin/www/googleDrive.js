@@ -13,8 +13,8 @@ cordova.define("cordova-plugin-jc-googledrive.GoogleDrive", function(require, ex
         cordova.exec(successCallback, errorCallback, "GoogleDrive", "downloadFile", [destinationURL,fileid, isAnonymous]);
     };
     
-    GoogleDrive.prototype.uploadFile = function (fpath, targetPath, folderId, rootFolderId, rootFolderName, appfolder, successCallback, errorCallback) {
-        cordova.exec(successCallback, errorCallback, "GoogleDrive", "uploadFile", [fpath,targetPath, folderId, rootFolderId, rootFolderName, appfolder]);
+    GoogleDrive.prototype.uploadFile = function (fpath, targetPath, folderId, rootFolderId, rootFolderName, appfolder, properties, successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "GoogleDrive", "uploadFile", [fpath,targetPath, folderId, rootFolderId, rootFolderName, appfolder, properties]);
     };
     
     GoogleDrive.prototype.findFolder = function (folderName, parentFolderId, successCallback, errorCallback) {

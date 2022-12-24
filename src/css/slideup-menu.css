@@ -49,6 +49,7 @@
 }
 
 .slideup-menu-title-text {
+    padding-inline-start: 15px;
 }
 
 .slideup-menu-body {
@@ -63,5 +64,5 @@
     row-gap: 10px;
     align-items: center;
     padding: 5px;
-    grid-template-columns: 50px 250px;
+    grid-template-columns: 50px 1fr;
 }

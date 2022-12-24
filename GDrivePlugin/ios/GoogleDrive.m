@@ -149,14 +149,21 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     NSString* rootFolderName = [command.arguments objectAtIndex:4];
     
     BOOL appfolder = [[command.arguments objectAtIndex:5] boolValue];
+    NSDictionary* props = [command.arguments objectAtIndex:6];
+    GTLRDrive_File_Properties *properties = nil;
+    if (props != nil) {
+        properties = [GTLRDrive_File_Properties objectWithJSON:props];
+    }
+    
+    
     if([path stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length>0){
         dispatch_async(dispatch_get_main_queue(), ^{
             if(self.authorization.canAuthorize){
-                [self uploadAFile:command fpath:path targetPath:targetPath folderId:folderId rootFolderId:rootFolderId rootFolderName:rootFolderName appFolder:appfolder];
+                [self uploadAFile:command fpath:path targetPath:targetPath folderId:folderId rootFolderId:rootFolderId rootFolderName:rootFolderName appFolder:appfolder properties:properties];
                     NSLog(@"Already authorized app. No need to ask user again");
             } else{
                 [self runSigninThenHandler:command onComplete:^{
-                    [self uploadAFile:command fpath:path targetPath:targetPath folderId:folderId rootFolderId:rootFolderId rootFolderName:rootFolderName appFolder:appfolder];
+                    [self uploadAFile:command fpath:path targetPath:targetPath folderId:folderId rootFolderId:rootFolderId rootFolderName:rootFolderName appFolder:appfolder properties:properties];
                 }];
             }
         });
@@ -318,7 +325,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     GTLRDriveService *service = self.driveService;
     GTLRDriveQuery_FilesList *query = [GTLRDriveQuery_FilesList query];
 
-    query.fields = @"nextPageToken,files(id,name,modifiedTime,mimeType  )";
+    query.fields = @"nextPageToken,files(id,name,modifiedTime,mimeType,properties)";
 
     query.q = [NSString stringWithFormat:@"trashed = false and '%@' in parents", parentFolderId];
     query.orderBy = @"modifiedTime desc";
@@ -346,7 +353,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 }
 
 
--(void)uploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*) fpath targetPath:(NSString*) targetPath folderId:(NSString*) folderId rootFolderId:(NSString*) rootFolderId rootFolderName:(NSString*) rootFolderName appFolder:(BOOL)appfolder{
+-(void)uploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*) fpath targetPath:(NSString*) targetPath folderId:(NSString*) folderId rootFolderId:(NSString*) rootFolderId rootFolderName:(NSString*) rootFolderName appFolder:(BOOL)appfolder properties:(GTLRDrive_File_Properties*)properties{
 
     NSError *fileError;
     NSURL *fileToUploadURL = [NSURL fileURLWithPath:fpath];
@@ -380,7 +387,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
                 NSMutableDictionary *interimResult = [[NSMutableDictionary alloc] init];
                 [interimResult setObject:createdRootFolderID forKey:@"rootFolderId"];
 
-                [self doCreateFolderThenUploadAFile:command fpath:fpath folderId:folderId rootFolderId:createdRootFolderID targetPath:targetPath prevResult:interimResult];
+                [self doCreateFolderThenUploadAFile:command fpath:fpath folderId:folderId rootFolderId:createdRootFolderID targetPath:targetPath prevResult:interimResult properties:properties];
             } else {
                 CDVPluginResult* pluginResult = nil;
                 [callbackTicket cancelTicket];
@@ -392,7 +399,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     }
     
     // todo use appFolder??
-    [self doCreateFolderThenUploadAFile:command fpath:fpath folderId:folderId rootFolderId:rootFolderId targetPath:targetPath prevResult:nil];
+    [self doCreateFolderThenUploadAFile:command fpath:fpath folderId:folderId rootFolderId:rootFolderId targetPath:targetPath prevResult:nil properties:properties];
 }
         
         
@@ -400,7 +407,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
     return (str == (id)[NSNull null] || str.length == 0);
 }
 
--(void)doCreateFolderThenUploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*)fpath folderId:(NSString*)folderId rootFolderId:(NSString*)rootFolderId targetPath:(NSString*)targetPath prevResult:(NSMutableDictionary *)prevResult {
+-(void)doCreateFolderThenUploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*)fpath folderId:(NSString*)folderId rootFolderId:(NSString*)rootFolderId targetPath:(NSString*)targetPath prevResult:(NSMutableDictionary *)prevResult properties:(GTLRDrive_File_Properties*)properties {
     GTLRDriveService *service = self.driveService;
     
     if ([self IsEmpty:folderId] &&
@@ -430,7 +437,7 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
                     NSString* createdFolderId = [folderItem identifier];
                     [interimResult setObject:createdFolderId forKey:@"folderId"];
                     
-                    [self doUploadAFile:command fpath:fpath fname:[targetPath lastPathComponent] folderId:createdFolderId prevResult:interimResult];
+                    [self doUploadAFile:command fpath:fpath fname:[targetPath lastPathComponent] folderId:createdFolderId prevResult:interimResult properties:properties];
                 } else {
                     CDVPluginResult* pluginResult = nil;
                     [callbackTicket cancelTicket];
@@ -442,11 +449,11 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
         }
     NSString* parentId = [self IsEmpty:folderId] ? rootFolderId : folderId;
     
-    [self doUploadAFile:command fpath:fpath fname:[targetPath lastPathComponent] folderId:parentId prevResult:prevResult];
+    [self doUploadAFile:command fpath:fpath fname:[targetPath lastPathComponent] folderId:parentId prevResult:prevResult properties:properties];
 }
         
         
--(void)doUploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*)fpath fname:(NSString*)fname folderId:(NSString*)folderId prevResult:(NSMutableDictionary *)prevResult  {
+-(void)doUploadAFile:(CDVInvokedUrlCommand*)command fpath:(NSString*)fpath fname:(NSString*)fname folderId:(NSString*)folderId prevResult:(NSMutableDictionary *)prevResult properties:(GTLRDrive_File_Properties*)properties {
     GTLRDriveService *service = self.driveService;
 
     NSURL *fileToUploadURL = [NSURL fileURLWithPath:fpath];
@@ -460,6 +467,9 @@ id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
 
     GTLRDrive_File *backUpFile = [GTLRDrive_File object];
     backUpFile.name = fname;
+    if (properties != nil) {
+        backUpFile.properties = properties;
+    }
     
     if (![self IsEmpty:folderId]) {
         backUpFile.parents = @[folderId];

@@ -3,13 +3,13 @@ import '../css/App.css';
 import Tile2 from "../components/Tile2";
 import { withAlert } from 'react-alert'
 
-import { getThemeFlavor, calcWidth } from "../utils/Utils";
+import { calcWidth, getTheme } from "../utils/Utils";
 import IssieBase from "../IssieBase";
 import Shelf from "./Shelf";
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import {getDecoration} from "../components/ui-elements"
+import { getDecoration } from "../components/ui-elements"
 import { translate, fTranslate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 
@@ -73,10 +73,10 @@ class Body extends IssieBase {
                 userContent={category.userContent}
                 pubSub={this.props.pubSub}
                 editMode={this.props.editMode}
-                shareCart = {this.props.shareCart}
+                shareCart={this.props.shareCart}
                 tileUrl={"/word/" + encodeURIComponent(category.name) + "/" + encodeURIComponent(category.name)}
                 imageName={category.imageName}
-                themeFlavor={getThemeFlavor(category.id)}
+                themeId={category.userContent && category.themeId ? category.themeId : getTheme(category.id)}
                 onLongPress={category.userContent && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
                 //selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
 
@@ -86,15 +86,15 @@ class Body extends IssieBase {
 
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-        let tileH = 155, 
-        //tileW = narrow ? 179 : 212;
-        tileW = this.props.dimensions.tileGroupWidthNumeric;
+        let tileH = 155,
+            //tileW = narrow ? 179 : 212;
+            tileW = this.props.dimensions.tileGroupWidthNumeric;
         //let tileWidthAbs = narrow ? 178 : 220;
 
         let width = calcWidth(elements.length, window.innerHeight,
             window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
 
-        
+
         width = Math.max(width, window.innerWidth);
         //build array of lines:
         let lineWidth = 0;
@@ -116,7 +116,7 @@ class Body extends IssieBase {
         if (this.props.isMobile && narrow) {
             widthStr = '100%'
         } else {
-            
+
         }
 
 
@@ -125,7 +125,7 @@ class Body extends IssieBase {
                 width: widthStr,
                 flexWrap: 'wrap',
                 transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,
-                transitionDuration: this.props.allowSwipe?'0s':'1.7s',
+                transitionDuration: this.props.allowSwipe ? '0s' : '1.7s',
             }}>
                 {lines.map((line, i) => (
                     <Shelf key={i}>
