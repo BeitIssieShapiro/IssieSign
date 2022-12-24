@@ -173,7 +173,7 @@ function AddEditItem(props) {
                 onClose={() => setShowWebSearch(false)}
                 onSelectImage={(url) => {
                     setShowWebSearch(false);
-                    console.log("web image selected", utl)
+                    console.log("web image selected", url)
                     setSelectedImage(url);
                     setImageDirty(true);
                 }} />}
