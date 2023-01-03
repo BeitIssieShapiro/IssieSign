@@ -112,7 +112,7 @@ export function RadioBtn(props) {
   const on = props.onText || "on";
   const off = props.offText || "off";
 
-  return <div className={props.className} style={{ position: "relative" }}
+  return <div className={"switch-container " + (props.className || "")} style={{ position: "relative" }}
     onClick={() => props.onChange(!props.checked)}
   >
     <div className={"switch-base-elipce " + (props.checked ? "switch-base-on" : "switch-base-off")} >

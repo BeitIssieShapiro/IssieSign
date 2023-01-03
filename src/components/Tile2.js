@@ -10,7 +10,7 @@ import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, 
 import { imageLocalCall } from "../apis/ImageLocalCall";
 import ISLink from "./ISLink";
 
-import { fTranslate, translate } from '../utils/lang';
+import { fTranslate, isRTL, translate } from '../utils/lang';
 import FileSystem from "../apis/filesystem";
 import { Delete, Edit, MoreHoriz, Share } from "@mui/icons-material";
 
@@ -95,8 +95,8 @@ function Tile2(props) {
 
             </div>
             <div className="tileText"  >
-                {props.tileName}
-                {props.editMode && !props.noMoreMenu && props.userContent && <div className="moreButton">
+                {props.translate?translate(props.tileName): props.tileName}
+                {props.editMode && !props.noMoreMenu && props.userContent && <div className={"moreButton "+ (isRTL()?"moreButtonX-rtl":"moreButtonX")}>
                     <TileButton size={24} onClick={() => {
                         props.pubSub.publish({
                             command: "open-slideup-menu", props: {

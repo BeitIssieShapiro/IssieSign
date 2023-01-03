@@ -57,7 +57,10 @@ var strings = {
         "RemoveFromShareMenu":"הסרה מרשימת השיתוף",
         "EditMenu":"עריכה...",
         "DeleteMenu":"מחיקה",
-
+        "SelectColorMenuTitle":"בחירת צבע",
+        "ChangeColor":"צבע",
+        
+        "FavoritesCategory": "מועדפים",
 
         "AddVideoSelected": "נבחר וידאו עבור המילה",
         "AddImageSelected": "נבחרה תמונה",
@@ -216,6 +219,11 @@ var strings = {
         "RemoveFromShareMenu":"Remove From Sharing List",
         "EditMenu":"Edit...",
         "DeleteMenu":"Delete",
+        "SelectColorMenuTitle":"Select Color",
+        "ChangeColor":"Color",
+
+        "FavoritesCategory": "Favorites",
+
 
         "AddVideoSelected": "Video is selected",
         "AddImageSelected": "Image is selected",

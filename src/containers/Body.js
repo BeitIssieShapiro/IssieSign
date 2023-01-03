@@ -79,7 +79,7 @@ class Body extends IssieBase {
                 themeId={category.userContent && category.themeId ? category.themeId : getTheme(category.id)}
                 onLongPress={category.userContent && this.props.allowAddWord ? () => this.toggleSelect(category) : undefined}
                 //selected={this.state.selectedCategory && this.state.selectedCategory.id === category.id}
-
+                translate={category.translate}
                 dimensions={this.props.dimensions}
             />
         });

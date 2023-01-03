@@ -1,7 +1,6 @@
 
 import AnimateHeight from 'react-animate-height';
 import '../css/slideup-menu.css';
-import Card2 from './Card2';
 import Tile2 from './Tile2';
 
 
@@ -15,21 +14,23 @@ export function SlideupMenu(props) {
             <div className="slideup-menu-title">
                 {props.type === "tile" && <div className="slideup-menu-title-tile-img" >
 
-                    <Tile2 key="1" dimensions={props.dimensions} tileName={""} imageName={props.image} 
-                        themeId={props.themeId} noMoreMenu={true} /> :
+                    <Tile2 key="1" dimensions={props.dimensions} tileName={""} imageName={props.image}
+                        themeId={props.themeId} noMoreMenu={true} />
                 </div>}
                 {props.type === "tile" && <div className="slideup-menu-title-tile-text">
                     {props.label}
                 </div>}
-                {props.type !== "tile" && <div className="slideup-menu-title-img" >
-                    <img src={props.image} style={{width:60, height:60 }}/>
+                {props.type === "card" && <div className="slideup-menu-title-img" >
+                    <img src={props.image} style={{ width: 60, height: 60 }} />
                 </div>}
-                {props.type !== "tile" && <div className="slideup-menu-title-text">
+                {props.type === "card" && <div className="slideup-menu-title-text">
                     {props.label}
                 </div>}
-
+                {props.type === "colors" && <div className="slideup-menu-title-text">
+                    {props.label}
+                </div>}
             </div>
-            <div className="slideup-menu-body">
+            <div className={props.type === "colors" ? "slideup-menu-body-colors" : "slideup-menu-body"}>
                 {
                     props?.buttons?.map((btn, i) => (<div
                         className="slideup-menu-item"

@@ -43,8 +43,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
   }
 
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}
-    animate={true} width={"450px"}
-    //style={{ "--hmargin": "5vw", "--vmargin": "5vw" }}
+    animate={true} width={Math.min(470, window.innerWidth) +"px"}
     style={{ left: 0, "--hmargin": "0", "--vmargin": "2vw", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
   >
     <div className=" settingsContainer " >
@@ -153,7 +152,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
       <div className="settings-item" >
         <lbl>
           <div>{translate("SettingsLanguage")}</div>
-          <div className="settingsSubTitle">{
+          <div className="settingsSubTitle settings-selected">{
             currLanguage === "he" ? "עברית" :
               (currLanguage === "en" ? "English" :
                 (currLanguage === "ar" ? "عربي" : "Default"))

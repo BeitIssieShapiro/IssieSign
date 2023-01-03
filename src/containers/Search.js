@@ -33,7 +33,7 @@ function Search(props) {
             return found;
         });
 
-        return props.categoryId ? res : res.map(word => {
+        return props.currentCategory ? res : res.map(word => {
             if (word.categoryId) {
                 const category = props.categories.find(cat => cat.id == word.categoryId);
                 if (category) {
@@ -64,7 +64,7 @@ function Search(props) {
             transitionDuration: props.allowSwipe ? '0s' : '1.7s',
 
         }}>
-            {!props.categoryId && <Body InSearch={true}
+            {!props.currentCategory && <Body InSearch={true}
                 categories={
                     filterCategories(props.searchStr)
                 }
@@ -87,6 +87,7 @@ function Search(props) {
                 dimensions={props.dimensions}
                 allowSwipe={props.allowSwipe}
                 scroll={{ x: 0, y: 0 }}
+                categoryId={props.currentCategory}
             />
         </div>
     )

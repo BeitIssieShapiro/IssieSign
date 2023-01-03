@@ -36,7 +36,7 @@ import FileSystem from './apis/filesystem';
 import ShareInfo from './components/share-info';
 import { ShareCart } from './share-cart';
 import ShareCartUI from './containers/share-cart-ui';
-import { Sync } from '@mui/icons-material'
+import { Favorite, FavoriteBorder, FavoriteSharp, Sync } from '@mui/icons-material'
 import { SlideupMenu } from './components/slideup-menu';
 
 
@@ -86,6 +86,8 @@ class App extends IssieBase {
                 return this.state.searchScroll;
             } else if (this.isInfo()) {
                 return this.state.infoScroll;
+            } else if (this.isAddScreen()) {
+                this.state.addScroll;
             } else {
                 return this.state.bodyScroll;
             }
@@ -116,6 +118,8 @@ class App extends IssieBase {
                     this.setState({ searchScroll: newScrollX });
                 } else if (this.isInfo()) {
                     this.setState({ infoScroll: newScrollY });
+                } else if (this.isAddScreen()) {
+                    this.setState({ addScroll: newScrollY });
                 } else {
                     this.setState({ bodyScroll: IssieBase.isMobile() ? newScrollY : newScrollX });
                 }
@@ -283,6 +287,14 @@ class App extends IssieBase {
             case 'open-slideup-menu':
                 this.setState({ slideupMenuOpen: true, slideupMenuProps: args.props });
                 break;
+            case 'set-current-word':
+                this.setTitle(args.title)
+                this.setState({
+                    FavoriteInfo: {
+                        categoryId: args.categoryId, title: args.title,
+                        isFavorite: args.isFavorite,
+                    }
+                });
 
             default:
         }
@@ -377,7 +389,7 @@ class App extends IssieBase {
             <TrashButton slot="start-bar" onClick={this.state.showDelete} /> : null;
         document.preventTouch = true;
 
-        if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.state.showShare) {
+        if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.isShareScreen()) {
             searchInput = (
                 <div slot="center-bar" className="search shellSearch">
                     <input
@@ -410,7 +422,7 @@ class App extends IssieBase {
 
                 {<SlideupMenu
                     {...this.state.slideupMenuProps}
-                    height={(this.state.slideupMenuOpen ? 350 : 0)}
+                    height={(this.state.slideupMenuOpen ? this.state.slideupMenuProps.height || 350 : 0)}
                     dimensions={this.state.dimensions}
                     onClose={() => this.setState({ slideupMenuOpen: false })} />}
 
@@ -447,7 +459,7 @@ class App extends IssieBase {
                             />}
                     </div> : null}
                 </div>
-                <Shell theme={App.isHome(this.props) ?  "blue" : getThemeName( this.state.theme)}  id="page1" isMobile={IssieBase.isMobile()}>
+                <Shell theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
                         slot="start-bar"
@@ -456,9 +468,33 @@ class App extends IssieBase {
                             this.setState({ editMode: this.state.editMode === true ? false : true })
                         }} />
 
-                    {this.state.editMode && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
+                    {this.isVideo() && this.state.FavoriteInfo && <div slot="start-bar" className="favorite-button" onClick={() => {
+                        if (this.state.FavoriteInfo) {
+                            const isAdd = !this.state.FavoriteInfo.isFavorite;
+                            FileSystem.get().addRemoveFavorites(
+                                this.state.FavoriteInfo.categoryId,
+                                this.state.FavoriteInfo.title,
+                                //add or remove
+                                isAdd
 
-                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode &&
+                            ).then(
+                                () => {
+                                    this.props.alert.success(translate("InfoSavedSuccessfully"))
+                                    this.setState({ ...this.state.FavoriteInfo, isFavorite: isAdd })
+                                });
+
+                        }
+                    }}>
+                        {
+                            this.state.FavoriteInfo?.isFavorite ?
+                                <Favorite style={{ fontSize: 45 }} /> :
+                                <FavoriteBorder style={{ fontSize: 45 }} />
+                        }
+                    </div>}
+
+                    {this.state.editMode && !this.isVideo() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
+
+                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode && !this.isVideo() &&
                         <AddButton slot="start-bar"
                             onClick={() => this.handleNewClick()} color='white'
                         />
@@ -472,7 +508,7 @@ class App extends IssieBase {
                     {deleteButton}
 
                     {this.state.editMode &&
-                        !this.isAddScreen() &&
+                        !this.isAddScreen() && !this.isVideo() &&
                         <ShareCartButton slot="start-bar"
                             count={this.state?.shareCart?.count()}
                             onClick={() => this.props.history.push("/share-cart")} />}
@@ -503,7 +539,12 @@ class App extends IssieBase {
     getChildren(path, props, state) {
         //console.log("get children, path", path)
 
-        if (path === "/" || path === "")
+        if (path === "/" || path === "") {
+            if (this.state.FavoriteInfo) {
+                this.setState({ FavoriteInfo: undefined })
+            }
+
+
             return <Body
                 categories={FileSystem.get().getCategories()}
                 allowAddWord={this.state.allowAddWord}
@@ -516,13 +557,13 @@ class App extends IssieBase {
                 allowSwipe={this.isSwipeAllowed()}
                 scroll={this.state.bodyScroll}
             />
-
+        }
         if (path === SEARCH_PATH) {
             const categories = FileSystem.get().getCategories();
-            const words =  this.state.categoryId ? 
-                categories.find(cat=>cat.name == this.state.categoryId)?.words:
+            const words = this.state.categoryId ?
+                categories.find(cat => cat.name == this.state.categoryId)?.words :
                 FileSystem.get().getAllWords();
-            console.log("search themeId",this.state.theme )
+            console.log("search themeId", this.state.theme)
             return <Search
                 words={words}
                 categories={categories}
@@ -549,10 +590,12 @@ class App extends IssieBase {
         if (path.startsWith("/word/")) {
             //:categoryId/:title
             const [categoryId, title] = splitAndDecodeCompoundName(path.substr(6));
-            this.setTitle(title);
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
+
+            this.setTitle(cat.translate ? translate(title) : title);
+
             const themeId = cat.userContent && cat.themeId ? cat.themeId : getTheme(cat.id)
-            let words = FileSystem.get().getCategories().find(c => c.name === categoryId)?.words || [];
+            const words = cat?.words || [];
 
             const wordProps = {
                 pubSub: state.pubSub,
@@ -594,12 +637,26 @@ class App extends IssieBase {
 
         if (path.startsWith("/video/")) {
             //:videoName/:categoryId/:title/:filePath
+            //or
+            //file      /:categoryId/:title/:filePath
             const [videoName, categoryId, title, filePath] = splitAndDecodeCompoundName(path.substr(7));
             this.setTitle(title);
 
             if (this.backInProcess)
                 return
             VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
+            const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
+            const isFavorite = (cat?.words.find(w => w.name === title)?.favorite);
+            if (!this.state.FavoriteInfo || this.state.FavoriteInfo.categoryId !== categoryId ||
+                this.state.FavoriteInfo.title !== title ||
+                this.state.FavoriteInfo.isFavorite !== isFavorite) {
+                this.setState({
+                    FavoriteInfo: {
+                        categoryId, title,
+                        isFavorite,
+                    }
+                });
+            }
             this.setTitle(title);
 
             return (
@@ -636,6 +693,7 @@ class App extends IssieBase {
                     categoryId={categoryId?.length > 0 ? categoryId : undefined}
                     isLandscape={IssieBase.isLandscape()}
                     dimensions={state.dimensions}
+                    scroll={state.addScroll}
                 />
 
             )
@@ -695,6 +753,7 @@ class App extends IssieBase {
         return this.props.history.path.startsWith("/video/") ||
             (this.props.history.path.startsWith("/word/") && this.state.adultMode);
     }
+
 
     isInfo() {
         return this.props.history.path.startsWith("/info");

@@ -59,6 +59,11 @@
   font-size: 22px;
 }
 
+.settings-selected {
+  color:#0654A1;
+  font-weight: bold;
+}
+
 .lang-item {
   display: flex;
   align-items: center;
@@ -122,12 +127,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
   background-color: #59626b;
   height: 40px;
   width: 130px;
   border-radius: 15px;
   font-size: 1.5rem;
   line-height: 2.1rem;
-  color: #fff
+  color: #fff;
+  margin-top:15px;
 }

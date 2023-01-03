@@ -6,7 +6,7 @@ let fileSystem;
 
 export default class FileSystem {
     static INDEX_FILE = "index.json";
-
+    static FAVORITES_ID = "__favorites__";
     static SCHEME_PREFIX = "";
 
     static cacheBuster = 0;
@@ -24,10 +24,11 @@ export default class FileSystem {
     index = isBrowser() ? ({
         categories: [
             {
-                "name": "הדרכה",
+                "name": "TutorialCategory",
                 "id": "1",
                 "imageName": "איברי גוף.png",
                 tutorial: true,
+                translate: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
                     {
@@ -43,10 +44,18 @@ export default class FileSystem {
                 ]
             },
             {
+                "name": "FavoritesCategory",
+                translate: true,
+                "id": "__favorites__",
+                "themeId": "2",
+                "imageName": "favorites.png",
+                "words": []
+            },
+            {
                 "name": "פירות וירקות",
                 "id": "פירות וירקות",
                 "imageName": "איברי גוף.png",
-                themeId:"4",
+                themeId: "4",
                 userContent: true,
                 "words": [
                     {
@@ -163,6 +172,44 @@ export default class FileSystem {
         return words;
     }
 
+    async addRemoveFavorites(categoryId, title, isAdd) {
+        trace("addRemoveFavorites", categoryId, title);
+        const favCategory = this.index.categories.find(c => c.id === FileSystem.FAVORITES_ID);
+        if (!favCategory) {
+            throw new Error("addToFavorite - no favorties category found");
+        }
+
+        let category
+        if (isAdd){
+            category = this.index.categories.find(c => c.id === categoryId);
+        } else {
+            const favWord = favCategory.words.find(w=>w.name === title);
+            if (favWord) {
+                category = this.index.categories.find(c => c.id === favWord.category);
+            }
+        }
+
+        if (!category) {
+            throw new Error("Category not found");
+        }
+
+        const word = category.words?.find(w => w.name === title);
+        if (!word) {
+            throw new Error("Word " + title + " - not found");
+        }
+
+        word.favorite = isAdd;
+        if (isAdd) {
+            trace("Add favorite", categoryId, title);
+            favCategory.words.push(word);
+        } else {
+            trace("Remove favorite", categoryId, title);
+            favCategory.words = favCategory.words.filter(w => w.name !== word.name);
+        }
+
+        return this.saveIndex();
+    }
+
     saveCategory(label, themeId, imagePath, originalElem, syncOn, pubSub) {
         trace("saveCategory", label, imagePath, originalElem, syncOn)
         return new Promise(async (resolve, reject) => {
@@ -179,7 +226,7 @@ export default class FileSystem {
                             reject("unexpected new category already exists")
                             return;
                         }
-                        let addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST, themeId } : {themeId};
+                        let addProps = syncOn ? { sync: FileSystem.SYNC_REQUEST, themeId } : { themeId };
 
                         return this.addCategory(label, addProps).then(() => {
                             if (syncOn) {
@@ -749,7 +796,7 @@ export default class FileSystem {
                     delete entity.videoFileId;
                     entity.sync = FileSystem.SYNC_REQUEST;
                 }
-                
+
                 if (entity.renamed) {
                     if (entity.words) {
                         // Category renamed
@@ -766,7 +813,7 @@ export default class FileSystem {
                     delete entity.renamed;
                 }
                 await this.saveIndex();
-            } 
+            }
         }
 
         if (entity.sync === FileSystem.SYNC_REQUEST) {
@@ -775,7 +822,7 @@ export default class FileSystem {
 
                 const relPath = entity.name + "/" + "default.jpg";
                 const properties = {
-                    themeId:entity.themeId,
+                    themeId: entity.themeId,
                 }
                 await this.gdriveUpload(this.getFilePath(relPath, true), relPath, folderId, false, properties).then(
                     async (response) => {

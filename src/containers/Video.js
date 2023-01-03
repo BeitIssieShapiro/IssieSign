@@ -84,7 +84,7 @@ class Video extends React.Component {
         //this.updateDimensions()
 
         return (
-            <div />
+            <div/>
         )
     }
 }

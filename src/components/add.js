@@ -3,14 +3,24 @@ import React, { useCallback, useEffect, useState } from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import '../css/add.css';
-import { AttachButton, CameraButton, RadioBtn, SearchWebButton, VideoButton } from "./ui-elements";
+import { AttachButton, CameraButton, RadioBtn, SearchWebButton, TileButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import SearchImage from "./search-image";
-import { getAvailableThemes, getTheme, trace } from "../utils/Utils";
-import { Check } from "@mui/icons-material";
+import { getAvailableThemes, trace } from "../utils/Utils";
+import { Check, MoreHoriz } from "@mui/icons-material";
+
+
+import { ReactComponent as AttachSVG } from '../images/attach.svg'
+import { ReactComponent as CameraSVG } from '../images/camera.svg'
+import { ReactComponent as VideoSVG } from '../images/video-cam.svg'
+import { ReactComponent as ImageSVG } from '../images/image.svg'
+import { ReactComponent as SearchSVG } from '../images/search.svg'
+import { ReactComponent as PalleteSVG } from '../images/pallete.svg'
+import { ReactComponent as SyncSVG } from '../images/sync2.svg'
+import { ReactComponent as EditNameSVG } from '../images/edit-name.svg'
 
 const imagePickerOptions = {
     //maximumImagesCount: 1,
@@ -127,7 +137,7 @@ function AddEditItem(props) {
 
     useEffect(() => {
         props.pubSub.publish({ command: "set-themeId", themeId: themeId });
-    },[themeId]);
+    }, [themeId]);
 
     const IsValidInput = () => {
         return (isValid(label) && selectedImage && selectedImage.length > 0
@@ -158,16 +168,15 @@ function AddEditItem(props) {
     }, [props.categoryId, label, selectedImage, selectedVideo, origElem, syncOn]);
 
 
-    
+
 
     let addWordMode = props.addWord;
-    //let vidName = getFileName(selectedVideo);
-    //let imgName = getFileName(selectedImage);
 
-    let vidName = selectedVideo.length > 0 ? translate("AddVideoSelected") : ""
-    let imgName = selectedImage.length > 0 ? translate("AddImageSelected") : ""
+    let vidName = selectedVideo.length > 0 ? translate("AddVideoSelected") : translate("AddPlaceholderSelectVideo");
+    let imgName = selectedImage.length > 0 ? translate("AddImageSelected") : translate("AddPlaceholderSelectImage");
+
     return (
-        <div className="addContainer showScroll">
+        <div className="addContainer showScroll" style={{ transform: `translateY(${props.scroll?.y || 0}px)` }}>
             {showWebSearch && <SearchImage
                 pubSub={props.pubSub}
                 onClose={() => setShowWebSearch(false)}
@@ -177,8 +186,8 @@ function AddEditItem(props) {
                     setSelectedImage(url);
                     setImageDirty(true);
                 }} />}
-            <div>
-                <div className="tileCardContainer">
+            <div className="add-inner">
+                <div className={"tileCardContainer " + (addWordMode ? "card-mode" : "tile-mode")}>
                     {addWordMode ?
                         <div className="addCardHost">
                             <Card2 binder="true" addMode={true} key="1" cardType="file" cardName={label} videoName={selectedVideo}
@@ -187,191 +196,208 @@ function AddEditItem(props) {
                         : <Shelf>
                             <Tile2 key="1" dimensions={props.dimensions} tileName={label} imageName={selectedImage} themeId={themeId} />
                         </Shelf>}
-
-                    {!addWordMode && <div className="tileColorBtns showScroll">
-                        {getAvailableThemes().map((theme) => (
-                            <div theme="blue" theme-flavor={theme+""} 
-                            onClick={()=>{
-                                setThemeId(theme);
-                                setThemeDirty(true);
-                            }}>
-                                <div className="tileColorBtn" style={{
-                                    backgroundColor: "var(--box-background-color-1)"
-                                }} >{themeId == theme && <Check/>}</div>
-                            </div>))
-                        }</div>
-                    }
                 </div>
 
                 <div className="fieldsContainer">
-                    <table style={{ width: "100%" }}>
-                        <tbody>
-                            <tr style={{ height: '10vh' }}>
-                                <td width="10%"></td>
-                                <td width="8%"><div className="title-icon" style={{ marginTop: 15 }} /></td>
-                                <td width="70%">
-                                    <input type="text" className="addInput"
-                                        placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
-                                        onChange={(e) => {
-                                            const validName = isValid(e.target.value);
-                                            setLabel(e.target.value);
-                                            setLabelDirty(true);
-                                            setInvalidName(!validName);
-                                        }} value={label} />
-                                    {invalidName && <div style={{
-                                        color: "red",
-                                        fontSize: 20,
-                                    }}>{translate("InvalidCharachtersInName")}</div>}
-                                </td>
+                    {/*Name Selection */}
+                    <EditNameSVG className="add-icon-style" />
+                    <input type="text" className="addInput"
+                        placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
+                        onChange={(e) => {
+                            const validName = isValid(e.target.value);
+                            setLabel(e.target.value);
+                            setLabelDirty(true);
+                            setInvalidName(!validName);
+                        }} value={label} />
+                    {invalidName && <div style={{
+                        color: "red",
+                        fontSize: 20,
+                    }}>{translate("InvalidCharachtersInName")}</div>}
+                    <div />
+                    <div className={isValid(label) ? "v-icon" : "x-icon"} />
 
-                                <td><div className={isValid(label) ? "v-icon" : "x-icon"} /></td>
-                            </tr>
-                            <tr style={{ height: '10vh' }}>
-                                <td></td>
-                                <td><div className="image-icon" style={{ marginTop: 15 }} /></td>
-                                <td>
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <input type="text" className="addInputReadonly" readOnly placeholder={translate("AddPlaceholderSelectImage")} style={{ width: '90%' }}
-                                            value={imgName} />
+                    <rowborder />
 
-                                        <CameraButton onClick={() => {
-                                            if (selectInProgress) return;
-                                            setSelectInProgress(true);
-                                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
+                    {/*Image Selection */}
+                    <ImageSVG className="add-icon-style" />
+                    {/* <input type="text" className="addInputReadonly" readOnly placeholder={translate("AddPlaceholderSelectImage")} */}
+                    {/* value={imgName} /> */}
+                    <label>{imgName}</label>
+                    <div className="addButtons">
+                        <CameraSVG className="add-icon-style" onClick={() => {
+                            if (selectInProgress) return;
+                            setSelectInProgress(true);
+                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
 
-                                            setTimeout(async () => navigator.camera.getPicture(
-                                                img => {
+                            setTimeout(async () => navigator.camera.getPicture(
+                                img => {
 
-                                                    FileSystem.getHttpURLForFile(img).then(imgUrl => {
-                                                        setSelectedImage(imgUrl);
-                                                        setImageDirty(true);
-                                                    }).finally(() => setSelectInProgress(false))
-                                                    props.pubSub.publish({ command: 'set-busy', active: false });
-                                                },
-                                                err => {
-                                                    props.alert.error(translate("AddTakePictureFailedOrCanceled"));
-                                                    setSelectInProgress(false);
-                                                    props.pubSub.publish({ command: 'set-busy', active: false });
-                                                },
-                                                cameraOptions), 300);
-                                        }}
-                                        />
-                                        <AttachButton onClick={async () => {
-                                            if (selectInProgress) return;
-                                            setSelectInProgress(true)
-                                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
-                                            setTimeout(async () => {
-                                                selectImage().then(
-                                                    img => {
-                                                        if (img && img.length > 0) {
-                                                            FileSystem.getHttpURLForFile(img).then(imgUrl => {
-                                                                setSelectedImage(imgUrl)
-                                                                setImageDirty(true);
-                                                            })
-                                                        } else {
-                                                            props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
-                                                        }
-                                                    },
-                                                    err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))).catch(
-                                                        err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))
-                                                    ).finally(
-                                                        () => {
-                                                            props.pubSub.publish({ command: 'set-busy', active: false })
-                                                            setSelectInProgress(false);
-                                                        });
-                                            }, 300);
-                                        }} />
-
-                                        <SearchWebButton onClick={() => setShowWebSearch(true)} />
-                                    </div>
-                                </td>
-
-                                <td><div className={selectedImage ? "v-icon" : "x-icon"} /></td>
-                            </tr>
-                            {addWordMode ?
-                                <tr style={{ height: '10vh' }}>
-                                    <td></td>
-                                    <td><div className="movie-icon" style={{ marginTop: 15 }} /></td>
-                                    <td>
-                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" style={{ width: '90%' }} value={vidName} />
-                                            <VideoButton onClick={() => {
-                                                if (selectInProgress) return;
-                                                setSelectInProgress(true);
-
-                                                props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-
-                                                setTimeout(async () => navigator.device.capture.captureVideo(
-                                                    (mediaFiles) => {
-                                                        if (mediaFiles.length === 1) {
-                                                            let path = mediaFiles[0].fullPath;
-                                                            if (!path.startsWith("file://")) {
-                                                                path = "file://" + path;
-                                                            }
-                                                            setSelectedVideo(path);
-                                                            setVideoDirty(true);
-                                                            setSelectInProgress(false);
-                                                        }
-                                                        props.pubSub.publish({ command: 'set-busy', active: false })
-                                                    },
-                                                    (err) => {
-                                                        props.alert.error(translate("AddLoadVideoCameraFailedOrCanceled"));
-                                                        setSelectInProgress(false);
-                                                        props.pubSub.publish({ command: 'set-busy', active: false })
-                                                    },
-                                                    { limit: 1, duration: 15 }), 300);
-                                            }} />
-                                            <AttachButton onClick={async () => {
-                                                if (selectInProgress) return;
-                                                setSelectInProgress(true);
-                                                props.pubSub.publish({ command: 'set-busy', active: true, text: 'טוען...' });
-                                                setTimeout(async () => {
-                                                    selectVideo().then(video => {
-                                                        let path = video;
-                                                        if (!path.startsWith("file://")) {
-                                                            path = "file://" + path;
-                                                        }
-                                                        setSelectedVideo(path);
-                                                        setVideoDirty(true);
-                                                    },
-                                                        err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
-                                                        .catch(err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
-                                                        .finally(
-                                                            () => {
-                                                                props.pubSub.publish({ command: 'set-busy', active: false })
-                                                                setSelectInProgress(false);
-                                                            });
-                                                }, 300);
-                                            }} />
-                                        </div>
-
-                                    </td>
-                                    <td><div className={selectedVideo.length > 0 ? "v-icon" : "x-icon"} /></td>
-                                </tr>
-                                : null}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div className="syncContainer">
-                <div className="syncLine">
-                    <div className="syncCaption">{translate("SyncToCloudTitle")}</div>
-                    <RadioBtn
-                        checked={syncOn}
-                        onChange={(isOn) => {
-                            setSyncOn(isOn);
-                            setSyncDirty(true);
+                                    FileSystem.getHttpURLForFile(img).then(imgUrl => {
+                                        setSelectedImage(imgUrl);
+                                        setImageDirty(true);
+                                    }).finally(() => setSelectInProgress(false))
+                                    props.pubSub.publish({ command: 'set-busy', active: false });
+                                },
+                                err => {
+                                    props.alert.error(translate("AddTakePictureFailedOrCanceled"));
+                                    setSelectInProgress(false);
+                                    props.pubSub.publish({ command: 'set-busy', active: false });
+                                },
+                                cameraOptions), 300);
                         }}
-                    />
-                </div>
-                <div className="syncLine">
-                    <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
-                    <div className="syncCaption">{origElem?.sync ? origElem.sync : translate("SyncStatusNone")}</div>
-                </div>
-                <div className="syncLine">
-                    {origElem?.syncErr && <div className="syncCaption">{translate("SyncErrorLbl")}</div>}
-                    {origElem?.syncErr && <div>{origElem.syncErr}</div>}
-                </div>
+                        />
+                        <AttachSVG className="add-icon-style" onClick={async () => {
+                            if (selectInProgress) return;
+                            setSelectInProgress(true)
+                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
+                            setTimeout(async () => {
+                                selectImage().then(
+                                    img => {
+                                        if (img && img.length > 0) {
+                                            FileSystem.getHttpURLForFile(img).then(imgUrl => {
+                                                setSelectedImage(imgUrl)
+                                                setImageDirty(true);
+                                            })
+                                        } else {
+                                            props.alert.error(translate("AddLoadPictureFailedOrCanceled"));
+                                        }
+                                    },
+                                    err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))).catch(
+                                        err => props.alert.error(translate("AddLoadPictureFailedOrCanceled"))
+                                    ).finally(
+                                        () => {
+                                            props.pubSub.publish({ command: 'set-busy', active: false })
+                                            setSelectInProgress(false);
+                                        });
+                            }, 300);
+                        }} />
+
+                        <SearchSVG className="add-icon-style" onClick={() => setShowWebSearch(true)} />
+                    </div>
+                    <div className={selectedImage ? "v-icon" : "x-icon"} />
+                    <rowborder />
+
+                    {/* Color selection */}
+                    {/* <div className="image-icon" style={{ marginTop: 15 }} /> */}
+                    <PalleteSVG className="add-icon-style" />
+                    {/* <input type="text" className="addInputReadonly" readOnly placeholder={translate("ChangeColor")} /> */}
+                    <label>{translate("ChangeColor")} </label>
+                    <div className="addButtons">
+                        <TileButton size={24} onClick={() => {
+                            props.pubSub.publish({
+                                command: "open-slideup-menu", props: {
+                                    label: translate("SelectColorMenuTitle"),
+                                    themeId: props.themeId,
+                                    type: "colors",
+                                    height: 250,
+                                    buttons: getAvailableThemes().map((theme) => ({
+                                        icon: <div theme="blue" theme-flavor={theme + ""}>
+                                            <div className="tileColorBtn" style={{
+                                                backgroundColor: "var(--box-background-color-1)"
+                                            }} >{themeId == theme && <Check />}</div>
+                                        </div>,
+                                        callback: () => {
+                                            setThemeId(theme);
+                                            setThemeDirty(true);
+                                        }
+                                    }))
+                                }
+                            });
+                        }}
+                        >
+
+                            <MoreHoriz style={{ fontSize: 35, color: "#493A25" }} />
+                        </TileButton>
+                    </div>
+                    <div />
+                    <rowborder />
+
+                    {/* Movie selection */}
+                    {addWordMode && <VideoSVG className="add-icon-style" />}
+                    {/* {addWordMode && <input type="text" className="addInputReadonly" readOnly placeholder="בחר סרטון" value={vidName} />} */}
+                    {addWordMode && <label>{vidName}</label>}
+                    {addWordMode && <div className="addButtons">
+                        <VideoSVG className="add-icon-style" onClick={() => {
+                            if (selectInProgress) return;
+                            setSelectInProgress(true);
+
+                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCamera") });
+
+                            setTimeout(async () => navigator.device.capture.captureVideo(
+                                (mediaFiles) => {
+                                    if (mediaFiles.length === 1) {
+                                        let path = mediaFiles[0].fullPath;
+                                        if (!path.startsWith("file://")) {
+                                            path = "file://" + path;
+                                        }
+                                        setSelectedVideo(path);
+                                        setVideoDirty(true);
+                                        setSelectInProgress(false);
+                                    }
+                                    props.pubSub.publish({ command: 'set-busy', active: false })
+                                },
+                                (err) => {
+                                    props.alert.error(translate("AddLoadVideoCameraFailedOrCanceled"));
+                                    setSelectInProgress(false);
+                                    props.pubSub.publish({ command: 'set-busy', active: false })
+                                },
+                                { limit: 1, duration: 15 }), 300);
+                        }} />
+                        <AttachSVG className="add-icon-style" onClick={async () => {
+                            if (selectInProgress) return;
+                            setSelectInProgress(true);
+                            props.pubSub.publish({ command: 'set-busy', active: true, text: translate("AddLoadingCameraRoll") });
+                            setTimeout(async () => {
+                                selectVideo().then(video => {
+                                    let path = video;
+                                    if (!path.startsWith("file://")) {
+                                        path = "file://" + path;
+                                    }
+                                    setSelectedVideo(path);
+                                    setVideoDirty(true);
+                                },
+                                    err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                    .catch(err => props.alert.error(translate("AddLoadVideoFailedOrCanceled")))
+                                    .finally(
+                                        () => {
+                                            props.pubSub.publish({ command: 'set-busy', active: false })
+                                            setSelectInProgress(false);
+                                        });
+                            }, 300);
+                        }} />
+                    </div>
+                    }
+                    {addWordMode && <div className={selectedVideo.length > 0 ? "v-icon" : "x-icon"} />}
+                    {addWordMode && <rowborder />}
+
+                    {/*Sync To Cloud */}
+                    <SyncSVG className="add-icon-style" />
+
+                    <label>
+
+                        {translate("SyncToCloudTitle")}
+                        <div className="syncLine">
+                            <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
+                            <div className="syncCaption">{origElem?.sync ? origElem.sync : translate("SyncStatusNone")}</div>
+                        </div>
+
+                        <div className="syncLine">
+                            {origElem?.syncErr && <div className="syncCaption">{translate("SyncErrorLbl") + ":"}</div>}
+                            {origElem?.syncErr && <div className="syncCaption">{origElem.syncErr}</div>}
+                        </div>
+                    </label>
+                    <div className="addButtons">
+                        <RadioBtn
+                            checked={syncOn}
+                            onChange={(isOn) => {
+                                setSyncOn(isOn);
+                                setSyncDirty(true);
+                            }}
+                        />
+                    </div>
+                    <rowborder />
+                </div >
+
                 {/* {syncInProcess && <div className="syncinProcess" ><Sync className="rotate" /><div>{translate("SyncToCloudMsg")}</div></div>} */}
 
 
@@ -382,7 +408,7 @@ function AddEditItem(props) {
                     onClick={props.addWord ? saveWord : saveCategory} />
 
             </div>
-        </div>
+        </div >
     )
 
 }

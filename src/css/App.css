@@ -172,3 +172,9 @@ input[type="search"]::-webkit-search-results-decoration {
   float: right;
   margin-right: 30px;
 }
+
+.favorite-button {
+  
+  height: 35px;
+  width:35px;
+}

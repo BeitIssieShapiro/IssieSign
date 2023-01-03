@@ -71,7 +71,7 @@
 .search-image-button {
   display: inline-block;
   margin-top: 2px;
-  margin-left: 25px;
+  margin-inline-start: 25px;
 }
 
 .search-image-button:before {
@@ -194,6 +194,11 @@
   pointer-events: auto;
 }
 
+.switch-container {
+  width: 80px; 
+  font-size: 1rem;
+}
+
 .switch-base-elipce {
   width: 80px;
   height: 26px;
@@ -243,7 +248,7 @@
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.4);
   
-  z-index: 1000;
+  z-index: 10;
 }
 
 .form-switch i {

@@ -59,23 +59,23 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
         <div className="share-cart">
             <div className="share-cart-table-title">
                 <div></div>
-                <div>{translate("ShareCartCategoryColumnTitle")}</div>
-                <div>{translate("ShareCartWordNameColumnTitle")}</div>
+                <div className="title-item">{translate("ShareCartCategoryColumnTitle")}</div>
+                <div className="title-item">{translate("ShareCartWordNameColumnTitle")}</div>
             </div>
-            <div className="share-cart-body">
+            <div>
             {
                 shareCart?.items.map((si, i) => {
                     const item = shareCart.get(i);
                     return (<div className="share-cart-item">
-                        <image><img src={item.image}/></image>
+                        <item style={{justifyContent: "center"}}><img src={item.image}/></item>
                         <item>{item.category}</item>
                         <item>{item.name}</item>
-                        <image>
+                        <item style={{justifyContent: "center"}}>
                             <Delete onClick={() => {
                             shareCart.remove(si.name);
                             pubSub.refresh();
                         }} />
-                        </image>
+                        </item>
                     </div>
                     )
                 })

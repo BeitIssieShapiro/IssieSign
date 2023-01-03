@@ -1,16 +1,14 @@
 import React from "react";
 import '../css/App.css';
-import Card2 from "../components/Card2";
+import Card2, { ClipType } from "../components/Card2";
 import Video from "../containers/Video";
 
 import { VideoToggle } from "../utils/Utils";
 //import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
-//import { reloadAdditionals } from "../apis/catalog";
 import { withAlert } from 'react-alert'
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { translate, fTranslate } from "../utils/lang";
+import { translate } from "../utils/lang";
 
 
 class WordAdults extends IssieBase {
@@ -30,11 +28,10 @@ class WordAdults extends IssieBase {
         let themeId = this.props.themeId;
         if (Array.isArray(this.props.words)) {
             wordsElements = this.props.words.map((word) => {
-                let selected = this.state.selectedWord && this.state.selectedWord.id === word.id;
-                
+
                 return <Card2
                     editMode={this.props.editMode}
-                    categoty={word.category}
+                    categoryId={this.props.categoryId || word.category}
                     pubSub={this.props.pubSub}
                     shareCart={this.props.shareCart}
                     userContent={word.userContent}
@@ -42,15 +39,14 @@ class WordAdults extends IssieBase {
                     onClick={(url) => {
                         this.setState({ selected: word });
                         VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
+                        this.props.pubSub.publish({command:"set-current-word", categoryId: this.props.categoryId, title: word.name, isFavorite:word.isFavorite});
                     }}
                     key={word.id}
                     cardName={word.name}
                     videoName={word.videoName}
                     imageName={word.imageName} imageName2={word.imageName2}
                     themeId={themeId}
-                    //longPressCallback={selectable ? () => this.toggleSelect(word) : undefined} 
-                    selected={selected}
-                    binder={true} />
+                    clipType={ClipType.None} />
             });
         }
 
@@ -61,14 +57,13 @@ class WordAdults extends IssieBase {
                 <div style={{ width: window.innerWidth - 156 }}>
                     {this.state.selected ?
                         <Video
-                            //categoryId={props.categoryId}
                             isLandscape={IssieBase.isLandscape()}
                             isMobile={IssieBase.isMobile()}
-                            videoName={this.state.selected?.userContent?"file":this.state.selected?.videoName}
-                            filePath={this.state.selected?.userContent ? this.state.selected?.videoName:""}
+                            videoName={this.state.selected?.userContent ? "file" : this.state.selected?.videoName}
+                            filePath={this.state.selected?.userContent ? this.state.selected?.videoName : ""}
                             adultMode={true}
                         /> :
-                        <div
+                        wordsElements.length && <div
                             style={{
                                 display: "flex",
                                 height: "100%",
@@ -76,14 +71,17 @@ class WordAdults extends IssieBase {
                                 alignItems: "center",
                                 fontSize: 45, color: "black"
                             }}
-                        >{translate("NoWordSelected")}</div>
+                        >{translate("NoWordSelected")}</div> 
                     }
                 </div>
                 <div style={{
-                    flexDirection: 'col',
+                    display: "flex",
+                    flexDirection: 'columb',
+                    justifyContent: "center",
                     width: 155,
                     transform: `translateY(${this.props.scroll?.y || 0}px)`,
-                    transitionDuration: '0s'
+                    transitionDuration: '0s',
+                    borderLeft: wordsElements.length ? "solid gray 1px" : "",
                 }}>
                     {wordsElements.map((word, i) => (
                         <div key={i} style={{ marginTop: 30, marginRight: 15 }}>

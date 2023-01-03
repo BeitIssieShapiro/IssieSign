@@ -13,6 +13,12 @@ import { fTranslate, translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import { Delete, Edit, MoreHoriz, Share } from "@mui/icons-material";
 
+export const ClipType = {
+    Clip: "clip",
+    Binder: "binder",
+    None:"none",
+}
+
 
 function Card2(props) {
     const reload = () => props.pubSub.refresh();
@@ -22,16 +28,14 @@ function Card2(props) {
     let cardDouble = props.imageName2 ? { '--card-width': '100%' } : {};
     let url = "";
     if (!props.noLink && !props.selected) {
-        if (props.cardType === "add") {
-            url = "/add-word/" + encodeURIComponent(props.cardAddToCategory)
-        } else if (props.cardType === "file") {
-            url = "/video/file/" + props.themeId + "/" + encodeURIComponent(props.cardName) + "/" + encodeURIComponent(props.videoName);
+        if (props.cardType === "file") {
+            url = "/video/file/" + props.categoryId + "/" + encodeURIComponent(props.cardName) + "/" + encodeURIComponent(props.videoName);
         } else {
-            url = "/video/" + encodeURIComponent(props.videoName) + "/" + props.themeId + "/" + encodeURIComponent(props.cardName) + "/-";
+            url = "/video/" + encodeURIComponent(props.videoName) + "/" + props.categoryId + "/" + encodeURIComponent(props.cardName) + "/-";
         }
     }
 
-    const sharedName = props.category + "/" + props.cardName;
+    const sharedName = props.categoryId + "/" + props.cardName;
     const isShared = props.editMode && props.userContent && props.shareCart?.exists(sharedName);
 
     const addToShare = () => {
@@ -62,7 +66,7 @@ function Card2(props) {
                 {
                     label: translate("BtnYes"),
                     onClick: () => {
-                        FileSystem.get().deleteWord(props.category, props.cardName).then(
+                        FileSystem.get().deleteWord(props.categoryId, props.cardName).then(
                             () => {
                                 props.pubSub.refresh();
                                 props.alert.success(translate("InfoDeleteSucceeded"));
@@ -82,7 +86,8 @@ function Card2(props) {
 
     let innerBody = (
         <div className="card" style={cardDouble} theme={getThemeName(props.themeId)}>
-            <div className={"header" + (props.binder ? " binder" : " clip")}></div>
+            <div className={"header " + (props.clipType)
+        }></div>
             <div className="main">
                 {image2}
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}

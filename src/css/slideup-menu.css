@@ -59,6 +59,14 @@
 
 }
 
+.slideup-menu-body-colors {
+    padding:10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .slideup-menu-item {
     display: grid;
     row-gap: 10px;

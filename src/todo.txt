@@ -1,6 +1,6 @@
 Still missing:
 -------------
-- Save themeId to cloud-sync in Android
+- Save themeId to cloud-sync in Android - check code changes
 - check mic permission
 
 
