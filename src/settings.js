@@ -43,7 +43,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
   }
 
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}
-    animate={true} width={Math.min(470, window.innerWidth) +"px"}
+    animate={true} width={Math.min(470, window.innerWidth) + "px"}
     style={{ left: 0, "--hmargin": "0", "--vmargin": "2vw", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
   >
     <div className=" settingsContainer " >
@@ -149,7 +149,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
         </div> */}
       </div>
 
-      <div className="settings-item" >
+      {isMyIssieSign() && <div className="settings-item">
         <lbl>
           <div>{translate("SettingsLanguage")}</div>
           <div className="settingsSubTitle settings-selected">{
@@ -185,7 +185,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
           {currLanguage === "en" ? <ArrowForwardIos style={{ fontSize: 40 }} /> : <ArrowBackIos style={{ fontSize: 40 }} />}
         </div> */}
       </div>
-
+      }
     </div>
   </ModalDialog>
 }

@@ -181,11 +181,13 @@ export default class FileSystem {
 
         let category
         if (isAdd){
-            category = this.index.categories.find(c => c.id === categoryId);
+            category = this.index.categories.find(c => c.name === categoryId);
         } else {
             const favWord = favCategory.words.find(w=>w.name === title);
             if (favWord) {
-                category = this.index.categories.find(c => c.id === favWord.category);
+                category = this.index.categories.find(c => c.name === favWord.category);
+            } else {
+                trace("word not found in fav",categoryId, title, favCategory.words.map(w=>w.id + "-" + w.name ));
             }
         }
 
@@ -201,10 +203,11 @@ export default class FileSystem {
         word.favorite = isAdd;
         if (isAdd) {
             trace("Add favorite", categoryId, title);
-            favCategory.words.push(word);
+
+            favCategory.words.push({...word, category:categoryId} );
         } else {
             trace("Remove favorite", categoryId, title);
-            favCategory.words = favCategory.words.filter(w => w.name !== word.name);
+            favCategory.words = favCategory.words.filter(w => ( w.name !== word.name || w.category != categoryId));
         }
 
         return this.saveIndex();
