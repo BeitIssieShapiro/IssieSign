@@ -1,8 +1,9 @@
+import { gCurrentLanguage } from '../current-language';
 import { isBrowser } from './Utils'
 
 const DEFAULT_LANG = "he";
 let gPrefix = "";
-let gLang = "he"
+let gLang = gCurrentLanguage
 
 var strings = {
     "he": {
@@ -300,7 +301,7 @@ function findMissing() {
 //findMissing();
 
 
-var currStrings = strings[DEFAULT_LANG];
+var currStrings = strings[gLang];
 
 export function setLanguage(lang) {
 

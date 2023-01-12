@@ -103,12 +103,29 @@ export default class FileSystem {
                     docDir.getFile(FileSystem.INDEX_FILE, { create: false, exclusive: false },
                         (indexFile) => {
                             console.log("index file exists");
-                            // todo sync with existing
 
                             let reader = new FileReader();
                             reader.onloadend = (evt) => {
                                 let data = evt.target.result;
                                 this.index = JSON.parse(data);
+
+                                // merge the default content
+                                defaultContent.categories.forEach(defCat => {
+                                    const existingCat = this.index.categories.find(ec => ec.id === defCat.id);
+                                    if (existingCat) {
+                                        //merge cat
+                                        Object.entries(defCat).forEach(([key, value]) => {
+                                            if (key == "words") {
+                                                existingCat.words = defCat.words.concat(existingCat.words);
+                                            } else {
+                                                existingCat[key] = value;
+                                            }
+                                        })
+                                    } else {
+                                        this.index.categories.push(defCat);
+                                    }
+                                })
+
                                 console.log("Successfully read the existing index file. categories:", this.index.categories.length);
                                 this.init = true;
                                 resolve();
@@ -121,16 +138,6 @@ export default class FileSystem {
                         },
                         () => {
                             this.index = { ...defaultContent };
-
-                            // if (window.isAndroid) {
-                            //     // copy tutorial videos to the docs:
-                            //     this.index.categories.forEach(cat=> {
-                            //         cat.words.forEach(word=> {
-
-                            //         })
-                            //     })
-                            // }
-
 
                             this.saveIndex().then(
                                 () => {
@@ -180,14 +187,14 @@ export default class FileSystem {
         }
 
         let category
-        if (isAdd){
+        if (isAdd) {
             category = this.index.categories.find(c => c.name === categoryId);
         } else {
-            const favWord = favCategory.words.find(w=>w.name === title);
+            const favWord = favCategory.words.find(w => w.name === title);
             if (favWord) {
                 category = this.index.categories.find(c => c.name === favWord.category);
             } else {
-                trace("word not found in fav",categoryId, title, favCategory.words.map(w=>w.id + "-" + w.name ));
+                trace("word not found in fav", categoryId, title, favCategory.words.map(w => w.id + "-" + w.name));
             }
         }
 
@@ -204,10 +211,10 @@ export default class FileSystem {
         if (isAdd) {
             trace("Add favorite", categoryId, title);
 
-            favCategory.words.push({...word, category:categoryId} );
+            favCategory.words.push({ ...word, category: categoryId });
         } else {
             trace("Remove favorite", categoryId, title);
-            favCategory.words = favCategory.words.filter(w => ( w.name !== word.name || w.category != categoryId));
+            favCategory.words = favCategory.words.filter(w => (w.name !== word.name || w.category != categoryId));
         }
 
         return this.saveIndex();
@@ -534,7 +541,24 @@ export default class FileSystem {
                             resolve();
                         };
 
-                        var blob = new Blob([JSON.stringify(this.index)], { type: "text/plain" });
+                        const userContentJson = {
+                            indexVersion: this.index.indexVersion,
+                            categories: [],
+                        };
+                        this.index.categories.forEach(cat => {
+                            if (cat.userContent) {
+                                userContentJson.categories.push(cat);
+                            } else {
+                                const userWords = cat.words?.filter(w => w.userContent);
+                                if (userWords?.length > 0) {
+                                    userContentJson.categories.push({
+                                        ...cat, words: userWords,
+                                    })
+                                }
+                            }
+                        })
+
+                        var blob = new Blob([JSON.stringify(userContentJson)], { type: "text/plain" });
                         indexFileWriter.write(blob);
                     })
                     , (err) => {
