@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-jc-googledrive",
+  "name": "cordova-plugin-bentu-googledrive",
   "version": "1.1.0",
   "description": "Cordova Google Drive Plugin",
   "cordova": {
-    "id":"cordova-plugin-jc-googledrive",
+    "id":"cordova-plugin-bentu-googledrive",
     "platforms": [
       "android",
       "ios"
@@ -11,27 +11,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive"
+    "url": "https://github.com/BeitIssieShapiro/IssieSign/tree/master/GDrivePlugin"
   },
   "keywords": [
     "cordova",
-    "ecosystem:cordova",
     "cordova-ios",
     "cordova-android",
     "google",
     "drive"
   ],
   "engines": {
-    "cordovaDependencies":{
-      "1.0.0" :{
+    "cordovaDependencies": {
+      "1.0.0" : {
         "cordova-plugin-cocoapod-support" : ">1.2.0"
       }
     }
   },
-  "author": "JcDenton",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive/issues"
-  },
-  "homepage": "https://github.com/JcDenton86/cordova-plugin-jc-googledrive#readme"
+  "author": "Ariel",
+  "license": "MIT"
 }

@@ -1,8 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-jc-googledrive" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="cordova-plugin-bentu-googledrive" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>GoogleDrive</name>
     <description>Access Google Drive</description>
-    <author>LexiconMe team</author>
     <keywords>google drive</keywords>
     <license>MIT</license>
 
@@ -21,12 +20,12 @@
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="GoogleDrive" >
-                <param name="android-package" value="gr.jcdenton.GoogleDrive"/>
+                <param name="android-package" value="bentu.googledrive.GoogleDrive"/>
             </feature>
         </config-file>
 
         <!--No classes atm-->
-        <source-file src="android/GoogleDrive.java" target-dir="src/gr/jcdenton" />
+        <source-file src="android/GoogleDrive.java" target-dir="src/bentu/googledrive" />
     </platform>
 
     <platform name="ios">

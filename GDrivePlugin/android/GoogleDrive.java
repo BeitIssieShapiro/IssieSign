@@ -1,4 +1,4 @@
-package gr.jcdenton;
+package bentu.googledrive;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -385,10 +385,9 @@ public class GoogleDrive extends CordovaPlugin  {
         private String rootFolderId;
         private String rootFolderName;
         private String srcPath;
-        private JSONObject properties;
 
         UploadFile(String bearerToken, CallbackContext callbackContext,
-                   String srcPath, String folderId, String targetPath, String rootFolderId, String rootFolderName, JSONObject properties) {
+                   String srcPath, String folderId, String targetPath, String rootFolderId, String rootFolderName) {
             this.bearerToken = bearerToken;
             this.callbackContext = callbackContext;
             this.srcPath = srcPath;
@@ -396,7 +395,6 @@ public class GoogleDrive extends CordovaPlugin  {
             this.targetPath = targetPath;
             this.rootFolderId = rootFolderId;
             this.rootFolderName = rootFolderName;
-            this.properties = properties;
         }
 
         @Override
@@ -428,7 +426,8 @@ public class GoogleDrive extends CordovaPlugin  {
                     Response rootFolderResponse = okHttpClient.newCall(request).execute();
                     if (rootFolderResponse.isSuccessful()) {
                         JSONObject resObj = new JSONObject(rootFolderResponse.body().string());
-                        resultObj.put("rootFolderId", resObj.getString("id"));
+                        rootFolderId = resObj.getString("id");
+                        resultObj.put("rootFolderId", rootFolderId);
                     } else {
                         callbackContext.error("root folder creation failed:" + rootFolderResponse.code());
                         return;
@@ -438,35 +437,35 @@ public class GoogleDrive extends CordovaPlugin  {
                 //if folderId empty - and targetPath has two parts folder/filename - create folder and return in folderId
                 String targetPathParts[] = targetPath.split("/");
                 String fileName = targetPath;
-                if (empty(folderId) && targetPathParts.length > 1) {
-
+                if (targetPathParts.length > 1) {
                     fileName = targetPathParts[1];
+                    if (empty(folderId)) {
+                        JSONObject folderJson = new JSONObject();
+                        folderJson.put("mimeType", "application/vnd.google-apps.folder");
+                        folderJson.put("name", targetPathParts[0]);
+                        JSONArray parents = new JSONArray();
+                        parents.put(rootFolderId);
+                        folderJson.putOpt("parents", parents);
 
-                    JSONObject folderJson = new JSONObject();
-                    folderJson.put("mimeType", "application/vnd.google-apps.folder");
-                    folderJson.put("name", targetPathParts[0]);
-                    JSONArray parents = new JSONArray();
-                    parents.put(rootFolderId);
-                    folderJson.putOpt("parents", parents);
-
-                    RequestBody formBody = RequestBody.create(folderJson.toString(), JSONMimeType);
+                        RequestBody formBody = RequestBody.create(folderJson.toString(), JSONMimeType);
 
 
-                    Request request = new Request.Builder()
-                            .url("https://www.googleapis.com/drive/v3/files")
-                            .addHeader("Authorization", "Bearer " + bearerToken)
-                            .post(formBody)
-                            .build();
+                        Request request = new Request.Builder()
+                                .url("https://www.googleapis.com/drive/v3/files")
+                                .addHeader("Authorization", "Bearer " + bearerToken)
+                                .post(formBody)
+                                .build();
 
-                    Response folderResponse = okHttpClient.newCall(request).execute();
-                    if (folderResponse.isSuccessful()) {
-                        JSONObject resObj = new JSONObject(folderResponse.body().string());
-                        folderId = resObj.getString("id");
-                        resultObj.put("folderId", folderId);
+                        Response folderResponse = okHttpClient.newCall(request).execute();
+                        if (folderResponse.isSuccessful()) {
+                            JSONObject resObj = new JSONObject(folderResponse.body().string());
+                            folderId = resObj.getString("id");
+                            resultObj.put("folderId", folderId);
 
-                    } else {
-                        callbackContext.error("folder creation failed:" + folderResponse.code());
-                        return;
+                        } else {
+                            callbackContext.error("folder creation failed:" + folderResponse.code());
+                            return;
+                        }
                     }
                 }
 
@@ -480,9 +479,6 @@ public class GoogleDrive extends CordovaPlugin  {
                 JSONArray parents = new JSONArray();
                 parents.put(folderId);
                 metadata.putOpt("parents", parents);
-                if (properties != null) {
-                    metadata.put("properties", properties);
-                }
 
                 RequestBody metaDataBody = RequestBody.create(MediaType.parse("application/json"), metadata.toString());
 
@@ -582,8 +578,7 @@ public class GoogleDrive extends CordovaPlugin  {
             String rootFolderId = mArgs.getString(3);
             String rootFolderName = mArgs.getString(4);
             boolean appFolder = mArgs.getBoolean(5);
-            Map properties = mArgs.getJSONObject(6);
-            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName, properties);
+            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName);
             cordova.getThreadPool().execute(uf);
 
             return true;

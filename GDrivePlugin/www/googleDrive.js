@@ -1,4 +1,4 @@
-cordova.define("cordova-plugin-jc-googledrive.GoogleDrive", function(require, exports, module) {
+cordova.define("cordova-plugin-bentu-googledrive.GoogleDrive", function(require, exports, module) {
     function GoogleDrive() {}
     
     GoogleDrive.prototype.whoAmI = function (successCallback, errorCallback) {
