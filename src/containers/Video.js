@@ -1,56 +1,25 @@
-import React from "react";
+import {  ArrowForwardRounded, PauseCircleFilled, PlayCircle, 
+    ReplayCircleFilled } from "@mui/icons-material";
+import React, { useEffect, useState, useRef } from "react";
 import FileSystem from "../apis/filesystem";
 
 import '../css/App.css';
 
-class Video extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+const Video = ({ videoName, filePath, isMobile, goBack, maxWidth }) => {
+    const [playing, setPlaying] = useState(false);
+    const [paused, setPaused] = useState(false);
+    const [ended, setEnded] = useState(false);
 
-    componentDidMount() {
-        this.updateDimensions()
+    const [videoUrl, setVideoUrl] = useState("");
+    const [videoDimension, setVideoDimension] = useState(0);
+    const [videoWidth, setVideoWidth] = useState(0);
+    const [videoHeight, setVideoHeight] = useState(0);
+    const videoRef = useRef(null);
 
-    }
-    componentWillUnmount() {
-        //VideoToggle(false);
-        console.log("unmount video")
-    }
-
-    updateDimensions() {
-        var videoElemHost = document.getElementById("playerhost");
-
-        let backBtn = document.getElementById("backBtn");
-        if (this.props.isLandscape && this.props.isMobile) {
-            videoElemHost.style.top = "0px";
-            videoElemHost.style.height = window.innerHeight;
-            backBtn.style.display = "block";
-
-            //videoElemHost.style.width = '95%';
-            //videoElemHost.style.position = "absolute";
-        } else {
-            console.log("not mobile landscape")
-            videoElemHost.style.top = "150px";
-            backBtn.style.display = "none";
-            if (this.props.adultMode) {
-                videoElemHost.style.width = '85%';
-                //videoElemHost.style.alignSelf = 'center';
-                //videoElemHost.style.right = '150px';
-            } else {
-                videoElemHost.style.width = '100%';
-            }
-            //videoElemHost.style.position = "absolute";
-            //videoElemHost.style.width = '100%';
-        }
-    }
-
-    render() {
+    useEffect(() => {
         let videoContent = "";
-
-        let videoName = this.props.videoName;
         if (videoName === 'file') {
-            videoContent = FileSystem.get().getFilePath(this.props.filePath);
+            videoContent = FileSystem.get().getFilePath(filePath);
         } else {
             if (document.basePath.startsWith("file")) {
                 //iOS
@@ -65,29 +34,81 @@ class Video extends React.Component {
                 }
             }
         }
-        var videoElem = document.getElementById("player")
-        if (videoElem.dataset.state === "off") {
-            console.log("video is off - return");
-            return;
-        } else {
-            console.log("video is on", JSON.stringify(videoElem.dataset));
+        setVideoUrl(videoContent)
+
+    }, [videoName, filePath])
+
+    const headerSize = isMobile ? 0 : 150;
+
+    useEffect(() => {
+        const innerWidth = maxWidth || window.innerWidth;
+
+        const wFactor = videoDimension.w / innerWidth;
+        const hFactor = videoDimension.h / (window.innerHeight - headerSize);
+        let fullWidth = (1 / wFactor) * videoDimension.w;
+        let fullHeight = (1 / wFactor) * videoDimension.h;
+        if (fullHeight > window.innerHeight - headerSize) {
+            fullWidth = (1 / hFactor) * videoDimension.w;
+            fullHeight = (1 / hFactor) * videoDimension.h;
         }
 
-        // if (videoContent.startsWith("file")) {
-        //     videoContent = "cdvfile"+videoContent.substr(4);
-        // }
-        //alert(videoContent)
-        console.log("video: ", videoContent);
-        videoElem.src = videoContent;
+        setVideoWidth(fullWidth);
+        setVideoHeight(fullHeight);
 
+    }, [window.innerHeight, window.innerWidth, isMobile, videoDimension, maxWidth]);
 
-        //this.updateDimensions()
+    return (
+        <div className="videoHostNew">
+            <video
+                //onTimeUpdate={handleProgress}
+                ref={videoRef}
+                playsInline={true}
+                autoPlay={true}
+                width={videoWidth}
+                height={videoHeight}
+                src={videoUrl}
+                style={{ display: "flex", alignItems: "flex-start" }}
+                onLoadedMetadata={(e) => {
+                    setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })
+                }}
+                onClick={()=>{
+                    if (ended || paused) {
+                        videoRef.current?.play();
+                    } else if (playing) {
+                        videoRef.current?.pause();
+                    }
+                }}
+                onPlay={() => {
+                    setPlaying(true);
+                    setPaused(false);
+                    setEnded(false);
+                }}
+                onPause={() => {
+                    setPaused(true);
+                    setPlaying(false);
+                }}
+                onEnded={() => {
+                    setEnded(true);
+                    setPlaying(false);
+                    setPaused(true);
+                }}
 
-        return (
-            <div/>
-        )
-    }
+            >
+            </video>
+            {isMobile && <div className="videoBackButtonMobile" >
+                <ArrowForwardRounded style={{ fontSize: 80}} className="videoButtonNew"
+                    onClick={goBack}
+                />
+            </div>
+            }
+            {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />}
+            <div className="videoButtonsNew">
+                {playing && <PauseCircleFilled style={{ fontSize: 100}} className="videoButtonNew" onClick={() => videoRef.current?.pause()} />}
+                {paused && !ended && <PlayCircle style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
+                {ended && <ReplayCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
+            </div>
+        </div>
+    )
 }
-
 
 export default Video;

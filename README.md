@@ -80,7 +80,7 @@ cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
-cordova plugins add ../GDrivePlugin/
+cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.YOUR_CLIENT_ID --variable IOS_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com
 cordova plugins add ../PlayAssetsPlugin/
 ```
 
@@ -104,11 +104,13 @@ cordova platform add android
 - Open xcode and the ios project
 //  - copy from `Images.xcassets` the `header`
 //  - replace AppIcon
-under "Resoutrces"
-  - copy the CDVLaunchStoryboard (copy , create group)
+Under "Resources"
+  - copy the Storyboard from code-changes (copy , create group)
   - Copy IssieSign-info.plist (copy , create group)
-    
   - Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
+
+Under Signing & Capabilities
+- add Capability: "Background Modes", check: "Background Fetch" & "Background Processing"
 
   - Create Arabic profile:
     - duplicate IssieSign profile

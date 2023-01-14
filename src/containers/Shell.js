@@ -31,8 +31,6 @@ function Shell (props) {
             </ul>
         }
 
-        let centerSlotClass = props.isMobile?"centerSlotMobile":"centerSlot"
-
         return (
         <div className="shellhost">
             <div className="shellTopBlueBar"/>

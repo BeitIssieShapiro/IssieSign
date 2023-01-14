@@ -3,8 +3,6 @@ import '../css/App.css';
 import Card2, { ClipType } from "../components/Card2";
 import Video from "../containers/Video";
 
-import { VideoToggle } from "../utils/Utils";
-//import { deleteWord, shareWord } from '../apis/file'
 import IssieBase from '../IssieBase'
 import { withAlert } from 'react-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -38,7 +36,6 @@ class WordAdults extends IssieBase {
                     cardType={word.userContent ? "file" : "default"}
                     onClick={(url) => {
                         this.setState({ selected: word });
-                        VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
                         this.props.pubSub.publish({command:"set-current-word", categoryId: this.props.categoryId, title: word.name, isFavorite:word.isFavorite});
                     }}
                     key={word.id}
@@ -54,14 +51,14 @@ class WordAdults extends IssieBase {
             <div style={{
                 flex: 1, display: 'flex', flexDirection: 'row', overflow: "auto"
             }}>
-                <div style={{ width: window.innerWidth - 156 }}>
+                <div style={{ width: window.innerWidth - 156, position:"relative" }}>
                     {this.state.selected ?
                         <Video
                             isLandscape={IssieBase.isLandscape()}
                             isMobile={IssieBase.isMobile()}
                             videoName={this.state.selected?.userContent ? "file" : this.state.selected?.videoName}
                             filePath={this.state.selected?.userContent ? this.state.selected?.videoName : ""}
-                            adultMode={true}
+                            maxWidth={window.innerWidth - 156}
                         /> :
                         wordsElements.length && <div
                             style={{
@@ -76,15 +73,16 @@ class WordAdults extends IssieBase {
                 </div>
                 <div style={{
                     display: "flex",
-                    flexDirection: 'columb',
-                    justifyContent: "center",
+                    flexDirection: 'column',
+                    alignItems:"center",
+                    justifyContent: "flex-start",
                     width: 155,
                     transform: `translateY(${this.props.scroll?.y || 0}px)`,
                     transitionDuration: '0s',
                     borderLeft: wordsElements.length ? "solid gray 1px" : "",
                 }}>
                     {wordsElements.map((word, i) => (
-                        <div key={i} style={{ marginTop: 30, marginRight: 15 }}>
+                        <div key={i} style={{ marginTop: 30 }}>
                             {word}
                         </div>
                     ))}

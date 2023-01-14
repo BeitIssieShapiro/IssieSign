@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { VideoToggle, getLanguage, trace, isMyIssieSign, getThemeName } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -348,10 +348,7 @@ class App extends IssieBase {
         } else {
             this.props.history.goBack();
         }
-        if (video) {
-            trace("GoBack: toggle video off")
-            VideoToggle(false);
-        }
+        
         setTimeout(() => {
             this.setState({ showDelete: undefined, showShare: undefined })
             this.backInProcess = false
@@ -642,9 +639,6 @@ class App extends IssieBase {
             const [videoName, categoryId, title, filePath] = splitAndDecodeCompoundName(path.substr(7));
             this.setTitle(title);
 
-            if (this.backInProcess)
-                return
-            VideoToggle(true, !IssieBase.isMobile(), IssieBase.isLandscape());
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
             const isFavorite = (cat?.words.find(w => w.name === title)?.favorite);
             if (!this.state.FavoriteInfo || this.state.FavoriteInfo.categoryId !== categoryId ||
@@ -661,6 +655,7 @@ class App extends IssieBase {
 
             return (
                 <Video {...props}
+                    goBack={()=>this.goBack()}
                     categoryId={categoryId}
                     isLandscape={IssieBase.isLandscape()}
                     isMobile={IssieBase.isMobile()}

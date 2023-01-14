@@ -19,13 +19,12 @@ export const ClipType = {
     None:"none",
 }
 
-
 function Card2(props) {
     const reload = () => props.pubSub.refresh();
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
-    let cardDouble = props.imageName2 ? { '--card-width': '100%' } : {};
+    let cardDouble = props.imageName2 ? { '--card-width': '165px' } : {};
     let url = "";
     if (!props.noLink && !props.selected) {
         if (props.cardType === "file") {

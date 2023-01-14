@@ -1,3 +1,12 @@
+bugs:
+V- space before folder name in add.js
+V- delete a word or cat which is in sharelist
+V- reply button is behind video
+V- playing video size
+V- color in word is not needed
+
+
+
 Still missing:
 -------------
 - Save themeId to cloud-sync in Android - check code changes

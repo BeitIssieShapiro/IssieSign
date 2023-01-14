@@ -67,7 +67,30 @@ export default class FileSystem {
                         userContent: true,
                         sync: "sync-request",
                         syncErr: "testError"
+                    },
+                    {
+                        name: "מילה שלישית",
+                        id: "100",
+                        category: "בודק עברית",
+                        imageName: "A8.png",
+                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                        sync: "sync-request",
+                        syncErr: "testError"
+                    },
+                    
+                    {
+                        "name": "בפנים ובחוץ",
+                        "id": "1738",
+                        "imageName": "V738 1.png",
+                        "imageName2": "V738 2.png",
+                        "tags": [
+                          "בתוך"
+                        ],
+                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
                     }
+
+
+
 
                 ]
             }
