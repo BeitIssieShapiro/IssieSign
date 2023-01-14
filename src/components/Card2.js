@@ -69,6 +69,9 @@ function Card2(props) {
                         FileSystem.get().deleteWord(props.categoryId, props.cardName).then(
                             () => {
                                 props.pubSub.refresh();
+                                if (isShared) {
+                                    props.shareCart.remove(sharedName);
+                                }
                                 props.alert.success(translate("InfoDeleteSucceeded"));
                             },
                             //error

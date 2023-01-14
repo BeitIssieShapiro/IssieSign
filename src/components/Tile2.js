@@ -50,6 +50,9 @@ function Tile2(props) {
                     label: translate("BtnYes"),
                     onClick: () => FileSystem.get().deleteCategory(props.tileName).then(
                         () => {
+                            if (props.shareCart?.exists(props.tileName)) {
+                                props.shareCart.remove(props.tileName);
+                            }
                             props.pubSub.refresh();
                             props.alert.success(translate("InfoDeleteSucceeded"));
                         },

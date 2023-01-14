@@ -36,7 +36,7 @@ export default class FileSystem {
                         id: "מילה בעברית",
                         category: "בודק עברית",
                         imageName: "בודק עברית/אוזניים.png",
-                        videoName: "בודק עברית/אוזניים.mov",
+                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
                         userContent: true,
                         sync: "sync-request",
                         syncErr: "testError"
@@ -63,7 +63,7 @@ export default class FileSystem {
                         id: "מילה בעברית",
                         category: "בודק עברית",
                         imageName: "בודק עברית/אוזניים.png",
-                        videoName: "בודק עברית/אוזניים.mov",
+                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
                         userContent: true,
                         sync: "sync-request",
                         syncErr: "testError"
@@ -624,6 +624,8 @@ export default class FileSystem {
                 throw new Error("getFilePath with file:// in android - not expected")
             }
             return "issie-" + name;
+        } else if (name.startsWith("http")) {
+            return name;
         }
 
         const relPath = "Categories/" + decodeURIComponent(name);

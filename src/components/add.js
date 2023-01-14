@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Tile2 from "./Tile2";
 import Card2 from "./Card2";
 import '../css/add.css';
-import { AttachButton, CameraButton, RadioBtn, SearchWebButton, TileButton, VideoButton } from "./ui-elements";
+import { AttachButton, CameraButton, RadioBtn, SearchWebButton, Spacer, TileButton, VideoButton } from "./ui-elements";
 import { withAlert } from 'react-alert'
 import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
@@ -198,6 +198,7 @@ function AddEditItem(props) {
                         </Shelf>}
                 </div>
 
+                <Spacer height={15}/>
                 <div className="fieldsContainer">
                     {/*Name Selection */}
                     <EditNameSVG className="add-icon-style" />
@@ -279,10 +280,10 @@ function AddEditItem(props) {
 
                     {/* Color selection */}
                     {/* <div className="image-icon" style={{ marginTop: 15 }} /> */}
-                    <PalleteSVG className="add-icon-style" />
+                    {!addWordMode && <PalleteSVG className="add-icon-style" />}
                     {/* <input type="text" className="addInputReadonly" readOnly placeholder={translate("ChangeColor")} /> */}
-                    <label>{translate("ChangeColor")} </label>
-                    <div className="addButtons">
+                    {!addWordMode && <label>{translate("ChangeColor")} </label>}
+                    {!addWordMode && <div className="addButtons">
                         <TileButton size={24} onClick={() => {
                             props.pubSub.publish({
                                 command: "open-slideup-menu", props: {
@@ -305,12 +306,12 @@ function AddEditItem(props) {
                             });
                         }}
                         >
-
                             <MoreHoriz style={{ fontSize: 35, color: "#493A25" }} />
                         </TileButton>
                     </div>
-                    <div />
-                    <rowborder />
+                    }
+                    {!addWordMode && <div />}
+                    {!addWordMode && <rowborder />}
 
                     {/* Movie selection */}
                     {addWordMode && <VideoSVG className="add-icon-style" />}
