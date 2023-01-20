@@ -16,10 +16,10 @@
     <title>Sign Language Application</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <!-- <script type="text/javascript" charset="utf-8" src="cordova.js"></script> -->
 
     <script>
-        window.isBrowser = false;
+        window.isBrowser = true;
 
         let assetsInit = false;
         let assetsInit2 = false;
@@ -63,11 +63,11 @@
                     x: document.swipeInProgress.initialPos.x + dx,
                     y: document.swipeInProgress.initialPos.y + dy,
                 }
-                document.swipeHandler.setCurrent(arg);
+                document.swipeHandler.setCurrent(e, arg);
 
             } else {
                 if (document.swipeHandler) {
-                    console.log("start swipe", e.touches[0].clientX);
+                    console.log("start swipe", e.target,  e.touches[0].clientX, e.touches[0].clientY);
                     document.swipeInProgress = {
                         initial: {
                             x: e.touches[0].clientX,

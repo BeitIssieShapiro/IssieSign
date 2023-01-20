@@ -1,11 +1,11 @@
 echo 'export const gCurrentLanguage =  "ar";\nexport const AppName = "IssieSignArabic";\n' > ./src/current-language.js
 cp -f jsons/ar/mainJson.js src/mainJson.js
-rm -rf src/images/adt/*
-cp -R ../IssieSign-MediaNew/images/ar/ src/images/adt/
 
 rm -rf public/videos
-# cp -R ../IssieSign-Media/videos/ar/dev-ios public/videos
+rm -rf src/images/adt/*
+cp -R ../IssieSign-MediaNew/images/ar/ src/images/adt/
 cp -R ../IssieSign-MediaNew/videos/ar/prod public/videos
+
 npm run build
 
 rm cordovaApp/platforms/ios/www/precache-*.*

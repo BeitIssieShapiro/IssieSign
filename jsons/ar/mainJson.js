@@ -10,6 +10,14 @@ const mainJson = {
       "words": []
     },
     {
+      "name": "TutorialsCategory",
+      "allowHide": true,
+      "id": "__tutorials__",
+      "themeId": "3",
+      "imageName": "R587.png",
+      "words": []
+    },
+    {
       "name": "اصحاب المهن",
       "id": "1",
       "words": [
@@ -8442,6 +8450,8 @@ const mainJson = {
     {
       "name": "بلوغ",
       "id": "27",
+      "allowHide": true,
+      "defaultHide": true,
       "words": [
         {
           "name": "بلوغ",

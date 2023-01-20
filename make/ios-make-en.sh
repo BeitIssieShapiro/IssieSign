@@ -1,9 +1,11 @@
 echo 'export const gCurrentLanguage =  "en";\nexport const AppName = "MyIssieSign";\n' > ./src/current-language.js
 cp -f jsons/en/mainJson.js src/mainJson.js
-cp -R ../IssieSign-Media/images/en/ src/images/adt/
 
+#media
 rm -rf public/videos
-cp -R ../IssieSign-Media/videos/en/prod public/videos
+rm -rf src/images/adt/*
+cp -R ../IssieSign-MediaNew/images/en/ src/images/adt/
+cp -R ../IssieSign-MediaNew/videos/en/prod public/videos
 
 npm run build
 

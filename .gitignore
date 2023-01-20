@@ -7,7 +7,7 @@ cordova/app/
 cordovaApp/
 package-lock.json
 .DS_Store
-
+.firebaserc
 
 
 # language sensitive files

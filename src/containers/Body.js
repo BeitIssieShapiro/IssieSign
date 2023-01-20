@@ -12,6 +12,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { getDecoration } from "../components/ui-elements"
 import { translate, fTranslate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
+import { lineHeight } from "@mui/system";
 
 class Body extends IssieBase {
 
@@ -86,22 +87,23 @@ class Body extends IssieBase {
 
         //calculate best width:
         let narrow = IssieBase.isMobile() && !IssieBase.isLandscape();
-        let tileH = 155,
+        let tileH = 163,
             //tileW = narrow ? 179 : 212;
             tileW = this.props.dimensions.tileGroupWidthNumeric;
         //let tileWidthAbs = narrow ? 178 : 220;
 
-        let width = calcWidth(elements.length, window.innerHeight,
-            window.innerWidth, tileH, tileW, this.props.isMobile, this.props.InSearch);
+        let width = calcWidth(elements.length, this.props.dimensions.height,
+            this.props.dimensions.width, tileH, tileW, this.props.isMobile, this.props.InSearch);
 
 
-        width = Math.max(width, window.innerWidth);
+        width = Math.max(width, this.props.dimensions.width);
         //build array of lines:
         let lineWidth = 0;
         let curLine = -1;
         let lines = [];
         for (let i = 0; i < elements.length; i++) {
             let card = elements[i];
+            //card.props.dimensions.boxHeight = tileH - 28;
             lineWidth += tileW;
             if (curLine < 0 || lineWidth > width) {
                 curLine++;
@@ -111,17 +113,24 @@ class Body extends IssieBase {
             lines[curLine].push(card);
         }
 
+        // Calculate the height of one box:
+        const adjustedTileH = (this.props.dimensions.height - 153)/lines.length;
+        //console.log("boxHeight",lines.length, tileH, lines.length* tileH, adjustedTileH)
+
+        if (lines.length > 1 && !this.props.isMobile && elements.length > 12) {
+            lines.forEach(line=>{
+                line.forEach(card=>card.props.dimensions.boxHeight = adjustedTileH - 30)
+            });    
+        }
+
         //console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);
         let widthStr = width + 'px';
         if (this.props.isMobile && narrow) {
             widthStr = '100%'
-        } else {
-
         }
 
-
         return (
-            <div className={[this.props.InSearch ? "subTileContainer" : "tileContainer"]} style={{
+            <div scroll-marker="1" className={[this.props.InSearch ? "subTileContainer" : "tileContainer"]} style={{
                 width: widthStr,
                 flexWrap: 'wrap',
                 transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,

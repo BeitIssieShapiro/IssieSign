@@ -1,11 +1,12 @@
 const mainJson = {
   "categories": [
     {
-      "name": "Tutorials",
-      tutorial: true,
+      "name": "TutorialsCategory",
+      translate: true,
+      allowHide:true,
       "id": "1",
       "themeId": "3",
-      "imageName": "איברי גוף.png",
+      "imageName": "R587.png",
       "words": [
         {
           "name": "Add a word",

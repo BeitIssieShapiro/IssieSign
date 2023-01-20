@@ -4,7 +4,7 @@ import '../css/info.css';
 class Info extends React.Component {
     render() {
         return (
-            <div className={"info"}  style={{
+            <div className={"info"} scroll-marker="1" style={{
                 transform: `translateY(${this.props.scroll?.y || 0}px)`,
                 transitionDuration: '0s',
             }}>

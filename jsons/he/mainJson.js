@@ -10,6 +10,15 @@ const mainJson = {
       "words": []
     },
     {
+      "name": "TutorialsCategory",
+      "allowHide": true,
+      "translate": true,
+      "id": "__tutorials__",
+      "themeId": "3",
+      "imageName": "R587.png",
+      "words": []
+    },
+    {
       "name": "בעלי מקצוע",
       "id": "1",
       "words": [
@@ -6911,6 +6920,8 @@ const mainJson = {
     {
       "name": "התבגרות",
       "id": "27",
+      "allowHide": true,
+      "defaultHide": true,
       "words": [
         {
           "name": "התבגרות",

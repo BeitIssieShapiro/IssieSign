@@ -57,7 +57,7 @@ function Search(props) {
     }
 
     return (
-        <div className='tileContainer' theme={getThemeName(props.themeId)} style={{
+        <div scroll-marker="1" className='tileContainer' theme={getThemeName(props.themeId)} style={{
             width: props.isMobile ? '110%' : '100%',
             transform: 'translateX(' + props.scroll.x + 'px)',
             flexDirection: 'column',

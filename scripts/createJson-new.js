@@ -232,17 +232,36 @@ const heMap = [
         "themeId": "2",
         "imageName": "favorites.png",
         "wordsRaw": []
-    }
+    },
+    {
+        "name": "TutorialsCategory",
+        allowHide: true,
+        translate: true,
+        "id": "__tutorials__",
+        "themeId": "3",
+        "imageName": "R587.png",
+        "words": []
+    },
 ]
 const arMap = [
     {
         "name": "FavoritesCategory",
         translate: true,
+        translate: true,
         "id": "__favorites__",
         "themeId": "2",
         "imageName": "favorites.png",
         "wordsRaw": []
-    }
+    },
+    {
+        "name": "TutorialsCategory",
+        allowHide: true,
+        "id": "__tutorials__",
+        "themeId": "3",
+        "imageName": "R587.png",
+        "words": []
+    },
+
 ]
 
 //Hebrew map
@@ -267,6 +286,12 @@ function extractRanges4Category(sheet, letter, row, catId) {
         console.log("empty column")
     }
     const cat = { name: header, wordsRaw: [], id: catId + "" }
+
+    if (header === "התבגרות" || header === "بلوغ") {
+        cat.allowHide = true;
+        cat.defaultHide = true;
+    }
+
     row++
     let empty = 0;
     while (empty < 2) {
@@ -335,7 +360,7 @@ function addWordsToCat(cat, lang) {
 
     let wordId = parseInt(cat.id) * 100;
     cat.words = [];
-    cat.wordsRaw.forEach(row => {
+    cat.wordsRaw?.forEach(row => {
         const wordObj = getWord(row, lang, wordId)
         if (wordObj) {
             wordId++;
@@ -344,7 +369,7 @@ function addWordsToCat(cat, lang) {
     })
 
     // extract image for category:
-    if (cat.id !== "__favorites__") {
+    if (cat.id !== "__favorites__" && cat.id !== "__tutorials__") {
         const wordForCat = cat.words.find(w => w.name == cat.name);
         if (!wordForCat) {
             console.log("word for cat is missing", cat.name, cat.words.map(w => w.name));
@@ -361,12 +386,12 @@ arMap.forEach(cat => addWordsToCat(cat, "ar"));
 
 console.log("processed rows", row - emptyRows - 1);
 saveFile({
-    indexVersion:1,
+    indexVersion: 1,
     categories: heMap
 }, "he");
 
 saveFile({
-    indexVersion:1,
+    indexVersion: 1,
     categories: arMap
 }, "ar");
 

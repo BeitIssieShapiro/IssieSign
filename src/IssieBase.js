@@ -21,10 +21,13 @@ class IssieBase extends Component {
     }
 
     static updateDimensions() {
-        let ret = {};
+        let ret = {
+            height: window.innerHeight,
+            width: window.innerWidth,
+        };
         let numBoxSize = Math.round(window.innerWidth / 230);
 
-        if (IssieBase.isMobile() ) {
+        if (IssieBase.isMobile()) {
 
             let boxSize = Math.min(200, window.innerWidth / numBoxSize);
 
@@ -57,9 +60,13 @@ class IssieBase extends Component {
     }
 
     resizeListener() {
-        this.setState(IssieBase.getDerivedStateFromProps());
+        setTimeout(() => {
+            const newState = IssieBase.getDerivedStateFromProps();
+            this.setState(newState);
+            console.log("resize", newState.dimensions.width, newState.dimensions.height, window.innerHeight);
+        }, 1);
     }
-    
+
 }
 IssieBase.propTypes = {
     children: PropTypes.any

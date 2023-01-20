@@ -42,6 +42,7 @@ import { SlideupMenu } from './components/slideup-menu';
 
 
 const SEARCH_PATH = "/search/";
+const SCROLL_RESET = { x: 0, y: 0 };
 
 class PubSub {
     constructor() {
@@ -80,7 +81,9 @@ class App extends IssieBase {
 
         window.addEventListener("resize", this.resizeListener);
         const getCurrent = () => {
-            if (this.isWords()) {
+            if (this.state.menuOpen) {
+                return this.state.settingsScroll;
+            } if (this.isWords()) {
                 return this.state.wordScroll;
             } else if (this.isSearch()) {
                 return this.state.searchScroll;
@@ -92,18 +95,23 @@ class App extends IssieBase {
                 return this.state.bodyScroll;
             }
         }
-        const setCurrent = ({ x, y }, overwriteSwipeMode) => {
+        const setCurrent = (event, { x, y }, overwriteSwipeMode) => {
             if (this.isSwipeAllowed() || overwriteSwipeMode) {
-                let container = document.getElementsByClassName(this.isInfo() ? "info" : "tileContainer")[0];
-                if (container) {
+                // go up and look for scroll marker
+                let container = event.target;
+                while (container.getAttribute("scroll-marker") !== "1" && container.parentElement) {
+                    container = container.parentElement;
+                }
+                if (container.getAttribute("scroll-marker") === "1") {
                     if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
                         x = window.innerWidth - container.scrollWidth;
                     }
 
-                    if (y !== 0 && y < window.innerHeight - container.scrollHeight) {
-                        y = window.innerHeight - container.scrollHeight;
+                    if (y !== 0 && y < window.innerHeight - container.scrollHeight - 131) {
+                        y = window.innerHeight - container.scrollHeight - 131;
                     }
                 }
+
                 if (x > 0) {
                     x = 0;
                 }
@@ -112,7 +120,9 @@ class App extends IssieBase {
                 }
                 const newScrollX = { x, y: 0 };
                 const newScrollY = { x: 0, y };
-                if (this.isWords()) {
+                if (this.state.menuOpen) {
+                    this.setState({ settingsScroll: newScrollY });
+                } else if (this.isWords()) {
                     this.setState({ wordScroll: IssieBase.isMobile() || this.state.adultMode ? newScrollY : newScrollX });
                 } else if (this.isSearch()) {
                     this.setState({ searchScroll: newScrollX });
@@ -129,11 +139,11 @@ class App extends IssieBase {
         document.swipeHandler = {
             getCurrent,
             setCurrent,
-            moveButton: (toRight) => {
+            moveButton: (event, toRight) => {
                 const curr = getCurrent();
                 const absInc = (window.innerWidth - 150)
                 const inc = toRight ? -absInc : absInc;
-                setCurrent({ x: curr.x + inc, y: curr.y }, true);
+                setCurrent(event, { x: curr.x + inc, y: curr.y }, true);
             },
         }
         window.goBack = () => this.goBack();
@@ -155,10 +165,11 @@ class App extends IssieBase {
             pubSub: pubsub,
             busy: false,
             busyText: translate("Working"),
-            bodyScroll: { x: 0, y: 0 },
-            wordScroll: { x: 0, y: 0 },
-            searchScroll: { x: 0, y: 0 },
-            infoScroll: { x: 0, y: 0 },
+            settingsScroll: SCROLL_RESET,
+            bodyScroll: SCROLL_RESET,
+            wordScroll: SCROLL_RESET,
+            searchScroll: SCROLL_RESET,
+            infoScroll: SCROLL_RESET,
             shareCart,
 
             slideupMenuOpen: false,
@@ -305,7 +316,7 @@ class App extends IssieBase {
         this.setState({ searchStr: e.target.value }, () => {
             if (e.target.value.length > 1 && !this.isSearch()) {
                 this.props.history.push(SEARCH_PATH);
-                this.setState({ bodyScroll: { x: 0, y: 0 } });
+                this.setState({ bodyScroll: SCROLL_RESET });
                 trace("Search: " + e.target.value);
             } else if (e.target.value.length < 2) {
                 if (this.isSearch()) {
@@ -318,7 +329,7 @@ class App extends IssieBase {
 
     handleMenuClick() {
         let newState = !this.state.menuOpen
-        this.setState({ menuOpen: newState });
+        this.setState({ menuOpen: newState, settingsScroll: SCROLL_RESET });
     }
 
     handleNewClick() {
@@ -330,14 +341,14 @@ class App extends IssieBase {
     }
 
     closeSettings() {
-        this.setState({ menuOpen: false });
+        this.setState({ menuOpen: false, settingsScroll: SCROLL_RESET });
     }
 
     goBack(skipSearch) {
         this.backInProcess = true;
         if (this.isWords()) {
             //reset words position
-            this.setState({ wordScroll: { x: 0, y: 0 } });
+            this.setState({ wordScroll: SCROLL_RESET });
         }
         let video = this.isVideo();
 
@@ -348,18 +359,18 @@ class App extends IssieBase {
         } else {
             this.props.history.goBack();
         }
-        
+
         setTimeout(() => {
             this.setState({ showDelete: undefined, showShare: undefined })
             this.backInProcess = false
         }, 50);
     }
 
-    ScrollLeft() {
+    ScrollLeft(e) {
         document.swipeHandler.moveButton(false);
     }
 
-    ScrollRight() {
+    ScrollRight(e) {
         document.swipeHandler.moveButton(true);
     }
 
@@ -369,12 +380,12 @@ class App extends IssieBase {
     }
 
     isSwipeAllowed = () => {
-        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode);
+        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode || this.state.menuOpen);
     }
 
     render() {
         let path = this.props.history.path;
-
+        console.log("sett scroll", this.state.settingsScroll)
         //console.log("render app")
         let leftArrow = "";
         let rightArrow = "";
@@ -456,7 +467,7 @@ class App extends IssieBase {
                             />}
                     </div> : null}
                 </div>
-                <Shell theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
+                <Shell projectorsOff={this.isVideo()} theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
                         slot="start-bar"
@@ -517,6 +528,7 @@ class App extends IssieBase {
                         onClose={() => this.setState({ menuOpen: false })}
                         showInfo={() => this.showInfo()}
                         pubSub={this.state.pubSub}
+                        scroll={this.state.settingsScroll}
                     />}
 
                     <div slot="body" className="theBody" style={{
@@ -655,7 +667,7 @@ class App extends IssieBase {
 
             return (
                 <Video {...props}
-                    goBack={()=>this.goBack()}
+                    goBack={() => this.goBack()}
                     categoryId={categoryId}
                     isLandscape={IssieBase.isLandscape()}
                     isMobile={IssieBase.isMobile()}

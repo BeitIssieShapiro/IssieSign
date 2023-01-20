@@ -1,6 +1,7 @@
-import { isBrowser, saveSettingKey, HIDE_TUTORIAL_KEY, trace, getAppName } from '../utils/Utils';
+import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY } from '../utils/Utils';
 import axios from 'axios';
 import { translate } from '../utils/lang';
+import { mainJson } from '../mainJson';
 
 let fileSystem;
 
@@ -14,21 +15,42 @@ export default class FileSystem {
     static SYNC_REQUEST = "sync-request";
     static SYNC_OFF_REQUEST = "sync-off-request";
     syncInProcess = false;
-    hideTutorial = window.localStorage.getItem(HIDE_TUTORIAL_KEY) || false;
+    hideFolders = [];
 
-    setHideTutorial(isOn) {
-        saveSettingKey(HIDE_TUTORIAL_KEY, isOn);
-        this.hideTutorial = isOn;
+    setHideFolder(folderName, isOn) {
+        const entry = this.hideFolders.find(hf => hf.name === folderName);
+        if (entry) {
+            entry.hide = isOn
+        } else if (isOn) {
+            this.hideFolders.push({ name: folderName, hide: true })
+        }
+        saveSettingKey(HIDDEN_FOLDERS_KEY, JSON.stringify(this.hideFolders));
+    }
+
+    loadHiddenFolders() {
+        //sets the default hiddens:
+        const defaultHiddenCategories = this.index?.categories.filter(cat => cat.defaultHide === true);
+
+        const hiddenFolders = window.localStorage.getItem(HIDDEN_FOLDERS_KEY);
+        if (hiddenFolders) {
+            this.hideFolders = JSON.parse(hiddenFolders);
+        }
+        defaultHiddenCategories.forEach(cat => {
+            if (!this.hideFolders.find(f => cat.name === f.name)) {
+                this.hideFolders.push({ name: cat.name, hide: true });
+            }
+        })
     }
 
     index = isBrowser() ? ({
-        categories: [
+        categories: //mainJson.categories
+        [
             {
-                "name": "TutorialCategory",
+                "name": "TutorialsCategory",
                 "id": "1",
-                "imageName": "איברי גוף.png",
-                tutorial: true,
+                "imageName": "R587.png",
                 translate: true,
+                allowHide: true,
                 cloudLink: "testCategoryImageLink",
                 "words": [
                     {
@@ -42,6 +64,15 @@ export default class FileSystem {
                         syncErr: "testError"
                     }
                 ]
+            },
+            {
+                "name": "מבוגרים",
+                defaultHide: true,
+                allowHide: true,
+                "id": "15",
+                "themeId": "2",
+                "imageName": "favorites.png",
+                "words": []
             },
             {
                 "name": "FavoritesCategory",
@@ -77,21 +108,17 @@ export default class FileSystem {
                         sync: "sync-request",
                         syncErr: "testError"
                     },
-                    
+
                     {
                         "name": "בפנים ובחוץ",
                         "id": "1738",
                         "imageName": "V738 1.png",
                         "imageName2": "V738 2.png",
                         "tags": [
-                          "בתוך"
+                            "בתוך"
                         ],
                         videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
                     }
-
-
-
-
                 ]
             }
         ]
@@ -110,79 +137,90 @@ export default class FileSystem {
     async init(defaultContent, pubSub) {
         console.log("Init file system");
         this.pubSub = pubSub;
-        if (isBrowser()) return;
+        if (!isBrowser()) {
+            return new Promise(async (resolve, reject) => {
+                let attempts = 0;
+                while (attempts < 5 && !(await waitForCordova(1000))) {
+                    console.log("Wait for cordova..." + attempts)
+                    attempts++;
+                };
 
-        //FileSystem.SCHEME_PREFIX = window.isAndroid ? "" : "issie-";
+                return window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
+                    (docDir) => {
+                        docDir.getFile(FileSystem.INDEX_FILE, { create: false, exclusive: false },
+                            (indexFile) => {
+                                console.log("index file exists");
 
-        return new Promise(async (resolve, reject) => {
-            let attempts = 0;
-            while (attempts < 5 && !(await waitForCordova(1000))) {
-                console.log("Wait for cordova..." + attempts)
-                attempts++;
-            };
+                                let reader = new FileReader();
+                                reader.onloadend = (evt) => {
+                                    let data = evt.target.result;
+                                    this.index = JSON.parse(data);
 
-            return window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
-                (docDir) => {
-                    docDir.getFile(FileSystem.INDEX_FILE, { create: false, exclusive: false },
-                        (indexFile) => {
-                            console.log("index file exists");
+                                    // merge the default content
+                                    defaultContent.categories.forEach(defCat => {
+                                        const existingCat = this.index.categories.find(ec => ec.id === defCat.id);
+                                        if (existingCat) {
+                                            //merge cat
+                                            Object.entries(defCat).forEach(([key, value]) => {
+                                                if (key == "words") {
+                                                    existingCat.words = defCat.words.concat(existingCat.words);
+                                                } else {
+                                                    existingCat[key] = value;
+                                                }
+                                            })
+                                        } else {
+                                            this.index.categories.push(defCat);
+                                        }
+                                    })
 
-                            let reader = new FileReader();
-                            reader.onloadend = (evt) => {
-                                let data = evt.target.result;
-                                this.index = JSON.parse(data);
-
-                                // merge the default content
-                                defaultContent.categories.forEach(defCat => {
-                                    const existingCat = this.index.categories.find(ec => ec.id === defCat.id);
-                                    if (existingCat) {
-                                        //merge cat
-                                        Object.entries(defCat).forEach(([key, value]) => {
-                                            if (key == "words") {
-                                                existingCat.words = defCat.words.concat(existingCat.words);
-                                            } else {
-                                                existingCat[key] = value;
-                                            }
-                                        })
-                                    } else {
-                                        this.index.categories.push(defCat);
-                                    }
-                                })
-
-                                console.log("Successfully read the existing index file. categories:", this.index.categories.length);
-                                this.init = true;
-                                resolve();
-                            }
-                            indexFile.file(
-                                (f) => reader.readAsText(f),
-                                (err) => reject(err)
-                            );
-
-                        },
-                        () => {
-                            this.index = { ...defaultContent };
-
-                            this.saveIndex().then(
-                                () => {
+                                    console.log("Successfully read the existing index file. categories:", this.index.categories.length);
                                     this.init = true;
-                                    resolve()
-                                },
-                                (err) => reject(err)
-                            );
-                        })
-                })
+                                    this.sortCategories();
+                                    this.loadHiddenFolders();
 
-        });
+                                    resolve();
+                                }
+                                indexFile.file(
+                                    (f) => reader.readAsText(f),
+                                    (err) => reject(err)
+                                );
+
+                            },
+                            () => {
+                                this.index = { ...defaultContent };
+
+                                this.saveIndex().then(
+                                    () => {
+                                        this.init = true;
+                                        this.sortCategories();
+                                        this.loadHiddenFolders();
+                                        resolve()
+                                    },
+                                    (err) => reject(err)
+                                );
+                            })
+                    })
+
+            });
+        } else {
+            this.init = true;
+            this.sortCategories();
+            this.loadHiddenFolders()
+        }
+    }
+
+    sortCategories() {
+        this.index.categories.sort((a, b) => a.id === FileSystem.FAVORITES_ID ? -1 : (a.name < b.name ? -1 : 1));
     }
 
     getCategories() {
         if (!this.init) {
-            throw ("FileSystem isnot initialized")
+            throw ("FileSystem is not initialized")
         }
 
         let cat = this.index?.categories;
-        if (cat && this.hideTutorial) {
-            cat = cat.filter(c => !c.tutorial);
+        if (cat) {
+            cat = cat.filter(c => this.hideFolders.find(hf => hf.name === c.name)?.hide !== true);
         }
         return cat || [];
     }
@@ -233,8 +271,10 @@ export default class FileSystem {
         word.favorite = isAdd;
         if (isAdd) {
             trace("Add favorite", categoryId, title);
-
-            favCategory.words.push({ ...word, category: categoryId });
+            // verify word is not there yet:
+            if (!favCategory.words.find(w => (w.name === word.name && w.category == categoryId))) {
+                favCategory.words.push({ ...word, category: categoryId });
+            }
         } else {
             trace("Remove favorite", categoryId, title);
             favCategory.words = favCategory.words.filter(w => (w.name !== word.name || w.category != categoryId));
@@ -1017,6 +1057,8 @@ export default class FileSystem {
 
     static async whoAmI() {
         trace("Who Am I")
+        if (isBrowser()) return "";
+
         return new Promise((resolve, reject) => {
             window.plugins.gdrive.whoAmI(
                 (response) => {

@@ -198,7 +198,7 @@ function AddEditItem(props) {
                         </Shelf>}
                 </div>
 
-                <Spacer height={15}/>
+                <Spacer height={15} />
                 <div className="fieldsContainer">
                     {/*Name Selection */}
                     <EditNameSVG className="add-icon-style" />
@@ -394,6 +394,8 @@ function AddEditItem(props) {
                                 setSyncOn(isOn);
                                 setSyncDirty(true);
                             }}
+                            onText={translate("Yes")}
+                            offText={translate("No")}
                         />
                     </div>
                     <rowborder />

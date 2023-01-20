@@ -3,17 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey } from './utils/Utils';
-import { ButtonLogout, ButtonReconsile, RadioBtn, Spacer } from './components/ui-elements';
+import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
-import { ArrowBackIos, ArrowForwardIos, GridView, Spa, ViewList } from '@mui/icons-material';
+import { GridView, Swipe, SyncAlt, ViewList } from '@mui/icons-material';
+import { mainJson } from './mainJson';
 
 
-function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
+
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
-  const [langSettingsMode, setLangSettingsMode] = useState(false);
+  //const [langSettingsMode, setLangSettingsMode] = useState(false);
   const currLanguage = getLanguage()
+
+  const hideableCategories = mainJson.categories.filter(cat => cat.allowHide);
+
 
   useEffect(() => {
     FileSystem.whoAmI().then((res) => setEmail(res.email));
@@ -22,12 +27,20 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
   const reconcile = () => {
     pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
     alert.info(translate("ReconsileStarted"));
-    FileSystem.get().reconsile().catch(
+    FileSystem.get().reconsile()
+      .catch(
+        (err) => alert.error(err)
+      ).finally(() => {
+        pubSub.publish({ command: "long-process-done" });
+        setReload(prev => prev + 1)
+      })
+  }
+
+  const connect = () => {
+    FileSystem.get().findRootFolder().then(
+      () => setReload(prev => prev + 1),
       (err) => alert.error(err)
-    ).finally(() => {
-      pubSub.publish({ command: "long-process-done" });
-      setReload(prev => prev + 1)
-    })
+    )
   }
 
   const changeLanguage = (lang) => {
@@ -42,27 +55,46 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
     setState({ adultMode: isOn });
   }
 
-  return <ModalDialog slot={slot} title={translate("SettingsTitle")} onClose={onClose}
+  const swipeModeChange = (e) => {
+    const isOn = e.currentTarget.value === "true";
+    saveSettingKey(ALLOW_SWIPE_KEY, isOn);
+    setState({ allowSwipe: isOn });
+  }
+
+
+  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "start", marginLeft: 50 }} onClose={onClose}
     animate={true} width={Math.min(470, window.innerWidth) + "px"}
     style={{ left: 0, "--hmargin": "0", "--vmargin": "2vw", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
   >
-    <div className=" settingsContainer " >
+    <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
       <div onClick={showInfo} className="settings-item about">
         <div className="info-button" >i</div>
         <lbl>{translate("SettingsAbout")}</lbl>
       </div>
 
+
       <div className="settings-item">
-        <lbl>{translate("SettingsSwipe")}</lbl>
-        <RadioBtn className="settingsAction"
-          checked={state.allowSwipe}
-          onText={translate("Yes")}
-          offText={translate("No")}
-          onChange={(isOn) => {
-            saveSettingKey(ALLOW_SWIPE_KEY, isOn);
-            setState({ allowSwipe: isOn });
-          }}
-        />
+        <lbl>
+          <div>{translate("SettingsSwipe")}</div>
+        </lbl>
+
+        <div className="settingsGroup">
+          <input type="radio" id="off" name="navMode" value={false} checked={!state.allowSwipe}
+            onChange={swipeModeChange}
+          />
+          <label for="off">
+            <SyncAlt />
+            {translate("NavByArrow")}
+          </label>
+          <input type="radio" id="on" name="navMode" value={true} checked={state.allowSwipe}
+            onChange={swipeModeChange}
+          />
+          <label for="on">
+            <Swipe />
+            {translate("NavBySwipe")}
+          </label>
+
+        </div>
       </div>
 
       <div className="settings-item">
@@ -111,42 +143,43 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
         />
       </div>}
 
-      {isMyIssieSign() && <div className="settings-item">
-        <lbl>{translate("SettingsHideTutorial")}</lbl>
+
+      {hideableCategories.map((cat, catIndex) => <div className="settings-item" key={catIndex}>
+        <lbl>{fTranslate("SettingsHideFolder", cat.translate ? translate(cat.name) : cat.name)}</lbl>
         <RadioBtn className="settingsAction"
-          checked={FileSystem.get().hideTutorial}
+          checked={FileSystem.get().hideFolders.find(hf => cat.name === hf.name)?.hide}
           onText={translate("Yes")}
           offText={translate("No")}
 
           onChange={(isOn) => {
-            FileSystem.get().setHideTutorial(isOn)
+            FileSystem.get().setHideFolder(cat.name, isOn)
             setReload(prev => prev + 1);
           }}
         />
-      </div>}
-      <div className="settings-item" >
-        <lbl>{translate("SettingsConnectedGDrive")}</lbl>
+      </div>)
+      }
+      <div className="settings-item no-bottom-seperator" >
+        <lbl>  {translate("SettingsConnectedGDrive")}    </lbl>
+
         <div className="conn-buttons">
           <RadioBtn className="settingsAction"
             checked={email?.length > 0}
+            onText={translate("Yes")}
+            offText={translate("No")}
             onChange={(isOn) => {
               if (isOn) {
-                reconcile();
+                connect();
               } else {
                 FileSystem.logout().finally(() => setReload(prev => prev + 1))
               }
-              //todo
             }}
           />
 
           <ButtonReconsile onClick={() => reconcile()} />
         </div>
-        {/* <div className="conn-buttons">
-           {email?.length > 0 &&
-             <ButtonLogout onClick={() => FileSystem.logout().finally(() => setReload(prev => prev + 1))} />
-           } 
-          
-        </div> */}
+      </div>
+      <div className="status-item" >
+        {email && <div className="settingsSubTitle settings-selected">{"מחובר " + email}</div>}
       </div>
 
       {isMyIssieSign() && <div className="settings-item">
@@ -159,7 +192,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
           }</div>
         </lbl>
 
-        <div className="settingsGroup">
+        {isMyIssieSign() && <div className="settingsGroup">
           <input type="radio" id="en" name="lang" value="en" checked={currLanguage === "en"}
             onChange={(e) => changeLanguage(e.currentTarget.value)}
           />
@@ -180,6 +213,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
           <label for="he">עברית</label>
 
         </div>
+        }
         {/*option2*/}
         {/* <div className="lang-item" onClick={()=>setLangSettingsMode(true)}>
           {currLanguage === "en" ? <ArrowForwardIos style={{ fontSize: 40 }} /> : <ArrowBackIos style={{ fontSize: 40 }} />}
@@ -187,7 +221,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert }) {
       </div>
       }
     </div>
-  </ModalDialog>
+  </ModalDialog >
 }
 
 

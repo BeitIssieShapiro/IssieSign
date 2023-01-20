@@ -21,6 +21,8 @@
     width:90%;
     text-align: center;
     font-size:30px;
+    margin-inline-start: 10px;
+    margin-inline-end: 10px;
     /* border-bottom-width: 1;
     border-bottom-color: gray;
     border-bottom-style: solid; */
@@ -41,7 +43,7 @@
 
 .modalContent {
     position: absolute;
-    top: 7vh;
+    top: 56px;
     bottom: 0;
     width: 100%;
     overflow-y: auto;

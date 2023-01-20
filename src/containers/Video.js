@@ -5,7 +5,7 @@ import FileSystem from "../apis/filesystem";
 
 import '../css/App.css';
 
-const Video = ({ videoName, filePath, isMobile, goBack, maxWidth }) => {
+const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
@@ -95,7 +95,7 @@ const Video = ({ videoName, filePath, isMobile, goBack, maxWidth }) => {
 
             >
             </video>
-            {isMobile && <div className="videoBackButtonMobile" >
+            {isMobile && isLandscape && <div className="videoBackButtonMobile" >
                 <ArrowForwardRounded style={{ fontSize: 80}} className="videoButtonNew"
                     onClick={goBack}
                 />

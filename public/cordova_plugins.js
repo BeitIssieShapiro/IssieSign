@@ -1,1 +1,0 @@
-../cordovaApp/platforms/ios/www/cordova_plugins.js

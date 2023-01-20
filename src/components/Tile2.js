@@ -71,7 +71,8 @@ function Tile2(props) {
     let body = <div >
         <div className="tileBox boxhost" theme="blue" theme-flavor={props.themeId}
             style={{
-                width: props.dimensions.boxWidth
+                width: props.dimensions.boxWidth,
+                height: props.dimensions.boxHeight
             }}>
             <div className="box">
                 <header>

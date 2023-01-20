@@ -9,7 +9,9 @@ var strings = {
     "he": {
         "AppTitle": "שפת הסימנים",
         "SettingsLanguage": "שפה",
-        "SettingsSwipe": "ניווט בהחלקה",
+        "SettingsSwipe": "מצב דפדוף",
+        "NavByArrow": "חיצים",
+        "NavBySwipe": "החלקה",
         "Yes": "כן",
         "No": "לא",
 
@@ -25,9 +27,9 @@ var strings = {
         "AdultModeOff": "משבצות",
         "SettingsAddCatAndWords": "הוספת/מחיקת תיקיות ומילים",
         "TitleAddCategory": "הוספת תיקיה",
-        "TitleEditCategory":"עריכת תיקיה",
+        "TitleEditCategory": "עריכת תיקיה",
         "TitleAddWord": "הוספת מילה",
-        "TitleEditWord":"עריכת מילה",
+        "TitleEditWord": "עריכת מילה",
 
         //confirm messages
         "ConfirmTitleDeleteCategory": "מחיקת תיקיה",
@@ -51,17 +53,18 @@ var strings = {
 
         "sharingAllWords": "כל המילים",
         "EmptyShareCart": "עדיין לא נבחרו תיקיות ו/או מילים לשיתוף",
-        "ShareButton":"שיתוף...",
+        "ShareButton": "שיתוף...",
 
         //Quick Menu
-        "AddToShareMenu":"הוספה לרשימת השיתוף",
-        "RemoveFromShareMenu":"הסרה מרשימת השיתוף",
-        "EditMenu":"עריכה...",
-        "DeleteMenu":"מחיקה",
-        "SelectColorMenuTitle":"בחירת צבע",
-        "ChangeColor":"צבע",
-        
+        "AddToShareMenu": "הוספה לרשימת השיתוף",
+        "RemoveFromShareMenu": "הסרה מרשימת השיתוף",
+        "EditMenu": "עריכה...",
+        "DeleteMenu": "מחיקה",
+        "SelectColorMenuTitle": "בחירת צבע",
+        "ChangeColor": "צבע",
+
         "FavoritesCategory": "מועדפים",
+        "TutorialsCategory": "הדרכה",
 
         "AddVideoSelected": "נבחר וידאו עבור המילה",
         "AddImageSelected": "נבחרה תמונה",
@@ -81,37 +84,37 @@ var strings = {
         "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})",
 
         "ImportWordsErr": "שגיאה ביבוא מילים {1}",
-        "SettingsHideTutorial": "הסתר תיקיית הדרכה",
+        "SettingsHideFolder": "הסתר תיקיית {1}",
         "ErrWrongImportFile": "קובץ אינו בפורמט מתאים",
         "SearchImageTitle": "חפש תמונה",
-        "EnterSearchHere":"הכנס מילות חיפוש",
+        "EnterSearchHere": "הכנס מילות חיפוש",
         "BtnSearch": "חפש",
         "NoResultsMsg": "לא נמצאו תוצאות",
         "SyncToCloudMsg": "סנכרן עם חשבון גוגל דרייב",
-        "SyncToCloudTitle":"סינכרון לגוגל דרייב",
+        "SyncToCloudTitle": "סינכרון לגוגל דרייב",
         "ErrSyncFail": "סנכרון נכשל\n {1}",
         "SyncStatusNone": "אינו מסונכרן",
-        "SyncStatusLbl":"מצב סינכרון",
-        "SyncErrorLbl":"שגיאת סנכרון",
-        "ShareCartTitle":"רשימת שיתוף",
-        "ShareCartCategoryColumnTitle":"תיקיה",
-        "ShareCartWordNameColumnTitle":"מילה",
-        "ItemRemovedFromShare":"הוסר מרשימת השיתוף",
-        "ItemAddedToShare":"הוסף לרשימת השיתוף",
-        "SearchTitle":"חיפוש: {1}",
+        "SyncStatusLbl": "מצב סינכרון",
+        "SyncErrorLbl": "שגיאת סנכרון",
+        "ShareCartTitle": "רשימת שיתוף",
+        "ShareCartCategoryColumnTitle": "תיקיה",
+        "ShareCartWordNameColumnTitle": "מילה",
+        "ItemRemovedFromShare": "הוסר מרשימת השיתוף",
+        "ItemAddedToShare": "הוסף לרשימת השיתוף",
+        "SearchTitle": "חיפוש: {1}",
 
         "ConfirmTitleSyncToServer": "סינכרון המילים לחשבון גוגל דרייב",
-        "ConfirmMsgSyncToServer":"כל המילים יעלו לגוגל דרייב שלך. ולכולן תיקבע הרשאת קריאה בלבד לכל מי שמקבל את הלינק אליהם. אישור?",
-        "ShareCancelled":"שיתוף בוטל",
-        "InfoSharingSucceeded":"שיתוף הסתיים בהצלחה",
-        "InfoSharingFailed":"שיתוף נכשל\n {1}",
+        "ConfirmMsgSyncToServer": "כל המילים יעלו לגוגל דרייב שלך. ולכולן תיקבע הרשאת קריאה בלבד לכל מי שמקבל את הלינק אליהם. אישור?",
+        "ShareCancelled": "שיתוף בוטל",
+        "InfoSharingSucceeded": "שיתוף הסתיים בהצלחה",
+        "InfoSharingFailed": "שיתוף נכשל\n {1}",
         "NoWordSelected": "לא נבחרה מילה",
-        "SettingsConnectedGDrive":"גוגל דרייב",
-        "NotLoggedIn":"עדיין לא מחובר",
-        "LoggedIn":"מחובר ל: {1}",
-        "BtnLogout":"התנתק",
-        "BtnReconsile":"הסתנכרן",
-        "ReconsileStarted":"סינכרון החל",
+        "SettingsConnectedGDrive": "גוגל דרייב",
+        "NotLoggedIn": "עדיין לא מחובר",
+        "LoggedIn": "מחובר ל: {1}",
+        "BtnLogout": "התנתק",
+        "BtnReconsile": "הסתנכרן",
+        "ReconsileStarted": "סינכרון החל",
 
     },
     "ar": {
@@ -188,8 +191,8 @@ var strings = {
         "TitleAddCategory": "Add Folder",
         "TitleEditCategory": "Edit Folder",
         "TitleAddWord": "Add Word",
-        "TitleEditWord":"Edit Word",
-        "SearchTitle":"Search: {1}",
+        "TitleEditWord": "Edit Word",
+        "SearchTitle": "Search: {1}",
         "Yes": "yes",
         "No": "no",
 
@@ -212,16 +215,16 @@ var strings = {
         "InfoSharingCategory": "Sharing folder...",
         "InfoSharingFailed": "Share failed",
         "ShareWords": "Share Words",
-        "sharingAllWords": "all words", 
+        "sharingAllWords": "all words",
 
-        "EmptyShareCart":"No folders or words were selected for sharing yet",
-        "ShareButton":"Share...",
-        "AddToShareMenu":"Add To Sharing List",
-        "RemoveFromShareMenu":"Remove From Sharing List",
-        "EditMenu":"Edit...",
-        "DeleteMenu":"Delete",
-        "SelectColorMenuTitle":"Select Color",
-        "ChangeColor":"Color",
+        "EmptyShareCart": "No folders or words were selected for sharing yet",
+        "ShareButton": "Share...",
+        "AddToShareMenu": "Add To Sharing List",
+        "RemoveFromShareMenu": "Remove From Sharing List",
+        "EditMenu": "Edit...",
+        "DeleteMenu": "Delete",
+        "SelectColorMenuTitle": "Select Color",
+        "ChangeColor": "Color",
 
         "FavoritesCategory": "Favorites",
 
@@ -247,33 +250,33 @@ var strings = {
         "SettingsHideTutorial": "Hide Tutorials folder",
         "ErrWrongImportFile": "Wrong imported file format",
         "SearchImageTitle": "Search Image",
-        "EnterSearchHere":"enter search keywords here",
+        "EnterSearchHere": "enter search keywords here",
         "BtnSearch": "Search",
         "NoResultsMsg": "No Results Found",
         "SyncToCloudMsg": "Syncronizes with your Google Drive",
-        "SyncToCloudTitle":"Sync with your Google Drive",
+        "SyncToCloudTitle": "Sync with your Google Drive",
         "ErrSyncFail": "Sync Failed\n {1}",
         "SyncStatusNone": "Not Syncronized",
-        "SyncStatusLbl":"Sync Status",
-        "SyncErrorLbl":"Sync Error",
-        "ShareCartTitle":"Share List",
-        "ShareCartCategoryColumnTitle":"Folder",
-        "ShareCartWordNameColumnTitle":"Word",
-        "ItemRemovedFromShare":"Removed from the Sharing List",
-        "ItemAddedToShare":"Added to the Sharing List",
+        "SyncStatusLbl": "Sync Status",
+        "SyncErrorLbl": "Sync Error",
+        "ShareCartTitle": "Share List",
+        "ShareCartCategoryColumnTitle": "Folder",
+        "ShareCartWordNameColumnTitle": "Word",
+        "ItemRemovedFromShare": "Removed from the Sharing List",
+        "ItemAddedToShare": "Added to the Sharing List",
 
         "ConfirmTitleSyncToServer": "Syncronizing all shared word to Google Drive",
-        "ConfirmMsgSyncToServer":"All shared words will be syncronized to your Google Drive and will be given read permission to anyone with a link. Do you approve?",
-        "ShareCancelled":"Share Cancelled",
-        "InfoSharingSucceeded":"Sharing completed successfully",
-        "InfoSharingFailed":"Sharing Failed\n {1}",
+        "ConfirmMsgSyncToServer": "All shared words will be syncronized to your Google Drive and will be given read permission to anyone with a link. Do you approve?",
+        "ShareCancelled": "Share Cancelled",
+        "InfoSharingSucceeded": "Sharing completed successfully",
+        "InfoSharingFailed": "Sharing Failed\n {1}",
         "NoWordSelected": "No Word Selected",
-        "SettingsConnectedGDrive":"Google Drive",
-        "NotLoggedIn":"Not connected yet",
-        "LoggedIn":"Connected to {1}",
-        "BtnLogout":"Logout",
-        "BtnReconsile":"Sync",
-        "ReconsileStarted":"Sync started",
+        "SettingsConnectedGDrive": "Google Drive",
+        "NotLoggedIn": "Not connected yet",
+        "LoggedIn": "Connected to {1}",
+        "BtnLogout": "Logout",
+        "BtnReconsile": "Sync",
+        "ReconsileStarted": "Sync started",
 
     }
 }
@@ -282,17 +285,17 @@ function findMissing() {
     let missing = ""
     //English
     console.log("Missing in English:")
-    Object.entries(strings.he).forEach(([key, value])=>{
+    Object.entries(strings.he).forEach(([key, value]) => {
         if (!strings.en[key]) {
-            missing += "\""+key+"\":" + "\""+value+"\",\n";
+            missing += "\"" + key + "\":" + "\"" + value + "\",\n";
         }
     })
     console.log(missing);
     missing = "";
     console.log("\n\nMissing in Arabic:")
-    Object.entries(strings.he).forEach(([key, value])=>{
+    Object.entries(strings.he).forEach(([key, value]) => {
         if (!strings.ar[key]) {
-            missing += "\""+key+"\":" + "\""+value+"\",\n";
+            missing += "\"" + key + "\":" + "\"" + value + "\",\n";
         }
     })
     console.log(missing);

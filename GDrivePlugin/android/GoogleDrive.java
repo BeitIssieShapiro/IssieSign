@@ -45,6 +45,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.FormBody;
@@ -56,10 +58,14 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.api.services.drive.DriveScopes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+
 
 public class GoogleDrive extends CordovaPlugin  {
     private static final String TAG = "GoogleDrivePlugin";
@@ -74,6 +80,7 @@ public class GoogleDrive extends CordovaPlugin  {
     private String action;
     private OkHttpClient okHttpClient;
     private JSONObject mAccessToken;
+    private FirebaseFunctions mFunctions;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView){
@@ -93,6 +100,8 @@ public class GoogleDrive extends CordovaPlugin  {
         try {
             mAccessToken = getSavedAccessToken();
         } catch (JSONException e) {}
+
+        mFunctions = FirebaseFunctions.getInstance("europe-west1");
 
         cordova.setActivityResultCallback(this);
         Log.i(TAG,"Plugin initialized. Cordova has activity: " + cordova.getActivity());
@@ -340,37 +349,31 @@ public class GoogleDrive extends CordovaPlugin  {
         public void run() {
             try {
                 String refreshToken = accessToken.getString("refresh_token");
-                JSONObject bodyJson = new JSONObject();
-                bodyJson.put("client_id", "972582951029-e7t8l63hrpg2beg1gbt5vq0i87bdm1tj.apps.googleusercontent.com");
-                bodyJson.put("client_secret", "");
-                bodyJson.put("refresh_token", refreshToken);
-                bodyJson.put("grant_type", "refresh_token");
 
-                RequestBody formBody = RequestBody.create(bodyJson.toString(), JSONMimeType);
+                Map<String, String> data = new HashMap<>();
+                data.put("refresh_token", refreshToken);
 
-                Request request = new Request.Builder()
-                        .url("https://www.googleapis.com/oauth2/v4/token")
-                        .post(formBody)
-                        .build();
+                mFunctions.getHttpsCallable("getAccessToken")
+                        .call(data)
+                        .continueWith(new Continuation<HttpsCallableResult, Void>() {
+                            @Override
+                            public Void then(@NonNull Task<HttpsCallableResult> task) {
+                                try {
+                                    Map<String, Object> accToken = (Map<String, Object>) task.getResult().getData();
+                                    JSONObject accTokenJson = getEnhancedAccessToken(accToken);
+                                    saveAccessToken(accToken.toString());
+                                    mAccessToken = accTokenJson;
+                                    execute(mAccessToken.getString("access_token"));
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Cannot refresh token" + getExceptionError(e));
 
-                Response response = okHttpClient.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String newAccessToken = response.body().string();
-                    JSONObject newEnhancedAccessToken = getEnhancedAccessToken (newAccessToken);
-                    mAccessToken.put("expires_in", newEnhancedAccessToken.getInt("expires_in"));
-                    mAccessToken.put("expiresAfter", newEnhancedAccessToken.getLong("expiresAfter"));
-                    mAccessToken.put("access_token", newEnhancedAccessToken.getString("access_token"));
-                    saveAccessToken(mAccessToken.toString());
-                    String bearerToken = "";
-                    execute(mAccessToken.getString("access_token"));
-                } else {
-                    Intent intent = mSignInClient.getSignInIntent();
-                    cordova.getActivity().startActivityForResult(intent, RC_SIGN_IN);
-                }
+                                    Intent intent = mSignInClient.getSignInIntent();
+                                    cordova.getActivity().startActivityForResult(intent, RC_SIGN_IN);
+                                }
+                                return null;
+                            }
+                        });
             } catch (JSONException e) {
-                Log.e(TAG, "Cannot refresh token" + getExceptionError(e));
-                mCallbackContext.error("Cannot refresh token" + getExceptionError(e));
-            } catch (IOException e) {
                 Log.e(TAG, "Cannot refresh token" + getExceptionError(e));
                 mCallbackContext.error("Cannot refresh token" + getExceptionError(e));
             }
@@ -602,15 +605,30 @@ public class GoogleDrive extends CordovaPlugin  {
                         @Override
                         public void run() {
                             try {
-                                JSONObject newAccessToken = getAccessToken(code);
-                                if (newAccessToken != null) {
-                                    saveAccessToken(newAccessToken.toString());
-                                    mAccessToken = newAccessToken;
-                                    getFreshTokenAndExecute(mAccessToken);
-                                }
-                            } catch (JSONException e) {
-                                Log.w(TAG, "error Execute plugin command" + e.toString());
-                            } catch (Exception e) {
+
+                                Map<String, String> data = new HashMap<>();
+                                data.put("authCode", code);
+
+                                mFunctions.getHttpsCallable("getAccessToken")
+                                        .call(data)
+                                        .continueWith(new Continuation<HttpsCallableResult, Void>() {
+                                            @Override
+                                            public Void then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                                                try {
+                                                    Map<String, Object> accToken = (Map<String, Object>) task.getResult().getData();
+                                                    JSONObject accTokenJson = getEnhancedAccessToken(accToken);
+                                                    saveAccessToken(accToken.toString());
+                                                    mAccessToken = accTokenJson;
+                                                    getFreshTokenAndExecute(accTokenJson);
+                                                } catch (Exception e) {
+                                                    Log.w(TAG, "error getting access token" + e.toString());
+                                                }
+                                                return null;
+                                            }
+                                        });
+
+                            }
+                            catch (Exception e) {
                                 Log.w(TAG, "error getting access token" + e.toString());
                             }
                         }
@@ -639,7 +657,6 @@ public class GoogleDrive extends CordovaPlugin  {
                 RefreshTokenAndExecute rt = new RefreshTokenAndExecute(accessToken);
                 cordova.getThreadPool().execute(rt);
                 return true;
-
             }
         } catch (JSONException e) {
             Log.w(TAG, "error parse access token: "+ getExceptionError(e));
@@ -647,39 +664,25 @@ public class GoogleDrive extends CordovaPlugin  {
         return false;
     }
 
-    private JSONObject getAccessToken(String code) throws JSONException{
-        RequestBody formBody = new FormBody.Builder()
-                .add("code", code)
-                .add("client_id", "972582951029-e7t8l63hrpg2beg1gbt5vq0i87bdm1tj.apps.googleusercontent.com")
-                .add("client_secret", "")
-                .add("grant_type", "authorization_code")
-                .add("redirect_uri", "")
-                .build();
-
-        Request request = new Request.Builder()
-                .url("https://www.googleapis.com/oauth2/v4/token")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .post(formBody)
-                .build();
-
-        try (Response response = okHttpClient.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String accessToken =  response.body().string();
-                return getEnhancedAccessToken(accessToken);
-            }
-
-            Log.w(TAG, "Error getting access token: errCode" + response.code());
-        } catch (IOException e) {
-            Log.i(TAG, "error getting access token: " + getExceptionError(e));
-        }
-        return null;
-    }
-
     private JSONObject getEnhancedAccessToken(String accessToken) throws JSONException {
         JSONObject accTokenJson = new JSONObject(accessToken);
         long expires = accTokenJson.getInt("expires_in");
         long expiresAfter = (System. currentTimeMillis() / 1000 + expires - 10) * 1000; //spare of 10 sec.
         accTokenJson.put("expiresAfter", expiresAfter);
+        return accTokenJson;
+    }
+
+    private JSONObject getEnhancedAccessToken(Map<String, Object> accTokenMap) throws JSONException {
+        long expires = (int)accTokenMap.get("expires_in");
+        long expiresAfter = (System. currentTimeMillis() / 1000 + expires - 10) * 1000; //spare of 10 sec.
+        JSONObject accTokenJson = new JSONObject();
+        accTokenJson.put("expiresAfter", expiresAfter);
+        accTokenJson.put("access_token", accTokenMap.get("access_token"));
+        accTokenJson.put("refresh_token", accTokenMap.get("refresh_token"));
+        accTokenJson.put("id_token",  accTokenMap.get("id_token"));
+        accTokenJson.put("scope", accTokenMap.get("scope"));
+        accTokenJson.put("token_type", accTokenMap.get("token_type"));
+        accTokenJson.put("expires_in", expires);
         return accTokenJson;
     }
 

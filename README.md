@@ -71,7 +71,7 @@ IssieSign is avaiable under the GPL Licence. See the following link: https://www
 
 ## recreate cordova
 
-- start a new cordova app
+- start a new cordova app : recommended to keep one app for android and one for ios
 ```
 cordova create app com.issieshapiro.signlang IssieSign
 cd app
@@ -109,8 +109,6 @@ Under "Resources"
   - Copy IssieSign-info.plist (copy , create group)
   - Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
 
-Under Signing & Capabilities
-- add Capability: "Background Modes", check: "Background Fetch" & "Background Processing"
 
   - Create Arabic profile:
     - duplicate IssieSign profile
@@ -133,7 +131,7 @@ Under Signing & Capabilities
 - Import project (app/platforms/android)
 
 
-- android/app/src/main/AndroidManifest.xml: `android:versionCode="21" android:versionName="1.1.11"` 
+- android/app/src/main/AndroidManifest.xml: `android:versionCode="10001" android:versionName="1.1.11"` 
   - adjust version
   - add `< application ...android:usesCleartextTraffic="true" ...`
   - add intent-filter (for open with)
@@ -155,16 +153,28 @@ Under Signing & Capabilities
 - in `android/gradle.properties`
   add `org.gradle.java.home=/usr/local/Cellar/openjdk/18.0.1.1/`
 
+- in `android/build.grade`
+- add i buildscript/dependencies: `classpath 'com.google.gms:google-services:4.3.14'`
+`
 
 -  in `android/app/build.gradle`: 
   add at root
   ```
+  apply plugin: 'com.google.gms.google-services'
+
   dependencies {
-    implementation 'com.google.android.play:core:1.10.3'
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'    
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+     implementation 'com.google.android.play:core:1.10.3'
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    //implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
     implementation 'com.google.apis:google-api-services-drive:v3-rev75-1.22.0'
-    }
+
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-functions'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-appcheck-debug:16.1.0'
+  }
   ```
   - in `android {}`
   ```
@@ -189,8 +199,8 @@ Under Signing & Capabilities
 - in `platforms/android/settings.gradle`
   add
   ```
-include ':issiesign_assets'
-include ':issiesign_assets3'
+include ":issiesign_assets"
+include ":issiesign_assets3"
 
   ```
 
@@ -204,13 +214,20 @@ include ':issiesign_assets3'
     - see [issue](https://github.com/apache/cordova-plugin-file/issues/525)
   ```
   
-  - In the IDE, select 'Generate Signed Bundle /APK' and set the following:
-    RELEASE_STORE_FILE={path to your keystore [the file named `issieSign2.0-pkc12.jks`]}
-    RELEASE_STORE_PASSWORD=issiesign
-    RELEASE_KEY_ALIAS=signlang
-    RELEASE_KEY_PASSWORD=issiesign
+  - in `platforms/android/cdv-gradle-config.json`
+    set version of android to 31 `"SDK_VERSION": 31`,
 
-## Create IssieSign, MyIssieSign, IssieSignArabic
+  - Copy `res` folder from `code-changes/AndroidAssets` to (replace) `platform/android/app/src/main/`
+
+  - In the IDE, select 'Generate Signed Bundle /APK' and set the following:
+    RELEASE_STORE_FILE={path to your keystore [the file named `issieSign2.0.jks`]}
+    RELEASE_STORE_PASSWORD=signland
+    RELEASE_KEY_ALIAS=issiesign
+    RELEASE_KEY_PASSWORD=signland
+
+
+
+## Create IssieSign, MyIssieSign, IssieSignArabic (iOs)
 - Duplicate the target and rename as needed
 - Change bundle identified and version/build
 - Change info->bundle display name

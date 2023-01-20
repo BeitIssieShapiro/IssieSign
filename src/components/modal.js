@@ -18,7 +18,7 @@ export default function ModalDialog(props) {
         <div className="modalInner" onClick={(evt)=>evt.stopPropagation()}  
         style={{...props.style, ...style}}
 >
-            {props.title && <div className="modalTitle">{props.title}</div>}
+            {props.title && <div className="modalTitle" style={props.titleStyle}>{props.title}</div>}
             <div className="btnClose" onClick={props.onClose}><Close style={{fontSize:35, color: "#A7A7A7"}}/></div>
             <div className="modalContent">
                 {props.children}

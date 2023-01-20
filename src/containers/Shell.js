@@ -23,7 +23,7 @@ function Shell (props) {
 
         var projectors = "";
         if (true) {
-            projectors = <ul className="projectors">
+            projectors = <ul className={"projectors " + (props.projectorsOff?"proj-off":"")}>
                 <li></li>
                 <li></li>
                 <li></li>

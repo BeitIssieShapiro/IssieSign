@@ -7,7 +7,10 @@ export const ADULT_MODE_KEY = "IssieSign_Settings_AdultMode";
 
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 export const LANG_KEY = "MyIssieSign_Settings_Lang";
-export const HIDE_TUTORIAL_KEY = "MyIssieSign_Settings_Hide_Tutorial";
+//export const HIDE_TUTORIAL_KEY = "MyIssieSign_Settings_Hide_Tutorial";
+
+export const HIDDEN_FOLDERS_KEY = "MyIssieSign_Settings_Hiden_Folders";
+
 
 export function isBrowser() {
     return window.isBrowser;
