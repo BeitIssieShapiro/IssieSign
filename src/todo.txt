@@ -1,6 +1,8 @@
 bugs:
 - en and ar about pages
 - ar translations
+- oauth client: 1 for all 3?
+
 V- settings header in english
 V- connected (email ) when mobile
 V- scroll settings

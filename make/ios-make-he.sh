@@ -10,5 +10,7 @@ cp -R ../IssieSign-MediaNew/videos/he/prod public/videos
 npm run build
 
 rm cordovaApp/platforms/ios/www/precache-*.*
+rm -rf cordovaApp/platforms/ios/www/videos
 rm -rf cordovaApp/platforms/ios/www/static
+
 cp -R build/* cordovaApp/platforms/ios/www

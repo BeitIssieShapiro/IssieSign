@@ -1,7 +1,7 @@
 import React from "react";
 import '../css/info.css';
 
-export default function Info(props) {
+export default function InfoArabic(props) {
     return (
         <div className={"info"} scroll-marker="1" style={{
             transform: `translateY(${props.scroll?.y || 0}px)`,
@@ -9,7 +9,7 @@ export default function Info(props) {
         }}>
             <div className="infoTitle">
                 <div style={{ color: '#fbaa19' }}>Issie</div>
-                <div style={{ color: '#18b9ed' }}>Sign</div>
+                <div style={{ color: '#18b9ed' }}>Sign - Arabic</div>
             </div>
             <div className="heb"  >
                 <bold>IssieSign</bold> היא אפליקציה להיכרות ולמידה של סימנים בסיסיים להבעת צרכים, רעיונות, תחושות ורצונות המבוססת על שפת הסימנים הישראלית (שס"י). האפליקציה פותחה במיוחד עבור אנשים עם צרכים תקשורתיים מורכבים (CCN), הזקוקים לסימנים וג'סטות כאמצעי תקשורת תומכת וחליפית (תת"ח) להבעת רצונות, תחושות, מחשבות ורעיונות.
@@ -77,5 +77,5 @@ export default function Info(props) {
             </div>
         </div>
     )
-}
 
+}

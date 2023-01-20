@@ -10,7 +10,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -38,6 +38,8 @@ import { ShareCart } from './share-cart';
 import ShareCartUI from './containers/share-cart-ui';
 import { Favorite, FavoriteBorder, FavoriteSharp, Sync } from '@mui/icons-material'
 import { SlideupMenu } from './components/slideup-menu';
+import InfoArabic from './containers/Info-issie-sign-arabic';
+import InfoMyIssieSign from './containers/Info-my-issie-sign';
 
 
 
@@ -677,14 +679,13 @@ class App extends IssieBase {
         }
 
         if (path.startsWith("/info")) {
-
             this.setTitle(translate("About"))
-            return (
-                <Info
-                    scroll={state.infoScroll}
-                />
-
-            )
+            switch (getAppName()) {
+                case "IssieSign": return <Info scroll={state.infoScroll} />;
+                case "IssieSignArabic": return <InfoArabic scroll={state.infoScroll} />;
+                case "MyIssieSign": return <InfoMyIssieSign scroll={state.infoScroll} />;
+                default:return null;
+            }
         }
         if (path.startsWith("/add-category")) {
             //add-category [/:categoryId]

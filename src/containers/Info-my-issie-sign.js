@@ -1,14 +1,14 @@
 import React from "react";
 import '../css/info.css';
 
-export default function Info(props) {
+export default function InfoMyIssieSign(props) {
     return (
         <div className={"info"} scroll-marker="1" style={{
             transform: `translateY(${props.scroll?.y || 0}px)`,
             transitionDuration: '0s',
         }}>
             <div className="infoTitle">
-                <div style={{ color: '#fbaa19' }}>Issie</div>
+                <div style={{ color: '#fbaa19' }}>My Issie</div>
                 <div style={{ color: '#18b9ed' }}>Sign</div>
             </div>
             <div className="heb"  >
@@ -77,5 +77,5 @@ export default function Info(props) {
             </div>
         </div>
     )
-}
 
+}
