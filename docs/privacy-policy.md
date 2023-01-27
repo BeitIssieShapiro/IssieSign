@@ -10,7 +10,11 @@ The terms used in this Privacy Policy have the same meanings as in our Terms and
 
 ## Information Collection and Use
 
-For a better experience, while using our App, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way.
+As part of normal use of the app, users may choose to share photos and videos of sign-language gestures with thier friends.
+
+The app lets users authenticate to Google and give the app access to their Drive. The Application then allows the user to syncronize their images and videos to the drive and back (in case they were deleted locally on their device). It also sets these files to be accessible to anyone with a link.
+
+Sharing is in fact sending others a link list, to these syncronized files in their Drive account.
 
 The app does use third party services that may collect information used to identify you.
 
