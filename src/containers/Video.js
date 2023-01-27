@@ -27,7 +27,8 @@ const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth })
             } else {
                 //Android
                 //movie files are shareded between document.basePath and document.basePath2
-                if (decodeURIComponent(videoName)[0] < 'כ') {
+                // All files starting between A* to L* are in first assetpack
+                if (decodeURIComponent(videoName)[0] < 'M') {
                     videoContent = document.basePath + "videos/" + decodeURIComponent(videoName);
                 } else {
                     videoContent = document.basePath2 + "videos/" + decodeURIComponent(videoName);

@@ -164,7 +164,7 @@ Under "Resources"
 
   dependencies {
      implementation 'com.google.android.play:core:1.10.3'
-    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     //implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
@@ -204,7 +204,6 @@ include ":issiesign_assets3"
 
   ```
 
-
   - add new file `platforms/android/local.properties`
 
     `sdk.dir=</path to android sdk. e.g. on Mac ~/Library/Android/sdk>`
@@ -242,3 +241,34 @@ include ":issiesign_assets3"
 - Add a whitelist entry (refer to cordova whitelist-plugin documentation for more details): e.g. <allow-navigation href="http://localhost:3000/*" />
 - run `./scripts/prepareCDVLocal.sh`
 - to revert, run `windownCDVLocalRun.sh`
+
+
+
+## run on android emulator with PlayAssets
+
+Create a bundle for debug, and debug on the emulator. this will trigger download of the assets
+
+
+## Setup oauth client for android:
+
+- extract SHA1: `keytool -printcert -jarfile /Users/i022021/dev/Issie/IssieSign/androidApp/platforms/android/app/release/app-release.aab`
+3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
+error:10
+
+keytool -keystore googleplay/issieSign2.0.jks -list -v
+3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
+
+error:10
+
+
+ openssl pkcs12 -in  /Users/i022021/dev/Issie/IssieSign/googleplay/debugMyIssieSign.jks -nokeys -out certificate.crt
+BA:B0:41:80:6C:EE:A8:00:D4:DD:06:64:5A:94:89:AA:1F:0B:2E:0A
+error:10
+
+ openssl x509 -noout -fingerprint -sha1 -inform pem -in certificate.crt
+
+
+
+ ./android/debug
+ 45:C4:FA:C2:0A:72:E8:CA:A3:C5:11:E3:B5:2D:CD:46:76:30:0C:A2
+ error 10

@@ -171,7 +171,7 @@ var strings = {
         "AddLoadVideoFailedOrCanceled": "فشل او الغاء تحميل الفيديو",
 
         "RestartApp": " الملفات قيد التحميل، مفضل اغلاق التطبيق واعادة المحاولة بعد عدة دقائق",
-        "LoadingMedia": "يتم تحميل الملفات ({1} מתוך {2})"
+        "LoadingMedia": "يتم تحميل الملفات ({1} of {2})"
     },
     "en": {
         "AppTitle": "My IssieSign",

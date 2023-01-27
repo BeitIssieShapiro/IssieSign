@@ -3,7 +3,7 @@ node_modules/
 .DS_Store
 .vscode/
 build
-cordova/app/
+androidApp/
 cordovaApp/
 package-lock.json
 .DS_Store
