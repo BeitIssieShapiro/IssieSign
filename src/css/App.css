@@ -219,3 +219,23 @@ input[type="search"]::-webkit-search-results-decoration {
   border-radius: 50%;
 
 }
+
+.busyHost {
+  position: absolute;
+  align-content: center;
+  direction: rtl;
+  top: 60px;
+  left: 32vw;
+  font-size: 30px;
+  width: 36vw;
+  max-height:36vh;
+}
+
+.busyText {
+  position: absolute;
+  top: calc( 60px + 5vh);
+  left: 41vw;
+  color: black;
+  font-size: 30px;
+  width: 18vw;
+}

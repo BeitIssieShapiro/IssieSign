@@ -217,7 +217,7 @@ class App extends IssieBase {
                     busy: true,
                     showProgress: true,
                     progress: document.downloadPercent,
-                    progressText: `${document.downloadPercent}%`,
+                    progressText: `${document.downloadPercent || 0}%`,
                     busyText: fTranslate("LoadingMedia", document.fileIndex, 2)
                 });
                 this.loadingMedia()
@@ -452,12 +452,11 @@ class App extends IssieBase {
                 }
 
                 <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
-                    {this.state.busy ? <div style={{ position: 'absolute', alignContent: 'center', direction: 'rtl', top: '60px', left: '15%', right: '15%', color: 'black', fontSize: 30 }}>
-                        <div style={{ position: "absolute", top: 60, left: "45%" }}>{this.state.busyText}</div>
+                    {this.state.busy && <div className="busyHost">
                         {this.state.showProgress ?
                             <CircularProgressbar
                                 value={this.state.progress}
-                                text={this.state.progressText}
+                                text={this.state.progressText || ""}
                                 background={true}
                                 styles={{ fontSize: 16 }}
                             />
@@ -467,7 +466,9 @@ class App extends IssieBase {
                                 color={'#123abc'}
                                 loading={this.state.busy}
                             />}
-                    </div> : null}
+                    </div>}
+                    {this.state.busy && <div className="busyText" >{this.state.busyText}</div>}
+
                 </div>
                 <Shell projectorsOff={this.isVideo()} theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
@@ -684,7 +685,7 @@ class App extends IssieBase {
                 case "IssieSign": return <Info scroll={state.infoScroll} />;
                 case "IssieSignArabic": return <InfoArabic scroll={state.infoScroll} />;
                 case "MyIssieSign": return <InfoMyIssieSign scroll={state.infoScroll} />;
-                default:return null;
+                default: return null;
             }
         }
         if (path.startsWith("/add-category")) {
