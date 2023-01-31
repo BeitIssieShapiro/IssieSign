@@ -33,35 +33,13 @@ Note: some features won't work, as it requires device API such as filesystem
 
   
 ## Build android
-* run `./scripts/deltaMakeAndroid.sh`
-* Open android studio `cordova/app/platforms/android/<proj>` 
+* run `./make/android-make-<variant: en | ar | he>.sh`
+* Open android studio `androidApp/platforms/android/<proj>` 
 
-* in `cordova/app/platforms/android/app/src/main/AndroidManifest.xml` promote the `versionCode` and `versionName` 
+* in `build.gradle` promote the `versionCode` and `versionName` 
 * in the studio - `build -> generate signed bundle`
+* set the right signing key
 * locate the bundle in filesystem and upload to google-play console
-
-* to test locally (on physical device), connect an android device (play asset delivery does not work with simulator), then run `./local-test-android.sh`
-
-## Test android locally
-- build app-bundle
-- Launch emulator or connect a device
-```
-cd scripts
-./local-test-android.sh
-```
-
-
-## .jks file converion
-* `keytool -importkeystore -srckeystore issieSign2.0.jks -destkeystore issieSign2.0.jks -deststoretype pkcs12` - converts the file to new format
-* `openssl pkcs12 -in issieSign2.0.jks` - to show public and private key -> copy public key to sme file, then
-* `openssl  rsa -in signlangpk.key  -pubout`
-* result pk: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
-
-
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmulIVIQPyeACvrQplkRWXQNT6v5VAZ/1Ysxm8Wq6ryy2/UcqCQRqX+jtnGsniyxcbBYg17KnEBCh1XNv6KuopnPzh6yCtLBYmlJUIYqmZ5nytU27QJE+rMPr9Jl7bEvfHKqvwzSrdCH1kwlSXUJj7IYjL92NjoorblsftGtYfez1K8oxRtM9qUzUOp4CLegWVb89iJdv0e486DvtSOaEuI4ok52oNOUfJEoekbLUpt7WjzOyOnDubYcOyk77idkG7t4mbc+kcnngKMpmwFBrw1M0W3oUjv1RsZxL+pdk/GIL07DVFkji4l2G1t9k5KtGK06GKujuHQ2BS1wL6TWCKQIDAQAB
-
-
-play's MyIssieSign SHA1: 4B:09:C4:C8:C4:48:D4:27:5E:7F:2E:62:54:E4:D9:C7:FA:48:F1:4C
 
 
 
@@ -96,8 +74,6 @@ cordova platform add ios
 cordova platform add android
 ```
 
-- Copy `src`, `public`, ...
-- run `npm install`
 - Add the cordova folder to the .gitignore
 
 ### IOS
@@ -131,9 +107,10 @@ Under "Resources"
 - Import project (app/platforms/android)
 
 
-- android/app/src/main/AndroidManifest.xml: `android:versionCode="10001" android:versionName="1.1.11"` 
-  - adjust version
-  - add `< application ...android:usesCleartextTraffic="true" ...`
+- android/app/src/main/AndroidManifest.xml: 
+  - adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
+  - add `< application ...android:usesCleartextTraffic="true" android:label="@string/app_name"...`
+  - modify `<activity ... android:name="com.issieshapiro.issiesign.MainActivity">`
   - add intent-filter (for open with)
     ```
     <intent-filter android:label="Import Words" android:priority="1">
@@ -146,6 +123,8 @@ Under "Resources"
         <data android:pathPattern="*.zip" />
     </intent-filter>
     ```
+- see example androidManifest.xml in code_changes folder
+
 
 - Create playassets folders:
   Copy `code-changes/AndroidAssets/issiesign_assets*` to `/platforms/android/`
@@ -182,18 +161,42 @@ Under "Resources"
 
     signingConfigs {
         debug {
-            storeFile file('<location>issieSign2.0.jks')
-            storePassword 'signlang'
-            keyAlias = 'issiesign'
-            keyPassword 'signlang'
+            storeFile file('<location><file.jks')
+            storePassword '<pwd>'
+            keyAlias = '<alias>'
+            keyPassword '<pwd>'
         }
         release {
-            storeFile file('<location>/issieSign2.0.jks')
-            storePassword 'signlang'
-            keyAlias = 'issiesign'
-            keyPassword 'signlang'
+            storeFile file('<location><file.jks')
+            storePassword '<pwd>'
+            keyAlias = '<alias>'
+            keyPassword '<pwd>'
         }
     }
+
+    flavorDimensions "languages"
+
+    productFlavors {
+        issiesign {
+            applicationId "org.issieshapiro.signlang2"
+            resValue "string", "app_name", "IssieSign"
+            versionCode 10000
+            versionName "2.0.0"
+        }
+        myissiesign {
+            applicationId "com.issieshapiro.myissiesign"
+            resValue "string", "app_name", "MyIssieSign"
+            versionCode 10004
+            versionName "1.0.0"
+        }
+        issiesignarabic {
+            applicationId "com.issieshapiro.issiesignarabic"
+            resValue "string", "app_name", "IssieSignArabic"
+            versionCode 10009
+            versionName "1.0.0"
+        }
+    }
+
     ```
  
 - in `platforms/android/settings.gradle`
@@ -226,13 +229,12 @@ include ":issiesign_assets3"
 
 
 
-## Create IssieSign, MyIssieSign, IssieSignArabic (iOs)
+## iOS: Create IssieSign, MyIssieSign, IssieSignArabic
 - Duplicate the target and rename as needed
 - Change bundle identified and version/build
 - Change info->bundle display name
 - Duplicate IssieLaunchScreen.storyboard and change as needed
 - Change info->Launch screen interface base file name
-
 
 
 
@@ -243,32 +245,62 @@ include ":issiesign_assets3"
 - to revert, run `windownCDVLocalRun.sh`
 
 
-
 ## run on android emulator with PlayAssets
-
 Create a bundle for debug, and debug on the emulator. this will trigger download of the assets
+
+## Android Signing keys:
+IssieSign: 
+  - issieSign.jks
+  - SHA1: 3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
+  - `keytool -keystore googleplay/issieSign2.0.jks -list -v`
+  - signlang
+MyIssieSign: 
+  - MyIssieSign.jks 
+  - SHA1: BA:B0:41:80:6C:EE:A8:00:D4:DD:06:64:5A:94:89:AA:1F:0B:2E:0A
+  - `openssl pkcs12 -in  googleplay/MyIssieSign.jks -nokeys -out certificate.crt`
+  - signlang
+  - `openssl x509 -noout -fingerprint -sha1 -inform pem -in certificate.crt`
+
+IssieSignArabic:
+  - IssieSignArabic.jks 
+  - SHA1: 95:8D:6A:5C:A8:81:3C:D7:AF:D5:D6:0F:8E:C4:13:4F:3E:AE:11:EA
+  - `openssl pkcs12 -in googleplay/IssieSignArabic.jks -nokeys -out certificate.crt`
+  - issiesign
+  - `openssl x509 -noout -fingerprint -sha1 -inform pem -in certificate.crt`
+
+Find the SHA1 of an aab file: `keytool -printcert -jarfile androidApp/platforms/android/app/issiesign/release/app-issiesign-release.aab`
 
 
 ## Setup oauth client for android:
 
-- extract SHA1: `keytool -printcert -jarfile /Users/i022021/dev/Issie/IssieSign/androidApp/platforms/android/app/release/app-release.aab`
-3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
-error:10
-
-keytool -keystore googleplay/issieSign2.0.jks -list -v
-3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
-
-error:10
+- The code is using the WebClientID of the IssieSign project in GCP
+- In addition, 2 android oauth-clients should be created in  IssieSign project in GCP for each package/variant:
+  - one with the SHA1 of the aab as it was signed on the developer machine
+  - one with the SHA1 as shown in `https://play.google.com/console`, under Setup->App Integrity->AppSigning->SHA1 
 
 
- openssl pkcs12 -in  /Users/i022021/dev/Issie/IssieSign/googleplay/debugMyIssieSign.jks -nokeys -out certificate.crt
-BA:B0:41:80:6C:EE:A8:00:D4:DD:06:64:5A:94:89:AA:1F:0B:2E:0A
-error:10
+Note2: After uploading to PlayStore:
+- In Firebase, an android app should match the app (same package) and with the 2x SHA1
+- In Firebase AppCheck, also add the SHA256 from the PlayStore
 
- openssl x509 -noout -fingerprint -sha1 -inform pem -in certificate.crt
-
-
-
- ./android/debug
- 45:C4:FA:C2:0A:72:E8:CA:A3:C5:11:E3:B5:2D:CD:46:76:30:0C:A2
- error 10
+- google-services.json
+client type 3 must be the web client id 
+client type 1 is the android app (maybe has no effect...)
+```
+"client_info": {
+        "mobilesdk_app_id": "1:821810142864:android:76ace3241b973661450215",
+        "android_client_info": {
+          "package_name": "com.issieshapiro.issiesignarabic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972582951029-e7t8l63hrpg2beg1gbt5vq0i87bdm1tj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "972582951029-kcdh38amck77mt4iraj3jt3u4ppu7i74.apps.googleusercontent.com",
+          "client_type": 1
+        }
+      ],
+```
