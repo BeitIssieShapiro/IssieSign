@@ -15,8 +15,8 @@ exports.getAccessToken = functions.region("europe-west1").https.onCall(async (da
     functions.logger.info("getAccessToken", code, refresh_token);
 
     const bodyFormData = {
-        client_id: "todo",
-        client_secret: "todo",
+        client_id: functions.config().oauth.client_id,
+        client_secret: functions.config().oauth.secret,
         redirect_uri: "",
     };
 
