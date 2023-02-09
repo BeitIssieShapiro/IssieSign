@@ -35,7 +35,7 @@ class WordAdults extends IssieBase {
                     userContent={word.userContent}
                     cardType={word.userContent ? "file" : "default"}
                     onClick={(url) => {
-                        this.setState({ selected: word });
+                        this.setState({ selected: word.name });
                         this.props.pubSub.publish({command:"set-current-word", categoryId: this.props.categoryId, title: word.name, isFavorite:word.isFavorite});
                     }}
                     key={word.id}
@@ -47,18 +47,24 @@ class WordAdults extends IssieBase {
             });
         }
 
+        const selected = this.state.selected && Array.isArray(this.props.words) && 
+            this.props.words.find(w=>w.name === this.state.selected);
         return (
             <div style={{
                 flex: 1, display: 'flex', flexDirection: 'row', overflow: "auto"
             }}>
                 <div style={{ width: window.innerWidth - 156, position:"relative" }}>
-                    {this.state.selected ?
+                    {selected ?
                         <Video
                             isLandscape={IssieBase.isLandscape()}
                             isMobile={IssieBase.isMobile()}
-                            videoName={this.state.selected?.userContent ? "file" : this.state.selected?.videoName}
-                            filePath={this.state.selected?.userContent ? this.state.selected?.videoName : ""}
+                            videoName={selected.userContent ? "file" : selected.videoName}
+                            filePath={selected.userContent ? selected?.videoName : ""}
                             maxWidth={window.innerWidth - 156}
+                            isFavorite={selected.favorite}
+                            categoryId={selected.categoryId || this.props.categoryId}
+                            title={selected?.name}
+                            onFavoriteToggle={this.props.onFavoriteToggle}
                         /> :
                         wordsElements.length && <div
                             style={{

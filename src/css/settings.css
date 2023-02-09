@@ -2,6 +2,7 @@
   direction: var(--dir);
   display: flex;
   flex-direction: column;
+  height:95%;
 
   /* background:
     repeating-linear-gradient(to bottom,
@@ -50,7 +51,10 @@
 }
 
 .about {
-  justify-content: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
 }
 
 .settings-item>lbl {
@@ -78,6 +82,61 @@
 .settings-selected {
   color:#0654A1;
   font-weight: bold;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+  direction: rtl;
+  align-items: center;
+  width:100%;
+}
+
+.toggle-title {
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.toggle-buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  color: #77797a;
+}
+
+.toggle-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 2px;
+  font-size: 22px;
+
+  width: 44px;
+  height: 44px;
+  margin-right:20px;
+  margin-left:20px;
+}
+
+
+.toggle-selected {
+  color: #5c7e9d;
+  border-width: 3px;
+}
+
+.toggle-caption-selected {
+  color: #5c7e9d;
+  font-weight: bold;
+}
+
+.toggle-button > svg {
+  font-size: 35px;
 }
 
 .lang-item {

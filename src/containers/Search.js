@@ -24,20 +24,25 @@ function Search(props) {
 
     const filterWords = (filterStr) => {
         trace("filterWord:" + filterStr)
-        let res = props.words.filter(word => {
+        const res = [];
+        props.words.forEach(word=>{
             let found = fuzzyMatch(word.name, filterStr);
             if (!found && word.tags) {
-                let foundTags = word.tags.filter(tag => tag.includes(filterStr));
+                let foundTags = word.tags.filter(tag => tag.startsWith(filterStr));
                 found = foundTags.length > 0;
             }
-            return found;
+            if (found && !res.find(w=>w.id === word.id)) {
+                res.push({...word});
+            };
         });
+        
 
         return props.currentCategory ? res : res.map(word => {
             if (word.categoryId) {
                 const category = props.categories.find(cat => cat.id == word.categoryId);
                 if (category) {
                     word.themeId = category.themeId;
+                    word.category = category.name;
                 }
             }
             return word;
@@ -57,7 +62,7 @@ function Search(props) {
     }
 
     return (
-        <div scroll-marker="1" className='tileContainer' theme={getThemeName(props.themeId)} style={{
+        <div scroll-marker="1" className='scrollable tileContainer' theme={getThemeName(props.themeId)} style={{
             width: props.isMobile ? '110%' : '100%',
             transform: 'translateX(' + props.scroll.x + 'px)',
             flexDirection: 'column',

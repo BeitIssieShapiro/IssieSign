@@ -122,7 +122,7 @@ function Tile2(props) {
                         });
                     }}
                     >
-                        <MoreHoriz style={{fontSize:35, color: "#493A25"}}/>
+                        <MoreHoriz style={{fontSize:35, color: "white"}}/>
                     </TileButton>
                 </div>} 
             </div>

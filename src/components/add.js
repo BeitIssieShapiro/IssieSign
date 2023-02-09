@@ -10,7 +10,7 @@ import { translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import SearchImage from "./search-image";
 import { getAvailableThemes, trace } from "../utils/Utils";
-import { Check, MoreHoriz } from "@mui/icons-material";
+import { BrushOutlined, Check, MoreHoriz } from "@mui/icons-material";
 
 
 import { ReactComponent as AttachSVG } from '../images/attach.svg'
@@ -282,31 +282,34 @@ function AddEditItem(props) {
                     {/* <div className="image-icon" style={{ marginTop: 15 }} /> */}
                     {!addWordMode && <PalleteSVG className="add-icon-style" />}
                     {/* <input type="text" className="addInputReadonly" readOnly placeholder={translate("ChangeColor")} /> */}
+                    {/* {!addWordMode && <div className="changeColorContainer" onClick={() => { */}
                     {!addWordMode && <label>{translate("ChangeColor")} </label>}
                     {!addWordMode && <div className="addButtons">
                         <TileButton size={24} onClick={() => {
-                            props.pubSub.publish({
-                                command: "open-slideup-menu", props: {
-                                    label: translate("SelectColorMenuTitle"),
-                                    themeId: props.themeId,
-                                    type: "colors",
-                                    height: 250,
-                                    buttons: getAvailableThemes().map((theme) => ({
-                                        icon: <div theme="blue" theme-flavor={theme + ""}>
-                                            <div className="tileColorBtn" style={{
-                                                backgroundColor: "var(--box-background-color-1)"
-                                            }} >{themeId == theme && <Check />}</div>
-                                        </div>,
-                                        callback: () => {
-                                            setThemeId(theme);
-                                            setThemeDirty(true);
-                                        }
-                                    }))
-                                }
-                            });
-                        }}
-                        >
-                            <MoreHoriz style={{ fontSize: 35, color: "#493A25" }} />
+            
+                        props.pubSub.publish({
+                            command: "open-slideup-menu", props: {
+                                label: translate("SelectColorMenuTitle"),
+                                themeId: props.themeId,
+                                type: "colors",
+                                height: 400,
+                                buttons: getAvailableThemes().map((theme) => ({
+                                    icon: <div theme="blue" theme-flavor={theme + ""}>
+                                        <div className="tileColorBtn" style={{
+                                            backgroundColor: "var(--box-background-color-1)"
+                                        }} >{themeId == theme && <Check />}</div>
+                                    </div>,
+                                    callback: () => {
+                                        setThemeId(theme);
+                                        setThemeDirty(true);
+                                    }
+                                }))
+                            }
+                        });
+                    }}>
+                        {/* <label>{translate("ChangeColor")} </label>
+                        <TileButton size={24} > */}
+                            <BrushOutlined style={{ fontSize: 35, color: "#606060" }} />
                         </TileButton>
                     </div>
                     }

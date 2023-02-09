@@ -3,7 +3,7 @@ import '../css/info.css';
 
 export default function Info(props) {
     return (
-        <div className={"info"} scroll-marker="1" style={{
+        <div className="info" scroll-marker="1" style={{
             transform: `translateY(${props.scroll?.y || 0}px)`,
             transitionDuration: '0s',
         }}>
@@ -18,7 +18,7 @@ export default function Info(props) {
                 <br />
                 <br />
             </div>
-            <div className="heb highlight" >
+            <div className="heb" >
                 <br />
                 <bold>באפליקציה תוכלו למצוא:</bold>
                 <br />
@@ -36,11 +36,9 @@ export default function Info(props) {
                 המרכז הטכנולוגי בבית איזי שפירא מתמחה בשימוש בטכנולוגיות מסייעת עבור אנשים עם מוגבלות, ומספק שירותי ייעוץ והדרכה לאנשי מקצוע, למשפחות ולמסגרות חינוך וטיפול. בנוסף מספק המרכז ייעוץ וליווי מקצועי לסטרטאפים ומפתחים בתחום הטכנולוגיה המסייעת.
                 <br />
             </div>
-            <div className="en">
-                <br />
-                Copyright SymbolStix, LLC. 2018. All rights reserved. Used with permission
-            </div>
-            <br /><br />
+            <br />
+            <div className="info-seperator" />
+            <br />
             <div className="en" >
 
                 <bold>IssieSign</bold> is an app for learning how to sign basic vocabulary, based on Israeli Sign Language (ISL), for the purpose of expressing needs and ideas.
@@ -49,7 +47,7 @@ export default function Info(props) {
                 <br />
             </div>
             <br />
-            <div className="en highlight" >
+            <div className="en" >
                 <br />
 
                 <bold>Unique Features:</bold>
@@ -75,6 +73,7 @@ export default function Info(props) {
                 <br /><br /><br /><br /><br /><br /><br />
 
             </div>
+
         </div>
     )
 }

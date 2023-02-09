@@ -7,6 +7,12 @@ lang=$1
 isIOS=$2
 appName=$3
 
+# Verify not in browser mode:
+if grep -q "window.isBrowser = true" public/index.html; then
+  echo "Error: Still in browser mode - Abort";
+  exit 1
+fi
+
 # Copy images
 cp -R ../IssieSign-MediaNew/images/$lang/ src/images/adt/
 

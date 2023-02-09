@@ -112,13 +112,24 @@ rowborder {
   font-size: 25px;
 }
 
+.changeColorContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.changeColorContainer > label {
+  font-size: 25px;
+  margin-inline-end: 20px;
+}
+
 .addButtons {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
   padding-inline-end: 10px;
-  color: 5c7e9d;
+  color: #5c7e9d;
 }
 
 input[type="text"]::placeholder {
@@ -135,6 +146,7 @@ input[type="text"]::placeholder {
   border: none;
   /* border-bottom: 2px solid; */
   border-bottom-color: grey;
+  grid-column: span 2;
   padding: 0;
 }
 

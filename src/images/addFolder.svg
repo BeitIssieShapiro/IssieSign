@@ -1,0 +1,13 @@
+<svg
+   class="svg-icon"
+   viewBox="0 0 24 24"
+   xmlns="http://www.w3.org/2000/svg"
+   stroke="currentColor">
+  <path
+     d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+     style="fill-opacity:0;"
+ />
+  <path
+     d="m 16.152541,13.94431 h -3.733656 v 3.123487 H 11.174334 V 13.94431 H 7.440678 v -1.041162 h 3.733656 V 9.7796606 h 1.244551 v 3.1234874 h 3.733656 z"
+     style="fill-opacity:1;fill:white;stroke-width:0" />
+</svg>

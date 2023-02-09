@@ -1,9 +1,12 @@
 import React from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined } from '@mui/icons-material'
 import { translate } from '../utils/lang';
-
+import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
+import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
+import { ReactComponent as AddVideoSVG } from '../images/addVideo.svg'
+import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
@@ -50,16 +53,17 @@ export function HeaderButton(props) {
 }
 
 export function EditButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className="a"
+  return <HeaderButton slot={props.slot} className="a"
     onClick={props.onClick}>
-    <Edit style={{ fontSize: 40 }} />
+    <EditModeSVG style={{ width: 40, fillOpacity: props.selected ? 1 : 0 }} />
   </HeaderButton>
 }
 
 export function AddButton(props) {
   return <HeaderButton slot={props.slot} selected={props.selected} className="c"
     onClick={props.onClick}>
-    <Add style={{ fontSize: 40, borderColor: 'white', borderStyle: "solid", borderWidth: 1, borderRadius: 20 }} />
+    {props.addFolder ? <AddFolderSVG style={{ width: 40 }} /> :
+      <AddVideoSVG style={{ width: 40 }} />}
   </HeaderButton>
 }
 
@@ -73,7 +77,8 @@ export function SettingsButton(props) {
 export function ShareCartButton(props) {
   return <HeaderButton slot={props.slot} className="d"
     onClick={props.onClick}>
-    <ShoppingBasket style={{ fontSize: 40 }} />
+    {/* <ShoppingBagOutlined style={{ fontSize: 40, strokeWidth:0 }} /> */}
+    <ShareBasketSVG style={{ width: 40}}/>
     {props.count > 0 && <div className="shareBadge">{props.count}</div>}
   </HeaderButton>
 }
@@ -116,7 +121,7 @@ export function RadioBtn(props) {
     onClick={() => props.onChange(!props.checked)}
   >
     <div className={"switch-base-elipce " + (props.checked ? "switch-base-on" : "switch-base-off")} >
-    {props.checked?on:off}
+      {props.checked ? on : off}
     </div>
     <div className={"switch-elipce " + (props.checked ? "switch-on" : "switch-off")} />
   </div>
@@ -139,7 +144,7 @@ export function TileButton(props) {
   const offSet = props.offSet || 0;
   return <div
     className="enable-pointer-events tile-button"
-    
+
 
 
     onMouseDown={prevent}

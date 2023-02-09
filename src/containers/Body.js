@@ -130,7 +130,7 @@ class Body extends IssieBase {
         }
 
         return (
-            <div scroll-marker="1" className={[this.props.InSearch ? "subTileContainer" : "tileContainer"]} style={{
+            <div scroll-marker="1" className={[this.props.InSearch ? "subTileContainer" : "scrollable tileContainer"]} style={{
                 width: widthStr,
                 flexWrap: 'wrap',
                 transform: `translateX(${this.props.scroll?.x || 0}px) translateY(${this.props.scroll?.y || 0}px)`,

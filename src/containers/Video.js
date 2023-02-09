@@ -1,25 +1,31 @@
-import {  ArrowForwardRounded, PauseCircleFilled, PlayCircle, 
-    ReplayCircleFilled } from "@mui/icons-material";
+import {
+    ArrowForwardRounded, Favorite, FavoriteBorder, PauseCircleFilled, PlayCircle,
+    ReplayCircleFilled
+} from "@mui/icons-material";
 import React, { useEffect, useState, useRef } from "react";
 import FileSystem from "../apis/filesystem";
 
 import '../css/App.css';
 
-const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth }) => {
+const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack, maxWidth, isFavorite, onFavoriteToggle }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
 
     const [videoUrl, setVideoUrl] = useState("");
+    const [youTube, setYouTube] = useState(false);
     const [videoDimension, setVideoDimension] = useState(0);
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
     const videoRef = useRef(null);
 
     useEffect(() => {
+        setYouTube(false);
         let videoContent = "";
         if (videoName === 'file') {
             videoContent = FileSystem.get().getFilePath(filePath);
+        } else if (videoName.startsWith('http')) {
+            videoContent = videoName;
         } else {
             if (document.basePath.startsWith("file")) {
                 //iOS
@@ -58,6 +64,8 @@ const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth })
 
     }, [window.innerHeight, window.innerWidth, isMobile, videoDimension, maxWidth]);
 
+    const leftPos = maxWidth ? (maxWidth - videoWidth) / 2 : (window.innerWidth - videoWidth) / 2 ;
+
     return (
         <div className="videoHostNew">
             <video
@@ -72,7 +80,7 @@ const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth })
                 onLoadedMetadata={(e) => {
                     setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })
                 }}
-                onClick={()=>{
+                onClick={() => {
                     if (ended || paused) {
                         videoRef.current?.play();
                     } else if (playing) {
@@ -97,14 +105,22 @@ const Video = ({ videoName, filePath, isMobile, isLandscape, goBack, maxWidth })
             >
             </video>
             {isMobile && isLandscape && <div className="videoBackButtonMobile" >
-                <ArrowForwardRounded style={{ fontSize: 80}} className="videoButtonNew"
+                <ArrowForwardRounded style={{ fontSize: 80 }} className="videoButtonNew"
                     onClick={goBack}
                 />
             </div>
             }
+
+            {videoDimension !== 0 && <div style={{
+                position: "absolute",
+                left: leftPos + 15, top: 15
+            }} onClick={() => onFavoriteToggle && onFavoriteToggle(categoryId, title, !isFavorite)}>
+                {isFavorite ? <Favorite style={{ fontSize: 50 }} /> :
+                    <FavoriteBorder style={{ fontSize: 50 }} />}
+            </div>}
             {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />}
             <div className="videoButtonsNew">
-                {playing && <PauseCircleFilled style={{ fontSize: 100}} className="videoButtonNew" onClick={() => videoRef.current?.pause()} />}
+                {playing && <PauseCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.pause()} />}
                 {paused && !ended && <PlayCircle style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
                 {ended && <ReplayCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
             </div>

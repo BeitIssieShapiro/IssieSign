@@ -6,6 +6,7 @@
 
 .App {
   text-align: center;
+  /* font-family: ArielMT; */
 }
 
 .rtl {
@@ -173,6 +174,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .videoHostNew {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;

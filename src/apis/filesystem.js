@@ -43,25 +43,21 @@ export default class FileSystem {
     }
 
     index = isBrowser() ? ({
-        categories: //mainJson.categories
-        [
+        categories: mainJson.categories,
+        categories2 : [
             {
                 "name": "TutorialsCategory",
                 "id": "1",
                 "imageName": "R587.png",
                 translate: true,
                 allowHide: true,
-                cloudLink: "testCategoryImageLink",
                 "words": [
                     {
-                        name: "מילה בעברית",
-                        id: "מילה בעברית",
+                        name: "הוספת מילה",
+                        id: "הוספת מילה",
                         category: "בודק עברית",
                         imageName: "בודק עברית/אוזניים.png",
                         videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                        userContent: true,
-                        sync: "sync-request",
-                        syncErr: "testError"
                     }
                 ]
             },
@@ -80,7 +76,19 @@ export default class FileSystem {
                 "id": "__favorites__",
                 "themeId": "2",
                 "imageName": "favorites.png",
-                "words": []
+                "words": [
+                    {
+                        name: "מילה בעברית",
+                        id: "מילה בעברית",
+                        favorite: true,
+                        category: "בודק עברית",
+                        imageName: "בודק עברית/אוזניים.png",
+                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                        userContent: true,
+                        sync: "sync-request",
+                        syncErr: "testError"
+                    }
+                ]
             },
             {
                 "name": "פירות וירקות",
@@ -92,7 +100,8 @@ export default class FileSystem {
                     {
                         name: "מילה בעברית",
                         id: "מילה בעברית",
-                        category: "בודק עברית",
+                        category: "פירות וירקות",
+                        favorite: true,
                         imageName: "בודק עברית/אוזניים.png",
                         videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
                         userContent: true,
@@ -210,7 +219,11 @@ export default class FileSystem {
     }
 
     sortCategories() {
-        this.index.categories.sort((a, b) => a.id === FileSystem.FAVORITES_ID ? -1 : (a.name < b.name ? -1 : 1));
+        this.index.categories.sort((a, b) => {
+            if (a.id === FileSystem.FAVORITES_ID) return -1;
+            if (b.id === FileSystem.FAVORITES_ID) return 1;
+            return (a.name < b.name ? -1 : 1);
+        })
     }
 
     getCategories() {
@@ -247,7 +260,7 @@ export default class FileSystem {
             throw new Error("addToFavorite - no favorties category found");
         }
 
-        let category
+        let category;
         if (isAdd) {
             category = this.index.categories.find(c => c.name === categoryId);
         } else {
@@ -277,7 +290,7 @@ export default class FileSystem {
             }
         } else {
             trace("Remove favorite", categoryId, title);
-            favCategory.words = favCategory.words.filter(w => (w.name !== word.name || w.category != categoryId));
+            favCategory.words = favCategory.words.filter(w => (w.name !== word.name || w.category != category.name));
         }
 
         return this.saveIndex();

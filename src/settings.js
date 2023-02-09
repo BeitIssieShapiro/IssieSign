@@ -10,6 +10,21 @@ import { GridView, Swipe, SyncAlt, ViewList } from '@mui/icons-material';
 import { mainJson } from './mainJson';
 
 
+function ToggleButtons({ title, buttons }) {
+  return <div className="toggle-container">
+    <div className="toggle-title">{title}</div>
+    <div className="toggle-buttons">
+      {buttons.map((button, i) => <div key={i} className={button.selected ? "toggle-caption-selected" : ""}>
+        <div key={i} className={"toggle-button" + (button.selected ? " toggle-selected" : "")} onClick={button.onSelect}>
+          {button.icon}
+        </div>
+        {button.caption}
+      </div>
+      )}
+    </div>
+  </div>
+}
+
 
 function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll }) {
   const [reload, setReload] = useState(0);
@@ -49,22 +64,24 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
     setLanguage(lang);
   }
 
-  const adultModeChange = (e) => {
-    const isOn = e.currentTarget.value === "true";
+  const adultModeChange = (isOn) => {
+    //const isOn = e.currentTarget.value === "true";
     saveSettingKey(ADULT_MODE_KEY, isOn);
     setState({ adultMode: isOn });
   }
 
-  const swipeModeChange = (e) => {
-    const isOn = e.currentTarget.value === "true";
+  const swipeModeChange = (isOn) => {
+    //const isOn = e.currentTarget.value === "true";
     saveSettingKey(ALLOW_SWIPE_KEY, isOn);
     setState({ allowSwipe: isOn });
   }
 
+  const width = Math.min(550, window.innerWidth);
 
-  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "start", marginLeft: 50 }} onClose={onClose}
-    animate={true} width={Math.min(470, window.innerWidth) + "px"}
-    style={{ left: 0, "--hmargin": "0", "--vmargin": "2vw", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight:"bold" }} onClose={onClose}
+    //animate={true} 
+    width={width} // + "px"}
+    style={{ top: 170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": "8vw" }}
   >
     <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
       <div onClick={showInfo} className="settings-item about">
@@ -74,7 +91,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
 
       <div className="settings-item">
-        <lbl>
+        {/* <lbl>
           <div>{translate("SettingsSwipe")}</div>
         </lbl>
 
@@ -94,13 +111,20 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             {translate("NavBySwipe")}
           </label>
 
-        </div>
+        </div> */}
+        <ToggleButtons
+          title={translate("SettingsSwipe")}
+          buttons={[
+            { icon: <SyncAlt />, caption: translate("NavByArrow"), onSelect: () => swipeModeChange(false), selected: !state.allowSwipe },
+            { icon: <Swipe />, caption: translate("NavBySwipe"), onSelect: () => swipeModeChange(true), selected: state.allowSwipe },
+          ]}
+        />
       </div>
 
       <div className="settings-item">
-        <lbl>
+        {/* <lbl>
           <div>{translate("SettingsAdultMode")}</div>
-          {/* <div className="settingsSubTitle">{translate("SettingsAdultModeLbl")}</div> */}
+           <div className="settingsSubTitle">{translate("SettingsAdultModeLbl")}</div> 
         </lbl>
 
         <div className="settingsGroup">
@@ -120,8 +144,17 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             <ViewList />
             {translate("AdultModeOn")}
           </label>
+        </div> */}
 
-        </div>
+
+        <ToggleButtons
+          title={translate("SettingsAdultMode")}
+          buttons={[
+            { icon: <GridView />, caption: translate("AdultModeOff"), onSelect: () => adultModeChange(false), selected: !state.adultMode },
+            { icon: <ViewList />, caption: translate("AdultModeOn"), onSelect: () => adultModeChange(true), selected: state.adultMode },
+          ]}
+        />
+
       </div>
 
       {!isMyIssieSign() && <div className="settings-item">
@@ -183,7 +216,17 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       </div>
 
       {isMyIssieSign() && <div className="settings-item">
-        <lbl>
+        <ToggleButtons
+          title={translate("SettingsLanguage")}
+          buttons={[
+            { icon: <div>ע</div>, caption: "עברית", onSelect: () => changeLanguage("he"), selected: currLanguage === "he" },
+            { icon: <div>E</div>, caption: "English", onSelect: () => changeLanguage("en"), selected: currLanguage === "en" },
+            { icon: <div>ع</div>, caption: "عربي", onSelect: () => changeLanguage("ar"), selected: currLanguage === "ar" },
+          ]}
+        />
+
+
+        {/* <lbl>
           <div>{translate("SettingsLanguage")}</div>
           <div className="settingsSubTitle settings-selected">{
             currLanguage === "he" ? "עברית" :
@@ -213,7 +256,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
           <label for="he">עברית</label>
 
         </div>
-        }
+        } */}
         {/*option2*/}
         {/* <div className="lang-item" onClick={()=>setLangSettingsMode(true)}>
           {currLanguage === "en" ? <ArrowForwardIos style={{ fontSize: 40 }} /> : <ArrowBackIos style={{ fontSize: 40 }} />}

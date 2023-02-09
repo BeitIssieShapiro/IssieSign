@@ -103,7 +103,7 @@ function Word(props) {
     }
 
     return (
-        <div className={props.InSearch ? "subTileContainer wordContainer" : "tileContainer wordContainer"}
+        <div scroll-marker="1" className={props.InSearch ? "subTileContainer wordContainer" : "scrollable tileContainer wordContainer"}
             style={{
                 flexDirection: 'column',
                 width: width,

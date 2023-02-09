@@ -1,4 +1,22 @@
 bugs:
+V- add to favorite from search
+V- scroll in word unlimited 
+V- no projectors on Add screen
+V- in add screen - the input text for name is too short
+V    - color selection - give more height
+V    - ״בחר צבע״ - put the 3 dots next it and make it all pressable
+V    - no settings button
+
+V- in the title bar, change the + (add) to 2 options "folder", "movie" with a plus sign
+V- check the new shoppingcart icon with badge
+- icon of favorite is not full when in favorite
+V- edit icon - two modes: outline (new icon) and filled when edit mode - without underline
+V- about:
+V  - no special backgrounds
+V  - seperator between en and heb
+V  - copy right once and put at bottom
+
+
 - en and ar about pages
 - ar translations
 - oauth client: 1 for all 3?
