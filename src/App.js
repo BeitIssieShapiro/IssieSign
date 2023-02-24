@@ -1,9 +1,7 @@
 import './css/App.css';
 
 import React from 'react';
-import Word from "./containers/Word";
 import Body from "./containers/Body";
-import WordAdults from "./containers/Word-adult";
 import Video from "./containers/Video";
 import Search from './containers/Search'
 import Info from "./containers/Info";
@@ -22,7 +20,7 @@ import './css/style.css';
 
 import {
     getTheme,
-    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, getBooleanSettingKey
+    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, getBooleanSettingKey, headerSize
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
@@ -30,7 +28,7 @@ import Settings from './settings'
 import './css/settings.css'
 import {
     SettingsButton, TrashButton,
-    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton
+    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2
 } from './components/ui-elements';
 import { mainJson } from './mainJson';
 import FileSystem from './apis/filesystem';
@@ -86,7 +84,7 @@ class App extends IssieBase {
         const getCurrent = () => {
             if (this.state.menuOpen) {
                 return this.state.settingsScroll;
-            } if (this.isWords()) {
+            } if (this.isWords() || this.isSearch() && this.state.categoryId) {
                 return this.state.wordScroll;
             } else if (this.isSearch()) {
                 return this.state.searchScroll;
@@ -107,7 +105,7 @@ class App extends IssieBase {
                 }
                 if (container.getAttribute("scroll-marker") === "1") {
                     const maxScrollX = container.scrollWidth - Math.min(container.offsetWidth, window.innerWidth);
-                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight , window.innerHeight - 131);
+                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - 131);
                     if (x > 0) {
                         x = 0;
                     }
@@ -133,8 +131,8 @@ class App extends IssieBase {
                 const newScrollY = { x: 0, y };
                 if (this.state.menuOpen) {
                     this.setState({ settingsScroll: newScrollY });
-                } else if (this.isWords()) {
-                    this.setState({ wordScroll: IssieBase.isMobile() || this.state.adultMode ? newScrollY : newScrollX });
+                } else if (this.isWords() || this.isSearch() && this.state.categoryId) {
+                    this.setState({ wordScroll: { x, y } });
                 } else if (this.isSearch()) {
                     this.setState({ searchScroll: newScrollX });
                 } else if (this.isInfo()) {
@@ -156,7 +154,7 @@ class App extends IssieBase {
                     const curr = getCurrent();
                     const absInc = (window.innerWidth - 150)
                     const inc = toRight ? -absInc : absInc;
-                    setCurrent({target:elems[0]}, { x: curr.x + inc, y: curr.y }, true);
+                    setCurrent({ target: elems[0] }, { x: curr.x + inc, y: curr.y }, true);
                 }
             },
         }
@@ -370,6 +368,7 @@ class App extends IssieBase {
         if (skipSearch === undefined && this.isSearch()) {
             this.props.history.goBack();
             this.setState({ searchScroll: SCROLL_RESET });
+            this.setState({ wordScroll: SCROLL_RESET });
             setTimeout(() => this.setState({ searchStr: "" }), 100);
         } else {
             this.props.history.goBack();
@@ -436,18 +435,13 @@ class App extends IssieBase {
         }
 
         if (!this.isSwipeAllowed() && !this.isShareScreen() &&
-            (!this.isAddScreen() && !this.isVideo())) {
+            (!this.isAddScreen() && !this.isVideo() && (this.isWords() && !this.state.adultMode))) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
             rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
         }
 
-        if (IssieBase.isMobile() && IssieBase.isLandscape() && this.isVideo()) {
-            return (
-                <div>
-
-                    {this.getChildren(path, this.props, this.state)}
-                </div>)
-        }
+        const collapseHeader = (IssieBase.isMobile() && IssieBase.isLandscape() && (this.isVideo() ||
+            this.state.adultMode && this.isWords()))
 
         let overFlowX = this.state.dimensions.overFlowX;
         if (this.isSearch() || this.isWords()) {
@@ -497,7 +491,12 @@ class App extends IssieBase {
                     {this.state.busy && <div className="busyText" >{this.state.busyText}</div>}
 
                 </div>
-                <Shell projectorsOff={this.isVideo() || this.isAddScreen()} theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
+                <Shell
+                    collapseHeader={collapseHeader}
+                    projectorsOff={this.isVideo() ||
+                        this.isAddScreen() ||
+                        ((this.isWords() || this.isSearch() && this.state.categoryId) && this.state.adultMode)
+                    } theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
                         slot="start-bar"
@@ -507,9 +506,9 @@ class App extends IssieBase {
                         }} />
 
 
-                    {this.state.editMode && !this.isVideo() && !this.isAddScreen() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
+                    {this.state.editMode && !this.isAddScreen() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
 
-                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode && (!this.isVideo() || this.state.adultMode) &&
+                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode && !this.isVideo() &&
                         <AddButton slot="start-bar"
                             addFolder={App.isHome(this.props)}
                             onClick={() => this.handleNewClick()} color='white'
@@ -545,7 +544,7 @@ class App extends IssieBase {
                         overflowX: overFlowX
                     }}>
 
-                        {this.getChildren(path, this.props, this.state)}
+                        {this.getChildren(path, this.props, this.state, this.setState)}
                     </div>
                 </Shell>
 
@@ -553,7 +552,7 @@ class App extends IssieBase {
         );
     }
 
-    getChildren(path, props, state) {
+    getChildren(path) {
         //console.log("get children, path", path)
 
         if (path === "/" || path === "") {
@@ -586,8 +585,10 @@ class App extends IssieBase {
                 dimensions={this.state.dimensions}
                 allowSwipe={this.isSwipeAllowed()}
                 scroll={this.state.searchScroll}
-                pubSub={state.pubSub}
+                wordScroll={this.state.wordScroll}
+                pubSub={this.state.pubSub}
                 themeId={this.state.theme}
+                adultMode={this.state.adultMode}
             />
         }
 
@@ -595,8 +596,8 @@ class App extends IssieBase {
             this.setTitle(translate("ShareCartTitle"));
 
             return <ShareCartUI
-                pubSub={state.pubSub}
-                shareCart={state.shareCart}
+                pubSub={this.state.pubSub}
+                shareCart={this.state.shareCart}
             />
         }
 
@@ -611,43 +612,22 @@ class App extends IssieBase {
             const words = cat?.words || [];
 
             const wordProps = {
-                pubSub: state.pubSub,
-                editMode: state.editMode,
-                shareCart: state.shareCart,
+                pubSub: this.state.pubSub,
+                editMode: this.state.editMode,
+                shareCart: this.state.shareCart,
                 isMobile: IssieBase.isMobile(),
-                allowAddWord: state.allowAddWord,
+                isLandscape: IssieBase.isLandscape(),
+                allowAddWord: this.state.allowAddWord,
                 words,
                 categoryId,
                 themeId,
-                scroll: state.wordScroll,
+                scroll: this.state.wordScroll,
                 onFavoriteToggle: this.onFavoriteToggle,
+                adultMode: this.state.adultMode,
+                setScrolls: (x, y) => this.setState({ wordScroll: { x, y } }),
             }
-            return (
-                state.adultMode ?
-                    <WordAdults {...wordProps} /> :
-                    <Word  {...wordProps} />)
+            return (<Word2 {...wordProps} />);
         }
-
-        // if (path.startsWith("/word-added/")) {
-        //     //:categoryId/:title
-        //     const [categoryId, title] = splitAndDecodeCompoundName(path.substr(12));
-        //     this.setTitle(title);
-        //     return <Word
-        //         pubSub={state.pubSub}
-        //         editMode={state.editMode}
-        //         shareCart={state.shareCart}
-        //         isMobile={IssieBase.isMobile()}
-        //         allowAddWord={state.allowAddWord}
-        //         type="added"
-        //         words={
-        //             FileSystem.get().getCategories().find(c => c.id === categoryId)?.words || []
-        //         }
-        //         categoryId={categoryId}
-        //         themeId={"1"}
-        //         dimensions={state.dimensions}
-        //         scroll={state.wordScroll}
-        //     />
-        // }
 
         if (path.startsWith("/video/")) {
             //:videoName/:categoryId/:title/:filePath
@@ -662,25 +642,28 @@ class App extends IssieBase {
             this.setTitle(title);
 
             return (
-                <Video {...props}
-                    isFavorite={isFavorite}
-                    onFavoriteToggle={this.onFavoriteToggle}
-                    goBack={() => this.goBack()}
-                    categoryId={categoryId}
-                    isLandscape={IssieBase.isLandscape()}
-                    isMobile={IssieBase.isMobile()}
-                    videoName={videoName}
-                    title={title}
-                    filePath={filePath ? decodeURIComponent(filePath) : ""}
-                />)
+                <div style={{ width: "100%", height: "100%", position: "relative" }}>
+                    <Video {...this.props}
+                        isFavorite={isFavorite}
+                        onFavoriteToggle={this.onFavoriteToggle}
+                        goBack={() => this.goBack()}
+                        categoryId={categoryId}
+                        isLandscape={IssieBase.isLandscape()}
+                        isMobile={IssieBase.isMobile()}
+                        videoName={videoName}
+                        title={title}
+                        filePath={filePath ? decodeURIComponent(filePath) : ""}
+                        headerSize={headerSize}
+                    />
+                </div>)
         }
 
         if (path.startsWith("/info")) {
-            this.setTitle(translate("About"))
+            this.setTitle(translate("TitleAbout"))
             switch (getAppName()) {
-                case "IssieSign": return <Info scroll={state.infoScroll} />;
-                case "IssieSignArabic": return <InfoArabic scroll={state.infoScroll} />;
-                case "MyIssieSign": return <InfoMyIssieSign scroll={state.infoScroll} />;
+                case "IssieSign": return <Info scroll={this.state.infoScroll} />;
+                case "IssieSignArabic": return <InfoArabic scroll={this.state.infoScroll} />;
+                case "MyIssieSign": return <InfoMyIssieSign scroll={this.state.infoScroll} />;
                 default: return null;
             }
         }
@@ -692,13 +675,13 @@ class App extends IssieBase {
             this.setTitle(categoryId?.length > 0 ? translate("TitleEditCategory") : translate("TitleAddCategory"));
             return (
                 <AddEditItem
-                    history={props.history}
+                    history={this.props.history}
                     addWord={false}
-                    pubSub={state.pubSub}
+                    pubSub={this.state.pubSub}
                     categoryId={categoryId?.length > 0 ? categoryId : undefined}
                     isLandscape={IssieBase.isLandscape()}
-                    dimensions={state.dimensions}
-                    scroll={state.addScroll}
+                    dimensions={this.state.dimensions}
+                    scroll={this.state.addScroll}
                 />
 
             )
@@ -716,12 +699,12 @@ class App extends IssieBase {
                 <AddEditItem
                     addWord={true}
                     wordId={wordId}
-                    history={props.history}
-                    pubSub={state.pubSub}
+                    history={this.props.history}
+                    pubSub={this.state.pubSub}
                     isLandscape={IssieBase.isLandscape()}
                     categoryId={categoryId}
                     themeId={themeId}
-                    dimensions={state.dimensions}
+                    dimensions={this.state.dimensions}
                 />
             )
         }
@@ -755,8 +738,9 @@ class App extends IssieBase {
     }
 
     isVideo() {
-        return this.props.history.path.startsWith("/video/") ||
-            (this.props.history.path.startsWith("/word/") && this.state.adultMode);
+        return this.props.history.path.startsWith("/video/")
+        //  ||
+        //     (this.props.history.path.startsWith("/word/") && this.state.adultMode);
     }
 
 

@@ -5,6 +5,7 @@ import Body from "./Body";
 //const levenshtein = require('js-levenshtein');
 import { getTheme, getThemeName, trace } from "../utils/Utils";
 import { fTranslate } from '../utils/lang';
+import { Word2 } from "../components/ui-elements";
 
 
 function fuzzyMatch(str, searchStr) {
@@ -81,7 +82,7 @@ function Search(props) {
                 scroll={{ x: 0, y: 0 }}
                 themeId={props.themeId}
             />}
-            <Word InSearch={true}
+            <Word2 InSearch={true}
                 words={
                     filterWords(props.searchStr)
                 }
@@ -91,8 +92,9 @@ function Search(props) {
                 themeId={props.themeId}
                 dimensions={props.dimensions}
                 allowSwipe={props.allowSwipe}
-                scroll={{ x: 0, y: 0 }}
+                scroll={props.wordScroll}
                 categoryId={props.currentCategory}
+                adultMode={props.adultMode && props.currentCategory}
             />
         </div>
     )

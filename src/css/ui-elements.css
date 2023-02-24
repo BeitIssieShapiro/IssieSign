@@ -208,10 +208,12 @@
   padding: 2px;
   padding-left: 10px;
   padding-right: 5px;
+  color: #32363a;
 }
 
 .switch-base-on {
   text-align: left;
+  background-color: #c1d4e7;
 }
 
 .switch-elipce {

@@ -12,70 +12,44 @@ export default function InfoArabic(props) {
                 <div style={{ color: '#18b9ed' }}>Sign - Arabic</div>
             </div>
             <div className="heb"  >
-                <bold>IssieSign</bold> היא אפליקציה להיכרות ולמידה של סימנים בסיסיים להבעת צרכים, רעיונות, תחושות ורצונות המבוססת על שפת הסימנים הישראלית (שס"י). האפליקציה פותחה במיוחד עבור אנשים עם צרכים תקשורתיים מורכבים (CCN), הזקוקים לסימנים וג'סטות כאמצעי תקשורת תומכת וחליפית (תת"ח) להבעת רצונות, תחושות, מחשבות ורעיונות.
-                <br /><br />האפליקציה פותחה על ידי המרכז הטכנולוגי בבית איזי שפירא בשיתוף מעבדות SAP ישראל.
-                באמצעות עיצוב בעל קו נקי ופשוט המאפשר גישה נוחה לשימוש באפליקציה עבור אנשים עם קשיים מוטוריים, האפליקציה חושפת בפני המשתמשים צוהר אל אוצר מילים וסימנים המתאים לשלבים הראשונים של התפתחות שפה ודיבור. סימנים אלו יכולים לשמש כאמצעי משמעותי לתקשורת בין אישית ויכולים לסייע לאנשים עם צרכים תקשורתיים מורכבים להביע עצמם.
+                <bold>IssieSign</bold> هو تطبيق لتعليم الإشارات الأساسية والانكشاف على لغة الإشارة، بناءً على لغة الإشارة الإسرائيلية (ISL) ، وذلك من اجل للتعبير عن الاحتياجات الأساسية، المشاعر والأفكار. تم تطوير التطبيق بشكل خاص للأشخاص ذوي احتياجات التواصل المركبة (CCN) والذين يجدون صعوبة في التعبير عن أنفسهم كلاميا ويستندون على استخدام التواصل الداعم والبديل بما في ذلك الايماءات والاشارات للتعبير عن أنفسهم. هذا التطبيق هو من انتاج المركز التكنولوجي في ايزي شابيرا بالتعاون مع SAP Labs Israel .
                 <br />
                 <br />
             </div>
-            <div className="heb highlight" >
+            <div className="heb" >
                 <br />
-                <bold>באפליקציה תוכלו למצוא:</bold>
+                <bold>محتوى  التطبيق:</bold>
                 <br />
                 <br />
                 <ul>
-                    <li>קרוב ל600 סרטונים המאפשרים למידה של סימנים מתוך שפת הסימנים הישראלית.</li>
-                    <li>כל סימן מופיע באפליקציה יחד עם מילה דבורה, מילה כתובה וסמל מוכר, מתוך מאגר הסמלים SymbolStix*, המשמש את תלמידי החינוך המיוחד להבעה במגוון אמצעי תקשורת תומכת וחליפית (תת"ח).</li>
-                    <li>הסימנים מאוגדים לפי קטגוריות. כל קטגוריה מתאפיינת בצבע קבוע המלווה את כל הסימנים באותה קטגוריה ומשמש כתומך ויזואלי לשימוש חוזר באפליקציה.</li>
-                    <li>כל סרטון מציג מילה/סמל תוך שימת דגש לשלבים הראשונים של התפתחות שפה ודיבור- השלב החד מילי ושלב הצירופים ("כלב"- "כלב גדול")</li>
+                    <li>ما يقارب 800 فيديو قصير تهدف لتعليم لغة الإشارة المتداولة في بلادنا.</li>
+                    <li>مع كل واحده من لغة الإشارة التي تظهر في الفيديو تظهر هناك أيضا الكلمة المنطوقة كلاما والكلمة المكتوبة ورمز مألوف من مكتبة الرموز العالمية   SymbolStix* ،  تُستخدم  هذه الرموز في العديد  من المؤسسات ومن قبل طلاب  التربية الخاصة كوسيلة للتواصل الداعم والبديل AAC.</li>
+                    <li>تم تصنيف الرموز حسب مجموعات لغوية مع تخصيص لون معين لكل واحده من هذه المجموعات لسهولة التعرف عليها ونجاعة الاستخدام حيث يمكن للمستخدم ان يعاود الرجوع للمجموعة حسب اللون مرة أخرى.</li>
+                    <li>تم تنظيم كل فيديو وفقًا للمراحل الأولى من تطور اللغة - يحتوي كل فيديو على تعبير كلامي مكون من كلمة واحدة، وتعبير يتبعه يتكون من كلمتين. على سبيل المثال، كلمه "كلب" متبوعة بالمقطع "كلب كبير".</li>
                 </ul>
                 <br />
             </div>
             <div className="heb">
                 <br />
-                המרכז הטכנולוגי בבית איזי שפירא מתמחה בשימוש בטכנולוגיות מסייעת עבור אנשים עם מוגבלות, ומספק שירותי ייעוץ והדרכה לאנשי מקצוע, למשפחות ולמסגרות חינוך וטיפול. בנוסף מספק המרכז ייעוץ וליווי מקצועי לסטרטאפים ומפתחים בתחום הטכנולוגיה המסייעת.
+                تم تصميم IssieSign  والعديد من التطبيقات الأخرى بمبادرة المركز التكنولوجي في بيت ايزي شبيرا ، المتخصص في تذويت استخدام التكنولوجيا المساندة (AT)  ويعتبر رائدا لتعزيز الابتكار والتطوير في المجال، مما يوفر حلولًا متاحة وبأسعار معقولة بهدف تحسين المشاركة ونوعية الحياة للأشخاص من ذوي الإعاقة. نحن نقدم خدمات الاستشارة والتدريب للطواقم المهنية وللعائلات والاستشارات والدعم للمطورين ورجال الأعمال لمساعدتهم على إنشاء تطبيقات ومنتجات يمكن الوصول إليها من قبل جمهور أوسع بما في ذلك الأشخاص ذوي الإعاقة.
                 <br />
             </div>
+            <div className="heb">
+
+                شكر خاص للطاقم المهني والمتفاني في SAP Labs ، إسرائيل ، فكل الفضل لهم في اخراج التطبيق للضوء ونقله من الفكرة إلى المنتج. شكرًا لآن جونسون- اوليس ، من شركة n2y ، على المتابعه والإرشاد في كل ما يخص  رموز Symbolstix ، وشكر كبير لملاك منصورو للي دان على الترجمة إلى لغة الإشارة ولستوديو بيان على التصوير والمونتاج.            </div>
+            <br />
             <div className="en">
                 <br />
                 Copyright SymbolStix, LLC. 2018. All rights reserved. Used with permission
             </div>
-            <br /><br />
-            <div className="en" >
 
-                <bold>IssieSign</bold> is an app for learning how to sign basic vocabulary, based on Israeli Sign Language (ISL), for the purpose of expressing needs and ideas.
-                <br /><br />It was developed especially for people with complex communication needs who have difficulty expressing themselves, in collaboration with The Technology Center of Beit Issie Shapiro and SAP Labs Israel.
-                With a simple, clear and tailor-made design allowing for easy access and navigation for people with motoric or intellectual difficulties, IssieSign can be a significant means of communication and can help people with complex communication needs express themselves more effectively.
+            <div className="heb" >
                 <br />
-            </div>
-            <br />
-            <div className="en highlight" >
-                <br />
-
-                <bold>Unique Features:</bold>
-                <br />
-                <br />
-                <ul>
-
-                    <li>Large number of videos within the app (approx. 600)</li>
-                    <li>Each sign appears in the video along with the spoken word, the written word, and a  familiar symbol (SymbolStix* - used in many special education schools for communication)</li>
-                    <li>Categories are classified by color for easy recognition and efficiency</li>
-                    <li>Each video is structured according to the first stages of language development – each video contains the word as a one-word stage and as a two-word stage. For example, the video for "dog" will have a clip signing "dog" followed by the sign for "big dog".</li>
-                </ul>
-                <br />
-
-            </div>
-            <div className="en">
-                <br />
-                <bold>IssieSign</bold>, is designed to meet needs that we have identified in our work at Beit Issie Shapiro with people with disabilities. It is one of a series of apps we have created with the aim of improving participation and quality of life.
-                <br /><br />
-                <bold>The Technology Center at Beit Issie Shapiro</bold> serves as a leading hub for promoting innovation and entrepreneurship in the field of Assistive Technology (AT), bringing more accessible and affordable solutions to people with disabilities. We provide consultation and training services to families and professionals and consultation and support to developers and entrepreneurs helping them create apps and products that are accessible to a wider audience including people with disabilities.
-                <br /><br />
-                Copyright SymbolStix, LLC. 2018. All rights reserved. Used with permission.
-                <br /><br /><br /><br /><br /><br /><br />
-
+                <bold>
+                    جميع الحقوق محفوظة.
+                </bold>
             </div>
         </div>
-    )
+            )
 
 }

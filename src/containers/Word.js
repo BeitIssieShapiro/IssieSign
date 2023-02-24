@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import '../css/App.css';
 import Card2, { ClipType } from "../components/Card2";
-import { calcWidth } from "../utils/Utils";
-import IssieBase from '../IssieBase'
+import { calcWidth, getBooleanFromString } from "../utils/Utils";
 import { withAlert } from 'react-alert'
 import Rope from '../components/Rope'
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const getBooleanFromString = (str) => str && str.length > 0 && str.charCodeAt(0) % 2 === 0
 
 function Word(props) {
 
@@ -107,19 +105,13 @@ function Word(props) {
             style={{
                 flexDirection: 'column',
                 width: width,
-                transform: `translateX(${props.scroll?.x || 0}px) translateY(${props.scroll?.y || 0}px)`,
+                transform: `translateX(${props.scroll?.x || 0}px)`,
                 transitionDuration: props.allowSwipe ? '0s' : '1.7s',
 
             }}>
             {lines.map((line, i) => {
-                let ropeSize = line.length < 5 ? "S" : line.length > 15 ? "L" : "M";
-                //on high res go one up
-                // if (IssieBase.isHighResolution()) {
-                //     if (ropeSize === "L") {
-                //         ropeSize = "M";
-                //     } 
-                // }
-                return <Rope size={ropeSize} key={i}>
+                
+                return <Rope size={line.length} key={i}>
                     {line}
                 </Rope>
             })}

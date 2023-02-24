@@ -7,14 +7,15 @@ import FileSystem from "../apis/filesystem";
 
 import '../css/App.css';
 
-const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack, maxWidth, isFavorite, onFavoriteToggle }) => {
+const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
+    maxWidth, isFavorite, onFavoriteToggle, headerSize }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
 
     const [videoUrl, setVideoUrl] = useState("");
     const [youTube, setYouTube] = useState(false);
-    const [videoDimension, setVideoDimension] = useState(0);
+    const [videoDimension, setVideoDimension] = useState({w:window.innerWidth, h:window.innerHeight - headerSize});
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
     const videoRef = useRef(null);
@@ -27,7 +28,7 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
         } else if (videoName.startsWith('http')) {
             videoContent = videoName;
         } else {
-            if (document.basePath.startsWith("file")) {
+            if (document.basePath?.startsWith("file")) {
                 //iOS
                 videoContent = document.basePath + "www/videos/" + videoName;
             } else {
@@ -45,29 +46,42 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
 
     }, [videoName, filePath])
 
-    const headerSize = isMobile ? 0 : 150;
+    //const headerSize = isMobile && isLandscape ? 0 : 360;
+    const innerHeight = window.innerHeight - 40 - (isMobile && isLandscape ? 0 : headerSize);
 
     useEffect(() => {
-        const innerWidth = maxWidth || window.innerWidth;
+        const innerWidth = (maxWidth || window.innerWidth) - 20;
+        const videoRatio = videoDimension.w / videoDimension.h;
+        const screenRatio = innerWidth / innerHeight;
 
-        const wFactor = videoDimension.w / innerWidth;
-        const hFactor = videoDimension.h / (window.innerHeight - headerSize);
-        let fullWidth = (1 / wFactor) * videoDimension.w;
-        let fullHeight = (1 / wFactor) * videoDimension.h;
-        if (fullHeight > window.innerHeight - headerSize) {
-            fullWidth = (1 / hFactor) * videoDimension.w;
-            fullHeight = (1 / hFactor) * videoDimension.h;
+        if (screenRatio > videoRatio) {
+            setVideoWidth(videoDimension.w * innerHeight / videoDimension.h);
+            setVideoHeight(innerHeight+12);
+        } else {
+            setVideoWidth(innerWidth);
+            setVideoHeight(videoDimension.h * innerWidth / videoDimension.w+12);
         }
 
-        setVideoWidth(fullWidth);
-        setVideoHeight(fullHeight);
+        // const wFactor = videoDimension.w / innerWidth;
+        // const hFactor = videoDimension.h / (innerHeight);
+        // let fullWidth = (1 / wFactor) * videoDimension.w;
+        // let fullHeight = (1 / wFactor) * videoDimension.h;
+        // if (fullHeight > innerHeight) {
+        //     fullWidth = (1 / hFactor) * videoDimension.w;
+        //     fullHeight = (1 / hFactor) * videoDimension.h;
+        // }
+
+        // setVideoWidth(fullWidth);
+        // setVideoHeight(fullHeight);
 
     }, [window.innerHeight, window.innerWidth, isMobile, videoDimension, maxWidth]);
 
-    const leftPos = maxWidth ? (maxWidth - videoWidth) / 2 : (window.innerWidth - videoWidth) / 2 ;
+    const leftPos = maxWidth ? (maxWidth - videoWidth) / 2 : (window.innerWidth - videoWidth) / 2;
+
+    // console.log( (innerHeight  - videoHeight)/2)
 
     return (
-        <div className="videoHostNew">
+        <div className="videoHostNew" style={{ top: Math.max((innerHeight - videoHeight) / 2 - 15, -2) }}>
             <video
                 //onTimeUpdate={handleProgress}
                 ref={videoRef}
@@ -76,7 +90,13 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
                 width={videoWidth}
                 height={videoHeight}
                 src={videoUrl}
-                style={{ display: "flex", alignItems: "flex-start" }}
+                style={{
+                    display: "flex", alignItems: "flex-start",
+                    borderWidth: 15,
+                    borderStyle: "solid",
+                    borderColor: "black",
+                    boxShadow: "rgb(66 66 77 / 50%) 13px 14px 5px"
+                }}
                 onLoadedMetadata={(e) => {
                     setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })
                 }}
@@ -113,7 +133,7 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
 
             {videoDimension !== 0 && <div style={{
                 position: "absolute",
-                left: leftPos + 15, top: 15
+                left: leftPos + 35, top: 25
             }} onClick={() => onFavoriteToggle && onFavoriteToggle(categoryId, title, !isFavorite)}>
                 {isFavorite ? <Favorite style={{ fontSize: 50 }} /> :
                     <FavoriteBorder style={{ fontSize: 50 }} />}

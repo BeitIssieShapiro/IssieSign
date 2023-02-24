@@ -43,8 +43,8 @@ export default class FileSystem {
     }
 
     index = isBrowser() ? ({
-        categories: mainJson.categories,
-        categories2 : [
+        categories2: mainJson.categories,
+        categories : [
             {
                 "name": "TutorialsCategory",
                 "id": "1",

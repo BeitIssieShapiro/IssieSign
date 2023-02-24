@@ -101,3 +101,14 @@ function hashId(id, themeCount) {
     return sum % themeCount;
 }
 
+export function isMobile() {
+    return window.innerHeight < 450 || window.innerWidth < 450;
+}
+
+export function isLandscape() {
+    return (window.innerWidth > window.innerHeight);
+}
+
+export const headerSize = 145;
+
+export const getBooleanFromString = (str) => str && str.length > 0 && str.charCodeAt(0) % 2 === 0

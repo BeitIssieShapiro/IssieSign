@@ -20,7 +20,7 @@ function Slot({ children, slot }) {
 
 function Shell(props) {
 
-
+    const collapseHeader = props.collapseHeader;
     var projectors = "";
     if (true) {
         projectors = <ul className={"projectors " + (props.projectorsOff ? "proj-off" : "")}>
@@ -33,8 +33,8 @@ function Shell(props) {
 
     return (
         <div className="shellhost">
-            <div className="shellTopBlueBar" />
-            <div className="shellheader parent" theme={props.theme}>
+            {!collapseHeader && <div className="shellTopBlueBar" />}
+            {!collapseHeader && <div className="shellheader parent" theme={props.theme}>
                 <div className="shellheaderTop">
                     <div className="startBar">
                         <Slot slot="start-bar">{props.children}</Slot>
@@ -46,9 +46,9 @@ function Shell(props) {
                         <Slot slot="end-bar">{props.children}</Slot>
                     </div>
                 </div>
-            </div>
+            </div>}
 
-            {projectors}
+            {!collapseHeader && projectors}
 
             <div className="shellmain">
                 <aside className="prev">
@@ -56,7 +56,7 @@ function Shell(props) {
                 </aside>
 
                 <Slot slot="body">{props.children}</Slot>
-                
+
                 <aside className="next">
                     <Slot slot="next">{props.children}</Slot>
                 </aside>

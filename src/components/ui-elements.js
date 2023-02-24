@@ -7,6 +7,8 @@ import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
 import { ReactComponent as AddVideoSVG } from '../images/addVideo.svg'
 import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
+import Word from '../containers/Word';
+import WordAdults from "../containers/Word-adult";
 
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
@@ -198,6 +200,13 @@ export function DeleteTilebutton(props) {
   </TileButton>
 }
 
+
+export function Word2(props) {
+  if (props.adultMode) {
+    return <WordAdults {...props} /> 
+  }   
+  return <Word  {...props} />;
+}
 
 
 const decorWidth = 35;

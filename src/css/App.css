@@ -174,10 +174,11 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .videoHostNew {
-  position: relative;
+  position: absolute;
   width: 100%;
   display: flex;
   justify-content: center;
+  /* margin: 2%; */
 }
 
 .videoButtonsNew {
@@ -185,16 +186,16 @@ input[type="search"]::-webkit-search-results-decoration {
   width: 100px;
   height: 100px;
 
-  bottom: 20px;
-  right: 20px;
+  bottom: -40px;
+  right: calc(50% - 50px);
   z-index: 10;
   border-radius: 50%;
 }
 
 .videoButtonsBackgroundNew {
   position: absolute;
-  bottom: 35px;
-  right: 30px;
+  bottom: -27.5px;
+  right: calc(50% - 37.5px);
   z-index: 1;
   background-color: white;
   width: 75px;

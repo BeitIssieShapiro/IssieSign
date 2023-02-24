@@ -156,7 +156,18 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         />
 
       </div>
+      {isMyIssieSign() && <div className="settings-item">
+        <ToggleButtons
+          title={translate("SettingsLanguage")}
+          buttons={[
+            { icon: <div>ע</div>, caption: "עברית", onSelect: () => changeLanguage("he"), selected: currLanguage === "he" },
+            { icon: <div>E</div>, caption: "English", onSelect: () => changeLanguage("en"), selected: currLanguage === "en" },
+            { icon: <div>ع</div>, caption: "عربي", onSelect: () => changeLanguage("ar"), selected: currLanguage === "ar" },
+          ]}
+        />
 
+      </div>
+      }
       {!isMyIssieSign() && <div className="settings-item">
 
         <lbl>
@@ -215,54 +226,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         {email && <div className="settingsSubTitle settings-selected">{"מחובר " + email}</div>}
       </div>
 
-      {isMyIssieSign() && <div className="settings-item">
-        <ToggleButtons
-          title={translate("SettingsLanguage")}
-          buttons={[
-            { icon: <div>ע</div>, caption: "עברית", onSelect: () => changeLanguage("he"), selected: currLanguage === "he" },
-            { icon: <div>E</div>, caption: "English", onSelect: () => changeLanguage("en"), selected: currLanguage === "en" },
-            { icon: <div>ع</div>, caption: "عربي", onSelect: () => changeLanguage("ar"), selected: currLanguage === "ar" },
-          ]}
-        />
-
-
-        {/* <lbl>
-          <div>{translate("SettingsLanguage")}</div>
-          <div className="settingsSubTitle settings-selected">{
-            currLanguage === "he" ? "עברית" :
-              (currLanguage === "en" ? "English" :
-                (currLanguage === "ar" ? "عربي" : "Default"))
-          }</div>
-        </lbl>
-
-        {isMyIssieSign() && <div className="settingsGroup">
-          <input type="radio" id="en" name="lang" value="en" checked={currLanguage === "en"}
-            onChange={(e) => changeLanguage(e.currentTarget.value)}
-          />
-          <label for="en">English</label>
-
-
-          <input type="radio" id="ar" name="lang" value="ar" checked={currLanguage === "ar"}
-            onChange={(e) => changeLanguage(e.currentTarget.value)}
-          />
-          <label for="en">عربي</label> {//todo
-
-          }
-
-
-          <input type="radio" id="he" name="lang" value="he" checked={currLanguage === "he" || !currLanguage}
-            onChange={(e) => changeLanguage(e.currentTarget.value)}
-          />
-          <label for="he">עברית</label>
-
-        </div>
-        } */}
-        {/*option2*/}
-        {/* <div className="lang-item" onClick={()=>setLangSettingsMode(true)}>
-          {currLanguage === "en" ? <ArrowForwardIos style={{ fontSize: 40 }} /> : <ArrowBackIos style={{ fontSize: 40 }} />}
-        </div> */}
-      </div>
-      }
+      
     </div>
   </ModalDialog >
 }
