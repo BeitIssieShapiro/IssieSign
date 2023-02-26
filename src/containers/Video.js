@@ -56,23 +56,11 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
 
         if (screenRatio > videoRatio) {
             setVideoWidth(videoDimension.w * innerHeight / videoDimension.h);
-            setVideoHeight(innerHeight+12);
+            setVideoHeight(innerHeight+13);
         } else {
             setVideoWidth(innerWidth);
-            setVideoHeight(videoDimension.h * innerWidth / videoDimension.w+12);
+            setVideoHeight(videoDimension.h * innerWidth / videoDimension.w+13);
         }
-
-        // const wFactor = videoDimension.w / innerWidth;
-        // const hFactor = videoDimension.h / (innerHeight);
-        // let fullWidth = (1 / wFactor) * videoDimension.w;
-        // let fullHeight = (1 / wFactor) * videoDimension.h;
-        // if (fullHeight > innerHeight) {
-        //     fullWidth = (1 / hFactor) * videoDimension.w;
-        //     fullHeight = (1 / hFactor) * videoDimension.h;
-        // }
-
-        // setVideoWidth(fullWidth);
-        // setVideoHeight(fullHeight);
 
     }, [window.innerHeight, window.innerWidth, isMobile, videoDimension, maxWidth]);
 

@@ -11,8 +11,8 @@ const mainJson = {
         {
           "name": "Add a word",
           "id": 101,
-          "imageName": "אוזניים.png",
-          "videoName": "אוזניים.mov"
+          "imageName": "R641.png",
+          videoName: "https://www.issieapps.com/videos/tutorial-ar.mp4",
         },
         {
           "name": "Add a category",

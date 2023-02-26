@@ -43,8 +43,8 @@ export default class FileSystem {
     }
 
     index = isBrowser() ? ({
-        categories2: mainJson.categories,
-        categories : [
+        categories: mainJson.categories,
+        categories2 : [
             {
                 "name": "TutorialsCategory",
                 "id": "1",
@@ -57,7 +57,7 @@ export default class FileSystem {
                         id: "הוספת מילה",
                         category: "בודק עברית",
                         imageName: "בודק עברית/אוזניים.png",
-                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                        videoName: "https://www.issieapps.com/videos/tutorial-ar.mp4",
                     }
                 ]
             },

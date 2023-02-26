@@ -148,7 +148,7 @@ class App extends IssieBase {
         document.swipeHandler = {
             getCurrent,
             setCurrent,
-            moveButton: (event, toRight) => {
+            moveButton: (toRight) => {
                 const elems = document.getElementsByClassName("scrollable");
                 if (elems.length === 1) {
                     const curr = getCurrent();
@@ -325,19 +325,27 @@ class App extends IssieBase {
     }
 
     handleSearch(e) {
+        trace("Search: " + e.target.value);
+        this.setState({ searchStr: e.target.value });
         e.persist()
-        this.setState({ searchStr: e.target.value }, () => {
-            if (e.target.value.length > 1 && !this.isSearch()) {
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout)
+        }
+
+        this.searchTimeout = setTimeout(() => {
+            const searchStr = this.state.searchStr;
+            if (searchStr.length > 1 && !this.isSearch()) {
                 this.props.history.push(SEARCH_PATH);
-                this.setState({ bodyScroll: SCROLL_RESET });
-                trace("Search: " + e.target.value);
-            } else if (e.target.value.length < 2) {
-                if (this.isSearch()) {
-                    this.goBack(true);
-                    this.setState({ searchScroll: SCROLL_RESET });
-                }
+                const newState = { bodyScroll: SCROLL_RESET };
+                newState.searchInWords = this.isWords();
+
+                this.setState(newState);
+            } else if (searchStr.length < 2 && this.isSearch()) {
+                this.goBack(true);
+                console.log("goback")
             }
-        });
+
+        }, 250);
 
     }
 
@@ -362,30 +370,31 @@ class App extends IssieBase {
         this.backInProcess = true;
         if (this.isWords()) {
             //reset words position
-            this.setState({ wordScroll: SCROLL_RESET });
+            this.setState({ wordScroll: SCROLL_RESET, categoryId: undefined });
         }
 
-        if (skipSearch === undefined && this.isSearch()) {
-            this.props.history.goBack();
-            this.setState({ searchScroll: SCROLL_RESET });
-            this.setState({ wordScroll: SCROLL_RESET });
-            setTimeout(() => this.setState({ searchStr: "" }), 100);
-        } else {
-            this.props.history.goBack();
-        }
+        if (this.isSearch()) {
+            const newState = { searchScroll: SCROLL_RESET, wordScroll: SCROLL_RESET }
 
-        setTimeout(() => {
-            this.setState({ showDelete: undefined, showShare: undefined })
-            this.backInProcess = false
-        }, 50);
+            if (!this.state.searchInWords) {
+                console.log("clean catID")
+                newState.categoryId = undefined;
+            }
+
+            this.setState(newState);
+            if (!skipSearch) {
+                setTimeout(() => this.setState({ searchStr: "" }), 100);
+            }
+        }
+        this.props.history.goBack();
     }
 
     ScrollLeft(e) {
-        document.swipeHandler.moveButton(e, false);
+        document.swipeHandler.moveButton(false);
     }
 
     ScrollRight(e) {
-        document.swipeHandler.moveButton(e, true);
+        document.swipeHandler.moveButton(true);
     }
 
     showInfo() {
@@ -394,7 +403,7 @@ class App extends IssieBase {
     }
 
     isSwipeAllowed = () => {
-        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || this.state.adultMode || this.state.menuOpen);
+        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen);
     }
 
     onFavoriteToggle = (categoryId, title, changeToOn) => {
@@ -413,7 +422,7 @@ class App extends IssieBase {
 
     render() {
         let path = this.props.history.path;
-        console.log("sett scroll", this.state.settingsScroll?.x, this.state.settingsScroll?.y)
+        //console.log("sett scroll", this.state.settingsScroll?.x, this.state.settingsScroll?.y)
         //console.log("render app")
         let leftArrow = "";
         let rightArrow = "";
@@ -435,7 +444,10 @@ class App extends IssieBase {
         }
 
         if (!this.isSwipeAllowed() && !this.isShareScreen() &&
-            (!this.isAddScreen() && !this.isVideo() && (this.isWords() && !this.state.adultMode))) {
+            (!this.isAddScreen() && !this.isVideo() && (
+                this.isWords() && !this.state.adultMode) ||
+                this.isSearch() ||
+                App.isHome(this.props))) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
             rightArrow = <PrevButton slot="prev" onClick={this.ScrollLeft} id="scrollLeft" />
         }

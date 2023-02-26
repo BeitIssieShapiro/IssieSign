@@ -9,7 +9,10 @@ import { Word2 } from "../components/ui-elements";
 
 
 function fuzzyMatch(str, searchStr) {
-    return str.toLowerCase().includes(searchStr.toLowerCase());// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
+
+    return str && searchStr ? 
+        str.toLowerCase().includes(searchStr.toLowerCase()):// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
+        false;
 }
 
 function Search(props) {
@@ -65,7 +68,7 @@ function Search(props) {
     return (
         <div scroll-marker="1" className='scrollable tileContainer' theme={getThemeName(props.themeId)} style={{
             width: props.isMobile ? '110%' : '100%',
-            transform: 'translateX(' + props.scroll.x + 'px)',
+            transform: 'translateX(' + props.scroll?.x + 'px)',
             flexDirection: 'column',
             transitionDuration: props.allowSwipe ? '0s' : '1.7s',
 
