@@ -127,7 +127,7 @@ function WordAdults(props) {
             isMobile={isMobile()}
             videoName={selectedWord.userContent ? "file" : selectedWord.videoName}
             filePath={selectedWord.userContent ? selectedWord.videoName : ""}
-            maxWidth={window.innerWidth - sideBarSize}
+            maxWidth={window.innerWidth - sideBarSize - 15}
             isFavorite={selectedWord.favorite}
             categoryId={selectedWord.categoryId || props.categoryId}
             title={selectedWord.name}

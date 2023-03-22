@@ -16,16 +16,6 @@ function Word(props) {
         }
     }, [props.pubSub, props.categoryId]);
 
-    // static getDerivedStateFromProps(props, state) {
-    //     if (props.pubSub && props.categoryId) {
-    //         props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
-    //         props.pubSub.publish({ command: "set-themeId", themeId: props.themeId });
-    //     }
-
-    //     return null;
-    // }
-
-
 
 
     let wordsElements = [];
@@ -89,6 +79,7 @@ function Word(props) {
     let lineWidth = -1;
     let curLine = -1;
     let lines = [];
+
     for (let i = 0; i < wordsElements.length; i++) {
         let card = wordsElements[i];
         lineWidth += (card.imageName2 ? 300 : 200);
@@ -100,6 +91,7 @@ function Word(props) {
         lines[curLine].push(card);
     }
 
+
     return (
         <div scroll-marker="1" className={props.InSearch ? "subTileContainer wordContainer" : "scrollable tileContainer wordContainer"}
             style={{
@@ -110,7 +102,7 @@ function Word(props) {
 
             }}>
             {lines.map((line, i) => {
-                
+
                 return <Rope size={line.length} key={i}>
                     {line}
                 </Rope>

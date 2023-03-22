@@ -1,4 +1,14 @@
 bugs:
+V- where to put new folders in he/ar?
+V- delete cat not working myissiesign
+V- שיתוף - צבע תיקיה לא נשמר
+V- לידת מוחמד לא מנגן, אלאסראא
+V- create new word in favorites
+V- video first too big, should start with aspect ration 5/9 or hidden
+V- מצב סינכרון in-sync
+V- מחיקה - delete also from cloud? - no
+
+
 V- add to favorite from search
 V- scroll in word unlimited 
 V- no projectors on Add screen

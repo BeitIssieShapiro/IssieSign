@@ -110,6 +110,7 @@ export class ShareCart {
                 let fCategory = FileSystem.get().findCategory(category);
                 jsonCategory = {
                     name: category,
+                    themeId: fCategory.themeId,
                     words: []
                 }
                 if (fCategory.userContent) {
@@ -219,7 +220,7 @@ export class ShareCart {
                     await FileSystem.get().getDir(cat.name, true);
 
                     await FileSystem.gdriveDownload(cat.imageFileId, fullPath + cat.name + "/default.jpg", true);
-                    await FileSystem.get().addCategory(cat.name, { imported: true });
+                    await FileSystem.get().addCategory(cat.name, { imported: true, themeId: cat.themeId });
                     existingCategories = FileSystem.get().getCategories();
                     importedCat = existingCategories.find(c => c.name === cat.name);
                 }

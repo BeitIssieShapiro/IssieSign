@@ -6,6 +6,7 @@ export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
 export const ADULT_MODE_KEY = "IssieSign_Settings_AdultMode";
 
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
+export const SHOW_OWN_FOLDERS_FIRST_KEY = "IssieSign_Settings_ShowOwnFoldersFirst";
 export const LANG_KEY = "MyIssieSign_Settings_Lang";
 //export const HIDE_TUTORIAL_KEY = "MyIssieSign_Settings_Hide_Tutorial";
 
@@ -65,7 +66,7 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
 
     let rows = Math.max(Math.floor((windowHeight - 153) / tileH), 1);
     if (inSearch) {
-        rows = Math.floor(rows / 2);
+        rows = Math.max(rows - 1, 1);
     }
     let cols = Math.ceil(elementCount / rows);
     return cols * tileW;

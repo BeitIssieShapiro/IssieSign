@@ -2,12 +2,13 @@ import {
     ArrowForwardRounded, Favorite, FavoriteBorder, PauseCircleFilled, PlayCircle,
     ReplayCircleFilled
 } from "@mui/icons-material";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import FileSystem from "../apis/filesystem";
+import { createPortal } from 'react-dom';
 
 import '../css/App.css';
 
-const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
+const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
     maxWidth, isFavorite, onFavoriteToggle, headerSize }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
@@ -15,10 +16,66 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
 
     const [videoUrl, setVideoUrl] = useState("");
     const [youTube, setYouTube] = useState(false);
-    const [videoDimension, setVideoDimension] = useState({w:window.innerWidth, h:window.innerHeight - headerSize});
+    const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5/9 });
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
     const videoRef = useRef(null);
+
+    const vidElem = document.getElementById("video");
+    const vidHost = document.getElementById("videoHost");
+
+    const onClick = useCallback(() => {
+        if (ended || paused) {
+            vidElem.play();
+        } else if (playing) {
+            vidElem.pause();
+        }
+    }, [ended, paused, playing])
+
+    const onPlay = () => {
+        setPlaying(true);
+        setPaused(false);
+        setEnded(false);
+    };
+
+    const onPause = () => {
+        setPaused(true);
+        setPlaying(false);
+    }
+    const onEnded = () => {
+        setEnded(true);
+        setPlaying(false);
+        setPaused(true);
+    }
+
+    const onLoadedMetadata = (e) => setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight });
+
+    useEffect(() => {
+        vidElem.addEventListener("click", onClick);
+        vidElem.addEventListener("play", onPlay);
+        vidElem.addEventListener("pause", onPause);
+        vidElem.addEventListener("ended", onEnded);
+        vidElem.addEventListener("loadedmetadata", onLoadedMetadata);
+
+
+        return () => {
+            vidElem.removeEventListener("click", onClick);
+            vidElem.removeEventListener("play", onPlay);
+            vidElem.removeEventListener("pause", onPause);
+            vidElem.removeEventListener("ended", onEnded);
+            vidElem.removeEventListener("loadedmetadata", onLoadedMetadata);
+        }
+    }, [onClick])
+
+    useEffect(() => {
+        vidHost.style.display = "block";
+
+        return () => {
+            vidHost.style.display = "none";
+            vidElem.pause();
+        }
+    }, [])
+
 
     useEffect(() => {
         setYouTube(false);
@@ -42,12 +99,13 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
                 }
             }
         }
-        setVideoUrl(videoContent)
+        //setVideoUrl(videoContent)
+        vidElem.src = videoContent;
 
     }, [videoName, filePath])
 
-    //const headerSize = isMobile && isLandscape ? 0 : 360;
-    const innerHeight = window.innerHeight - 40 - (isMobile && isLandscape ? 0 : headerSize);
+    const headerSizeAct = isMobile && isLandscape ? 0 : headerSize;
+    const innerHeight = window.innerHeight - 40 - headerSizeAct;
 
     useEffect(() => {
         const innerWidth = (maxWidth || window.innerWidth) - 20;
@@ -56,84 +114,46 @@ const Video = ({ videoName, filePath, title, categoryId, isMobile, isLandscape, 
 
         if (screenRatio > videoRatio) {
             setVideoWidth(videoDimension.w * innerHeight / videoDimension.h);
-            setVideoHeight(innerHeight+13);
+            setVideoHeight(innerHeight + 13);
         } else {
             setVideoWidth(innerWidth);
-            setVideoHeight(videoDimension.h * innerWidth / videoDimension.w+13);
+            setVideoHeight(videoDimension.h * innerWidth / videoDimension.w + 13);
         }
 
     }, [window.innerHeight, window.innerWidth, isMobile, videoDimension, maxWidth]);
 
     const leftPos = maxWidth ? (maxWidth - videoWidth) / 2 : (window.innerWidth - videoWidth) / 2;
 
-    // console.log( (innerHeight  - videoHeight)/2)
-
-    return (
-        <div className="videoHostNew" style={{ top: Math.max((innerHeight - videoHeight) / 2 - 15, -2) }}>
-            <video
-                //onTimeUpdate={handleProgress}
-                ref={videoRef}
-                playsInline={true}
-                autoPlay={true}
-                width={videoWidth}
-                height={videoHeight}
-                src={videoUrl}
-                style={{
-                    display: "flex", alignItems: "flex-start",
-                    borderWidth: 15,
-                    borderStyle: "solid",
-                    borderColor: "black",
-                    boxShadow: "rgb(66 66 77 / 50%) 13px 14px 5px"
-                }}
-                onLoadedMetadata={(e) => {
-                    setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight })
-                }}
-                onClick={() => {
-                    if (ended || paused) {
-                        videoRef.current?.play();
-                    } else if (playing) {
-                        videoRef.current?.pause();
-                    }
-                }}
-                onPlay={() => {
-                    setPlaying(true);
-                    setPaused(false);
-                    setEnded(false);
-                }}
-                onPause={() => {
-                    setPaused(true);
-                    setPlaying(false);
-                }}
-                onEnded={() => {
-                    setEnded(true);
-                    setPlaying(false);
-                    setPaused(true);
-                }}
-
-            >
-            </video>
-            {isMobile && isLandscape && <div className="videoBackButtonMobile" >
-                <ArrowForwardRounded style={{ fontSize: 80 }} className="videoButtonNew"
-                    onClick={goBack}
-                />
-            </div>
-            }
-
-            {videoDimension !== 0 && <div style={{
-                position: "absolute",
-                left: leftPos + 35, top: 25
-            }} onClick={() => onFavoriteToggle && onFavoriteToggle(categoryId, title, !isFavorite)}>
-                {isFavorite ? <Favorite style={{ fontSize: 50 }} /> :
-                    <FavoriteBorder style={{ fontSize: 50 }} />}
-            </div>}
-            {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />}
-            <div className="videoButtonsNew">
-                {playing && <PauseCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.pause()} />}
-                {paused && !ended && <PlayCircle style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
-                {ended && <ReplayCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => videoRef.current?.play()} />}
-            </div>
+    const videoTop = headerSizeAct + Math.max((innerHeight - videoHeight) / 2 - 15, -2);
+    if (vidHost) {
+        vidHost.style.height = videoHeight + "px";
+        vidHost.style.width = videoWidth + "px";
+        vidHost.style.top = videoTop + "px";
+        vidHost.style.left = leftPos + "px";
+    }
+    return createPortal(<div className="videoHostNew" >
+        {isMobile && isLandscape && <div className="videoBackButtonMobile" >
+            <ArrowForwardRounded style={{ fontSize: 80 }} className="videoButtonNew"
+                onClick={goBack}
+            />
         </div>
-    )
-}
+        }
+
+        {videoDimension !== 0 && <div style={{
+            position: "absolute",
+            left: 30, top: -videoHeight + 30,
+        }} onClick={() => onFavoriteToggle && onFavoriteToggle(categoryId, title, !isFavorite)}>
+            {isFavorite ? <Favorite style={{ fontSize: 50 }} /> :
+                <FavoriteBorder style={{ fontSize: 50 }} />}
+        </div>}
+
+        {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />}
+        <div className="videoButtonsNew">
+            {playing && <PauseCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.pause()} />}
+            {paused && !ended && <PlayCircle style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
+            {ended && <ReplayCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
+        </div>
+    </div>, document.getElementById("videoButtons"))
+});
 
 export default Video;

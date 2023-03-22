@@ -115,7 +115,8 @@ var strings = {
         "BtnLogout": "התנתק",
         "BtnReconsile": "הסתנכרן",
         "ReconsileStarted": "סינכרון החל",
-
+        "in-sync": "מסונכרן",
+        "ShowOwnCategoriesFirst": "הצג תחילה תיקיות שלך",
     },
     "ar": {
 
@@ -200,6 +201,7 @@ var strings = {
         "SyncStatusNone": "غير متزامن",
         "SyncStatusLbl": "وضع المزامنة",
         "SyncErrorLbl": "خطأ في التزامن",
+        "in-sync": "في تزامن",
         "ShareCartTitle": "قائمة المشاركة",
         "ShareCartCategoryColumnTitle": "مجموعة",
         "ShareCartWordNameColumnTitle": "كلمة",
@@ -224,6 +226,7 @@ var strings = {
         "TutorialsCategory":"الدليل",
         "SettingsHideFolder":"إخفاء ملف {1}",
         "SearchTitle":"بحث: {1}", 
+        "ShowOwnCategoriesFirst": "הצגת תיקיות שלך ראשונות",
     },
     "en": {
         "AppTitle": "My IssieSign",
@@ -334,6 +337,7 @@ var strings = {
         "BtnLogout": "Logout",
         "BtnReconsile": "Sync",
         "ReconsileStarted": "Sync started",
+        "ShowOwnCategoriesFirst": "Show Own Folders First",
 
     }
 }

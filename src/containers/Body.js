@@ -101,26 +101,30 @@ class Body extends IssieBase {
         let lineWidth = 0;
         let curLine = -1;
         let lines = [];
-        for (let i = 0; i < elements.length; i++) {
-            let card = elements[i];
-            //card.props.dimensions.boxHeight = tileH - 28;
-            lineWidth += tileW;
-            if (curLine < 0 || lineWidth > width) {
-                curLine++;
-                lines.push([]);
-                lineWidth = tileW;
+        if (this.props.InSearch) {
+            lines.push(elements);
+        } else {
+            for (let i = 0; i < elements.length; i++) {
+                let card = elements[i];
+                //card.props.dimensions.boxHeight = tileH - 28;
+                lineWidth += tileW;
+                if (curLine < 0 || lineWidth > width) {
+                    curLine++;
+                    lines.push([]);
+                    lineWidth = tileW;
+                }
+                lines[curLine].push(card);
             }
-            lines[curLine].push(card);
         }
 
         // Calculate the height of one box:
-        const adjustedTileH = (this.props.dimensions.height - 153)/lines.length;
+        const adjustedTileH = (this.props.dimensions.height - 153) / lines.length;
         //console.log("boxHeight",lines.length, tileH, lines.length* tileH, adjustedTileH)
 
         if (lines.length > 1 && !this.props.isMobile && elements.length > 12) {
-            lines.forEach(line=>{
-                line.forEach(card=>card.props.dimensions.boxHeight = adjustedTileH - 30)
-            });    
+            lines.forEach(line => {
+                line.forEach(card => card.props.dimensions.boxHeight = adjustedTileH - 30)
+            });
         }
 
         //console.log("Body: narrow: "+(narrow?'yes':'no')+"Height: " + window.innerHeight + ", window.innerWidth=" + window.innerWidth + ", Width: " + width);

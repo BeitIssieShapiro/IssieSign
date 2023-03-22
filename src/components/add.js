@@ -382,7 +382,7 @@ function AddEditItem(props) {
                         {translate("SyncToCloudTitle")}
                         <div className="syncLine">
                             <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
-                            <div className="syncCaption">{origElem?.sync ? origElem.sync : translate("SyncStatusNone")}</div>
+                            <div className="syncCaption">{origElem?.sync ? translate(origElem.sync) : translate("SyncStatusNone")}</div>
                         </div>
 
                         <div className="syncLine">

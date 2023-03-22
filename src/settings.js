@@ -2,7 +2,8 @@ import './css/settings.css';
 import React, { useEffect, useState } from 'react';
 import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
-import { ADULT_MODE_KEY, ALLOW_ADD_KEY, ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey } from './utils/Utils';
+import { ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY, 
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey } from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
@@ -78,7 +79,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
   const width = Math.min(550, window.innerWidth);
 
-  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight:"bold" }} onClose={onClose}
+  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
     //animate={true} 
     width={width} // + "px"}
     style={{ top: 170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": "8vw" }}
@@ -202,6 +203,27 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         />
       </div>)
       }
+
+      {!isMyIssieSign() && <div className="settings-item">
+
+        <lbl>
+          <div>{translate("ShowOwnCategoriesFirst")}</div>
+        </lbl>
+        <RadioBtn className="settingsAction"
+          checked={state.showOwnFoldersFirst == true}
+          onText={translate("Yes")}
+          offText={translate("No")}
+
+          onChange={(isOn) => {
+            saveSettingKey(SHOW_OWN_FOLDERS_FIRST_KEY, isOn);
+            setState({ showOwnFoldersFirst: isOn });
+            window[SHOW_OWN_FOLDERS_FIRST_KEY] = isOn;
+            FileSystem.get().setCustomFoldersFirst(isOn);
+          }}
+        />
+      </div>}
+
+
       <div className="settings-item no-bottom-seperator" >
         <lbl>  {translate("SettingsConnectedGDrive")}    </lbl>
 
@@ -226,7 +248,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         {email && <div className="settingsSubTitle settings-selected">{"מחובר " + email}</div>}
       </div>
 
-      
+
     </div>
   </ModalDialog >
 }

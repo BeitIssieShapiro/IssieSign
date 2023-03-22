@@ -196,6 +196,7 @@ input[type="search"]::-webkit-search-results-decoration {
   position: absolute;
   bottom: -27.5px;
   right: calc(50% - 37.5px);
+  height: 100%;
   z-index: 1;
   background-color: white;
   width: 75px;
@@ -208,7 +209,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 .videoBackButtonMobile {
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;

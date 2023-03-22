@@ -1105,27 +1105,6 @@ const mainJson = {
           ]
         },
         {
-          "name": "ראש השנה ההיגרית",
-          "id": "1128",
-          "imageName": "D128.png",
-          "videoName": "D128.mp4",
-          "tags": []
-        },
-        {
-          "name": "לידת מוחמד",
-          "id": "1129",
-          "imageName": "D129.png",
-          "videoName": "D129.mp4",
-          "tags": []
-        },
-        {
-          "name": "אלאִסראא' ואלמעראג'",
-          "id": "1130",
-          "imageName": "D130.png",
-          "videoName": "D130.mp4",
-          "tags": []
-        },
-        {
           "name": "מסיבה",
           "id": "1131",
           "imageName": "D131.png",
@@ -1204,6 +1183,153 @@ const mainJson = {
             "טוב",
             "מתוק"
           ]
+        },
+        {
+          "name": "רמדאן כרים",
+          "id": "1059",
+          "imageName": "B59.png",
+          "videoName": "B59.mp4",
+          "tags": []
+        },
+        {
+          "name": "סביבון",
+          "id": "1089",
+          "imageName": "CC89.png",
+          "videoName": "CC89.mp4",
+          "tags": [
+            "חנוכה",
+            "דריידל"
+          ]
+        },
+        {
+          "name": "חנוכיה",
+          "id": "1265",
+          "imageName": "G265.png",
+          "videoName": "G265.mp4",
+          "tags": [
+            "חנוכה",
+            "חג"
+          ]
+        },
+        {
+          "name": "דגל",
+          "id": "1267",
+          "imageName": "G267.png",
+          "videoName": "G267.mp4",
+          "tags": [
+            "יום",
+            "העצמאות"
+          ]
+        },
+        {
+          "name": "הגדה",
+          "id": "1268",
+          "imageName": "G268.png",
+          "videoName": "G268.mp4",
+          "tags": [
+            "חג",
+            "פסח"
+          ]
+        },
+        {
+          "name": "ארבעת המינים",
+          "id": "1305",
+          "imageName": "H305.png",
+          "videoName": "H305.mp4",
+          "tags": []
+        },
+        {
+          "name": "רעשן",
+          "id": "1342",
+          "imageName": "J342.png",
+          "videoName": "J342.mp4",
+          "tags": []
+        },
+        {
+          "name": "שופר",
+          "id": "1347",
+          "imageName": "J347.png",
+          "videoName": "J347.mp4",
+          "tags": []
+        },
+        {
+          "name": "דבש",
+          "id": "1413",
+          "imageName": "M413.png",
+          "videoName": "M413.mp4",
+          "tags": [
+            "מתוק"
+          ]
+        },
+        {
+          "name": "סופגניה",
+          "id": "1430",
+          "imageName": "M430.png",
+          "videoName": "M430.mp4",
+          "tags": []
+        },
+        {
+          "name": "לביבה",
+          "id": "1456",
+          "imageName": "M456.png",
+          "videoName": "M456.mp4",
+          "tags": []
+        },
+        {
+          "name": "משלוח מנות",
+          "id": "1457",
+          "imageName": "M457.png",
+          "videoName": "M457.mp4",
+          "tags": []
+        },
+        {
+          "name": "אוזני המן",
+          "id": "1458",
+          "imageName": "M458.png",
+          "videoName": "M458.mp4",
+          "tags": []
+        },
+        {
+          "name": "מצה",
+          "id": "1460",
+          "imageName": "M460.png",
+          "videoName": "M460.mp4",
+          "tags": []
+        },
+        {
+          "name": "בית כנסת",
+          "id": "1485",
+          "imageName": "O485.png",
+          "videoName": "O485.mp4",
+          "tags": [
+            "להתפלל",
+            "התפלל",
+            "מתפלל"
+          ]
+        },
+        {
+          "name": "רימון",
+          "id": "1550",
+          "imageName": "Q550.png",
+          "videoName": "Q550.mp4",
+          "tags": []
+        },
+        {
+          "name": "אתרוג",
+          "id": "1559",
+          "imageName": "Q559.png",
+          "videoName": "Q559.mp4",
+          "tags": [
+            "לחפש",
+            "סמל"
+          ]
+        },
+        {
+          "name": "תחפושת",
+          "id": "1391",
+          "imageName": "L391.png",
+          "videoName": "L391.mp4",
+          "tags": []
         }
       ],
       "imageName": "D108.png"
@@ -3665,73 +3791,10 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "מלוכיה",
-          "id": "1445",
-          "imageName": "M445.png",
-          "videoName": "M445.mp4",
-          "tags": []
-        },
-        {
           "name": "שמן",
           "id": "1446",
           "imageName": "M446.png",
           "videoName": "M446.mp4",
-          "tags": []
-        },
-        {
-          "name": "גבינה לבנה קשה",
-          "id": "1447",
-          "imageName": "M447.png",
-          "videoName": "M447.mp4",
-          "tags": []
-        },
-        {
-          "name": "מנאקיש-מאפה זעתר",
-          "id": "1448",
-          "imageName": "M448.png",
-          "videoName": "M448.mp4",
-          "tags": []
-        },
-        {
-          "name": "עוגיות החג",
-          "id": "1449",
-          "imageName": "M449.png",
-          "videoName": "M449.mp4",
-          "tags": []
-        },
-        {
-          "name": "זעתר",
-          "id": "1450",
-          "imageName": "M450.png",
-          "videoName": "M450.mp4",
-          "tags": []
-        },
-        {
-          "name": "לבנה",
-          "id": "1451",
-          "imageName": "M451.png",
-          "videoName": "M451.mp4",
-          "tags": []
-        },
-        {
-          "name": "גבינה משולשת",
-          "id": "1452",
-          "imageName": "M452.png",
-          "videoName": "M452.mp4",
-          "tags": []
-        },
-        {
-          "name": "מג'דרה",
-          "id": "1453",
-          "imageName": "M453.png",
-          "videoName": "M453.mp4",
-          "tags": []
-        },
-        {
-          "name": "קטאייף",
-          "id": "1454",
-          "imageName": "M454.png",
-          "videoName": "M454.mp4",
           "tags": []
         },
         {
@@ -4184,13 +4247,6 @@ const mainJson = {
           ]
         },
         {
-          "name": "הכעבה",
-          "id": "1508",
-          "imageName": "O508.png",
-          "videoName": "O508.mp4",
-          "tags": []
-        },
-        {
           "name": "ירושלים",
           "id": "1509",
           "imageName": "O509.png",
@@ -4212,7 +4268,7 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "סנוזלן??",
+          "name": "סנוזלן",
           "id": "1512",
           "imageName": "O512.png",
           "videoName": "O512.mp4",
@@ -6762,20 +6818,6 @@ const mainJson = {
           "id": "1788",
           "imageName": "X788.png",
           "videoName": "X788.mp4",
-          "tags": []
-        },
-        {
-          "name": "שיעור דת האסלאם",
-          "id": "1789",
-          "imageName": "X789.png",
-          "videoName": "X789.mp4",
-          "tags": []
-        },
-        {
-          "name": "שעור ערבית",
-          "id": "1790",
-          "imageName": "X790.png",
-          "videoName": "X790.mp4",
           "tags": []
         },
         {

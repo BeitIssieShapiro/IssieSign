@@ -314,7 +314,7 @@ function getWord(row, lang, id) {
         wordName = issieWords[CATEGOTY_COL + row]?.v
     }
 
-    const knownMissing = [288, 470, 523, 305, 347, 516, 523, 679, 742, 756, 760, 763]
+    const knownMissing = [288, 470, 523, 305, 347, 516, 523, 679, 742, 756, 760, 763, 806]
     if (!wordName || wordName.trim().length == 0) {
         if (!knownMissing.some(km => km == row)) {
             console.log("missing word", lang, row)

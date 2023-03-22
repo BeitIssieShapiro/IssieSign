@@ -8,6 +8,8 @@ let fileSystem;
 export default class FileSystem {
     static INDEX_FILE = "index.json";
     static FAVORITES_ID = "__favorites__";
+    static FAVORITES_NAME = "FavoritesCategory";
+    static TUTORIAL_NAME = "TutorialsCategory";
     static SCHEME_PREFIX = "";
 
     static cacheBuster = 0;
@@ -43,8 +45,8 @@ export default class FileSystem {
     }
 
     index = isBrowser() ? ({
-        categories: mainJson.categories,
-        categories2 : [
+        categories2: mainJson.categories,
+        categories : [
             {
                 "name": "TutorialsCategory",
                 "id": "1",
@@ -143,8 +145,9 @@ export default class FileSystem {
         return window['documents'];
     }
 
-    async init(defaultContent, pubSub) {
+    async init(defaultContent, pubSub, showCustomFoldersFirst) {
         console.log("Init file system");
+        this.showCustomFoldersFirst = showCustomFoldersFirst;
         this.pubSub = pubSub;
         if (!isBrowser()) {
             return new Promise(async (resolve, reject) => {
@@ -218,10 +221,17 @@ export default class FileSystem {
         }
     }
 
+    setCustomFoldersFirst(val) {
+        this.showCustomFoldersFirst = val;
+        this.sortCategories();
+    }
+
     sortCategories() {
         this.index.categories.sort((a, b) => {
             if (a.id === FileSystem.FAVORITES_ID) return -1;
             if (b.id === FileSystem.FAVORITES_ID) return 1;
+            if (a.userContent && !b.userContent) return this.showCustomFoldersFirst ? -1 : 1;
+            if (!a.userContent && b.userContent) return this.showCustomFoldersFirst ? 1 : -1;
             return (a.name < b.name ? -1 : 1);
         })
     }

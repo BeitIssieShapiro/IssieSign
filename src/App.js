@@ -8,7 +8,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY } from "./utils/Utils";
 import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -161,10 +161,12 @@ class App extends IssieBase {
         window.goBack = () => this.goBack();
         let lang = getLanguage();
         setLanguage(lang)
+        
+        const showOwnFoldersFirst = isMyIssieSign() || getBooleanSettingKey(SHOW_OWN_FOLDERS_FIRST_KEY, true);
 
         const pubsub = new PubSub()
-        trace("App: Init file system");
-        await FileSystem.get().init(mainJson, pubsub).then(() => this.setState({ fs: FileSystem.get() }));
+        trace("App: Init file system", showOwnFoldersFirst);
+        await FileSystem.get().init(mainJson, pubsub, showOwnFoldersFirst).then(() => this.setState({ fs: FileSystem.get() }));
 
         const shareCart = new ShareCart();
 
@@ -172,6 +174,7 @@ class App extends IssieBase {
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            showOwnFoldersFirst,
             adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
             language: lang,
             pubSub: pubsub,
@@ -460,6 +463,8 @@ class App extends IssieBase {
             overFlowX = 'visible';
         }
 
+        console.log("catID", this.state.categoryId)
+
         return (
             <div className="App" style={getLanguage() == "he" ? { fontFamily: "ArialMT" } : {}}>
 
@@ -520,7 +525,10 @@ class App extends IssieBase {
 
                     {this.state.editMode && !this.isAddScreen() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
 
-                    {this.state.allowAddWord && (App.isHome(this.props) || this.isWords()) && this.state.editMode && !this.isVideo() &&
+                    {this.state.allowAddWord &&
+                        (App.isHome(this.props) ||
+                            (this.isWords() && this.state.categoryId !== FileSystem.FAVORITES_NAME && this.state.categoryId !== FileSystem.TUTORIAL_NAME)) &&
+                        this.state.editMode && !this.isVideo() &&
                         <AddButton slot="start-bar"
                             addFolder={App.isHome(this.props)}
                             onClick={() => this.handleNewClick()} color='white'
@@ -572,6 +580,7 @@ class App extends IssieBase {
             return <Body
                 categories={FileSystem.get().getCategories()}
                 allowAddWord={this.state.allowAddWord}
+                showOwnFoldersFirst={this.state.showOwnFoldersFirst}
                 isLandscape={IssieBase.isLandscape()}
                 isMobile={IssieBase.isMobile()}
                 pubSub={this.state.pubSub}
