@@ -1,4 +1,26 @@
+
+features:
+- move word to another folder
+- deal with conflicts in importing
+
+
 bugs:
+- anonymous download in android
+V- in מילים שימושיות sort by id
+V- sort single image before all double images
+V- check arabic and Heb AA - should also be Z803-Z804?
+V- fix Z: X764-X795
+V- repeated search and backspace pusht he header up 
+V- slide sideways in words is מגומגם
+- double images are getting out of box - can't reproduce
+V- replace fav. icone with a heart
+V- new category "useful words"
+V- have a delay on the edit button
+V- bug in imported exported package "Error importing words: unexpected missing category's FILEID"
+
+
+
+
 V- where to put new folders in he/ar?
 V- delete cat not working myissiesign
 V- שיתוף - צבע תיקיה לא נשמר

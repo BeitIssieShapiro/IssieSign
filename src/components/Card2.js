@@ -86,6 +86,8 @@ function Card2(props) {
         });
     }
 
+    let translatedName = props.translate?translate(props.cardName): props.cardName;
+
     let innerBody = (
         <div className="card" style={cardDouble} theme={getThemeName(props.themeId)}>
             <div className={"header " + (props.clipType)
@@ -95,12 +97,12 @@ function Card2(props) {
                 {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
             </div>
             <div className="footer">
-                <h2 className="rtl tileFont">{props.cardName}</h2>
+                <h2 className="rtl tileFont">{translatedName}</h2>
                 {props.editMode && !props.noMoreMenu && props.userContent &&
                     <TileButton size={24} onClick={() => {
                         props.pubSub.publish({
                             command: "open-slideup-menu", props: {
-                                label: props.cardName,
+                                label: translatedName,
                                 image: imageSrc,
                                 type: "card",
                                 //todo translate

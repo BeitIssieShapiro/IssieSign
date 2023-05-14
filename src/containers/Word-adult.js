@@ -88,6 +88,7 @@ function WordAdults(props) {
 
             return <Card2
                 editMode={props.editMode}
+                translate={word.translate}
                 categoryId={props.categoryId || word.category}
                 pubSub={props.pubSub}
                 shareCart={props.shareCart}

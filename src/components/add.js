@@ -202,19 +202,19 @@ function AddEditItem(props) {
                 <div className="fieldsContainer">
                     {/*Name Selection */}
                     <EditNameSVG className="add-icon-style" />
-                    <input type="text" className="addInput"
+                    <input type="text" className={"addInput " + (invalidName?"":"addInputSpanOverTwo")}
                         placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
                         onChange={(e) => {
                             const validName = isValid(e.target.value);
                             setLabel(e.target.value);
                             setLabelDirty(true);
-                            setInvalidName(!validName);
+                            setInvalidName(e.target.value?.length > 0 && !validName);
                         }} value={label} />
                     {invalidName && <div style={{
                         color: "red",
                         fontSize: 20,
                     }}>{translate("InvalidCharachtersInName")}</div>}
-                    <div />
+                    
                     <div className={isValid(label) ? "v-icon" : "x-icon"} />
 
                     <rowborder />

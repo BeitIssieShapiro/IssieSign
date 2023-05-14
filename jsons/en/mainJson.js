@@ -1,35 +1,40 @@
 const mainJson = {
+  "indexVersion": 1,
   "categories": [
     {
-      "name": "TutorialsCategory",
-      translate: true,
-      allowHide:true,
-      "id": "1",
-      "themeId": "3",
-      "imageName": "R587.png",
-      "words": [
-        {
-          "name": "Add a word",
-          "id": 101,
-          "imageName": "R641.png",
-          videoName: "https://www.issieapps.com/videos/tutorial-ar.mp4",
-        },
-        {
-          "name": "Add a category",
-          "id": 102,
-          "imageName": "איברי גוף.png",
-          "videoName": "איברי גוף.mov"
-        }
-      ]
-    },
-    {
       "name": "FavoritesCategory",
-      translate: true,
+      "translate": true,
       "id": "__favorites__",
       "themeId": "2",
       "imageName": "favorites.png",
       "words": []
     },
+    {
+      "name": "TutorialsCategory",
+      "allowHide": true,
+      "translate": true,
+      "id": "__tutorials__",
+      "themeId": "3",
+      "imageName": "tutorials.png",
+      "words": [
+        {
+          "name": "TutorialOverviewWord",
+          "id": "__tutorial_overview__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-overview.jpg",
+          "videoName": "https://www.issieapps.com/videos/tutorials/en/overview.mp4"
+        },
+        {
+          "name": "TutorialOverviewEditing",
+          "id": "__tutorial_editing__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-editing.png",
+          "videoName": "https://www.issieapps.com/videos/tutorials/en/editing.mp4"
+        }
+      ]
+    }
   ]
 };
 

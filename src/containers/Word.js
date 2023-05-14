@@ -28,6 +28,7 @@ function Word(props) {
 
             return <Card2 key={word.id}
                 editMode={props.editMode}
+                translate={word.translate}
                 categoryId={word.category || props.categoryId}
                 pubSub={props.pubSub}
                 shareCart={props.shareCart}

@@ -15,8 +15,25 @@ const mainJson = {
       "translate": true,
       "id": "__tutorials__",
       "themeId": "3",
-      "imageName": "R587.png",
-      "words": []
+      "imageName": "tutorials.png",
+      "words": [
+        {
+          "name": "TutorialOverviewWord",
+          "id": "__tutorial_overview__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-overview.jpg",
+          "videoName": "https://www.issieapps.com/videos/tutorials/he/overview.mp4"
+        },
+        {
+          "name": "TutorialOverviewEditing",
+          "id": "__tutorial_editing__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-editing.png",
+          "videoName": "https://www.issieapps.com/videos/tutorials/he/editing.mp4"
+        }
+      ]
     },
     {
       "name": "בעלי מקצוע",
@@ -458,14 +475,7 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "רמדאן כרים",
-          "id": "1059",
-          "imageName": "B59.png",
-          "videoName": "B59.mp4",
-          "tags": []
-        },
-        {
-          "name": "אלחמדללה / ברוך ה",
+          "name": "ברוך ה",
           "id": "1060",
           "imageName": "B60.png",
           "videoName": "B60.mp4",
@@ -547,16 +557,11 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "להשתתף",
+          "name": "שלי",
           "id": "1068",
           "imageName": "C68.png",
           "videoName": "C68.mp4",
-          "tags": [
-            "להשתתף",
-            "השתתף",
-            "השתתפות",
-            "לחלוק"
-          ]
+          "tags": []
         },
         {
           "name": "מסודר",
@@ -653,6 +658,48 @@ const mainJson = {
             "משחק",
             "יחד"
           ]
+        },
+        {
+          "name": "להשתתף",
+          "id": "1652",
+          "imageName": "R652.png",
+          "videoName": "R652.mp4",
+          "tags": [
+            "להשתתף",
+            "השתתף",
+            "השתתפות",
+            "לחלוק"
+          ]
+        },
+        {
+          "name": "להצטרף",
+          "id": "1627",
+          "imageName": "R627.png",
+          "videoName": "R627.mp4",
+          "tags": []
+        },
+        {
+          "name": "צריך",
+          "id": "1623",
+          "imageName": "R623.png",
+          "videoName": "R623.mp4",
+          "tags": [
+            "ממש"
+          ]
+        },
+        {
+          "name": "לבחור",
+          "id": "1642",
+          "imageName": "R642.png",
+          "videoName": "R642.mp4",
+          "tags": []
+        },
+        {
+          "name": "לסדר / לאסוף",
+          "id": "1650",
+          "imageName": "R650.png",
+          "videoName": "R650.mp4",
+          "tags": []
         }
       ],
       "imageName": "C61.png"
@@ -1329,6 +1376,20 @@ const mainJson = {
           "id": "1391",
           "imageName": "L391.png",
           "videoName": "L391.mp4",
+          "tags": []
+        },
+        {
+          "name": "פירות יבשים",
+          "id": "1807",
+          "imageName": "Z807.png",
+          "videoName": "Z807.mp4",
+          "tags": []
+        },
+        {
+          "name": "אגוזים ושקדים",
+          "id": "1808",
+          "imageName": "Z808.png",
+          "videoName": "Z808.mp4",
           "tags": []
         }
       ],
@@ -3932,9 +3993,8 @@ const mainJson = {
         {
           "name": "כף וכפית",
           "id": "1469",
-          "imageName": "N469 1.png",
-          "videoName": "N469.mp4",
-          "imageName2": "N469 2.png",
+          "imageName": "N469.png",
+          "videoName": "N469 .mp4",
           "tags": []
         },
         {
@@ -4486,6 +4546,13 @@ const mainJson = {
           "imageName": "P538.png",
           "videoName": "P538.mp4",
           "tags": []
+        },
+        {
+          "name": "אני",
+          "id": "1814",
+          "imageName": "AB814.png",
+          "videoName": "AB814.mp4",
+          "tags": []
         }
       ],
       "imageName": "P522.png"
@@ -4647,6 +4714,20 @@ const mainJson = {
             "לחפש",
             "סמל"
           ]
+        },
+        {
+          "name": "פירות יבשים",
+          "id": "1807",
+          "imageName": "Z807.png",
+          "videoName": "Z807.mp4",
+          "tags": []
+        },
+        {
+          "name": "אגוזים ושקדים",
+          "id": "1808",
+          "imageName": "Z808.png",
+          "videoName": "Z808.mp4",
+          "tags": []
         }
       ],
       "imageName": "Q539.png"
@@ -4961,7 +5042,8 @@ const mainJson = {
           "tags": [
             "למד",
             "לומד",
-            "למידה"
+            "למידה",
+            "שיר"
           ]
         },
         {
@@ -5632,7 +5714,12 @@ const mainJson = {
           "id": "1652",
           "imageName": "R652.png",
           "videoName": "R652.mp4",
-          "tags": []
+          "tags": [
+            "להשתתף",
+            "השתתף",
+            "השתתפות",
+            "לחלוק"
+          ]
         },
         {
           "name": "להישאר",
@@ -5644,8 +5731,9 @@ const mainJson = {
         {
           "name": "נכנס  יוצא",
           "id": "1810",
-          "imageName": "Z810.png",
+          "imageName": "Z810 1.png",
           "videoName": "Z810.mp4",
+          "imageName2": "Z810 2.png",
           "tags": []
         },
         {
@@ -5659,16 +5747,11 @@ const mainJson = {
           ]
         },
         {
-          "name": "להשתתף",
+          "name": "שלי",
           "id": "1068",
           "imageName": "C68.png",
           "videoName": "C68.mp4",
-          "tags": [
-            "להשתתף",
-            "השתתף",
-            "השתתפות",
-            "לחלוק"
-          ]
+          "tags": []
         }
       ],
       "imageName": "R560.png"
@@ -5814,18 +5897,6 @@ const mainJson = {
           "imageName": "S668.png",
           "videoName": "S668.mp4",
           "tags": []
-        },
-        {
-          "name": "רגשות ותחושות",
-          "id": "1669",
-          "imageName": "T669.png",
-          "videoName": "T669.mp4",
-          "tags": [
-            "רגש",
-            "מרגיש",
-            "תחושה",
-            "לחוש"
-          ]
         }
       ],
       "imageName": "S653.png"
@@ -6249,7 +6320,10 @@ const mainJson = {
           "id": "1713",
           "imageName": "V713.png",
           "videoName": "V713.mp4",
-          "tags": []
+          "tags": [
+            "משהו",
+            "אחר"
+          ]
         },
         {
           "name": "לא טעים",
@@ -7016,6 +7090,456 @@ const mainJson = {
         }
       ],
       "imageName": "Y796.png"
+    },
+    {
+      "name": "מילים שימושיות",
+      "id": "__useful_words__",
+      "words": [
+        {
+          "name": "אני",
+          "id": "1814",
+          "imageName": "AB814.png",
+          "videoName": "AB814.mp4",
+          "tags": []
+        },
+        {
+          "name": "שלי",
+          "id": "1068",
+          "imageName": "C68.png",
+          "videoName": "C68.mp4",
+          "tags": []
+        },
+        {
+          "name": "אני רוצה",
+          "id": "1062",
+          "imageName": "C62.png",
+          "videoName": "C62.mp4",
+          "tags": [
+            "את",
+            "זה"
+          ]
+        },
+        {
+          "name": "עוד",
+          "id": "1070",
+          "imageName": "C70.png",
+          "videoName": "C70.mp4",
+          "tags": [
+            "משהו"
+          ]
+        },
+        {
+          "name": "די",
+          "id": "1064",
+          "imageName": "C64.png",
+          "videoName": "C64.mp4",
+          "tags": [
+            "לא",
+            "רוצה",
+            "מספיק"
+          ]
+        },
+        {
+          "name": "כן",
+          "id": "1066",
+          "imageName": "C66.png",
+          "videoName": "C66.mp4",
+          "tags": []
+        },
+        {
+          "name": "לא",
+          "id": "1067",
+          "imageName": "C67.png",
+          "videoName": "C67.mp4",
+          "tags": []
+        },
+        {
+          "name": "איפה/היכן",
+          "id": "1703",
+          "imageName": "U703.png",
+          "videoName": "U703.mp4",
+          "tags": []
+        },
+        {
+          "name": "לעשות",
+          "id": "1594",
+          "imageName": "R594.png",
+          "videoName": "R594.mp4",
+          "tags": [
+            "עושה",
+            "עשה",
+            "עשתה",
+            "עושים",
+            "מעשה",
+            "פעולה"
+          ]
+        },
+        {
+          "name": "ללכת",
+          "id": "1586",
+          "imageName": "R586.png",
+          "videoName": "R586.mp4",
+          "tags": [
+            "הלך",
+            "הלכה",
+            "הולך",
+            "הולכת",
+            "הליכה",
+            "טיול"
+          ]
+        },
+        {
+          "name": "לנגן",
+          "id": "1588",
+          "imageName": "R588.png",
+          "videoName": "R588.mp4",
+          "tags": [
+            "נגינה",
+            "ניגן",
+            "מנגן"
+          ]
+        },
+        {
+          "name": "יכול",
+          "id": "1561",
+          "imageName": "R561.png",
+          "videoName": "R561.mp4",
+          "tags": [
+            "יכל"
+          ]
+        },
+        {
+          "name": "לאכול",
+          "id": "1562",
+          "imageName": "R562.png",
+          "videoName": "R562.mp4",
+          "tags": [
+            "אכל",
+            "אוכל"
+          ]
+        },
+        {
+          "name": "להגיד",
+          "id": "1570",
+          "imageName": "R570.png",
+          "videoName": "R570.mp4",
+          "tags": []
+        },
+        {
+          "name": "לישון",
+          "id": "1584",
+          "imageName": "R584.png",
+          "videoName": "R584.mp4",
+          "tags": [
+            "ישן",
+            "ישנה",
+            "מיטה",
+            "שינה"
+          ]
+        },
+        {
+          "name": "לקרוא",
+          "id": "1604",
+          "imageName": "R604.png",
+          "videoName": "R604.mp4",
+          "tags": []
+        },
+        {
+          "name": "לשחק",
+          "id": "1611",
+          "imageName": "R611.png",
+          "videoName": "R611.mp4",
+          "tags": [
+            "משחק",
+            "שיחק",
+            "משחק",
+            "יחד"
+          ]
+        },
+        {
+          "name": "לשים",
+          "id": "1613",
+          "imageName": "R613.png",
+          "videoName": "R613.mp4",
+          "tags": [
+            "שם",
+            "שמה",
+            "שים",
+            "שימי",
+            "בצד",
+            "צד"
+          ]
+        },
+        {
+          "name": "לשיר",
+          "id": "1614",
+          "imageName": "R614.png",
+          "videoName": "R614.mp4",
+          "tags": [
+            "שר",
+            "שרה",
+            "שיר",
+            "לשיר",
+            "שרים",
+            "שרות",
+            "בעצמי",
+            "לבד"
+          ]
+        },
+        {
+          "name": "לשתות",
+          "id": "1616",
+          "imageName": "R616.png",
+          "videoName": "R616.mp4",
+          "tags": [
+            "שתה",
+            "שתתה",
+            "שותה",
+            "מים",
+            "שתיה",
+            "משקה",
+            "צמא"
+          ]
+        },
+        {
+          "name": "לתת ולקבל",
+          "id": "1618",
+          "imageName": "R618.png",
+          "videoName": "R618.mp4",
+          "tags": [
+            "תן",
+            "קח",
+            "קיבל",
+            "מקבל",
+            "נתן",
+            "נתנה",
+            "נותן",
+            "נותנת"
+          ]
+        },
+        {
+          "name": "צריך",
+          "id": "1623",
+          "imageName": "R623.png",
+          "videoName": "R623.mp4",
+          "tags": [
+            "ממש"
+          ]
+        },
+        {
+          "name": "גדול וקטן",
+          "id": "1716",
+          "imageName": "V716 1.png",
+          "videoName": "V716.mp4",
+          "imageName2": "V716 2.png",
+          "tags": []
+        },
+        {
+          "name": "בסדר",
+          "id": "1075",
+          "imageName": "C75.png",
+          "videoName": "C75.mp4",
+          "tags": []
+        },
+        {
+          "name": "מה שלומך?",
+          "id": "1054",
+          "imageName": "B54.png",
+          "videoName": "B54.mp4",
+          "tags": []
+        },
+        {
+          "name": "כיתה",
+          "id": "1514",
+          "imageName": "O514.png",
+          "videoName": "O514.mp4",
+          "tags": []
+        },
+        {
+          "name": "בית",
+          "id": "1482",
+          "imageName": "O482.png",
+          "videoName": "O482.mp4",
+          "tags": []
+        },
+        {
+          "name": "גן",
+          "id": "1494",
+          "imageName": "O494.png",
+          "videoName": "O494.mp4",
+          "tags": [
+            "גן",
+            "ילדים",
+            "מעון"
+          ]
+        },
+        {
+          "name": "להתראות",
+          "id": "1043",
+          "imageName": "B43.png",
+          "videoName": "B43.mp4",
+          "tags": [
+            "ביי",
+            "ביי",
+            "ביי",
+            "להתראות",
+            "שלום"
+          ]
+        },
+        {
+          "name": "שלום",
+          "id": "1051",
+          "imageName": "B51.png",
+          "videoName": "B51.mp4",
+          "tags": []
+        },
+        {
+          "name": "כועס",
+          "id": "1676",
+          "imageName": "T676.png",
+          "videoName": "T676.mp4",
+          "tags": [
+            "כעס",
+            "כועס",
+            "לכעוס",
+            "מכעיס"
+          ]
+        },
+        {
+          "name": "אוהב",
+          "id": "1671",
+          "imageName": "T671.png",
+          "videoName": "T671.mp4",
+          "tags": [
+            "אהב",
+            "אוהב",
+            "אהבה"
+          ]
+        },
+        {
+          "name": "עצוב",
+          "id": "1688",
+          "imageName": "T688.png",
+          "videoName": "T688.mp4",
+          "tags": [
+            "עצב"
+          ]
+        },
+        {
+          "name": "שמח",
+          "id": "1693",
+          "imageName": "T693.png",
+          "videoName": "T693.mp4",
+          "tags": [
+            "שמחה",
+            "לשמוח",
+            "משמח"
+          ]
+        },
+        {
+          "name": "כיף",
+          "id": "1694",
+          "imageName": "T694.png",
+          "videoName": "T694.mp4",
+          "tags": [
+            "איזה"
+          ]
+        },
+        {
+          "name": "חבר",
+          "id": "1532",
+          "imageName": "P532.png",
+          "videoName": "P532.mp4",
+          "tags": []
+        },
+        {
+          "name": "אבא",
+          "id": "1524",
+          "imageName": "P524.png",
+          "videoName": "P524.mp4",
+          "tags": []
+        },
+        {
+          "name": "אמא",
+          "id": "1529",
+          "imageName": "P529.png",
+          "videoName": "P529.mp4",
+          "tags": []
+        },
+        {
+          "name": "אח",
+          "id": "1525",
+          "imageName": "P525.png",
+          "videoName": "P525.mp4",
+          "tags": []
+        },
+        {
+          "name": "אחות",
+          "id": "1526",
+          "imageName": "P526.png",
+          "videoName": "P526.mp4",
+          "tags": []
+        },
+        {
+          "name": "בד / מטפחת",
+          "id": "1094",
+          "imageName": "CC94.png",
+          "videoName": "CC94.mp4",
+          "tags": [
+            "פורים"
+          ]
+        },
+        {
+          "name": "בועות סבון",
+          "id": "1080",
+          "imageName": "CC80.png",
+          "videoName": "CC80.mp4",
+          "tags": []
+        },
+        {
+          "name": "כדור",
+          "id": "1083",
+          "imageName": "CC83.png",
+          "videoName": "CC83.mp4",
+          "tags": []
+        },
+        {
+          "name": "בובה",
+          "id": "1105",
+          "imageName": "CC105.png",
+          "videoName": "CC105.mp4",
+          "tags": []
+        },
+        {
+          "name": "תן לי",
+          "id": "1074",
+          "imageName": "C74.png",
+          "videoName": "C74.mp4",
+          "tags": [
+            "קצת",
+            "לתת",
+            "נתתי"
+          ]
+        },
+        {
+          "name": "מי",
+          "id": "1708",
+          "imageName": "U708.png",
+          "videoName": "U708.mp4",
+          "tags": []
+        },
+        {
+          "name": "אחר",
+          "id": "1713",
+          "imageName": "V713.png",
+          "videoName": "V713.mp4",
+          "tags": [
+            "משהו",
+            "אחר"
+          ]
+        }
+      ],
+      "imageName": "AB813.png"
     }
   ]
 };

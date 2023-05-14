@@ -2,12 +2,14 @@ import './css/settings.css';
 import React, { useEffect, useState } from 'react';
 import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
-import { ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY, 
-  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey } from './utils/Utils';
+import {
+  ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY,
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey
+} from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
-import { GridView, Swipe, SyncAlt, ViewList } from '@mui/icons-material';
+import { GridView, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
 import { mainJson } from './mainJson';
 
 
@@ -35,15 +37,18 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
   const hideableCategories = mainJson.categories.filter(cat => cat.allowHide);
 
-
   useEffect(() => {
-    FileSystem.whoAmI().then((res) => setEmail(res.email));
+    console.log("about to call WhoAmI")
+    FileSystem.whoAmI().then((res) => {
+      setEmail(res.email)
+      console.log("WhoAmI", res)
+    })
   }, [reload]);
 
-  const reconcile = () => {
+  const reconcile = async () => {
     pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
     alert.info(translate("ReconsileStarted"));
-    FileSystem.get().reconsile()
+    return FileSystem.get().reconsile()
       .catch(
         (err) => alert.error(err)
       ).finally(() => {
@@ -52,11 +57,22 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       })
   }
 
+  const sync = async () => {
+    pubSub.publish({ command: "long-process", msg: translate("SyncToCloudMsg") });
+    return FileSystem.get().sync(pubSub)
+      .catch(
+        (err) => alert.error(err)
+      ).finally(() => {
+        pubSub.publish({ command: "long-process-done" });
+        setReload(prev => prev + 1)
+      })
+  }
+
+
   const connect = () => {
-    FileSystem.get().findRootFolder().then(
-      () => setReload(prev => prev + 1),
+    FileSystem.get().findRootFolder().catch(
       (err) => alert.error(err)
-    )
+    ).finally(() => setReload(prev => prev + 1));
   }
 
   const changeLanguage = (lang) => {
@@ -241,7 +257,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             }}
           />
 
-          <ButtonReconsile onClick={() => reconcile()} />
+          <ButtonReconsile onClick={() => reconcile().then( ()=>sync() )} />
         </div>
       </div>
       <div className="status-item" >

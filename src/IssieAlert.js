@@ -98,7 +98,7 @@ export default function AlertTemplate(_ref) {
       options.type === 'error' && React.createElement(ErrorIcon, null),
       React.createElement(
         'span',
-        { style: { flex: 2 }, dir:"var(--dir)" },
+        { style: { flex: 2 }, direction:"var(--dir)" },
         message
       )
     );

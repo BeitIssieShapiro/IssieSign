@@ -17,7 +17,10 @@ var strings = {
 
         "SettingsTitle": "הגדרות",
         "Working": "עובד על זה...",
+        "ImportWordsCompleted": "יבוא מילים הסתיים",
         "ImportWords": "מייבא מילים...",
+        "AddedWords": "מילים שנוספו",
+        "AlreadyExistingWords": "מילים שכבר היו",
         "NewWords": "מילים חדשות",
         "TitleAbout": "אודות - About us",
         "SettingsAbout": "אודות - About us",
@@ -117,6 +120,13 @@ var strings = {
         "ReconsileStarted": "סינכרון החל",
         "in-sync": "מסונכרן",
         "ShowOwnCategoriesFirst": "הצג תחילה תיקיות שלך",
+        "EnterEditMode": "לחץ {1} שניות",
+        "MissingFolderFileID": "תיקיה {1} אינה מסונכרנת לענן",
+        "MissingWordFileID": "מילה {1} אינה מסונכרנת לענן",
+        "TutorialOverviewWord": "הכירו את האפליקציה",
+        "TutorialOverviewEditing": "הוספה ושיתוף",
+        "InvalidCharachtersInName": "שם מכיל תווים אסורים",
+
     },
     "ar": {
 
@@ -189,7 +199,6 @@ var strings = {
         "EditMenu": "تحرير...",
         "DeleteMenu": "حذف",
         "ImportWordsErr": "خطأ في استيراد الكلمات {1}",
-        "SettingsHideTutorial": "إخفاء ملف الارشاد",
         "ErrWrongImportFile": "' صيغة الملف غير مناسبة",
         "SearchImageTitle": "بحث عن صورة",
         "EnterSearchHere": "ادخل كلمات البحث",
@@ -218,15 +227,24 @@ var strings = {
         "BtnLogout": "قطع الاتصال",
         "BtnReconsile": "تزامن",
         "ReconsileStarted": "بدء التزامن",
-        "NavByArrow":"أسهم",
-        "NavBySwipe":"سحب",
-        "SelectColorMenuTitle":"اختيار لون",
-        "ChangeColor":"اختيار لون",
-        "FavoritesCategory":"المفضلة",
-        "TutorialsCategory":"الدليل",
-        "SettingsHideFolder":"إخفاء ملف {1}",
-        "SearchTitle":"بحث: {1}", 
-        "ShowOwnCategoriesFirst": "הצגת תיקיות שלך ראשונות",
+        "NavByArrow": "أسهم",
+        "NavBySwipe": "سحب",
+        "SelectColorMenuTitle": "اختيار لون",
+        "ChangeColor": "اختيار لون",
+        "FavoritesCategory": "المفضلة",
+        "TutorialsCategory": "إرشادات",
+        "SettingsHideFolder": "إخفاء ملف {1}",
+        "SearchTitle": "بحث: {1}",
+        "ImportWordsCompleted": "تم استيراد الكلمات",
+        "AddedWords": "الكلمات المضافة ",
+        "AlreadyExistingWords": " الكلمات القائمة",
+        "ShowOwnCategoriesFirst": " إعرض ملفاتك الخاصة أولا",
+        "EnterEditMode": "إضغط لمدة {1} ثواني",
+        "MissingFolderFileID": "لم يتم مزامنه الملف  {1} في  السحابة الالكترونيه",
+        "MissingWordFileID": "  لم يتم مزامنه الكلمة  {1} في  السحابة الالكترونيه ",
+        "TutorialOverviewWord": "تعرفوا على  التطبيق",
+        "TutorialOverviewEditing": "اضافة ومشاركة",
+        "InvalidCharachtersInName": "  يحتوي إسم الملف على رموز لا يمكن استخدامها ",
     },
     "en": {
         "AppTitle": "My IssieSign",
@@ -234,8 +252,8 @@ var strings = {
         "SettingsSwipe": "Swipe",
         "NavByArrow": "Arrows",
         "NavBySwipe": "Swipe",
-        "TutorialsCategory":"Tutorials",
-        "SettingsHideFolder":"Hide {1} Folder",
+        "TutorialsCategory": "Tutorials",
+        "SettingsHideFolder": "Hide {1} Folder",
 
         "SettingsTitle": "Settings",
         "Working": "In Progress...",
@@ -307,7 +325,6 @@ var strings = {
         "LoadingMedia": "Media files are loading ({1} of {2})",
 
         "ImportWordsErr": "Error importing words {1}",
-        "SettingsHideTutorial": "Hide Tutorials folder",
         "ErrWrongImportFile": "Wrong imported file format",
         "SearchImageTitle": "Search Image",
         "EnterSearchHere": "enter search keywords here",
@@ -338,6 +355,16 @@ var strings = {
         "BtnReconsile": "Sync",
         "ReconsileStarted": "Sync started",
         "ShowOwnCategoriesFirst": "Show Own Folders First",
+        "InvalidCharachtersInName": "Invalid characters in name",
+        "EnterEditMode": "Press {1} seconds",
+        "TutorialOverviewWord": "Get To Know IssieSign",
+        "TutorialOverviewEditing": "Adding and Sharing",
+        "in-sync": "In Sync",
+        "MissingFolderFileID": "Folder {1} is not syncronized to the cloud",
+        "MissingWordFileID": "Word {1} is not synchronized to the cloud",
+        "ImportWordsCompleted": "Import Words Completed",
+        "AddedWords": "Added Words",
+        "AlreadyExistingWords": "Already Existing Words",
 
     }
 }
@@ -356,6 +383,15 @@ function findMissing() {
     console.log("\n\nMissing in Arabic:")
     Object.entries(strings.he).forEach(([key, value]) => {
         if (!strings.ar[key]) {
+            missing += "\"" + key + "\":" + "\"" + value + "\",\n";
+        }
+    })
+    console.log(missing);
+
+    missing = "";
+    console.log("\n\nMissing in Hebrew:")
+    Object.entries(strings.en).forEach(([key, value]) => {
+        if (!strings.he[key]) {
             missing += "\"" + key + "\":" + "\"" + value + "\",\n";
         }
     })

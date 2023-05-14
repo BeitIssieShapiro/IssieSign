@@ -8,6 +8,7 @@ let fileSystem;
 export default class FileSystem {
     static INDEX_FILE = "index.json";
     static FAVORITES_ID = "__favorites__";
+    static USEFUL_WORDS_ID = "__useful_words__";
     static FAVORITES_NAME = "FavoritesCategory";
     static TUTORIAL_NAME = "TutorialsCategory";
     static SCHEME_PREFIX = "";
@@ -45,8 +46,8 @@ export default class FileSystem {
     }
 
     index = isBrowser() ? ({
-        categories2: mainJson.categories,
-        categories : [
+        categories: mainJson.categories,
+        categories2 : [
             {
                 "name": "TutorialsCategory",
                 "id": "1",
@@ -188,6 +189,7 @@ export default class FileSystem {
                                     console.log("Successfully read the existing index file. categories:", this.index.categories.length);
                                     this.init = true;
                                     this.sortCategories();
+                                    this.sortWords();
                                     this.loadHiddenFolders();
 
                                     resolve();
@@ -217,6 +219,7 @@ export default class FileSystem {
         } else {
             this.init = true;
             this.sortCategories();
+            this.sortWords();
             this.loadHiddenFolders()
         }
     }
@@ -230,8 +233,36 @@ export default class FileSystem {
         this.index.categories.sort((a, b) => {
             if (a.id === FileSystem.FAVORITES_ID) return -1;
             if (b.id === FileSystem.FAVORITES_ID) return 1;
-            if (a.userContent && !b.userContent) return this.showCustomFoldersFirst ? -1 : 1;
-            if (!a.userContent && b.userContent) return this.showCustomFoldersFirst ? 1 : -1;
+            if (a.id === FileSystem.USEFUL_WORDS_ID) return -1;
+            if (b.id === FileSystem.USEFUL_WORDS_ID) return 1;
+
+            if (this.showCustomFoldersFirst) {
+                if (a.userContent && !b.userContent) return -1;
+                if (b.userContent && !a.userContent) return 1;
+            }
+
+            return (a.name < b.name ? -1 : 1);
+        })
+    }
+
+    sortWords() {
+        this.index.categories.forEach(cat=>this.sortCatWords(cat));
+    }
+
+    sortCatWords(cat) {
+        const hasTwoImages = (word)=>word.imageName2?.length > 0;
+
+        cat.words.sort((a, b) => {
+            if (hasTwoImages(a) &&  !hasTwoImages(b)) return 1;
+            if (hasTwoImages(b) &&  !hasTwoImages(a)) return -1;
+
+            if (this.showCustomFoldersFirst) {
+                if (a.userContent && !b.userContent) return -1;
+                if (b.userContent && !a.userContent) return 1;
+            }
+            if (cat.sortByID) {
+                return (a.id < b.id ? -1 : 1);
+            }
             return (a.name < b.name ? -1 : 1);
         })
     }
@@ -450,6 +481,8 @@ export default class FileSystem {
             userContent: true,
             ...addProps
         });
+        this.sortCategories();
+
         return this.saveIndex();
     }
 
@@ -562,6 +595,8 @@ export default class FileSystem {
             newWord.sync = FileSystem.SYNC_REQUEST;
         }
         indexCategory.words.push(newWord);
+        this.sortCatWords(indexCategory);
+
         return this.saveIndex();
     }
 

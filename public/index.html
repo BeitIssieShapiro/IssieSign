@@ -95,6 +95,10 @@
         function onDeviceReady() {
             console.log("Cordova: Device Is Ready");
             window.isBrowser = false;
+            if (window.Keyboard) {
+                //cordova.plugins.keyboard.disableScroll(true);
+                console.log("keyboard plugin active")
+            }
 
             
             if (cordova.file.applicationDirectory.includes('android_asset')) {

@@ -1,12 +1,13 @@
 // This script copies images from source folder with sub folders into a flat new folder
 
 const src = "/Users/i022021/Library/CloudStorage/OneDrive-SAPSE/Documents/BeirIssieShapiro/IssieSign/NewMedia/All/Images 2023";
-const target = "/Users/i022021/dev/Issie/IssieSign-MediaNew/images/he"
 
-const removeSuffix = " עברית"
-const ignoreContaining = " ערבית"
-// const ignoreContaining = " עברית"
-// const removeSuffix = " ערבית"
+// const removeSuffix = " עברית"
+// const ignoreContaining = " ערבית"
+// const target = "/Users/i022021/dev/Issie/IssieSign-MediaNew/images/he"
+const ignoreContaining = " עברית"
+const removeSuffix = " ערבית"
+const target = "/Users/i022021/dev/Issie/IssieSign-MediaNew/images/ar"
 
 var fs = require('fs');
 var path = require('path');

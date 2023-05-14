@@ -45,6 +45,8 @@ import InfoMyIssieSign from './containers/Info-my-issie-sign';
 const SEARCH_PATH = "/search/";
 const SCROLL_RESET = { x: 0, y: 0 };
 
+let editModeRequestInterval = undefined;
+
 class PubSub {
     constructor() {
         this.rcb = undefined;
@@ -78,9 +80,24 @@ class App extends IssieBase {
         this.showInfo = this.showInfo.bind(this);
     }
 
+    // componentWillUnmount() {
+    //     window.removeEventListener('keyboardDidHide', function () {
+    //         this.preventKeyBoardScrollApp()
+    //     });
+    // }
+
     async componentDidMount() {
 
         window.addEventListener("resize", this.resizeListener);
+
+        window.addEventListener('keyboardDidHide', function () {
+            console.log("keyboard hide")
+            //this.preventKeyBoardScrollApp()
+        });
+
+        window.addEventListener('keyboardDidShow', function () {
+            console.log("keyboard show")
+        });
         const getCurrent = () => {
             if (this.state.menuOpen) {
                 return this.state.settingsScroll;
@@ -161,7 +178,7 @@ class App extends IssieBase {
         window.goBack = () => this.goBack();
         let lang = getLanguage();
         setLanguage(lang)
-        
+
         const showOwnFoldersFirst = isMyIssieSign() || getBooleanSettingKey(SHOW_OWN_FOLDERS_FIRST_KEY, true);
 
         const pubsub = new PubSub()
@@ -197,18 +214,28 @@ class App extends IssieBase {
             trace("App: Importing words");
 
             pubsub.publish({ command: 'long-process', msg: translate("ImportWords") });
-
-            shareCart.importWords(url).then(
-                (addWords) => {
+            setTimeout(() => shareCart.importWords(url).then(
+                (result) => {
                     pubsub.refresh();
-                    // todo format
-                    this.props.alert.success(addWords.join("\n"));
+                    let message = translate("ImportWordsCompleted");
+
+                    if (result.newWords.length > 0) {
+                        message += "\n" + translate("AddedWords") + ":\n" +
+                            result.newWords.join("\n") 
+                    }
+
+                    if (result.alreadyExistingWords.length > 0) {
+                        message += "\n" + translate("AlreadyExistingWords") + ":\n" +
+                        result.alreadyExistingWords.join("\n") 
+                    }
+
+                    this.props.alert.success(message);
                 },
                 (err) => {
                     this.props.alert.error(fTranslate("ImportWordsErr", err))
                     console.log(fTranslate("ImportWordsErr", err));
                 }
-            ).finally(() => pubsub.publish({ command: 'long-process-done' }));
+            ).finally(() => pubsub.publish({ command: 'long-process-done' })), 50);
         }
 
         if (window.awaitingImport) {
@@ -347,7 +374,7 @@ class App extends IssieBase {
                 this.goBack(true);
                 console.log("goback")
             }
-
+            //setTimeout(this.preventKeyBoardScrollApp, 50);
         }, 250);
 
     }
@@ -370,7 +397,6 @@ class App extends IssieBase {
     }
 
     goBack(skipSearch) {
-        this.backInProcess = true;
         if (this.isWords()) {
             //reset words position
             this.setState({ wordScroll: SCROLL_RESET, categoryId: undefined });
@@ -388,6 +414,7 @@ class App extends IssieBase {
             if (!skipSearch) {
                 setTimeout(() => this.setState({ searchStr: "" }), 100);
             }
+            setTimeout(this.preventKeyBoardScrollApp, 100)
         }
         this.props.history.goBack();
     }
@@ -423,6 +450,11 @@ class App extends IssieBase {
         });
     };
 
+    preventKeyBoardScrollApp = () => {
+        //e.preventDefault(); e.stopPropagation();
+        window.scrollTo(0, 0);
+    }
+
     render() {
         let path = this.props.history.path;
         //console.log("sett scroll", this.state.settingsScroll?.x, this.state.settingsScroll?.y)
@@ -441,6 +473,7 @@ class App extends IssieBase {
             searchInput = (
                 <div slot="center-bar" className="search shellSearch">
                     <input
+                        key="searchInput"
                         type="search" onChange={this.handleSearch}
                         onFocus={this.preventKeyBoardScrollApp} value={this.state.searchStr || ""} />
                 </div>)
@@ -518,9 +551,12 @@ class App extends IssieBase {
                     <EditButton
                         slot="start-bar"
                         selected={this.state.editMode}
-                        onClick={() => {
-                            this.setState({ editMode: this.state.editMode === true ? false : true })
-                        }} />
+                        onChange={(select) => {
+                            this.setState({ editMode: select })
+                        }}
+
+
+                    />
 
 
                     {this.state.editMode && !this.isAddScreen() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
@@ -638,6 +674,7 @@ class App extends IssieBase {
                 shareCart: this.state.shareCart,
                 isMobile: IssieBase.isMobile(),
                 isLandscape: IssieBase.isLandscape(),
+                allowSwipe: this.isSwipeAllowed(),
                 allowAddWord: this.state.allowAddWord,
                 words,
                 categoryId,

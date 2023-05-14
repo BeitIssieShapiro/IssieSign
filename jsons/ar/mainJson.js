@@ -12,10 +12,28 @@ const mainJson = {
     {
       "name": "TutorialsCategory",
       "allowHide": true,
+      "translate": true,
       "id": "__tutorials__",
       "themeId": "3",
-      "imageName": "R587.png",
-      "words": []
+      "imageName": "tutorials.png",
+      "words": [
+        {
+          "name": "TutorialOverviewWord",
+          "id": "__tutorial_overview__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-overview.jpg",
+          "videoName": "https://www.issieapps.com/videos/tutorials/ar/overview.mp4"
+        },
+        {
+          "name": "TutorialOverviewEditing",
+          "id": "__tutorial_editing__",
+          "translate": true,
+          "category": "__tutorials__",
+          "imageName": "tutorial-editing.png",
+          "videoName": "https://www.issieapps.com/videos/tutorials/ar/editing.mp4"
+        }
+      ]
     },
     {
       "name": "اصحاب المهن",
@@ -742,19 +760,6 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "يشارك",
-          "id": "1068",
-          "imageName": "C68.png",
-          "videoName": "C68.mp4",
-          "tags": [
-            "مشاركه،",
-            "سوا،",
-            "معا،",
-            "مع",
-            "بعض"
-          ]
-        },
-        {
           "name": "مرتب",
           "id": "1069",
           "imageName": "C69.png",
@@ -913,6 +918,23 @@ const mainJson = {
             "لم،",
             "ضب،",
             "ألعاب"
+          ]
+        },
+        {
+          "name": "يشارك",
+          "id": "1652",
+          "imageName": "R652.png",
+          "videoName": "R652.mp4",
+          "tags": [
+            "شارك،",
+            "يشارك،",
+            "مشاركة،",
+            "حصة",
+            "مشاركه،",
+            "سوا،",
+            "معا،",
+            "مع",
+            "بعض"
           ]
         }
       ],
@@ -1426,9 +1448,9 @@ const mainJson = {
         },
         {
           "name": "فانوس",
-          "id": "1268",
-          "imageName": "G268.png",
-          "videoName": "G268.mp4",
+          "id": "1806",
+          "imageName": "Z806.png",
+          "videoName": "Z806.mp4",
           "tags": [
             "رمضان"
           ]
@@ -2440,16 +2462,6 @@ const mainJson = {
           ]
         },
         {
-          "name": "تلفون",
-          "id": "1232",
-          "imageName": "G232.png",
-          "videoName": "G232.mp4",
-          "tags": [
-            "هاتف",
-            "تلفون"
-          ]
-        },
-        {
           "name": "حقيبه",
           "id": "1233",
           "imageName": "G233.png",
@@ -2794,15 +2806,6 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "فانوس",
-          "id": "1268",
-          "imageName": "G268.png",
-          "videoName": "G268.mp4",
-          "tags": [
-            "رمضان"
-          ]
-        },
-        {
           "name": "اقواس",
           "id": "1269",
           "imageName": "G269.png",
@@ -2885,6 +2888,15 @@ const mainJson = {
           "imageName": "Z812.png",
           "videoName": "Z812.mp4",
           "tags": []
+        },
+        {
+          "name": "فانوس",
+          "id": "1806",
+          "imageName": "Z806.png",
+          "videoName": "Z806.mp4",
+          "tags": [
+            "رمضان"
+          ]
         }
       ],
       "imageName": "G216.png"
@@ -4657,9 +4669,8 @@ const mainJson = {
         {
           "name": "معلقه",
           "id": "1469",
-          "imageName": "N469 1.png",
-          "videoName": "N469.mp4",
-          "imageName2": "N469 2.png",
+          "imageName": "N469.png",
+          "videoName": "N469 .mp4",
           "tags": [
             "ملعقة،",
             "معلقة"
@@ -5537,6 +5548,20 @@ const mainJson = {
             "جوز،",
             "قضامه"
           ]
+        },
+        {
+          "name": "مجففات",
+          "id": "1807",
+          "imageName": "Z807.png",
+          "videoName": "Z807.mp4",
+          "tags": []
+        },
+        {
+          "name": "مكسرات جوز لوز",
+          "id": "1808",
+          "imageName": "Z808.png",
+          "videoName": "Z808.mp4",
+          "tags": []
         }
       ],
       "imageName": "Q539.png"
@@ -6762,23 +6787,6 @@ const mainJson = {
           ]
         },
         {
-          "name": "يغسل",
-          "id": "1649",
-          "imageName": "R649.png",
-          "videoName": "R649.mp4",
-          "tags": [
-            "غسل،",
-            "يغسل،",
-            "جلى،",
-            "يجلي،",
-            "صحون،",
-            "وجه،",
-            "يدين،",
-            "أواني،",
-            "غسيل"
-          ]
-        },
-        {
           "name": "يلم يرتب",
           "id": "1650",
           "imageName": "R650.png",
@@ -6814,7 +6822,12 @@ const mainJson = {
             "شارك،",
             "يشارك،",
             "مشاركة،",
-            "حصة"
+            "حصة",
+            "مشاركه،",
+            "سوا،",
+            "معا،",
+            "مع",
+            "بعض"
           ]
         },
         {
@@ -6839,8 +6852,9 @@ const mainJson = {
         {
           "name": "يدخل يخرج",
           "id": "1810",
-          "imageName": "Z810.png",
+          "imageName": "Z810 1.png",
           "videoName": "Z810.mp4",
+          "imageName2": "Z810 2.png",
           "tags": []
         },
         {
@@ -6855,19 +6869,6 @@ const mainJson = {
             "ناول،",
             "شوي،",
             "اعطيني"
-          ]
-        },
-        {
-          "name": "يشارك",
-          "id": "1068",
-          "imageName": "C68.png",
-          "videoName": "C68.mp4",
-          "tags": [
-            "مشاركه،",
-            "سوا،",
-            "معا،",
-            "مع",
-            "بعض"
           ]
         }
       ],
@@ -7016,19 +7017,6 @@ const mainJson = {
           "tags": [
             "نقود،",
             "مصاري"
-          ]
-        },
-        {
-          "name": "مشاعر واحاسيس",
-          "id": "1669",
-          "imageName": "T669.png",
-          "videoName": "T669.mp4",
-          "tags": [
-            "يشعر،",
-            "مشاعر،",
-            "شعور،",
-            "يحس،",
-            "احساس"
           ]
         }
       ],
@@ -8212,111 +8200,6 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "بلوغ",
-          "id": "1796",
-          "imageName": "Y796.png",
-          "videoName": "Y796.mp4",
-          "tags": []
-        },
-        {
-          "name": "حماله صدر",
-          "id": "1797",
-          "imageName": "Y797.png",
-          "videoName": "Y797.mp4",
-          "tags": []
-        },
-        {
-          "name": "دوره شهريه",
-          "id": "1798",
-          "imageName": "Y798.png",
-          "videoName": "Y798.mp4",
-          "tags": []
-        },
-        {
-          "name": "فوطه صحيه",
-          "id": "1799",
-          "imageName": "Y799.png",
-          "videoName": "Y799.mp4",
-          "tags": []
-        },
-        {
-          "name": "صدريه",
-          "id": "1800",
-          "imageName": "Y800.png",
-          "videoName": "Y800.mp4",
-          "tags": []
-        },
-        {
-          "name": "دم",
-          "id": "1801",
-          "imageName": "Y801.png",
-          "videoName": "Y801.mp4",
-          "tags": []
-        },
-        {
-          "name": "بثور حب شباب",
-          "id": "1802",
-          "imageName": "Y802.png",
-          "videoName": "Y802.mp4",
-          "tags": []
-        },
-        {
-          "name": "ولاده",
-          "id": "1803",
-          "imageName": "Z803.png",
-          "videoName": "Z803.mp4",
-          "tags": []
-        },
-        {
-          "name": "زفاف",
-          "id": "1804",
-          "imageName": "Z804.png",
-          "videoName": "Z804.mp4",
-          "tags": []
-        },
-        {
-          "name": "مجففات",
-          "id": "1807",
-          "imageName": "Z807.png",
-          "videoName": "Z807.mp4",
-          "tags": []
-        },
-        {
-          "name": "مكسرات جوز لوز",
-          "id": "1808",
-          "imageName": "Z808.png",
-          "videoName": "Z808.mp4",
-          "tags": []
-        },
-        {
-          "name": "يبقى",
-          "id": "1809",
-          "imageName": "Z809.png",
-          "videoName": "Z809.mp4",
-          "tags": []
-        },
-        {
-          "name": "يدخل يخرج",
-          "id": "1810",
-          "imageName": "Z810.png",
-          "videoName": "Z810.mp4",
-          "tags": []
-        },
-        {
-          "name": "كسكس",
-          "id": "1811",
-          "imageName": "Z811.png",
-          "videoName": "Z811.mp4",
-          "tags": []
-        },
-        {
-          "name": "مكيف",
-          "id": "1812",
-          "imageName": "Z812.png",
-          "videoName": "Z812.mp4",
-          "tags": []
-        },
-        {
           "name": "معلمة روضة",
           "id": "1005",
           "imageName": "A5.png",
@@ -8600,6 +8483,547 @@ const mainJson = {
         }
       ],
       "imageName": "Y796.png"
+    },
+    {
+      "name": "عبارات أساسيه",
+      "id": "__useful_words__",
+      "words": [
+        {
+          "name": "انا بدي",
+          "id": "1062",
+          "imageName": "C62.png",
+          "videoName": "C62.mp4",
+          "tags": [
+            "اريد،",
+            "بدي،",
+            "انا،",
+            "هذا"
+          ]
+        },
+        {
+          "name": "كمان",
+          "id": "1070",
+          "imageName": "C70.png",
+          "videoName": "C70.mp4",
+          "tags": [
+            "اخرى،",
+            "اضافه"
+          ]
+        },
+        {
+          "name": "بكفي",
+          "id": "1064",
+          "imageName": "C64.png",
+          "videoName": "C64.mp4",
+          "tags": [
+            "خلص،",
+            "لا",
+            "اريد،",
+            "يكفي،",
+            "بديش"
+          ]
+        },
+        {
+          "name": "نعم - اه",
+          "id": "1066",
+          "imageName": "C66.png",
+          "videoName": "C66.mp4",
+          "tags": [
+            "حسنا،",
+            "طيب،",
+            "موافق،",
+            "اه"
+          ]
+        },
+        {
+          "name": "لا",
+          "id": "1067",
+          "imageName": "C67.png",
+          "videoName": "C67.mp4",
+          "tags": []
+        },
+        {
+          "name": "وين",
+          "id": "1703",
+          "imageName": "U703.png",
+          "videoName": "U703.mp4",
+          "tags": []
+        },
+        {
+          "name": "يعمل",
+          "id": "1594",
+          "imageName": "R594.png",
+          "videoName": "R594.mp4",
+          "tags": [
+            "يعمل،",
+            "عمل،",
+            "نعمل،",
+            "نسوي،",
+            "الآن،",
+            "عمل"
+          ]
+        },
+        {
+          "name": "يمشي",
+          "id": "1586",
+          "imageName": "R586.png",
+          "videoName": "R586.mp4",
+          "tags": [
+            "بمشي،",
+            "مشي،",
+            "جوله،",
+            "يذهب،",
+            "ذهب،",
+            "ذهاب"
+          ]
+        },
+        {
+          "name": "يعزف",
+          "id": "1588",
+          "imageName": "R588.png",
+          "videoName": "R588.mp4",
+          "tags": [
+            "عزف،",
+            "اعزف،",
+            "يعزف"
+          ]
+        },
+        {
+          "name": "بقدر استطيع",
+          "id": "1561",
+          "imageName": "R561.png",
+          "videoName": "R561.mp4",
+          "tags": [
+            "بقدر،",
+            "أستطيع،",
+            "بإمكاني،",
+            "يمكن"
+          ]
+        },
+        {
+          "name": "اكل",
+          "id": "1562",
+          "imageName": "R562.png",
+          "videoName": "R562.mp4",
+          "tags": [
+            "اوكل،",
+            "اكل،",
+            "آكل،",
+            "طعام،",
+            "تناول"
+          ]
+        },
+        {
+          "name": "يقول",
+          "id": "1570",
+          "imageName": "R570.png",
+          "videoName": "R570.mp4",
+          "tags": [
+            "قول،",
+            "قال،",
+            "يقول،",
+            "يتكلم،",
+            "كلام",
+            "،",
+            "يحكي"
+          ]
+        },
+        {
+          "name": "ينام",
+          "id": "1584",
+          "imageName": "R584.png",
+          "videoName": "R584.mp4",
+          "tags": [
+            "نام،",
+            "ينام،",
+            "نوم،",
+            "سرير،",
+            "تخت"
+          ]
+        },
+        {
+          "name": "يقرأ",
+          "id": "1604",
+          "imageName": "R604.png",
+          "videoName": "R604.mp4",
+          "tags": [
+            "قرأ،",
+            "يقرأ،",
+            "حكايه،",
+            "قصه،"
+          ]
+        },
+        {
+          "name": "يلعب",
+          "id": "1611",
+          "imageName": "R611.png",
+          "videoName": "R611.mp4",
+          "tags": [
+            "لعب،",
+            "يلعب،",
+            "مع",
+            "بعض،",
+            "العاب"
+          ]
+        },
+        {
+          "name": "يضع",
+          "id": "1613",
+          "imageName": "R613.png",
+          "videoName": "R613.mp4",
+          "tags": [
+            "وضع،",
+            "يضع،",
+            "حط،",
+            "يحط،",
+            "هون،",
+            "هنا"
+          ]
+        },
+        {
+          "name": "يغني",
+          "id": "1614",
+          "imageName": "R614.png",
+          "videoName": "R614.mp4",
+          "tags": [
+            "غنى،",
+            "يغني،",
+            "صوت،",
+            "عالي،",
+            "أغاني،",
+            "أغنيه"
+          ]
+        },
+        {
+          "name": "يشرب",
+          "id": "1616",
+          "imageName": "R616.png",
+          "videoName": "R616.mp4",
+          "tags": [
+            "شرب،",
+            "يشرب،",
+            "مي،",
+            "عطشان،",
+            "مشروب،",
+            "شربت،",
+            "ماء"
+          ]
+        },
+        {
+          "name": "يعطي ويأخذ",
+          "id": "1618",
+          "imageName": "R618.png",
+          "videoName": "R618.mp4",
+          "tags": [
+            "اعطيني،",
+            "خذ،",
+            "اعط،",
+            "هات،",
+            "عطاء،",
+            "يعطي،",
+            "اخذ،"
+          ]
+        },
+        {
+          "name": "يلزم",
+          "id": "1623",
+          "imageName": "R623.png",
+          "videoName": "R623.mp4",
+          "tags": [
+            "يلزم،",
+            "لازم،",
+            "ضروري،",
+            "مساعده،",
+            "يحتاج،",
+            "بحتاج،",
+            "محتاج"
+          ]
+        },
+        {
+          "name": "كبير صغير",
+          "id": "1716",
+          "imageName": "V716 1.png",
+          "videoName": "V716.mp4",
+          "imageName2": "V716 2.png",
+          "tags": []
+        },
+        {
+          "name": "منيح",
+          "id": "1075",
+          "imageName": "C75.png",
+          "videoName": "C75.mp4",
+          "tags": [
+            "جيد،",
+            "تمام"
+          ]
+        },
+        {
+          "name": "كيف حالك؟",
+          "id": "1054",
+          "imageName": "B54.png",
+          "videoName": "B54.mp4",
+          "tags": [
+            "كيف",
+            "الحال؟",
+            "،كيفك،",
+            "شو",
+            "اخبارك"
+          ]
+        },
+        {
+          "name": "صف",
+          "id": "1514",
+          "imageName": "O514.png",
+          "videoName": "O514.mp4",
+          "tags": [
+            "غرفة",
+            "تدريسية،",
+            "صف"
+          ]
+        },
+        {
+          "name": "بيت",
+          "id": "1482",
+          "imageName": "O482.png",
+          "videoName": "O482.mp4",
+          "tags": [
+            "بيت،",
+            "منزل"
+          ]
+        },
+        {
+          "name": "روضة اطفال",
+          "id": "1494",
+          "imageName": "O494.png",
+          "videoName": "O494.mp4",
+          "tags": [
+            "روضة،",
+            "حضانة،",
+            "روضة",
+            "اطفال"
+          ]
+        },
+        {
+          "name": "الى اللقاء",
+          "id": "1043",
+          "imageName": "B43.png",
+          "videoName": "B43.mp4",
+          "tags": [
+            "سلامات،",
+            "مع",
+            "السلامه،",
+            "باي",
+            "،",
+            "باي",
+            "باي،",
+            "سلام،",
+            "الى",
+            "اللقاء"
+          ]
+        },
+        {
+          "name": "مرحبا",
+          "id": "1051",
+          "imageName": "B51.png",
+          "videoName": "B51.mp4",
+          "tags": [
+            "سلام",
+            "،",
+            "السلام",
+            "عليكم"
+          ]
+        },
+        {
+          "name": "غاضب",
+          "id": "1676",
+          "imageName": "T676.png",
+          "videoName": "T676.mp4",
+          "tags": [
+            "غضب،",
+            "غضبان،",
+            "غاضب،",
+            "يغضب"
+          ]
+        },
+        {
+          "name": "يحب",
+          "id": "1671",
+          "imageName": "T671.png",
+          "videoName": "T671.mp4",
+          "tags": [
+            "حب،",
+            "يحب،",
+            "محبه،",
+            "حب،",
+            "محبوب"
+          ]
+        },
+        {
+          "name": "حزين",
+          "id": "1688",
+          "imageName": "T688.png",
+          "videoName": "T688.mp4",
+          "tags": [
+            "حزن،",
+            "حزين،",
+            "يحزن،",
+            "محزن"
+          ]
+        },
+        {
+          "name": "سعيد",
+          "id": "1693",
+          "imageName": "T693.png",
+          "videoName": "T693.mp4",
+          "tags": [
+            "سعيد،",
+            "مسرور،",
+            "سعادة،",
+            "سرور،",
+            "فرح،",
+            "يفرح،",
+            "يسعد،",
+            "مبسوط"
+          ]
+        },
+        {
+          "name": "مكيف",
+          "id": "1694",
+          "imageName": "T694.png",
+          "videoName": "T694.mp4",
+          "tags": [
+            "مكيف،",
+            "مبسوط،",
+            "كثير"
+          ]
+        },
+        {
+          "name": "صديق",
+          "id": "1532",
+          "imageName": "P532.png",
+          "videoName": "P532.mp4",
+          "tags": [
+            "صاحب،",
+            "صديق،",
+            "رفيق"
+          ]
+        },
+        {
+          "name": "بابا",
+          "id": "1524",
+          "imageName": "P524.png",
+          "videoName": "P524.mp4",
+          "tags": [
+            "بابا،",
+            "ابوي،",
+            "أب،",
+            "أبي"
+          ]
+        },
+        {
+          "name": "ام",
+          "id": "1529",
+          "imageName": "P529.png",
+          "videoName": "P529.mp4",
+          "tags": [
+            "ماما،",
+            "امي،",
+            "أم"
+          ]
+        },
+        {
+          "name": "اخ",
+          "id": "1525",
+          "imageName": "P525.png",
+          "videoName": "P525.mp4",
+          "tags": [
+            "أخي،",
+            "اخ"
+          ]
+        },
+        {
+          "name": "اخت",
+          "id": "1526",
+          "imageName": "P526.png",
+          "videoName": "P526.mp4",
+          "tags": [
+            "أخت،",
+            "اختي"
+          ]
+        },
+        {
+          "name": "شال",
+          "id": "1094",
+          "imageName": "CC94.png",
+          "videoName": "CC94.mp4",
+          "tags": [
+            "وشاح،",
+            "شبره"
+          ]
+        },
+        {
+          "name": "فقاقيع صابون",
+          "id": "1080",
+          "imageName": "CC80.png",
+          "videoName": "CC80.mp4",
+          "tags": [
+            "فقاعات،",
+            "فقاعه"
+          ]
+        },
+        {
+          "name": "طابه",
+          "id": "1083",
+          "imageName": "CC83.png",
+          "videoName": "CC83.mp4",
+          "tags": [
+            "كرة"
+          ]
+        },
+        {
+          "name": "دميه",
+          "id": "1105",
+          "imageName": "CC105.png",
+          "videoName": "CC105.mp4",
+          "tags": [
+            "لعبة"
+          ]
+        },
+        {
+          "name": "اعطيني",
+          "id": "1074",
+          "imageName": "C74.png",
+          "videoName": "C74.mp4",
+          "tags": [
+            "قليل،",
+            "اعط،",
+            "هات،",
+            "ناول،",
+            "شوي،",
+            "اعطيني"
+          ]
+        },
+        {
+          "name": "من",
+          "id": "1708",
+          "imageName": "U708.png",
+          "videoName": "U708.mp4",
+          "tags": []
+        },
+        {
+          "name": "آخر",
+          "id": "1713",
+          "imageName": "V713.png",
+          "videoName": "V713.mp4",
+          "tags": [
+            "اشي",
+            "ثاني،",
+            "غير،",
+            "غيره"
+          ]
+        }
+      ],
+      "imageName": "AB813.png"
     }
   ]
 };

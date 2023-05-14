@@ -196,7 +196,7 @@ const issieWordsWB = xlsx.readFile(sourceFile);
 const issieWords = issieWordsWB.Sheets["רשימה כולל הערות"];
 const category2wordsHe = issieWordsWB.Sheets["עברית חלוקה לקטגוריות"];
 const category2wordsAr = issieWordsWB.Sheets["ערבית חלוקה לקטגוריות"];
-
+const USEFULT_WORDS = "__useful_words__"
 let row = 2;
 let emptyRows = 0;
 
@@ -224,14 +224,17 @@ function parseRange(range) {
 
 // Build map of categories
 
-const heMap = [
+const heMap = []
+const arMap = []
+const enMap = []
+const defaultMap = [
     {
         "name": "FavoritesCategory",
         translate: true,
         "id": "__favorites__",
         "themeId": "2",
         "imageName": "favorites.png",
-        "wordsRaw": []
+        "words": []
     },
     {
         "name": "TutorialsCategory",
@@ -239,45 +242,60 @@ const heMap = [
         translate: true,
         "id": "__tutorials__",
         "themeId": "3",
-        "imageName": "R587.png",
-        "words": []
+        "imageName": "tutorials.png",
+        "words": [
+            {
+                name: "TutorialOverviewWord",
+                id: "__tutorial_overview__",
+                translate: true,
+                category: "__tutorials__",
+                imageName: "tutorial-overview.jpg",
+                videoName: "https://www.issieapps.com/videos/tutorials/{$LANG}/overview.mp4",
+            },
+            {
+                name: "TutorialOverviewEditing",
+                id: "__tutorial_editing__",
+                translate: true,
+                category: "__tutorials__",
+                imageName: "tutorial-editing.png",
+                videoName: "https://www.issieapps.com/videos/tutorials/{$LANG}/editing.mp4",
+            }
+        ]
     },
 ]
-const arMap = [
-    {
-        "name": "FavoritesCategory",
-        translate: true,
-        translate: true,
-        "id": "__favorites__",
-        "themeId": "2",
-        "imageName": "favorites.png",
-        "wordsRaw": []
-    },
-    {
-        "name": "TutorialsCategory",
-        allowHide: true,
-        "id": "__tutorials__",
-        "themeId": "3",
-        "imageName": "R587.png",
-        "words": []
-    },
 
-]
+function setTutorialMovieLang(aMap, lang) {
+    const tCat = aMap.find(cat => cat.id == "__tutorials__");
+    tCat.words = tCat.words.map(word => ({ ...word, videoName: word.videoName.replace("{$LANG}", lang) }))
+}
+
 
 //Hebrew map
+defaultMap.forEach(cat => heMap.push({ ...cat }))
+
+setTutorialMovieLang(heMap, "he")
 let catId = 1
 const next = (letter) => String.fromCharCode(letter.charCodeAt(0) + 1)
 for (let letter = 'A'; letter <= 'Z'; letter = next(letter)) {
     heMap.push(extractRanges4Category(category2wordsHe, letter, 1, catId++));
 }
 heMap.push(extractRanges4Category(category2wordsHe, 'AA', 1, catId++));
+heMap.push(extractRanges4Category(category2wordsHe, 'AB', 1, USEFULT_WORDS));
 
 //Arabic map
+defaultMap.forEach(cat => arMap.push({ ...cat }))
+setTutorialMovieLang(arMap, "ar")
 catId = 1
 for (let letter = 'A'; letter <= 'Z'; letter = next(letter)) {
     arMap.push(extractRanges4Category(category2wordsAr, letter, 1, catId++));
 }
 arMap.push(extractRanges4Category(category2wordsAr, 'AA', 1, catId++));
+arMap.push(extractRanges4Category(category2wordsAr, 'AB', 1, USEFULT_WORDS));
+
+//English map
+defaultMap.forEach(cat => enMap.push({ ...cat }))
+
+setTutorialMovieLang(enMap, "en")
 
 
 function extractRanges4Category(sheet, letter, row, catId) {
@@ -290,6 +308,10 @@ function extractRanges4Category(sheet, letter, row, catId) {
     if (header === "התבגרות" || header === "بلوغ") {
         cat.allowHide = true;
         cat.defaultHide = true;
+    }
+
+    if (catId === USEFULT_WORDS) {
+        cat.sortByID = true;
     }
 
     row++
@@ -356,33 +378,38 @@ function getWord(row, lang, id) {
 }
 
 function addWordsToCat(cat, lang) {
-    console.log("process cat", lang, cat.name);
-
-    let wordId = parseInt(cat.id) * 100;
-    cat.words = [];
-    cat.wordsRaw?.forEach(row => {
-        const wordObj = getWord(row, lang, wordId)
-        if (wordObj) {
-            wordId++;
-            cat.words.push(wordObj)
-        }
-    })
-
-    // extract image for category:
     if (cat.id !== "__favorites__" && cat.id !== "__tutorials__") {
-        const wordForCat = cat.words.find(w => w.name == cat.name);
+        console.log("process cat", lang, cat.name);
+
+        let wordId = parseInt(cat.id) * 100;
+        cat.words = [];
+        cat.wordsRaw?.forEach(row => {
+            const wordObj = getWord(row, lang, wordId)
+            if (wordObj) {
+                wordId++;
+                cat.words.push(wordObj)
+            }
+        })
+
+        // extract image for category:
+        let wordForCat = cat.words.find(w => w.name == cat.name);
+        if (!wordForCat && cat.id == USEFULT_WORDS) {
+            wordForCat = getWord(813, lang, "N/A")
+        }
         if (!wordForCat) {
-            console.log("word for cat is missing", cat.name, cat.words.map(w => w.name));
+            console.log("word for cat is missing", JSON.stringify(cat));
         } else {
             cat.imageName = wordForCat.imageName;
         }
-    }
 
-    delete cat.wordsRaw;
+        delete cat.wordsRaw;
+        delete cat.catRow;
+    }
 }
 
 heMap.forEach(cat => addWordsToCat(cat, "he"));
 arMap.forEach(cat => addWordsToCat(cat, "ar"));
+enMap.forEach(cat => addWordsToCat(cat, "en"));
 
 console.log("processed rows", row - emptyRows - 1);
 saveFile({
@@ -395,189 +422,11 @@ saveFile({
     categories: arMap
 }, "ar");
 
+saveFile({
+    indexVersion: 1,
+    categories: enMap
+}, "en");
 
-
-
-
-// let categoryAr = {}, categoryHe = {};
-// while (issieWords[FILENAME_COL + row]?.v.length > 0 || emptyRows < 3) {
-//     if (issieWords[FILENAME_COL + row] === undefined) {
-//         emptyRows++;
-//         row++;
-//         continue;
-//     } else {
-//         emptyRows = 0;
-//     }
-
-
-//     let wordHe = issieWords[WORD_HE_COL + row]?.v;
-//     if (!wordHe) {
-//         //defaults to category name
-//         wordHe = issieWords[CATEGOTY_COL + row]?.v;
-//     }
-
-
-//     if (issieWords[CATEGOTY_COL + row]?.v?.length > 0) {
-//         if (categoryIndex > 0) {
-//             resAr.categories.push(categoryAr);
-//             resHe.categories.push(categoryHe);
-//         }
-
-//         categoryIndex++;
-//         fileIndex = categoryIndex * 100 + 1;
-
-//         categoryAr = { name: issieWords[WORD_AR_COL + row]?.v, id: categoryIndex, words: [] };
-//         categoryHe = { name: issieWords[CATEGOTY_COL + row].v, id: categoryIndex, words: [] };
-
-//         // if (categoryHe.name == "לבוש") {
-//         //     console.log("stop")
-//         // }
-
-//         if (!categoryAr.name) {
-//             console.log("ALERT:", "missing arabic category for ", currentCategoryHe, "row", row);
-//         }
-//         //wordHe = categoryHe.name;
-//         //console.log(categoryHe.name, categoryAr.name);
-//     }
-//     let wordAr = issieWords[WORD_AR_COL + row]?.v
-
-
-//     let imageName = issieWords[FILENAME_COL + row]?.v
-//     let imageName2 = undefined;
-//     let videoName = imageName;
-//     if (!imageName) {
-//         console.log("ALERT:", "missing Filename", "row", row);
-//     } else {
-//         imageName = imageName.trim();
-//         if (imageName.endsWith(" 1 2") || imageName.endsWith(" 1 2 3")) {
-//             let spacePos = imageName.indexOf(" ");
-//             videoName = imageName.substr(0, spacePos);
-//             imageName = videoName + " 1";
-//             imageName2 = videoName + " 2";
-//         }
-//     }
-
-//     const wordHeObj = {
-//         name: cleanseName(wordHe),
-//         id: fileIndex,
-//         imageName: imageName + ".png",
-//         videoName: videoName + ".mp4"
-//     }
-//     if (imageName2) {
-//         wordHeObj.imageName2 = imageName2 + ".png"
-//     }
-
-
-
-//     // if (wordHeObj.name == "לבוש") {
-//     //     console.log("stop")
-//     // }
-
-//     if (!wordHeObj.name) {
-//         console.log("ALERT:", "missing Hebrew word", "row", row);
-//     } else {
-//         // find the hebrew movie and icon:
-//         if (issieWords[STATUS_COL + row]?.v === 19 || issieWords[STATUS_COL + row]?.v === 7
-//             || issieWords[STATUS_COL + row]?.v === 24 || issieWords[STATUS_COL + row]?.v === 22
-//             || issieWords[STATUS_COL + row]?.v === 53) {
-
-//             // let name = wordMap[wordHeObj.name] ? wordMap[wordHeObj.name] : wordHeObj.name;
-//             // let imgName = name;
-//             // let imgName2 = undefined;
-//             // if (imageWordMap[wordHeObj.name]) {
-//             //     imgName = imageWordMap[wordHeObj.name][0];
-//             //     if (imageWordMap[wordHeObj.name].length == 2) {
-//             //         imgName2 = imageWordMap[wordHeObj.name][1];
-//             //     }
-//             // }
-//             let suffix = "missing"
-//             if (issieWords[STATUS_COL + row]?.v === 24) {
-//                 suffix = "wait-for-new"
-//             }
-
-
-//             if (!fileExists(imagePath + "/" + imgName + ".png")) {
-//                 console.log(missingFiles, "Need Hebrew image ", imgName + ".png");
-//                 missingFiles++;
-//                 //fs.copyFileSync("missing.txt", targetMedia + "/images/he/" + wordHeObj.imageName + "-" + suffix)
-//             } else {
-//                 //fs.copyFileSync(imagePath + "/" + imgName + ".png", targetMedia + "/images/he/" + wordHeObj.imageName)
-//                 wordHeObj.oldImageName = imgName + ".png";
-//             }
-//             if (suffix == "missing" && wordHeObj.imageName2) {
-//                 console.log("stop")
-//             }
-
-//             if (wordHeObj.imageName2) {
-//                 if (!fileExists(imagePath + "/" + imgName2 + ".png")) {
-//                     console.log(missingFiles, "missing Hebrew image", imgName2 + ".png");
-//                     missingFiles++;
-//                     //fs.copyFileSync("/Users/i022021/dev/Issie/IssieSign/scripts/missing.txt", targetMedia + "/images/he/" + wordHeObj.imageName2 + "-" + suffix)
-//                 } else {
-//                     //fs.copyFileSync(imagePath + "/" + imgName2 + ".png", targetMedia + "/images/he/" + wordHeObj.imageName2)
-//                     wordHeObj.oldImageName2 = imgName2 + ".png";
-//                 }
-//             }
-
-
-//             if (imageWordMap[name]) {
-//                 name = imageWordMap[name][0];
-//             }
-
-//             let videoFilePath = videoPath + "/" + name;
-//             if (issieWords[STATUS_COL + row]?.v !== 24 && !fileExists(videoFilePath + ".mov")) {
-//                 if (!fileExists(videoFilePath + ".mp4")) {
-//                     console.log(missingFiles, "missing Hebrew video", name);
-//                     missingFiles++;
-//                     //fs.copyFileSync("missing.txt", targetMedia + "/videos/he/prod/" + wordHeObj.videoName + "-missing")
-//                 } else {
-//                     //fs.copyFileSync(videoFilePath + ".mp4", targetMedia + "/videos/he/prod/" + wordHeObj.videoName)
-//                     wordHeObj.oldVideoName = name + ".mp4"
-//                 }
-
-//             } else {
-//                 if (issieWords[STATUS_COL + row]?.v === 24) {
-//                     //fs.copyFileSync("missing.txt", targetMedia + "/videos/he/prod/" + wordHeObj.videoName + "-wait-for-new")
-//                 } else {
-//                     //fs.copyFileSync(videoFilePath + ".mov", targetMedia + "/videos/he/prod/" + wordHeObj.videoName)
-//                 }
-//                 wordHeObj.oldVideoName = name + ".mov"
-//             }
-//         }
-//         const searchHe = issieWords[SEARCH_WORDS_HE_COL + row]?.v;
-//         addSearchWords(searchHe, wordHeObj);
-//         categoryHe.words.push(wordHeObj);
-//     }
-
-//     // Arabic Word:
-//     if (!(!wordAr || wordAr.length === 0 || wordAr.includes("----"))) {
-
-//         const wordArObj = {
-//             name: cleanseName(wordAr),
-//             id: fileIndex,
-//             imageName: imageName + ".png",
-//             videoName: videoName + ".mp4"
-//         }
-
-//         if (imageName2) {
-//             wordArObj.imageName2 = imageName2 + ".png"
-//         }
-
-//         if (!wordArObj.name) {
-//             console.log("ALERT:", "missing Arabic word", "row", row);
-//         }
-//         const searchAr = issieWords[SEARCH_WORDS_AR_COL + row]?.v;
-//         addSearchWords(searchAr, wordArObj);
-//         categoryAr.words.push(wordArObj);
-//     }
-
-//     fileIndex++
-//     row++
-// }
-
-// //push last category:
-// resAr.categories.push(categoryAr);
-// resHe.categories.push(categoryHe);
 
 function addSearchWords(searchWords, obj) {
     obj.tags = [];
@@ -622,83 +471,3 @@ function saveFile(res, lang) {
         fs.closeSync(file);
     });
 }
-
-/*
-var items = fs.readdirSync(sourceFile);
-
-for (var i=0; items && i<items.length; i++) {
-//    console.log(items[i]);
-    var colorIndex = (i+1) % colors.length
-    let category = {};
-    category.name = items[i];
-    //category.color = colors[colorIndex];
-    category.id = categoryIndex.toString();
-    category.imageName = items[i] + ".png"
-    category.words = []
-//    console.log("read words:" + sourceFile + '/' + category.name);
-    try {
-        var words = fs.readdirSync(sourceFile + '/' + category.name);
-        if (words) {
-            fileIndex = categoryIndex * 100 + 1;
-            for (var j=0; j<words.length; j++) {
-                var suffix = ""
-                if (words[j].endsWith(".mov")) {
-                    suffix = ".mov"
-                } else if (words[j].endsWith(".mp4")) {
-                    suffix = ".mp4"
-                }
-
-
-
-                if (suffix != "") {
-//                    console.log(category.id + " " + words[j]);
-                    var word = {};
-                    word.name = words[j].replace(suffix, "");
-                    //deal with duplicates
-                    word.name = word.name.replace("__2", "");
-                    word.id = fileIndex;
-                    fileIndex++;
-                    word.imageName = words[j].replace(suffix, ".png");
-
-                    //test files exists
-                    var pathToTest = imagePath + word.imageName
-                    if (!fs.existsSync(pathToTest)) {
-                        console.log("missing image: '" + category.name+ "' - '"+ word.imageName + "'");
-                        word.imageName = "no_image.png"
-                    }
-
-                    //check if opossite image exists:
-                    var pathToOpposite = pathToTest.replace(".png", " 2.png")
-                    if (fs.existsSync(pathToOpposite)) {
-                        word.imageName2 = word.imageName.replace(".png", " 2.png")
-                    }
-
-
-
-
-                    //word.videoName = words[j].replace(suffix, "_x264.mov");
-                    word.videoName = words[j]
-
-                    pathToTest = videoPath + word.videoName
-                    if (!fs.existsSync(pathToTest)) {
-                        console.log("missing video: '" +  word.videoName+ "'");
-                    }
-
-                    category.words.push(word);
-                }
-            }
-        }
-        categoryIndex++;
-
-        res.categories.push(category);
-    } catch(e){
-        //console.log(e)
-    }
-
-
-
-}
-
-
-*/
-

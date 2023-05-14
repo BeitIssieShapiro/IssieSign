@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
 import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined } from '@mui/icons-material'
-import { translate } from '../utils/lang';
+import { fTranslate, translate } from '../utils/lang';
 import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
 import { ReactComponent as AddVideoSVG } from '../images/addVideo.svg'
 import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
 import WordAdults from "../containers/Word-adult";
+import { isBrowser } from '../utils/Utils';
 
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
@@ -49,15 +50,68 @@ export function HeaderButton(props) {
 
   return <div {...props}
     onClick={props.onClick}
+    onTouchStart={props.onTouchStart}
+    //onPointerDown={props.onTouchStart}
+    onTouchEnd={props.onTouchEnd}
+    //onPointerUp={props.onTouchEnd}
+    className="noTouchCallout"
     style={style}>
     {props.children}
   </div>
 }
 
 export function EditButton(props) {
+  const [pressInterval, setPressInterval] = useState(undefined);
+  const [waited, setWaited] = useState(0);
+
   return <HeaderButton slot={props.slot} className="a"
-    onClick={props.onClick}>
+    onClick={()=>{
+      if (isBrowser()) {
+        props.onChange(!props.selected);
+      }
+    }}
+    onTouchStart={(evt) => {
+      
+      evt.preventDefault()
+      if (isBrowser()) {
+        props.onChange(!props.selected);
+        return;
+      }
+      console.log("edit-mode-touchStart")
+      if (!props.selected && !pressInterval) {
+        console.log("edit-mode-start-waiting")
+        setWaited(0);
+        setPressInterval(setInterval(() => {
+          setWaited(curWaited => {
+            if (curWaited >= 2) {
+              props.onChange(true);
+              setPressInterval(interval => {
+                clearInterval(interval);
+                return undefined;
+              })
+            }
+            return curWaited + 1
+          });
+
+        }
+          , 850))
+      } else {
+        props.onChange(false);
+      }
+    }}
+
+    onTouchEnd={() => {
+      console.log("edit-mode-touchEnd")
+      setPressInterval(interval => {
+        if (interval) {
+          clearInterval(interval);
+          return undefined;
+        }
+      })
+    }}
+  >
     <EditModeSVG style={{ width: 40, fillOpacity: props.selected ? 1 : 0 }} />
+    {pressInterval && <div style={{ position: 'absolute', left: 40, top: 5, width: 200, fontSize: 22, textAlign: "start" }}>{fTranslate("EnterEditMode", 3 - waited)}</div>}
   </HeaderButton>
 }
 
@@ -80,7 +134,7 @@ export function ShareCartButton(props) {
   return <HeaderButton slot={props.slot} className="d"
     onClick={props.onClick}>
     {/* <ShoppingBagOutlined style={{ fontSize: 40, strokeWidth:0 }} /> */}
-    <ShareBasketSVG style={{ width: 40}}/>
+    <ShareBasketSVG style={{ width: 40 }} />
     {props.count > 0 && <div className="shareBadge">{props.count}</div>}
   </HeaderButton>
 }
@@ -203,8 +257,8 @@ export function DeleteTilebutton(props) {
 
 export function Word2(props) {
   if (props.adultMode) {
-    return <WordAdults {...props} /> 
-  }   
+    return <WordAdults {...props} />
+  }
   return <Word  {...props} />;
 }
 

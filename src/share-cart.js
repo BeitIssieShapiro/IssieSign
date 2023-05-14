@@ -115,6 +115,9 @@ export class ShareCart {
                 }
                 if (fCategory.userContent) {
                     jsonCategory.imageFileId = fCategory.imageFileId;
+                    if (!(fCategory.imageFileId?.length > 0)) {
+                        throw (new Error(fTranslate(MissingFolderFileID, category)))
+                    }
                     jsonCategory.userContent = true;
                 }
                 fileJson.categories.push(jsonCategory);
@@ -128,6 +131,8 @@ export class ShareCart {
                     }
                     if (word.imageFileId) {
                         jsonWord.imageFileId = word.imageFileId;
+                    } else {
+                        throw (new Error(fTranslate(MissingWordFileID, name)))
                     }
 
                     jsonCategory.words.push(jsonWord);
@@ -202,6 +207,7 @@ export class ShareCart {
 
     async importWords(url) {
         const addedWords = [];
+        const existingWords = [];
 
         return this.unzipFile(url).then(async fileContents => {
             trace("Import words content", fileContents);
@@ -228,25 +234,29 @@ export class ShareCart {
                 for (const word of cat.words) {
                     // If word exists - ignore it
                     let existingWord = FileSystem.get().findWord(cat.name, word.name);
-                    if (existingWord) return;
+                    if (existingWord) {
+                        existingWords.push(cat.name + "/" + word.name)
+                    } else {
+                        trace("Add new imported word", word.name);
 
-                    trace("Add new imported word", word.name);
+                        if (word.imageFileId) {
+                            let imageName = cat.name + "/" + word.name + ".jpg";
+                            await FileSystem.gdriveDownload(word.imageFileId, fullPath + imageName, true);
+                        }
 
-                    if (word.imageFileId) {
-                        let imageName = cat.name + "/" + word.name + ".jpg";
-                        await FileSystem.gdriveDownload(word.imageFileId, fullPath + imageName, true);
+                        let videoName = cat.name + "/" + word.name + ".mov";
+                        await FileSystem.gdriveDownload(word.videoFileId, fullPath + videoName, true);
+
+                        await FileSystem.get().addWord(cat.name, word.name, { imported: true });
+                        addedWords.push(cat.name + "/" + word.name);
                     }
-
-                    let videoName = cat.name + "/" + word.name + ".mov";
-                    await FileSystem.gdriveDownload(word.videoFileId, fullPath + videoName, true);
-
-                    await FileSystem.get().addWord(cat.name, word.name, { imported: true });
-                    addedWords.push(cat.name + "/" + word.name);
                 }
-
-
             }
-            return addedWords;
+            
+            return {
+                newWords: addedWords,
+                alreadyExistingWords: existingWords
+            };
 
         });
     }
