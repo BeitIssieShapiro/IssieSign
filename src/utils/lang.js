@@ -193,7 +193,7 @@ var strings = {
         "TitleEditWord": "تحرير كلمة",
         "sharingAllWords": "جميع الكلمات",
         "EmptyShareCart": "لم يتم اختيار ملفات و /او كلمات للمشاركة",
-        "ShareButton": "שיתוף...",
+        "ShareButton": "مشاركة...",
         "AddToShareMenu": "إضافة الى قائمة المشاركة",
         "RemoveFromShareMenu": "إزالة من قائمة المشاركة",
         "EditMenu": "تحرير...",

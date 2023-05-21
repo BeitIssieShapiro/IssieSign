@@ -9,6 +9,7 @@ export default class FileSystem {
     static INDEX_FILE = "index.json";
     static FAVORITES_ID = "__favorites__";
     static USEFUL_WORDS_ID = "__useful_words__";
+    static TUTORIAL_ID = "__tutorials__";
     static FAVORITES_NAME = "FavoritesCategory";
     static TUTORIAL_NAME = "TutorialsCategory";
     static SCHEME_PREFIX = "";
@@ -235,6 +236,8 @@ export default class FileSystem {
             if (b.id === FileSystem.FAVORITES_ID) return 1;
             if (a.id === FileSystem.USEFUL_WORDS_ID) return -1;
             if (b.id === FileSystem.USEFUL_WORDS_ID) return 1;
+            if (a.id === FileSystem.TUTORIAL_ID) return -1;
+            if (b.id === FileSystem.TUTORIAL_ID) return 1;
 
             if (this.showCustomFoldersFirst) {
                 if (a.userContent && !b.userContent) return -1;
@@ -250,11 +253,8 @@ export default class FileSystem {
     }
 
     sortCatWords(cat) {
-        const hasTwoImages = (word)=>word.imageName2?.length > 0;
 
         cat.words.sort((a, b) => {
-            if (hasTwoImages(a) &&  !hasTwoImages(b)) return 1;
-            if (hasTwoImages(b) &&  !hasTwoImages(a)) return -1;
 
             if (this.showCustomFoldersFirst) {
                 if (a.userContent && !b.userContent) return -1;

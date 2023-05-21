@@ -6,7 +6,7 @@ import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
-import { getTheme, getThemeName } from "../utils/Utils";
+import { getTheme, getThemeName, isMyIssieSign } from "../utils/Utils";
 import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected, TileButton } from "./ui-elements";
 import ISLink from "./ISLink";
 import { fTranslate, translate } from "../utils/lang";
@@ -24,7 +24,7 @@ function Card2(props) {
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
-    let cardDouble = props.imageName2 ? { '--card-width': '165px' } : {};
+    let cardDouble = isMyIssieSign() ? {paddingRight: 45, paddingLeft:45} : {paddingRight: 35, paddingLeft:35, '--card-width': '165px'};
     let url = "";
     if (!props.noLink && !props.selected) {
         if (props.cardType === "file") {

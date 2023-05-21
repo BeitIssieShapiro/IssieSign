@@ -44,7 +44,7 @@ function Word(props) {
 
         //calculate the average width, while considering double images
         elementWidths = props.words.map((word) => {
-            return word.imageName2 ? 300 : 220;
+            return 230; //word.imageName2 ? 300 : 220;
         });
     }
 
