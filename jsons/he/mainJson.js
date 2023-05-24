@@ -7094,6 +7094,7 @@ const mainJson = {
     {
       "name": "מילים שימושיות",
       "id": "__useful_words__",
+      "sortByID": true,
       "words": [
         {
           "name": "אני",

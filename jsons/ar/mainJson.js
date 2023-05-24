@@ -8487,6 +8487,7 @@ const mainJson = {
     {
       "name": "عبارات أساسيه",
       "id": "__useful_words__",
+      "sortByID": true,
       "words": [
         {
           "name": "انا بدي",
