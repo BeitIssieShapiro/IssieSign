@@ -190,7 +190,7 @@ class App extends IssieBase {
 
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
-            allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, false),
+            allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, true),
             showOwnFoldersFirst,
             adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
             language: lang,

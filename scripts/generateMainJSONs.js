@@ -364,7 +364,7 @@ function getWord(row, lang, id) {
         name: cleanseName(wordName),
         id: (1000 + row) + "",
         imageName: imageName + ".png",
-        videoName: videoName + ".mp4"
+        videoName: videoName.trim() + ".mp4"
     }
     if (imageName2) {
         wordObj.imageName2 = imageName2 + ".png"

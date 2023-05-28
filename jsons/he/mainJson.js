@@ -951,14 +951,14 @@ const mainJson = {
           "name": "ארגז חול",
           "id": "1106",
           "imageName": "CC106.png",
-          "videoName": "CC106 .mp4",
+          "videoName": "CC106.mp4",
           "tags": []
         },
         {
           "name": "דלי וכף",
           "id": "1107",
           "imageName": "CC107.png",
-          "videoName": "CC107 .mp4",
+          "videoName": "CC107.mp4",
           "tags": []
         },
         {
@@ -1033,7 +1033,7 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "יום הזיכרון (שואה, חיילים?)",
+          "name": "יום הזיכרון",
           "id": "1114",
           "imageName": "D114.png",
           "videoName": "D114.mp4",
@@ -1545,7 +1545,7 @@ const mainJson = {
           "name": "ימי השבוע",
           "id": "1153",
           "imageName": "DD153.png",
-          "videoName": "DD153 .mp4",
+          "videoName": "DD153.mp4",
           "tags": [
             "שבוע",
             "ראשון",
@@ -3095,13 +3095,6 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "עוד",
-          "id": "1346",
-          "imageName": "J346.png",
-          "videoName": "J346.mp4",
-          "tags": []
-        },
-        {
           "name": "שופר",
           "id": "1347",
           "imageName": "J347.png",
@@ -3994,7 +3987,7 @@ const mainJson = {
           "name": "כף וכפית",
           "id": "1469",
           "imageName": "N469.png",
-          "videoName": "N469 .mp4",
+          "videoName": "N469.mp4",
           "tags": []
         },
         {
@@ -6892,13 +6885,6 @@ const mainJson = {
           "id": "1788",
           "imageName": "X788.png",
           "videoName": "X788.mp4",
-          "tags": []
-        },
-        {
-          "name": "שיעור דת נוצרי",
-          "id": "1791",
-          "imageName": "X791.png",
-          "videoName": "X791.mp4",
           "tags": []
         },
         {

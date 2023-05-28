@@ -1225,7 +1225,7 @@ const mainJson = {
           "name": "حوض رمل",
           "id": "1106",
           "imageName": "CC106.png",
-          "videoName": "CC106 .mp4",
+          "videoName": "CC106.mp4",
           "tags": [
             "لبص،",
             "رمل،حوض"
@@ -1235,7 +1235,7 @@ const mainJson = {
           "name": "دلو وكريك",
           "id": "1107",
           "imageName": "CC107.png",
-          "videoName": "CC107 .mp4",
+          "videoName": "CC107.mp4",
           "tags": [
             "دلو،",
             "كريك،",
@@ -1365,13 +1365,6 @@ const mainJson = {
           "id": "1122",
           "imageName": "D122.png",
           "videoName": "D122.mp4",
-          "tags": []
-        },
-        {
-          "name": "رأس السنه",
-          "id": "1124",
-          "imageName": "D124.png",
-          "videoName": "D124.mp4",
           "tags": []
         },
         {
@@ -1729,7 +1722,7 @@ const mainJson = {
           "name": "ايام الاسبوع",
           "id": "1153",
           "imageName": "DD153.png",
-          "videoName": "DD153 .mp4",
+          "videoName": "DD153.mp4",
           "tags": [
             "ايام،",
             "يوم/",
@@ -3689,13 +3682,6 @@ const mainJson = {
           ]
         },
         {
-          "name": "شعر مستعار",
-          "id": "1367",
-          "imageName": "L367.png",
-          "videoName": "L367.mp4",
-          "tags": []
-        },
-        {
           "name": "ملابس سباحه",
           "id": "1368",
           "imageName": "L368.png",
@@ -4670,7 +4656,7 @@ const mainJson = {
           "name": "معلقه",
           "id": "1469",
           "imageName": "N469.png",
-          "videoName": "N469 .mp4",
+          "videoName": "N469.mp4",
           "tags": [
             "ملعقة،",
             "معلقة"
@@ -5536,18 +5522,6 @@ const mainJson = {
           "imageName": "Q558.png",
           "videoName": "Q558.mp4",
           "tags": []
-        },
-        {
-          "name": "مكسرات",
-          "id": "1559",
-          "imageName": "Q559.png",
-          "videoName": "Q559.mp4",
-          "tags": [
-            "مكسرات،",
-            "لوز،",
-            "جوز،",
-            "قضامه"
-          ]
         },
         {
           "name": "مجففات",
@@ -6992,13 +6966,6 @@ const mainJson = {
           "tags": [
             "قهوة"
           ]
-        },
-        {
-          "name": "أزرق سماوي",
-          "id": "1666",
-          "imageName": "S666.png",
-          "videoName": "S666.mp4",
-          "tags": []
         },
         {
           "name": "ذهبي",
