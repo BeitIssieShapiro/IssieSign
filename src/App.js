@@ -692,12 +692,12 @@ class App extends IssieBase {
             //or
             //file      /:categoryId/:title/:filePath
             const [videoName, categoryId, title, filePath] = splitAndDecodeCompoundName(path.substr(7));
-            this.setTitle(title);
 
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
-            const isFavorite = (cat?.words.find(w => w.name === title)?.favorite);
+            const word = cat?.words.find(w => w.name === title);
+            const isFavorite = word?.isFavorite;
 
-            this.setTitle(title);
+            this.setTitle((word && word.translate) ? translate(title) : title);
 
             return (
                 <div style={{ width: "100%", height: "100%", position: "relative" }}>

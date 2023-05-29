@@ -245,18 +245,18 @@ const defaultMap = [
         "imageName": "tutorials.png",
         "words": [
             {
-                name: "TutorialOverviewWord",
+                name: "__tutorial_overview__",
                 id: "__tutorial_overview__",
                 translate: true,
-                category: "__tutorials__",
+                category: "TutorialsCategory",
                 imageName: "tutorial-overview.jpg",
                 videoName: "https://www.issieapps.com/videos/tutorials/{$LANG}/overview.mp4",
             },
             {
-                name: "TutorialOverviewEditing",
+                name: "__tutorial_editing__",
                 id: "__tutorial_editing__",
                 translate: true,
-                category: "__tutorials__",
+                category: "TutorialsCategory",
                 imageName: "tutorial-editing.png",
                 videoName: "https://www.issieapps.com/videos/tutorials/{$LANG}/editing.mp4",
             }
