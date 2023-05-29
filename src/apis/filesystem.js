@@ -48,7 +48,7 @@ export default class FileSystem {
 
     index = isBrowser() ? ({
         categories: mainJson.categories,
-        categories2 : [
+        categories2: [
             {
                 "name": "TutorialsCategory",
                 "id": "1",
@@ -168,7 +168,22 @@ export default class FileSystem {
                                 let reader = new FileReader();
                                 reader.onloadend = (evt) => {
                                     let data = evt.target.result;
-                                    this.index = JSON.parse(data);
+                                    console.log("index file loaded", data);
+                                    try {
+                                        this.index = JSON.parse(data);
+                                    } catch (c) {
+                                        console.log("try fix the index by removing duplicates", data);
+                                        // try to see if the file has multiple maps (workaround)
+                                        const doublePos = data.lastIndexOf("}{");
+                                        data = data.substr(doublePos + 1);
+                                        try {
+                                            this.index = JSON.parse(data);
+                                            console.log("Successfully fix the index");
+                                        } catch (ee) {
+                                            console.log("Unable to fix the index", ee);
+                                        }
+                                    }
+                                    console.log("index file parsed");
 
                                     // merge the default content
                                     defaultContent.categories.forEach(defCat => {
@@ -249,7 +264,7 @@ export default class FileSystem {
     }
 
     sortWords() {
-        this.index.categories.forEach(cat=>this.sortCatWords(cat));
+        this.index.categories.forEach(cat => this.sortCatWords(cat));
     }
 
     sortCatWords(cat) {
