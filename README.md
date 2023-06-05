@@ -2,8 +2,7 @@
 אפליקציה ללימוד שפת הסימנים המכילה כ-600 מילים בעברית מעולמם של ילדים. האפליקציה כוללת תמונות וסרטונים ופותחה בשיתוף עם סאפ והמרכז לייעוץ טכנולוגי בבית איזי שפירא.
 
 ## Build instruction
-
-- After cloning the project, you need to run at the root fo the project: `scripts/init.sh <password>`, password is kept secret and not in this git repo. as the repo admin...
+- git clone `https://github.com/BeitIssieShapiro/IssieSign.git`
 - Install cordova: `npm install -g cordova`
 - run `npm install`
 

@@ -145,7 +145,7 @@ const imageWordMap = {
 }
 
 
-var sourceFile = '/Users/i022021/dev/Issie/issie-words.xlsx'
+var sourceFile = '/Users/I022021/Library/CloudStorage/OneDrive-SAPSE/Documents/BeirIssieShapiro/IssieSign/issie-words.xlsx'
 var targetFile = '/Users/i022021/dev/Issie/IssieSign/jsons'
 var imagePath = '/Users/i022021/dev/issie/IssieSign-MediaNew/images/he'
 var videoPath = '/Users/i022021/dev/issie/IssieSign-MediaNew/videos/he/prod'
