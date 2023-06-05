@@ -16,21 +16,24 @@ Note: some features won't work, as it requires device API such as filesystem
 - browser will open with the App.
 - On every file change, the browser will reload the App.
 
+### Run in iOS
+- 
+
 ### Run in iOS simulator
 
-- to run in ios simulator, you need a Mac and xcode installed
-- run `./scripts/make.sh`  
+- to run in ios, you need a Mac and xcode installed
+- you need to create a cordova project - see below
+- run `./make/ios-make-<prod-variant: he/en/ar>`
 - Open xcode and open a workspace in `cordova/IsraeliSignLanguage/platforms/ios/IssieSign.xcworkspace`
 - On the project Navigator left panel, select the root (IssieSign)
 - In the "Signing" section, choose the Team (you would need to click on manage-account and add your appleId account before)
 - choose a device (your connected iPad) and press the run button.
-- You may get this error: "A valid provisioning profile for this executable was not found". In this case, goto File->project settings... and choose legacy build system. then re-run
 
 ### Run on iPad, connected via cable
 - same as before, select the iPad as the device
 - On first run, you need to verify the app: in Settings->General->Device Management->choose you e-mail and the verify the app.
 
-  
+<!--   
 ## Build android
 * run `./make/android-make-<variant: en | ar | he>.sh`
 * Open android studio `androidApp/platforms/android/<proj>` 
@@ -39,7 +42,7 @@ Note: some features won't work, as it requires device API such as filesystem
 * in the studio - `build -> generate signed bundle`
 * set the right signing key
 * locate the bundle in filesystem and upload to google-play console
-
+ -->
 
 
 # Licence
@@ -50,39 +53,43 @@ IssieSign is avaiable under the GPL Licence. See the following link: https://www
 
 - start a new cordova app : recommended to keep one app for android and one for ios
 ```
-cordova create app com.issieshapiro.signlang IssieSign
-cd app
+cordova create <ios-app | android-app> com.issieshapiro.signlang IssieSign
+cd ios-app
 cordova plugin add cordova-plugin-file
 cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
-cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.YOUR_CLIENT_ID --variable IOS_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com
+# take the client id of the IOS for prod from IssieSign project's API's Credentials in GCP
+cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
+
+# android only
 cordova plugins add ../PlayAssetsPlugin/
 ```
 
 
-- Fix cordova.xml:
+- Fix config.xml:
   - description and author
-  - copy the icons section to the platform ios and the folder "resources" to the cordova app's root
-  - replace (make sure only once)  - `<preference name="AllowInlineMediaPlayback" value="true" />`
+  - add `<preference name="AllowInlineMediaPlayback" value="true" />`
 
-- add ios and android
-```
-cordova platform add ios
-cordova platform add android
-```
-
+- for iOS: install cocoapods: https://cocoapods.org/
+- add the platfrom: `cordova platform add <ios | android>`
 - Add the cordova folder to the .gitignore
 
+change Podfile:
+#use_frameworks!
+use_modular_headers!
+
+run pod install in the `platforms/ios` folder
+
 ### IOS
+- copy `code-changes/Images.xcassets/` AppIcon.appiconset and AppIconAR.appiconset 
+- todo: add header icon for launch
 - Open xcode and the ios project
-//  - copy from `Images.xcassets` the `header`
-//  - replace AppIcon
-Under "Resources"
+- Under "Resources"
   - copy the Storyboard from code-changes (copy , create group)
-  - Copy IssieSign-info.plist (copy , create group)
-  - Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
+  - Copy IssieSign-info.plist contents into the one created by cordova (open as source)
+- Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
 
 
   - Create Arabic profile:

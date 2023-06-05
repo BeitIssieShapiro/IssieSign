@@ -1,9 +1,9 @@
-echo "Delete old files from cordovaApp/platforms/ios"
+echo "Delete old files from ios-app/platforms/ios"
 
-rm cordovaApp/platforms/ios/www/precache-*.*
-rm -rf cordovaApp/platforms/ios/www/videos
-rm -rf cordovaApp/platforms/ios/www/static
+rm ios-app/platforms/ios/www/precache-*.*
+rm -rf ios-app/platforms/ios/www/videos
+rm -rf ios-app/platforms/ios/www/static
 
-echo "copy build results to cordovaApp/platforms/ios"
+echo "copy build results to ios-app/platforms/ios"
 
-cp -R build/* cordovaApp/platforms/ios/www
+cp -R build/* ios-app/platforms/ios/www

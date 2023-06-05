@@ -46,14 +46,22 @@
 			<string>reversedClientId</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.821810142864-cqslq21sple78f37f2l4n6em8hun3got</string>
+				<string>com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>reversedClientId</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
@@ -66,17 +74,17 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Use camera to capture new words</string>
 	<key>NSMainNibFile</key>
-	<string></string>
+	<string/>
 	<key>NSMainNibFile~ipad</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs microphone access</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires photo library access to function properly.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>This app requires photo library access to function properly.</string>
 	<key>UILaunchStoryboardName</key>
-	<string>CDVLaunchScreen</string>
+	<string>IssieSignLaunchScreen</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>

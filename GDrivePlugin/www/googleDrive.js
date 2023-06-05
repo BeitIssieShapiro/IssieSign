@@ -1,4 +1,3 @@
-cordova.define("cordova-plugin-bentu-googledrive.GoogleDrive", function(require, exports, module) {
     function GoogleDrive() {}
     
     GoogleDrive.prototype.whoAmI = function (successCallback, errorCallback) {
@@ -48,5 +47,4 @@ cordova.define("cordova-plugin-bentu-googledrive.GoogleDrive", function(require,
     };
     
     cordova.addConstructor(GoogleDrive.install);
-    });
     

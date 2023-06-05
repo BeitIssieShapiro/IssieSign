@@ -154,10 +154,14 @@ export default class FileSystem {
         if (!isBrowser()) {
             return new Promise(async (resolve, reject) => {
                 let attempts = 0;
-                while (attempts < 5 && !(await waitForCordova(1000))) {
+                while (attempts < 15 && !(await waitForCordova(1000))) {
                     console.log("Wait for cordova..." + attempts)
                     attempts++;
                 };
+                if (!window.resolveLocalFileSystemURL || FileSystem.getDocDir() === undefined) {
+                    console.log("Cordova file plugin not working...")
+                    return;
+                }
 
                 return window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
                     (docDir) => {

@@ -1,10 +1,10 @@
 .idea/
 node_modules/
-.DS_Store
 .vscode/
 build
 androidApp/
-cordovaApp/
+android-app/
+ios-app/
 package-lock.json
 .DS_Store
 .firebaserc
