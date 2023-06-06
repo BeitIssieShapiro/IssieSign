@@ -695,7 +695,7 @@ class App extends IssieBase {
 
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
             const word = cat?.words.find(w => w.name === title);
-            const isFavorite = word?.isFavorite;
+            const isFavorite = word?.favorite;
 
             this.setTitle((word && word.translate) ? translate(title) : title);
 

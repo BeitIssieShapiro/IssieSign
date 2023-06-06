@@ -206,6 +206,20 @@ export default class FileSystem {
                                         }
                                     })
 
+                                    // Load favorites:
+                                    const favCat = this.index.categories.find(cat=>cat.id === FileSystem.FAVORITES_ID);
+                                    if (favCat) {
+                                        favCat?.words.forEach(favWord=> {
+                                            const srcCat = this.findCategory(favWord.category);
+                                            if (srcCat) {
+                                                const srcWord = srcCat.words.find(w=>w.name === favWord.name);
+                                                if (srcWord) {
+                                                    srcWord.favorite = true;
+                                                }
+                                            }
+                                        });
+                                    }
+
                                     console.log("Successfully read the existing index file. categories:", this.index.categories.length);
                                     this.init = true;
                                     this.sortCategories();
@@ -686,7 +700,7 @@ export default class FileSystem {
                             categories: [],
                         };
                         this.index.categories.forEach(cat => {
-                            if (cat.userContent) {
+                            if (cat.userContent || cat.id === FileSystem.FAVORITES_ID) {
                                 userContentJson.categories.push(cat);
                             } else {
                                 const userWords = cat.words?.filter(w => w.userContent);
