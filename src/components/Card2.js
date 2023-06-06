@@ -24,7 +24,7 @@ function Card2(props) {
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
     let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
-    let cardDouble = isMyIssieSign() ? {paddingRight: 45, paddingLeft:45} : {paddingRight: 35, paddingLeft:35, '--card-width': '165px'};
+    let cardDouble = isMyIssieSign() ? {paddingRight: 10, paddingLeft:10} : {paddingRight: 35, paddingLeft:35, '--card-width': '165px'};
     let url = "";
     if (!props.noLink && !props.selected) {
         if (props.cardType === "file") {

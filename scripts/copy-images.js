@@ -20,7 +20,7 @@ fs.promises.readdir(src).then(items => {
         console.log("folder", folder)
         const files = fs.readdirSync(fullPath);
         for (const file of files) {
-            if (!file.includes(ignoreContaining) && file.endsWith(".png")) {
+            if (!file.includes(ignoreContaining) && (file.endsWith(".png") || file.endsWith(".jpg"))) {
 
                 const srcFile = path.join(fullPath, file);
                 const stat = fs.statSync(srcFile);
