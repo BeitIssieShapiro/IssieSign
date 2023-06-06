@@ -290,35 +290,91 @@ Find the SHA1 of an aab file: `keytool -printcert -jarfile androidApp/platforms/
 
 
 ## Setup oauth client for android:
+In Android, the code only obtains Auth-code by the google lib. To convert it to access-token and refresh with refresh_token, a Firebase function is used in project MyIssieSign.
+
+To setup the function, it needs the client id and secret as variable:
+```
+firebase functions:config:set oauth.client_id=<client-id>
+firebase functions:config:set oauth.secret=<secret>
+```
+
+this is the Web-CLient-ID in GCP prohect IssieSign
+
+In Addition, only registered apps IssieSign, MyIssieSign and IssieSignArabic may call this function. This is enforced by Firebase AppCheck.
+
+For that, there are 3 apps of type android in MyIssieSign (Firebase).
+Each App is created with the java-package and with SH1/SH256
+For debug:
+ - SH1 of the signing upload key. to find it base, build the APK
+ - locate the APK
+ - `keytool -printcert -jarfile <*.apk>`
+
+For AppCheck, you need in addition to enable it, and provide the play's SH256. In addition a debug key. this is ommited into the logs by the debug-provider set in the code
+
 
 - The code is using the WebClientID of the IssieSign project in GCP
-- In addition, 2 android oauth-clients should be created in  IssieSign project in GCP for each package/variant:
-  - one with the SHA1 of the aab as it was signed on the developer machine
-  - one with the SHA1 as shown in `https://play.google.com/console`, under Setup->App Integrity->AppSigning->SHA1 
+- In addition, 2 android oauth-clients should be created in IssieSign project in GCP for each package/variant:
+  - one with the SHA1 of the APK `keytool -printcert -jarfile <*.apk>` for debug
+  - one with the SHA1 as shown in `https://play.google.com/console`, under Setup->App Integrity->AppSigning->SHA1 for release
 
 
-Note2: After uploading to PlayStore:
-- In Firebase, an android app should match the app (same package) and with the 2x SHA1
-- In Firebase AppCheck, also add the SHA256 from the PlayStore
-
-- google-services.json
-client type 3 must be the web client id 
-client type 1 is the android app (maybe has no effect...)
+- google-services.json under "app" folder
+Download latest from Firebase MyIssieSign and reduce to look like below:
 ```
-"client_info": {
-        "mobilesdk_app_id": "1:821810142864:android:76ace3241b973661450215",
+{
+  "project_info": {
+    "project_number": "821810142864",
+    "project_id": "myissiesign",
+    "storage_bucket": "myissiesign.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821810142864:android:e7913c1db485f3dc450215",
         "android_client_info": {
           "package_name": "com.issieshapiro.issiesignarabic"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "972582951029-e7t8l63hrpg2beg1gbt5vq0i87bdm1tj.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "972582951029-kcdh38amck77mt4iraj3jt3u4ppu7i74.apps.googleusercontent.com",
-          "client_type": 1
-        }
       ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvDloBhbVKTi1n7h_Ewk7WTXN9ja1144A"
+        }
+      ]
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821810142864:android:ec47c87a9ea1458c450215",
+        "android_client_info": {
+          "package_name": "com.issieshapiro.myissiesign"
+        }
+      },
+      "oauth_client": [
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvDloBhbVKTi1n7h_Ewk7WTXN9ja1144A"
+        }
+      ]
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821810142864:android:0a66f34a4c7470cd450215",
+        "android_client_info": {
+          "package_name": "org.issieshapiro.signlang2"
+        }
+      },
+      "oauth_client": [
+        
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvDloBhbVKTi1n7h_Ewk7WTXN9ja1144A"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}
 ```
