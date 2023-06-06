@@ -54,7 +54,7 @@ IssieSign is avaiable under the GPL Licence. See the following link: https://www
 - start a new cordova app : recommended to keep one app for android and one for ios
 ```
 cordova create <ios-app | android-app> com.issieshapiro.signlang IssieSign
-cd ios-app
+cd <ios-app | android-app>
 cordova plugin add cordova-plugin-file
 cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
@@ -76,13 +76,16 @@ cordova plugins add ../PlayAssetsPlugin/
 - add the platfrom: `cordova platform add <ios | android>`
 - Add the cordova folder to the .gitignore
 
-change Podfile:
-#use_frameworks!
-use_modular_headers!
-
-run pod install in the `platforms/ios` folder
 
 ### IOS
+
+- change Podfile:
+```
+#use_frameworks!
+use_modular_headers!
+```
+- run pod install in the `platforms/ios` folder
+
 - copy `code-changes/Images.xcassets/` AppIcon.appiconset and AppIconAR.appiconset 
 - todo: add header icon for launch
 - Open xcode and the ios project
@@ -114,9 +117,9 @@ run pod install in the `platforms/ios` folder
 
 
 - android/app/src/main/AndroidManifest.xml: 
-  - adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
-  - add `< application ...android:usesCleartextTraffic="true" android:label="@string/app_name"...`
-  - modify `<activity ... android:name="com.issieshapiro.issiesign.MainActivity">`
+  ??- adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
+  - add `< application ...android:usesCleartextTraffic="true" ... android:theme="@style/Theme.AppCompat.Light"`
+  - modify `<activity ... android:name="com.issieshapiro.signlang.MainActivity">`
   - add intent-filter (for open with)
     ```
     <intent-filter android:label="Import Words" android:priority="1">
@@ -135,11 +138,13 @@ run pod install in the `platforms/ios` folder
 - Create playassets folders:
   Copy `code-changes/AndroidAssets/issiesign_assets*` to `/platforms/android/`
 
-- in `android/gradle.properties`
+- in `android/gradle.properties`, 
+  - need to add java-home. for example:
   add `org.gradle.java.home=/usr/local/Cellar/openjdk/18.0.1.1/`
-
-- in `android/build.grade`
-- add i buildscript/dependencies: `classpath 'com.google.gms:google-services:4.3.14'`
+  - `android.enableJetifier=false`
+  
+- in `android/build.gradle`
+- add in buildscript/dependencies: `classpath "com.google.gms:google-services:4.3.14"`
 `
 
 -  in `android/app/build.gradle`: 
@@ -148,7 +153,7 @@ run pod install in the `platforms/ios` folder
   apply plugin: 'com.google.gms.google-services'
 
   dependencies {
-     implementation 'com.google.android.play:core:1.10.3'
+    //implementation 'com.google.android.play:core:1.10.3'
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
@@ -159,6 +164,9 @@ run pod install in the `platforms/ios` folder
     implementation 'com.google.firebase:firebase-functions'
     implementation 'com.google.firebase:firebase-appcheck-playintegrity'
     implementation 'com.google.firebase:firebase-appcheck-debug:16.1.0'
+    
+    // Added due to a duplicate class error - try without
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
   }
   ```
   - in `android {}`
@@ -166,17 +174,23 @@ run pod install in the `platforms/ios` folder
     assetPacks = [":issiesign_assets", ":issiesign_assets3"]
 
     signingConfigs {
-        debug {
-            storeFile file('<location><file.jks')
-            storePassword '<pwd>'
-            keyAlias = '<alias>'
-            keyPassword '<pwd>'
+        issiesign {
+            keyAlias 'issiesign'
+            keyPassword 'signlang'
+            storeFile file('../../../../googleplay/issieSign.jks')
+            storePassword 'signlang'
         }
-        release {
-            storeFile file('<location><file.jks')
-            storePassword '<pwd>'
-            keyAlias = '<alias>'
-            keyPassword '<pwd>'
+        myissiesign {
+            keyAlias 'issiesign'
+            keyPassword 'signlang'
+            storeFile file('../../../../googleplay/MyIssieSign.jks')
+            storePassword 'signlang'
+        }
+        issiesignarabic {
+            keyAlias 'issiesign'
+            keyPassword 'signlang'
+            storeFile file('../../../../googleplay/IssieSignArabic.jks')
+            storePassword 'signlang'
         }
     }
 
@@ -194,12 +208,14 @@ run pod install in the `platforms/ios` folder
             resValue "string", "app_name", "MyIssieSign"
             versionCode 10004
             versionName "1.0.0"
+            signingConfig signingConfigs.myissiesign
         }
         issiesignarabic {
             applicationId "com.issieshapiro.issiesignarabic"
             resValue "string", "app_name", "IssieSignArabic"
             versionCode 10009
             versionName "1.0.0"
+            signingConfig signingConfigs.issiesignarabic
         }
     }
 
@@ -213,10 +229,12 @@ include ":issiesign_assets3"
 
   ```
 
-  - add new file `platforms/android/local.properties`
+  - verify file `platforms/android/local.properties` exists and has this key:
 
     `sdk.dir=</path to android sdk. e.g. on Mac ~/Library/Android/sdk>`
   
+
+  ?? not found
   - in ContentFileSystem.java , function toNativeUri
     first line: `String authorityAndPath = inputURL.uri.getEncodedPath().substring(12 + this.name.length() + 2);`
     - see [issue](https://github.com/apache/cordova-plugin-file/issues/525)
@@ -227,20 +245,14 @@ include ":issiesign_assets3"
 
   - Copy `res` folder from `code-changes/AndroidAssets` to (replace) `platform/android/app/src/main/`
 
+  - prepare a google-services.json as in "Setup oauth client for android"
+
+
   - In the IDE, select 'Generate Signed Bundle /APK' and set the following:
     RELEASE_STORE_FILE={path to your keystore [the file named `issieSign2.0.jks`]}
     RELEASE_STORE_PASSWORD=signland
     RELEASE_KEY_ALIAS=issiesign
     RELEASE_KEY_PASSWORD=signland
-
-
-
-## iOS: Create IssieSign, MyIssieSign, IssieSignArabic
-- Duplicate the target and rename as needed
-- Change bundle identified and version/build
-- Change info->bundle display name
-- Duplicate IssieLaunchScreen.storyboard and change as needed
-- Change info->Launch screen interface base file name
 
 
 
