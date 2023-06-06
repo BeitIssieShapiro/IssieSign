@@ -29,9 +29,8 @@ NS_ASSUME_NONNULL_END
 
 // Extending CDVAppDelegate:
 
-@interface CDVAppDelegate (GoogleDrive) <UIApplicationDelegate>
-// this must be copied to the CDVAppDelegate.h - todo find how to avoid
-//@property(nonatomic, strong, nullable) id<OIDExternalUserAgentSession> currentAuthorizationFlow;
+@interface CDVAppDelegate (GoogleDrive)
+@property(nonatomic, strong, nullable) id<OIDExternalUserAgentSession> currentAuthorizationFlow;
 
 
 - (BOOL)application:(UIApplication *)app myOpenURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options;

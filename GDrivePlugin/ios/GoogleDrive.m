@@ -22,96 +22,21 @@ static NSString *const kKeychainStoreItemName = @"authorization";
 @end
 
 
-@interface OIDExternalUserAgentIOSSafari : NSObject <OIDExternalUserAgent>
 
-@property (nonatomic, strong) UIViewController *presentingViewController;
-@property (nonatomic, assign) BOOL externalUserAgentFlowInProgress;
-@property (nonatomic, weak) id<OIDExternalUserAgentSession> session;
-
-- (instancetype)initWithPresentingViewController:(UIViewController *)presentingViewController;
-- (void)cleanUp;
-
-@end
-
-@implementation OIDExternalUserAgentIOSSafari
-
-- (instancetype)initWithPresentingViewController:(UIViewController *)presentingViewController {
-    self = [super init];
-    if (self) {
-        _presentingViewController = presentingViewController;
-    }
-    return self;
-}
-
-- (void)cleanUp {
-    _session = nil;
-    _externalUserAgentFlowInProgress = NO;
-}
-
-- (BOOL)presentExternalUserAgentRequest:(nonnull id<OIDExternalUserAgentRequest>)request session:(nonnull id<OIDExternalUserAgentSession>)session {
-    if (_externalUserAgentFlowInProgress) {
-        return NO;
-    }
-
-    _externalUserAgentFlowInProgress = YES;
-    _session = session;
-
-    BOOL openedSafari = NO;
-    NSURL *requestURL = [request externalUserAgentRequestURL];
-
-    if (@available(iOS 10.0, *)) {
-        openedSafari = [[UIApplication sharedApplication] canOpenURL:requestURL];
-        [[UIApplication sharedApplication] openURL:requestURL options:@{} completionHandler:nil];
-    } else {
-        openedSafari = [[UIApplication sharedApplication] openURL:requestURL];
-    }
-
-    if (!openedSafari) {
-        [self cleanUp];
-
-        NSError *error = [OIDErrorUtilities errorWithCode:OIDErrorCodeSafariOpenError
-                                         underlyingError:nil
-                                             description:@"Unable to open Safari."];
-
-        [session failExternalUserAgentFlowWithError:error];
-    }
-
-    return openedSafari;
-}
-
-- (void)dismissExternalUserAgentAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    if (!_externalUserAgentFlowInProgress) {
-        // Ignore this call if there is no authorization flow in progress.
-        return;
-    }
-
-    if (completion) {
-        completion();
-    }
-}
-
-
-@end
 
 @implementation CDVAppDelegate (GoogleDrive)
 
-//@dynamic currentAuthorizationFlow;
+static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
 
+@dynamic currentAuthorizationFlow;
 
-//@end
+- (void)setCurrentAuthorizationFlow:(id<OIDExternalUserAgentSession>)currentAuthorizationFlow {
+    objc_setAssociatedObject(self, kCurrentAuthorizationFlowKey, currentAuthorizationFlow, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
-//@implementation CDVAppDelegate (GoogleDrive)
-//
-//@dynamic currentAuthorizationFlow; // Add this line to inform the compiler
-//id<OIDExternalUserAgentSession> _currentAuthorizationFlow;
-//
-//+ (id<OIDExternalUserAgentSession>)currentAuthorizationFlow {
-//    return _currentAuthorizationFlow;
-//}
-//
-//+ (void)setCurrentAuthorizationFlow:(id<OIDExternalUserAgentSession>)authFlow {
-//    _currentAuthorizationFlow = authFlow;
-//}
+- (id<OIDExternalUserAgentSession>)currentAuthorizationFlow {
+    return objc_getAssociatedObject(self, kCurrentAuthorizationFlowKey);
+}
 
 + (void)load {
     Method original = class_getInstanceMethod(self, @selector(application:openURL:options:));
@@ -707,11 +632,12 @@ static NSString *const kKeychainStoreItemName = @"authorization";
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     NSLog(@"Initiating authorization request with scope: %@", request.scope);
     
-    id<OIDExternalUserAgent> safariUserAgent = [[OIDExternalUserAgentIOSSafari alloc] initWithPresentingViewController:self.viewController];
-    
-
     appDelegate.currentAuthorizationFlow = [OIDAuthState authStateByPresentingAuthorizationRequest:request
-                                    externalUserAgent:safariUserAgent
+                                    //externalUserAgent:safariUserAgent
+                                                                          presentingViewController:self.viewController
+                                            
+                                    
+
                                                               callback:^(OIDAuthState *_Nullable authState, NSError *_Nullable error) {
         if (authState) {
             GTMAuthSession *authorization =

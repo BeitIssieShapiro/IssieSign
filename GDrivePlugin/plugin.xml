@@ -42,6 +42,7 @@
             <pods use-frameworks="true">
                 <pod name="GoogleAPIClientForREST/Drive"  />
                 <pod name="GTMAppAuth"  />
+                <pod name="AppAuth" />
             </pods>
         </podspec>
 
