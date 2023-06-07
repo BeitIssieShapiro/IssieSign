@@ -2,14 +2,7 @@
 RECOVER:
 - BUSY MESSAGE on android
 - add properties support in android
-- find how to inject 
-`@property(nonatomic, strong, nullable) id<OIDExternalUserAgentSession> currentAuthorizationFlow;
-` to CDVAppDelegate.h
-
-- Find how to use native inapp browser
 - android: aglie title above app
-- mobile: no 3 sec delay, and render correct
-
 
 
 features:

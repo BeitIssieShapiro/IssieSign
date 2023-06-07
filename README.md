@@ -93,7 +93,7 @@ use_modular_headers!
   - copy the Storyboard from code-changes (copy , create group)
   - Copy IssieSign-info.plist contents into the one created by cordova (open as source)
 - Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
-
+- In `Build-Settings->Runpath Search Paths` add `/usr/lib/swift`. make sure for both debug and release.
 
   - Create Arabic profile:
     - duplicate IssieSign profile

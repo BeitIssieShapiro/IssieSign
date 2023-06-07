@@ -9,7 +9,7 @@ import { ReactComponent as AddVideoSVG } from '../images/addVideo.svg'
 import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
 import WordAdults from "../containers/Word-adult";
-import { isBrowser } from '../utils/Utils';
+import { isBrowser, isMobile } from '../utils/Utils';
 
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
@@ -54,7 +54,7 @@ export function HeaderButton(props) {
     //onPointerDown={props.onTouchStart}
     onTouchEnd={props.onTouchEnd}
     //onPointerUp={props.onTouchEnd}
-    className="noTouchCallout"
+    className={"noTouchCallout " + (props.className || "")}
     style={style}>
     {props.children}
   </div>
@@ -65,15 +65,15 @@ export function EditButton(props) {
   const [waited, setWaited] = useState(0);
 
   return <HeaderButton slot={props.slot} className="a"
-    onClick={()=>{
-      if (isBrowser()) {
-        props.onChange(!props.selected);
-      }
-    }}
+    // onClick={()=>{
+    //   if (isBrowser()) {
+    //     props.onChange(!props.selected);
+    //   }
+    // }}
     onTouchStart={(evt) => {
       
       evt.preventDefault()
-      if (isBrowser()) {
+      if (isBrowser() || isMobile()) {
         props.onChange(!props.selected);
         return;
       }
