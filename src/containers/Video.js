@@ -14,8 +14,6 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
 
-    const [videoUrl, setVideoUrl] = useState("");
-    const [youTube, setYouTube] = useState(false);
     const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5/9 });
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
@@ -78,7 +76,6 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
 
 
     useEffect(() => {
-        setYouTube(false);
         let videoContent = "";
         if (videoName === 'file') {
             videoContent = FileSystem.get().getFilePath(filePath);
@@ -99,7 +96,6 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
                 }
             }
         }
-        //setVideoUrl(videoContent)
         vidElem.src = videoContent;
 
     }, [videoName, filePath])

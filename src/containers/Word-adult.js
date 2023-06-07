@@ -110,7 +110,7 @@ function WordAdults(props) {
     }
     const headerSizeCalc = isLandscapeView ? 
         isMobile() ? 0 : headerSize :
-        headerSize + 215;
+        headerSize + 245;
 
     const scrollPos = isLandscapeView ?
         (-props.scroll?.y / scrollDivRef.current?.scrollHeight) * (window.innerHeight - headerSizeCalc) + 5 :
@@ -134,7 +134,7 @@ function WordAdults(props) {
             title={selectedWord.name}
             onFavoriteToggle={props.onFavoriteToggle}
             headerSize={headerSizeCalc}
-            goBack={() => setSelected(undefined)}
+            goBack={() => setSelected(undefined)} 
         />
 
     if (isLandscapeView && isMobile() && selected) {
