@@ -24,14 +24,6 @@ const mainJson = {
           "category": "TutorialsCategory",
           "imageName": "tutorial-overview.jpg",
           "videoName": "https://www.issieapps.com/videos/tutorials/en/overview.mp4"
-        },
-        {
-          "name": "__tutorial_editing__",
-          "id": "__tutorial_editing__",
-          "translate": true,
-          "category": "TutorialsCategory",
-          "imageName": "tutorial-editing.png",
-          "videoName": "https://www.issieapps.com/videos/tutorials/en/editing.mp4"
         }
       ]
     }

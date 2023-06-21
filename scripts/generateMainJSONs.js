@@ -293,7 +293,11 @@ arMap.push(extractRanges4Category(category2wordsAr, 'AA', 1, catId++));
 arMap.push(extractRanges4Category(category2wordsAr, 'AB', 1, USEFULT_WORDS));
 
 //English map
-defaultMap.forEach(cat => enMap.push({ ...cat }))
+defaultMap.forEach(cat => {
+    //remove the editing video
+    cat.words = cat.words.filter(word=>word.id !== "__tutorial_editing__")
+    enMap.push({ ...cat })
+})
 
 setTutorialMovieLang(enMap, "en")
 
