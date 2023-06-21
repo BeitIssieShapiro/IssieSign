@@ -115,6 +115,8 @@ use_modular_headers!
 ### Android
 - Import project (app/platforms/android)
 
+- in MainActivity.java
+  add `getSupportActionBar().hide();` before `loadUrl` - to hide a redundent header
 
 - android/app/src/main/AndroidManifest.xml: 
   ??- adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
@@ -169,57 +171,66 @@ use_modular_headers!
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
   }
   ```
-  - in `android {}`
-  ```
-    assetPacks = [":issiesign_assets", ":issiesign_assets3"]
+  - near `android {}`
+  - you need the keystore.properties file in the root of the android project
+```
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-    signingConfigs {
-        issiesign {
-            keyAlias 'issiesign'
-            keyPassword 'signlang'
-            storeFile file('../../../../googleplay/issieSign.jks')
-            storePassword 'signlang'
-        }
-        myissiesign {
-            keyAlias 'issiesign'
-            keyPassword 'signlang'
-            storeFile file('../../../../googleplay/MyIssieSign.jks')
-            storePassword 'signlang'
-        }
-        issiesignarabic {
-            keyAlias 'issiesign'
-            keyPassword 'signlang'
-            storeFile file('../../../../googleplay/IssieSignArabic.jks')
-            storePassword 'signlang'
-        }
-    }
+    android {
+        namespace cordovaConfig.PACKAGE_NAMESPACE
+        assetPacks = [":issiesign_assets", ":issiesign_assets3"]
 
-    flavorDimensions "languages"
+        signingConfigs {
+            create("issiesign") {
+                keyAlias keystoreProperties['HEkeyAlias']
+                keyPassword keystoreProperties['HEkeyPassword']
+                storeFile file(keystoreProperties['HEstoreFile'])
+                storePassword keystoreProperties['HEstorePassword']
+            }
+            create("myissiesign") {
+                keyAlias keystoreProperties['ENkeyAlias']
+                keyPassword keystoreProperties['ENkeyPassword']
+                storeFile file(keystoreProperties['ENstoreFile'])
+                storePassword keystoreProperties['ENstorePassword']
+            }
+            create("issiesignarabic") {
+                keyAlias keystoreProperties['ENkeyAlias']
+                keyPassword keystoreProperties['ENkeyPassword']
+                storeFile file(keystoreProperties['ENstoreFile'])
+                storePassword keystoreProperties['ENstorePassword']
+            }
+        }
 
-    productFlavors {
-        issiesign {
-            applicationId "org.issieshapiro.signlang2"
-            resValue "string", "app_name", "IssieSign"
-            versionCode 10000
-            versionName "2.0.0"
-        }
-        myissiesign {
-            applicationId "com.issieshapiro.myissiesign"
-            resValue "string", "app_name", "MyIssieSign"
-            versionCode 10004
-            versionName "1.0.0"
-            signingConfig signingConfigs.myissiesign
-        }
-        issiesignarabic {
-            applicationId "com.issieshapiro.issiesignarabic"
-            resValue "string", "app_name", "IssieSignArabic"
-            versionCode 10009
-            versionName "1.0.0"
-            signingConfig signingConfigs.issiesignarabic
-        }
-    }
+        flavorDimensions "languages"
 
-    ```
+        productFlavors {
+            issiesign {
+                applicationId "org.issieshapiro.signlang2"
+                resValue "string", "app_name", "IssieSign"
+                versionCode 10010
+                versionName "2.0.0"
+                signingConfig signingConfigs.issiesign
+            }
+            myissiesign {
+                applicationId "com.issieshapiro.myissiesign"
+                resValue "string", "app_name", "MyIssieSign"
+                versionCode 10005
+                versionName "1.0.0"
+                signingConfig signingConfigs.myissiesign
+            }
+            issiesignarabic {
+                applicationId "com.issieshapiro.issiesignarabic"
+                resValue "string", "app_name", "IssieSignArabic"
+                versionCode 10009
+                versionName "1.0.0"
+                signingConfig signingConfigs.issiesignarabic
+            }
+        }
+        ...
+
+```
  
 - in `platforms/android/settings.gradle`
   add

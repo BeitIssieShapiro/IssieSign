@@ -9,9 +9,7 @@ import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
 import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY } from "./utils/Utils";
-import { ClipLoader } from 'react-spinners';
 import { translate, setLanguage, fTranslate } from './utils/lang';
-import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import './css/App.css';
@@ -28,7 +26,7 @@ import Settings from './settings'
 import './css/settings.css'
 import {
     SettingsButton, TrashButton,
-    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2
+    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2, BusyMsg
 } from './components/ui-elements';
 import { mainJson } from './mainJson';
 import FileSystem from './apis/filesystem';
@@ -196,7 +194,6 @@ class App extends IssieBase {
             language: lang,
             pubSub: pubsub,
             busy: false,
-            busyText: translate("Working"),
             settingsScroll: SCROLL_RESET,
             bodyScroll: SCROLL_RESET,
             wordScroll: SCROLL_RESET,
@@ -221,12 +218,12 @@ class App extends IssieBase {
 
                     if (result.newWords.length > 0) {
                         message += "\n" + translate("AddedWords") + ":\n" +
-                            result.newWords.join("\n") 
+                            result.newWords.join("\n")
                     }
 
                     if (result.alreadyExistingWords.length > 0) {
                         message += "\n" + translate("AlreadyExistingWords") + ":\n" +
-                        result.alreadyExistingWords.join("\n") 
+                            result.alreadyExistingWords.join("\n")
                     }
 
                     this.props.alert.success(message);
@@ -259,8 +256,9 @@ class App extends IssieBase {
                     showProgress: true,
                     progress: document.downloadPercent,
                     progressText: `${document.downloadPercent || 0}%`,
-                    busyText: fTranslate("LoadingMedia", document.fileIndex, 2)
+                    busyText: fTranslate("LoadingMedia", document.fileIndex || 1, 2)
                 });
+               
                 this.loadingMedia()
             } else {
                 this.setState({ busy: false, progress: undefined });
@@ -330,7 +328,7 @@ class App extends IssieBase {
                 this.setState({ editMode: true });
                 break;
             case 'set-busy':
-                this.setState({ busy: args.active === true, busyText: args.text });
+                this.setState({ busy: args.active === true, busyText: args.active ? args.text : undefined });
                 break;
             case 'long-process':
                 this.setState({ longProcess: { msg: args.msg, icon: args.icon } });
@@ -522,25 +520,14 @@ class App extends IssieBase {
                     </div>
                 }
 
-                <div style={{ position: 'absolute', top: '30%', width: '100%', zIndex: 99999 }}>
-                    {this.state.busy && <div className="busyHost">
-                        {this.state.showProgress ?
-                            <CircularProgressbar
-                                value={this.state.progress}
-                                text={this.state.progressText || ""}
-                                background={true}
-                                styles={{ fontSize: 16 }}
-                            />
-                            : <ClipLoader
-                                sizeUnit={"px"}
-                                size={150}
-                                color={'#123abc'}
-                                loading={this.state.busy}
-                            />}
-                    </div>}
-                    {this.state.busy && <div className="busyText" >{this.state.busyText}</div>}
+                {/** Busy Message */}
+                {this.state.busy && <BusyMsg
+                    showProgress={this.state.showProgress}
+                    progress={this.state.progress}
+                    progressText={this.state.progressText}
+                    text={this.state.busyText}
 
-                </div>
+                />}
                 <Shell
                     collapseHeader={collapseHeader}
                     projectorsOff={this.isVideo() ||

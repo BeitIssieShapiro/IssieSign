@@ -317,3 +317,42 @@
 .form-switch input:checked+i::after {
   transform: translate3d(22px, 2px, 0);
 }
+
+.busy-msg-host {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 35%;
+  left: 15%;
+  width: 70%;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 15px;
+  z-index: 99999;
+}
+
+
+.busy-msg-progress {
+  position: relative;
+  direction:var(--dir);
+  font-size: 30px;
+  min-width: 100px;
+  max-width: 30%;
+}
+
+.busy-msg-text {
+  top: calc( 60px + 5vh);
+  color: black;
+  font-size: 25px;
+  direction:var(--dir);
+  margin-top: 15px;
+}
+
+@media (max-width: 500px) {
+  .busy-msg-text {
+    font-size: 15px;
+  }
+}
+

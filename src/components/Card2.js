@@ -23,7 +23,7 @@ function Card2(props) {
     const reload = () => props.pubSub.refresh();
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
-    let image2 = props.imageName2 ? <img className="tileImg" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
+    let image2 = props.imageName2 ? <img className="tileImg img2" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
     let cardDouble = isMyIssieSign() ? {paddingRight: 10, paddingLeft:10} : {paddingRight: 5, paddingLeft:5, paddingTop:5, '--card-width': '165px'};
     let url = "";
     if (!props.noLink && !props.selected) {
@@ -94,7 +94,7 @@ function Card2(props) {
         }></div>
             <div className="main">
                 {image2}
-                {imageSrc ? <img className="tileImg" src={imageSrc} alt="card Placeholder"></img> : null}
+                {imageSrc ? <img className={"tileImg " +(props.imageName2 ? "img1":"imgSingle")} src={imageSrc} alt="card Placeholder"></img> : null}
             </div>
             <div className="footer">
                 <h2 className="rtl tileFont">{translatedName}</h2>

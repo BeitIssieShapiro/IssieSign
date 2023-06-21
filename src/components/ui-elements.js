@@ -11,6 +11,10 @@ import Word from '../containers/Word';
 import WordAdults from "../containers/Word-adult";
 import { isBrowser, isMobile } from '../utils/Utils';
 
+import { ClipLoader } from 'react-spinners';
+import { CircularProgressbar } from 'react-circular-progressbar';
+
+
 export function TrashButton(props) {
   return <div className="trash-button" {...props}></div>
 }
@@ -71,7 +75,7 @@ export function EditButton(props) {
     //   }
     // }}
     onTouchStart={(evt) => {
-      
+
       evt.preventDefault()
       if (isBrowser() || isMobile()) {
         props.onChange(!props.selected);
@@ -349,4 +353,27 @@ export function getDecoration(index, tileWidth, itemCount, maxWidth) {
       return [
         getItem(1, 0 * tileWidth, maxWidth, itemCount * tileWidth)];
   }
+}
+
+
+export function BusyMsg({showProgress, progress, progressText, text}) {
+  return <div className="busy-msg-host">
+     <div className="busy-msg-progress">
+      {showProgress ?
+        <CircularProgressbar
+          value={progress}
+          text={progressText || ""}
+          background={true}
+          styles={{ fontSize: 15 }}
+        />
+        : <ClipLoader
+          sizeUnit={"px"}
+          size={150}
+          color={'#123abc'}
+          loading={true}
+        />}
+    </div>
+    {<div className="busy-msg-text" >{text || translate("Working")}</div>}
+
+  </div>
 }

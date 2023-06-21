@@ -34,8 +34,19 @@
   vertical-align: middle;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.imgSingle {
   padding-left: 2px;
   padding-right: 2px;
+}
+
+.img1 {
+  padding-right: 2px;
+}
+
+.img2 {
+  padding-left: 2px;
 }
 
 .navBtn {
@@ -224,26 +235,6 @@ input[type="search"]::-webkit-search-results-decoration {
 
 }
 
-.busyHost {
-  position: absolute;
-  align-content: center;
-  direction: rtl;
-  top: 60px;
-  left: 32vw;
-  font-size: 30px;
-  width: 36vw;
-  max-height:36vh;
-}
-
-.busyText {
-  position: absolute;
-  top: calc( 60px + 5vh);
-  left: 41vw;
-  color: black;
-  font-size: 30px;
-  width: 18vw;
-  direction:var(--dir);
-}
 
 .noTouchCallout {
   -webkit-touch-callout: none;
