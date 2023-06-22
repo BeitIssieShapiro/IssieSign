@@ -134,7 +134,7 @@ static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
     
     if([destPath stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length>0){
         dispatch_async(dispatch_get_main_queue(), ^{
-            if(self.authSession.canAuthorize){
+            if(self.authSession.canAuthorize || anonymousAccess){
                 [self downloadAFile:command destPath:destPath fid:fileid anonymousAccess:anonymousAccess];
                 NSLog(@"Already authorized app. No need to ask user again");
             } else{
@@ -250,15 +250,43 @@ static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
 
 - (void)downloadAFile:(CDVInvokedUrlCommand*)command destPath:(NSString*)destPath fid:(NSString*)fileid  anonymousAccess:(BOOL) anonymousAccess {
     NSURL *fileToDownloadURL = [NSURL fileURLWithPath:destPath];
-    //NSLog(@"%@", fileToDownloadURL);
-    //NSLog(@"%@",fileid);
+
+    if (anonymousAccess) {
+        NSString *fileURLString = [NSString stringWithFormat:@"https://drive.google.com/uc?export=download&id=%@", fileid];
+        NSURL *fileURL = [NSURL URLWithString:fileURLString];
+
+        NSURLRequest *request = [NSURLRequest requestWithURL:fileURL];
+
+        NSURLSessionDownloadTask *downloadTask = [[NSURLSession sharedSession] downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+            CDVPluginResult* pluginResult = nil;
+            if (error) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+            } else {
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                
+                NSError *moveError;
+                [fileManager moveItemAtURL:location toURL:fileToDownloadURL error:&moveError];
+                
+                if (moveError) {
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[moveError localizedDescription]];
+                } else {
+                    NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+                    [result setObject:@"File downloaded succesfully and saved to path" forKey:@"message"];
+                    [result setObject:[fileToDownloadURL path] forKey:@"destPath"];
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
+                }
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+
+        [downloadTask resume];
+        return;
+    }
+    
     
     GTLRDriveService *service = self.driveService;
     id <GTMFetcherAuthorizationProtocol> auth = service.authorizer;
     
-    if (anonymousAccess) {
-        //service.authorizer = nil;
-    }
     
     GTLRQuery *query = [GTLRDriveQuery_FilesGet queryForMediaWithFileId:fileid];
     [service executeQuery:query
@@ -267,10 +295,7 @@ static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
                             NSError *callbackError) {
         NSError *errorToReport = callbackError;
         NSError *writeError;
-        if (anonymousAccess) {
-            // restore
-            service.authorizer = auth;
-        }
+        
         if (callbackError == nil) {
             BOOL didSave = [object.data writeToURL:fileToDownloadURL
                                            options:NSDataWritingAtomic

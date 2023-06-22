@@ -116,7 +116,7 @@ export class ShareCart {
                 if (fCategory.userContent) {
                     jsonCategory.imageFileId = fCategory.imageFileId;
                     if (!(fCategory.imageFileId?.length > 0)) {
-                        throw (new Error(fTranslate(MissingFolderFileID, category)))
+                        throw (new Error(fTranslate("MissingFolderFileID", category)))
                     }
                     jsonCategory.userContent = true;
                 }
@@ -132,7 +132,7 @@ export class ShareCart {
                     if (word.imageFileId) {
                         jsonWord.imageFileId = word.imageFileId;
                     } else {
-                        throw (new Error(fTranslate(MissingWordFileID, name)))
+                        throw (new Error(fTranslate("MissingWordFileID", name)))
                     }
 
                     jsonCategory.words.push(jsonWord);
@@ -181,11 +181,12 @@ export class ShareCart {
                 const fileAndFoldersCount = Object.keys(zipEntry.files).length;
 
                 if (fileAndFoldersCount !== 1) {
-                    throw (translate(ErrWrongImportFile));
+                    trace("wrong zip format", fileAndFoldersCount)
+                    throw (translate("ErrWrongImportFile"));
                 }
                 const zipFileObject = zipEntry.file(ShareCart.LIST_FILE_NAME);
                 if (!zipFileObject) {
-                    throw (translate(ErrWrongImportFile));
+                    throw (translate("ErrWrongImportFile"));
                 }
                 return zipFileObject.async('string');
             })
