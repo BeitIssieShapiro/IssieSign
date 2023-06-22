@@ -229,8 +229,8 @@ class App extends IssieBase {
                     this.props.alert.success(message);
                 },
                 (err) => {
-                    this.props.alert.error(fTranslate("ImportWordsErr", err))
-                    console.log(fTranslate("ImportWordsErr", err));
+                    this.props.alert.error(fTranslate("ImportWordsErr", JSON.stringify(err)));
+                    console.log(fTranslate("ImportWordsErr",JSON.stringify(err)));
                 }
             ).finally(() => pubsub.publish({ command: 'long-process-done' })), 50);
         }
@@ -256,7 +256,7 @@ class App extends IssieBase {
                     showProgress: true,
                     progress: document.downloadPercent,
                     progressText: `${document.downloadPercent || 0}%`,
-                    busyText: fTranslate("LoadingMedia", document.fileIndex || 1, 2)
+                    busyText: fTranslate("LoadingMedia", document.fileIndex, 2)
                 });
                
                 this.loadingMedia()

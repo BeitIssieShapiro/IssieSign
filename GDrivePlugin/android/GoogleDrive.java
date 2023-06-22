@@ -63,6 +63,9 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
@@ -101,7 +104,13 @@ public class GoogleDrive extends CordovaPlugin  {
             mAccessToken = getSavedAccessToken();
         } catch (JSONException e) {}
 
+        FirebaseApp.initializeApp(this.getContext());
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance());
         mFunctions = FirebaseFunctions.getInstance("europe-west1");
+
+
 
         cordova.setActivityResultCallback(this);
         Log.i(TAG,"Plugin initialized. Cordova has activity: " + cordova.getActivity());
@@ -163,6 +172,15 @@ public class GoogleDrive extends CordovaPlugin  {
             saveAccessToken(null);
             mAccessToken = null;
             return true;
+        } else if ("downloadFile".equals(action)) {
+            boolean anonymousAccess = mArgs.getBoolean(2);
+            if (anonymousAccess) {
+                String targetPath = mArgs.getString(0);
+                String fileId = mArgs.getString(1);
+                DownloadFile df = new DownloadFile(null, mCallbackContext, fileId, targetPath);
+                cordova.getThreadPool().execute(df);
+                return true;
+            }
         }
 
         if (getFreshTokenAndExecute(mAccessToken)) {
@@ -239,7 +257,7 @@ public class GoogleDrive extends CordovaPlugin  {
             try {
 
                 Request request = new Request.Builder()
-                        .url(String.format("https://www.googleapis.com/drive/v3/files?q=trashed=false and '%s' in parents&fields=nextPageToken,files(id,name,modifiedTime,trashed,mimeType)", parentFolderId))
+                        .url(String.format("https://www.googleapis.com/drive/v3/files?q=trashed=false and '%s' in parents&fields=nextPageToken,files(id,name,modifiedTime,trashed,mimeType,properties)", parentFolderId))
                         .addHeader("Authorization", "Bearer " + bearerToken)
                         .build();
 
@@ -285,7 +303,7 @@ public class GoogleDrive extends CordovaPlugin  {
             try {
                 BinaryFileWriter bfw = new BinaryFileWriter(new FileOutputStream(targetPath), null);
                 BinaryFileDownloader bfd = new BinaryFileDownloader(okHttpClient, bearerToken, bfw);
-                bfd.download(String.format("https://www.googleapis.com/drive/v3/files/%s?alt=media", fileId));
+                bfd.download( fileId);
 
                 JSONObject resultObj = new JSONObject();
                 resultObj.put("message", "File downloaded successfully and saved to path");
@@ -389,8 +407,11 @@ public class GoogleDrive extends CordovaPlugin  {
         private String rootFolderName;
         private String srcPath;
 
+        private JSONObject properties;
+
         UploadFile(String bearerToken, CallbackContext callbackContext,
-                   String srcPath, String folderId, String targetPath, String rootFolderId, String rootFolderName) {
+                   String srcPath, String folderId, String targetPath, String rootFolderId,
+                   String rootFolderName, JSONObject properties) {
             this.bearerToken = bearerToken;
             this.callbackContext = callbackContext;
             this.srcPath = srcPath;
@@ -398,6 +419,7 @@ public class GoogleDrive extends CordovaPlugin  {
             this.targetPath = targetPath;
             this.rootFolderId = rootFolderId;
             this.rootFolderName = rootFolderName;
+            this.properties = properties;
         }
 
         @Override
@@ -482,6 +504,9 @@ public class GoogleDrive extends CordovaPlugin  {
                 JSONArray parents = new JSONArray();
                 parents.put(folderId);
                 metadata.putOpt("parents", parents);
+                if (properties != null) {
+                    metadata.putOpt("properties", properties);
+                }
 
                 RequestBody metaDataBody = RequestBody.create(MediaType.parse("application/json"), metadata.toString());
 
@@ -581,7 +606,9 @@ public class GoogleDrive extends CordovaPlugin  {
             String rootFolderId = mArgs.getString(3);
             String rootFolderName = mArgs.getString(4);
             boolean appFolder = mArgs.getBoolean(5);
-            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName);
+            JSONObject properties = mArgs.getJSONObject(6);
+
+            UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName, properties);
             cordova.getThreadPool().execute(uf);
 
             return true;
@@ -750,10 +777,17 @@ class BinaryFileDownloader implements AutoCloseable {
         this.bearerToken = bearerToken;
     }
 
-    public long download(String url) throws IOException {
-        Request request = new Request.Builder().url(url)
-                .addHeader("Authorization", "Bearer "+bearerToken)
-                .build();
+    public long download(String fileID) throws IOException {
+        String url = this.bearerToken != null ?
+                String.format("https://www.googleapis.com/drive/v3/files/%s?alt=media", fileID):
+                String.format("https://drive.google.com/uc?export=download&id=%s", fileID);
+
+        Request.Builder builder = new Request.Builder().url(url);
+        if (bearerToken != null) {
+            builder.addHeader("Authorization", "Bearer " + bearerToken);
+        }
+
+        Request request = builder.build();
 
         Response response = client.newCall(request).execute();
         ResponseBody responseBody = response.body();

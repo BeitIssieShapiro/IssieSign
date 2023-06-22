@@ -135,7 +135,13 @@ use_modular_headers!
     </intent-filter>
     ```
 - see example androidManifest.xml in code_changes folder
-
+- add the openwith plugin:
+```
+cordova plugin add cc.fovea.cordova.openwith \
+  --variable ANDROID_MIME_TYPE="image/*" \
+  --variable IOS_URL_SCHEME=ccfoveaopenwithdemo \
+  --variable IOS_UNIFORM_TYPE_IDENTIFIER=public.image
+```
 
 - Create playassets folders:
   Copy `code-changes/AndroidAssets/issiesign_assets*` to `/platforms/android/`
@@ -215,7 +221,7 @@ use_modular_headers!
             }
             myissiesign {
                 applicationId "com.issieshapiro.myissiesign"
-                resValue "string", "app_name", "MyIssieSign"
+                resValue "string", "app_name", "My IssieSign"
                 versionCode 10005
                 versionName "1.0.0"
                 signingConfig signingConfigs.myissiesign
@@ -245,7 +251,6 @@ include ":issiesign_assets3"
     `sdk.dir=</path to android sdk. e.g. on Mac ~/Library/Android/sdk>`
   
 
-  ?? not found
   - in ContentFileSystem.java , function toNativeUri
     first line: `String authorityAndPath = inputURL.uri.getEncodedPath().substring(12 + this.name.length() + 2);`
     - see [issue](https://github.com/apache/cordova-plugin-file/issues/525)
