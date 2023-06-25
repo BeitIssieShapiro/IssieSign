@@ -9,8 +9,6 @@ import com.google.android.play.core.assetpacks.AssetPackState;
 import com.google.android.play.core.assetpacks.AssetPackStateUpdateListener;
 import com.google.android.play.core.assetpacks.AssetPackStates;
 import com.google.android.play.core.assetpacks.model.AssetPackStatus;
-import com.google.android.play.core.tasks.OnCompleteListener;
-import com.google.android.play.core.tasks.Task;
 
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -29,7 +27,7 @@ import java.util.Map;
 
 public class PlayAssets extends CordovaPlugin {
     public static String TAG = "PlayAssets";
-    
+
     private Map<String,String> playAssets;
     ArrayList<String> pckList;
     private boolean isReady = false;
@@ -55,7 +53,7 @@ public class PlayAssets extends CordovaPlugin {
                         for (int i = 0; i < names.length(); i++) {
                             pckList.add(names.getString(i));
                         }
-                        initAssets();
+                        initAssets(true);
                     }
                     callbackContext.success();
                 }
@@ -86,8 +84,13 @@ public class PlayAssets extends CordovaPlugin {
             totalSizeToDownload = totalSize;
             if (currentFileName.length() == 0) {
                 fileIndex = 1;
-            } else if (!currentFileName.equalsIgnoreCase(name)) {
-                fileIndex++;
+            } else {
+                for (int i=0;i<pckList.size();i++) {
+                    if (pckList.get(i).equalsIgnoreCase(name)) {
+                        fileIndex = i + 1;
+                        break;
+                    }
+                }
             }
             currentFileName = name;
         }
@@ -133,7 +136,7 @@ public class PlayAssets extends CordovaPlugin {
     }
 
 
-    private void initAssets() {
+    private void initAssets(boolean firstTime) {
         if (pckList == null)
             return;
 
@@ -151,13 +154,13 @@ public class PlayAssets extends CordovaPlugin {
         }
 
         if (pckListToFetch.size() > 0) {
-            //actually fetch
-            assetPackManager.registerListener(assetPackStateUpdateListener);
-            assetPackManager.fetch(pckListToFetch);
-
+            if (firstTime) {
+                //actually fetch
+                assetPackManager.registerListener(assetPackStateUpdateListener);
+                assetPackManager.fetch(pckListToFetch);
+            }
             //getPackStates(pckListToFetch);
-
-            assetPackManager.fetch(pckList);
+            //assetPackManager.fetch(pckList);
         } else {
             assetsReady();
         }
@@ -223,7 +226,7 @@ public class PlayAssets extends CordovaPlugin {
 
                 case AssetPackStatus.COMPLETED:
                     // Asset pack is ready to use. Start the Game/App.
-                    initAssets();
+                    initAssets(false);
                     break;
 
                 case AssetPackStatus.FAILED:
@@ -257,8 +260,8 @@ public class PlayAssets extends CordovaPlugin {
                     JSONArray args = new JSONArray(rawArgs);
                     f.run(args);
                 } catch ( Exception e) {
-                       e.printStackTrace();
-                        callbackContext.error("Unknown Error");
+                    e.printStackTrace();
+                    callbackContext.error("Unknown Error");
 
                 }
             }
