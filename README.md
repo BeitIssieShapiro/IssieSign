@@ -120,7 +120,7 @@ use_modular_headers!
 
 - android/app/src/main/AndroidManifest.xml: 
   ??- adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
-  - add `< application ...android:usesCleartextTraffic="true" ... android:theme="@style/Theme.AppCompat.Light"`
+  - add `< application ...android:usesCleartextTraffic="true" ... android:theme="@style/Theme.AppCompat.Light" ... android:icon="${appIcon}"`
   - modify `<activity ... android:name="com.issieshapiro.signlang.MainActivity">`
   - add intent-filter (for open with)
     ```
@@ -211,17 +211,23 @@ cordova plugin add cc.fovea.cordova.openwith \
 
         flavorDimensions "languages"
 
-        productFlavors {
+           productFlavors {
             issiesign {
                 applicationId "org.issieshapiro.signlang2"
                 resValue "string", "app_name", "IssieSign"
-                versionCode 10010
+                manifestPlaceholders = [
+                        appIcon: "@mipmap/ic_launcher",
+                ]
+                versionCode 10016
                 versionName "2.0.0"
                 signingConfig signingConfigs.issiesign
             }
             myissiesign {
                 applicationId "com.issieshapiro.myissiesign"
                 resValue "string", "app_name", "My IssieSign"
+                manifestPlaceholders = [
+                        appIcon: "@mipmap/ic_launcher_en",
+                ]
                 versionCode 10005
                 versionName "1.0.0"
                 signingConfig signingConfigs.myissiesign
@@ -229,6 +235,9 @@ cordova plugin add cc.fovea.cordova.openwith \
             issiesignarabic {
                 applicationId "com.issieshapiro.issiesignarabic"
                 resValue "string", "app_name", "IssieSignArabic"
+                manifestPlaceholders = [
+                        appIcon: "@mipmap/ic_launcher_ar",
+                ]
                 versionCode 10009
                 versionName "1.0.0"
                 signingConfig signingConfigs.issiesignarabic
