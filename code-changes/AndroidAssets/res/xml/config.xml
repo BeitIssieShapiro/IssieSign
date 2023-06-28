@@ -34,4 +34,8 @@
     <allow-intent href="https://*/*" />
     <preference name="loglevel" value="DEBUG" />
     <preference name="AllowInlineMediaPlayback" value="true" />
+    <feature name="OpenWithPlugin">
+        <param name="android-package" value="cc.fovea.openwith.OpenWithPlugin" />
+    </feature>
+    <preference name="AndroidLaunchMode" value="singleTask" />
 </widget>
