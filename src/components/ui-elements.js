@@ -310,6 +310,34 @@ const decorations = [
   },
 ]
 
+function getRandomItem(line, tileWidth, maxWidth, itemCount, lastSpot) {
+  
+  const values = [
+    {index: 0, location: 2},
+    {index: -1},
+    {index: 3, location: 1},
+    {index: 4, location: 0},
+    {index: -1},
+    {index: 1, location: 1},
+    {index: -1},
+    {index: 5, location: 1},
+    {index: 6, location: 2},
+    {index: -1},
+    {index: 2, location: 1},
+    {index: -1},
+    {index: 6, location: 2},
+    {index: 0, location: 0},
+    {index: -1},
+    {index: 4, location: 1},
+  ]
+
+  if (line >= values.length || values[line].index < 0) {
+    return [];
+  }
+
+  return getItem(values[line].index, values[line].location*tileWidth, maxWidth, lastSpot);
+}
+
 function getItem(index, left, maxWidth, lastSpot) {
   if (left > maxWidth || index < 0 || index >= decorations.length || left > lastSpot) return null;
   if (left > 0) {
@@ -349,16 +377,17 @@ export function getDecoration(index, tileWidth, itemCount, maxWidth) {
       return [
         getItem(5, 3 * tileWidth, maxWidth, itemCount * tileWidth)];
     case 4:
-    default:
       return [
         getItem(1, 0 * tileWidth, maxWidth, itemCount * tileWidth)];
+    default:
+      return [getRandomItem(index - 5, tileWidth, maxWidth, itemCount, itemCount * tileWidth)];
   }
 }
 
 
-export function BusyMsg({showProgress, progress, progressText, text}) {
+export function BusyMsg({ showProgress, progress, progressText, text }) {
   return <div className="busy-msg-host">
-     <div className="busy-msg-progress">
+    <div className="busy-msg-progress">
       {showProgress ?
         <CircularProgressbar
           value={progress}

@@ -118,6 +118,28 @@ use_modular_headers!
 - in MainActivity.java
   add `getSupportActionBar().hide();` before `loadUrl` - to hide a redundent header
 
+- for the camera to work, add these files
+```
+package org.issieshapiro.signlang2;
+
+public class BuildConfig {
+    public static final String APPLICATION_ID = "org.issieshapiro.signlang2";
+}
+ 
+
+package com.issieshapiro.issiesignarabic; 
+public class BuildConfig {
+    public static final String APPLICATION_ID = "com.issieshapiro.issiesignarabic";
+}
+
+package com.issieshapiro.myissiesign; 
+public class BuildConfig {
+    public static final String APPLICATION_ID = "com.issieshapiro.myissiesign";
+}
+
+...
+```
+
 - android/app/src/main/AndroidManifest.xml: 
   ??- adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
   - add `< application ...android:usesCleartextTraffic="true" ... android:theme="@style/Theme.AppCompat.Light" ... android:icon="${appIcon}"`

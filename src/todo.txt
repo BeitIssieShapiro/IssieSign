@@ -8,6 +8,7 @@ RECOVER:
 features:
 - move word to another folder
 - deal with conflicts in importing
+- my issiesign - left to right
 
 
 bugs:

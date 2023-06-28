@@ -98,7 +98,7 @@ function Word(props) {
             style={{
                 flexDirection: 'column',
                 width: width,
-                transform: `translateX(${props.scroll?.x || 0}px)`,
+                transform: `translateX(${props.scroll?.x || 0}px) translateY(${props.scroll?.y || 0}px)`,
                 transitionDuration: props.allowSwipe ? '0s' : '1.7s',
 
             }}>
