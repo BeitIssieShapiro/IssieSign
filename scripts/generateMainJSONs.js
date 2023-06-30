@@ -1,5 +1,5 @@
 console.log("Start building JSON file for sign language app - New");
-
+const fs = require('fs')
 /*
 Public Function abc()
     Set s = Application.Sheets("main")
@@ -144,11 +144,14 @@ const imageWordMap = {
     //     ["נכד נכדה"],
 }
 
+console.log("Run from the IssieSign root folder")
 
-var sourceFile = '/Users/I022021/Library/CloudStorage/OneDrive-SAPSE/Documents/BeirIssieShapiro/IssieSign/issie-words.xlsx'
-var targetFile = '/Users/i022021/dev/Issie/IssieSign/jsons'
-var imagePath = '/Users/i022021/dev/issie/IssieSign-MediaNew/images/he'
-var videoPath = '/Users/i022021/dev/issie/IssieSign-MediaNew/videos/he/prod'
+const mediaPath = fs.readFileSync('./make/.mediaPath', 'utf8').trim();
+
+var sourceFile = mediaPath + '/issie-words.xlsx'
+var targetFile = './jsons'
+var imagePath = mediaPath+'/images/he'
+var videoPath = mediaPath + '/videos/he/prod'
 var colors = [
     "#2d9f8e",
     "#d95841",
@@ -176,7 +179,6 @@ var colors = [
     "#d8a67a"
 ]
 
-var fs = require('fs');
 const xlsx = require("xlsx");
 
 const resHe = { categories: [] };

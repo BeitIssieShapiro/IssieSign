@@ -111,6 +111,8 @@ use_modular_headers!
     - change launch storyboard
     - change appicon and header
 
+Note: if you move the whole project from backup, you may get an error os CodeSign. in this case removing all xattr helped: `xattr -rc /path/to/directory` 
+
 
 ### Android
 - Import project (app/platforms/android)

@@ -8,6 +8,7 @@ ios-app/
 package-lock.json
 .DS_Store
 .firebaserc
+.mediaPath
 
 
 # language sensitive files
