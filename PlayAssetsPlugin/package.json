@@ -1,11 +1,12 @@
 {
   "name": "cordova-plugin-assets",
   "version": "1.0",
-  "description": "Cordova Google Play Assets Plugin",
+  "description": "Cordova Google Play Assets and App Store On-Demand Resources Plugin",
   "cordova": {
     "id":"cordova-plugin-assets",
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   },
   "repository": {
@@ -16,8 +17,9 @@
     "cordova",
     "ecosystem:cordova",
     "cordova-android",
-    "google",
-    "play-assets"
+    "play-assets",
+    "on-demand resources"
+
   ],
   
   "author": "Ariel Bentolila",

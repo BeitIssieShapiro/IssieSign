@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="cordova-plugin-assets" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>PlayAssets</name>
-    <description>Cordova Google Play Assets Plugin</description>
+    <description>Cordova Google Play Assets and App Store On Demand Resources Plugin</description>
     <author></author>
     <keywords>google play assets</keywords>
     <license>MIT</license>
@@ -29,6 +29,19 @@
         <!--No classes atm-->
         <source-file src="android/PlayAssets.java" target-dir="src/bentu.playassets" />
     </platform>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="PlayAssets">
+                <param name="ios-package" value="OnDemandResources" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
 
+
+
+        <header-file src="ios/OnDemandResources.h"/>
+        <source-file src="ios/OnDemandResources.m"/>
+
+    </platform>
     
 </plugin>
