@@ -1,4 +1,4 @@
-import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY } from '../utils/Utils';
+import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY, AppType } from '../utils/Utils';
 import axios from 'axios';
 import { translate } from '../utils/lang';
 import { mainJson } from '../mainJson';
@@ -46,97 +46,99 @@ export default class FileSystem {
         })
     }
 
-    index = isBrowser() ? ({
-        categories: mainJson.categories,
-        categories2: [
-            {
-                "name": "TutorialsCategory",
-                "id": "1",
-                "imageName": "R587.png",
-                translate: true,
-                allowHide: true,
-                "words": [
-                    {
-                        name: "הוספת מילה",
-                        id: "הוספת מילה",
-                        category: "בודק עברית",
-                        imageName: "בודק עברית/אוזניים.png",
-                        videoName: "https://www.issieapps.com/videos/tutorial-ar.mp4",
-                    }
-                ]
-            },
-            {
-                "name": "מבוגרים",
-                defaultHide: true,
-                allowHide: true,
-                "id": "15",
-                "themeId": "2",
-                "imageName": "favorites.png",
-                "words": []
-            },
-            {
-                "name": "FavoritesCategory",
-                translate: true,
-                "id": "__favorites__",
-                "themeId": "2",
-                "imageName": "favorites.png",
-                "words": [
-                    {
-                        name: "מילה בעברית",
-                        id: "מילה בעברית",
-                        favorite: true,
-                        category: "בודק עברית",
-                        imageName: "בודק עברית/אוזניים.png",
-                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                        userContent: true,
-                        sync: "sync-request",
-                        syncErr: "testError"
-                    }
-                ]
-            },
-            {
-                "name": "פירות וירקות",
-                "id": "פירות וירקות",
-                "imageName": "איברי גוף.png",
-                themeId: "4",
-                userContent: true,
-                "words": [
-                    {
-                        name: "מילה בעברית",
-                        id: "מילה בעברית",
-                        category: "פירות וירקות",
-                        favorite: true,
-                        imageName: "בודק עברית/אוזניים.png",
-                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                        userContent: true,
-                        sync: "sync-request",
-                        syncErr: "testError"
-                    },
-                    {
-                        name: "מילה שלישית",
-                        id: "100",
-                        category: "בודק עברית",
-                        imageName: "A8.png",
-                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                        sync: "sync-request",
-                        syncErr: "testError"
-                    },
+    appTypePathPrefix = ""
 
-                    {
-                        "name": "בפנים ובחוץ",
-                        "id": "1738",
-                        "imageName": "V738 1.png",
-                        "imageName2": "V738 2.png",
-                        "tags": [
-                            "בתוך"
-                        ],
-                        videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                    }
-                ]
-            }
-        ]
+    // index = isBrowser() ? ({
+    //     categories: mainJson.categories,
+    //     categories2: [
+    //         {
+    //             "name": "TutorialsCategory",
+    //             "id": "1",
+    //             "imageName": "R587.png",
+    //             translate: true,
+    //             allowHide: true,
+    //             "words": [
+    //                 {
+    //                     name: "הוספת מילה",
+    //                     id: "הוספת מילה",
+    //                     category: "בודק עברית",
+    //                     imageName: "בודק עברית/אוזניים.png",
+    //                     videoName: "https://www.issieapps.com/videos/tutorial-ar.mp4",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             "name": "מבוגרים",
+    //             defaultHide: true,
+    //             allowHide: true,
+    //             "id": "15",
+    //             "themeId": "2",
+    //             "imageName": "favorites.png",
+    //             "words": []
+    //         },
+    //         {
+    //             "name": "FavoritesCategory",
+    //             translate: true,
+    //             "id": "__favorites__",
+    //             "themeId": "2",
+    //             "imageName": "favorites.png",
+    //             "words": [
+    //                 {
+    //                     name: "מילה בעברית",
+    //                     id: "מילה בעברית",
+    //                     favorite: true,
+    //                     category: "בודק עברית",
+    //                     imageName: "בודק עברית/אוזניים.png",
+    //                     videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    //                     userContent: true,
+    //                     sync: "sync-request",
+    //                     syncErr: "testError"
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             "name": "פירות וירקות",
+    //             "id": "פירות וירקות",
+    //             "imageName": "איברי גוף.png",
+    //             themeId: "4",
+    //             userContent: true,
+    //             "words": [
+    //                 {
+    //                     name: "מילה בעברית",
+    //                     id: "מילה בעברית",
+    //                     category: "פירות וירקות",
+    //                     favorite: true,
+    //                     imageName: "בודק עברית/אוזניים.png",
+    //                     videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    //                     userContent: true,
+    //                     sync: "sync-request",
+    //                     syncErr: "testError"
+    //                 },
+    //                 {
+    //                     name: "מילה שלישית",
+    //                     id: "100",
+    //                     category: "בודק עברית",
+    //                     imageName: "A8.png",
+    //                     videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    //                     sync: "sync-request",
+    //                     syncErr: "testError"
+    //                 },
 
-    }) : undefined;
+    //                 {
+    //                     "name": "בפנים ובחוץ",
+    //                     "id": "1738",
+    //                     "imageName": "V738 1.png",
+    //                     "imageName2": "V738 2.png",
+    //                     "tags": [
+    //                         "בתוך"
+    //                     ],
+    //                     videoName: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    //                 }
+    //             ]
+    //         }
+    //     ]
+
+    // }) : undefined;
     cachedAllWords = undefined;
 
     static get() {
@@ -147,17 +149,28 @@ export default class FileSystem {
         return window['documents'];
     }
 
-    async init(defaultContent, pubSub, showCustomFoldersFirst) {
+    setAppType(appType) {
+        if (appType === AppType.IssieSign) {
+            this.appTypePathPrefix = "he/";
+        } else if (appType === AppType.IssieSignArabic) {
+            this.appTypePathPrefix = "ar/";
+        } else {
+            this.appTypePathPrefix = "en/";
+        }
+    }
+
+    async init(defaultContent, appType, pubSub, showCustomFoldersFirst) {
+        this.setAppType(appType)
         console.log("Init file system");
         this.showCustomFoldersFirst = showCustomFoldersFirst;
         this.pubSub = pubSub;
         if (!isBrowser()) {
             return new Promise(async (resolve, reject) => {
-                let attempts = 0;
-                while (attempts < 15 && !(await waitForCordova(1000))) {
-                    console.log("Wait for cordova..." + attempts)
-                    attempts++;
-                };
+                // let attempts = 0;
+                // while (attempts < 15 && !(await waitForCordova(1000))) {
+                //     console.log("Wait for cordova2..." + attempts)
+                //     attempts++;
+                // };
                 if (!window.resolveLocalFileSystemURL || FileSystem.getDocDir() === undefined) {
                     console.log("Cordova file plugin not working...")
                     return;
@@ -221,7 +234,7 @@ export default class FileSystem {
                                     }
 
                                     console.log("Successfully read the existing index file. categories:", this.index.categories.length);
-                                    this.init = true;
+                                    this.initialized = true;
                                     this.sortCategories();
                                     this.sortWords();
                                     this.loadHiddenFolders();
@@ -239,7 +252,7 @@ export default class FileSystem {
 
                                 this.saveIndex().then(
                                     () => {
-                                        this.init = true;
+                                        this.initialized = true;
                                         this.sortCategories();
                                         this.loadHiddenFolders();
                                         resolve()
@@ -251,7 +264,8 @@ export default class FileSystem {
 
             });
         } else {
-            this.init = true;
+            this.index = defaultContent;
+            this.initialized = true;
             this.sortCategories();
             this.sortWords();
             this.loadHiddenFolders()
@@ -301,9 +315,6 @@ export default class FileSystem {
     }
 
     getCategories() {
-        if (!this.init) {
-            throw ("FileSystem is not initialized")
-        }
 
         let cat = this.index?.categories;
         if (cat) {

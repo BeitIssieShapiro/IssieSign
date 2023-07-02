@@ -1,9 +1,27 @@
-echo "Delete old files from ios-app/platforms/ios"
+iosRoot=ios-app
+mediaPath=$(cat ./make/.mediaPath)
+lang=$1
 
-rm ios-app/platforms/ios/www/precache-*.*
-rm -rf ios-app/platforms/ios/www/videos
-rm -rf ios-app/platforms/ios/www/static
+echo "Delete old files from ./$iosRoot/platforms/ios"
 
-echo "copy build results to ios-app/platforms/ios"
+rm ./$iosRoot/platforms/ios/www/precache-*.*
+rm -rf ./$iosRoot/platforms/ios/www/videos
+rm -rf ./$iosRoot/platforms/ios/www/static
 
-cp -R build/* ios-app/platforms/ios/www
+echo "copy build results to ./$iosRoot/platforms/ios"
+
+cp -R build/* ./$iosRoot/platforms/ios/www
+
+# uncomment only when media changes
+# # Clean up video files
+# rm ./$iosRoot/Hebrew-IL1/*
+# rm ./$iosRoot/Hebrew-IL2/*
+
+# # Copy video files
+# mkdir -p ./$iosRoot/Hebrew-IL1
+# mkdir -p ./$iosRoot/Hebrew-IL2
+
+# cp -R $mediaPath/videos/$lang/prod/[A-L]*   ./$iosRoot/Hebrew-IL1/
+# cp -R $mediaPath/videos/$lang/prod/[M-Z]*  ./$iosRoot/Hebrew-IL2/
+
+

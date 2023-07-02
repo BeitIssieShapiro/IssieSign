@@ -4,13 +4,12 @@ import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import {
   ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY,
-  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType
 } from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
 import { GridView, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
-import { mainJson } from './mainJson';
 
 
 function ToggleButtons({ title, buttons }) {
@@ -29,13 +28,13 @@ function ToggleButtons({ title, buttons }) {
 }
 
 
-function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll }) {
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll , contentMap, appType, onChangeAppType}) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
   //const [langSettingsMode, setLangSettingsMode] = useState(false);
   const currLanguage = getLanguage()
 
-  const hideableCategories = mainJson.categories.filter(cat => cat.allowHide);
+  const hideableCategories = contentMap.categories.filter(cat => cat.allowHide);
 
   useEffect(() => {
     console.log("about to call WhoAmI")
@@ -76,9 +75,8 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
   }
 
   const changeLanguage = (lang) => {
-    saveSettingKey(LANG_KEY, lang);
     setState({ language: lang });
-    setLanguage(lang);
+    setLanguage(lang, true);
   }
 
   const adultModeChange = (isOn) => {
@@ -173,7 +171,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         />
 
       </div>
-      {isMyIssieSign() && <div className="settings-item">
+      {!isIssieSignArabic() && <div className="settings-item">
         <ToggleButtons
           title={translate("SettingsLanguage")}
           buttons={[
@@ -264,6 +262,18 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         {email && <div className="settingsSubTitle settings-selected">{"מחובר " + email}</div>}
       </div>
 
+
+      {!isIssieSignArabic() && <div className="settings-item">
+        <ToggleButtons
+          title={translate("SettingsAppType")}
+          buttons={[
+            { icon: <img className='setting-appType-img' src={require("./images/IssieSign.png")}/>, caption: "IssieSign", onSelect: () => onChangeAppType(AppType.IssieSign), selected: appType === AppType.IssieSign },
+            { icon: <img className='setting-appType-img' src={require("./images/MyIssieSign.png")}/>, caption: "My IssieSign", onSelect: () => onChangeAppType(AppType.MyIssieSign), selected: appType === AppType.MyIssieSign },
+          ]}
+        />
+
+      </div>
+      }
 
     </div>
   </ModalDialog >

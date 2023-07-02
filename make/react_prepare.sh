@@ -1,7 +1,7 @@
 mediaPath=$(cat ./make/.mediaPath)
 
 # cleanup react project
-rm -rf src/images/adt/*
+#rm -rf src/images/adt/*
 rm -rf public/videos
 
 lang=$1
@@ -14,14 +14,14 @@ if grep -q "window.isBrowser = true" public/index.html; then
   exit 1
 fi
 
-# Copy images
-cp -R $mediaPath/images/$lang/ src/images/adt/
+# Copy images - uncomment if images change
+# cp -R $mediaPath/images/ src/images/adt/
 
-if [ "$isIOS" = true ]; then
-    cp -R $mediaPath/videos/$lang/prod public/videos
-fi
+# if [ "$isIOS" = true ]; then
+#     cp -R $mediaPath/videos/$lang/prod public/videos
+# fi
 
 echo "export const gCurrentLanguage = \"$lang\";\nexport const AppName = \"$appName\";\n" > ./src/current-language.js
-cp -f jsons/$lang/mainJson.js src/mainJson.js
+# cp -f jsons/$lang/mainJson.js src/mainJson.js
 
 npm run build

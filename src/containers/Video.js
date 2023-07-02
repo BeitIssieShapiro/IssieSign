@@ -14,7 +14,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
 
-    const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5/9 });
+    const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5 / 9 });
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
     const videoRef = useRef(null);
@@ -82,9 +82,13 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         } else if (videoName.startsWith('http')) {
             videoContent = videoName;
         } else {
-            if (document.basePath?.startsWith("file")) {
+            if (document.basePath?.startsWith("/var")) {
                 //iOS
-                videoContent = document.basePath + "www/videos/" + videoName;
+                if (decodeURIComponent(videoName)[0] < 'M') {
+                    videoContent = "cdvfile:///_app_file_" + document.basePath + videoName;
+                } else {
+                    videoContent =  "cdvfile:///_app_file_" +document.basePath2 + videoName;
+                }
             } else {
                 //Android
                 //movie files are shareded between document.basePath and document.basePath2
@@ -97,6 +101,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
             }
         }
         vidElem.src = videoContent;
+        console.log("start video: ", videoContent)
 
     }, [videoName, filePath])
 

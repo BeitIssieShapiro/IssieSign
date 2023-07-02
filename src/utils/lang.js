@@ -1,5 +1,5 @@
 import { gCurrentLanguage } from '../current-language';
-import { isBrowser } from './Utils'
+import { LANG_KEY, isBrowser, saveSettingKey } from './Utils'
 
 const DEFAULT_LANG = "he";
 let gPrefix = "";
@@ -84,7 +84,7 @@ var strings = {
         "AddLoadVideoFailedOrCanceled": "טעינת סרטון בוטלה או נכשלה",
 
         "RestartApp": "קבצי המדיה עדיין בטעינה, מומלץ לסגור את היישום ולנסות שוב בעוד מספר דקות",
-        "LoadingMedia": "קבצי המדיה בטעינה ({1} מתוך {2})",
+        "LoadingMedia": "קבצי המדיה בטעינה",
 
         "ImportWordsErr": "שגיאה ביבוא מילים {1}",
         "SettingsHideFolder": "הסתרת תיקיית {1}",
@@ -126,7 +126,7 @@ var strings = {
         "__tutorial_overview__": "הכירו את האפליקציה",
         "__tutorial_editing__": "הוספה ושיתוף",
         "InvalidCharachtersInName": "שם מכיל תווים אסורים",
-
+        "SettingsAppType":"בחר אפליקציה",
     },
     "ar": {
 
@@ -365,6 +365,7 @@ var strings = {
         "ImportWordsCompleted": "Import Words Completed",
         "AddedWords": "Added Words",
         "AlreadyExistingWords": "Already Existing Words",
+        "SettingsAppType":"Choose Application",
 
     }
 }
@@ -403,7 +404,10 @@ function findMissing() {
 
 var currStrings = strings[gLang];
 
-export function setLanguage(lang) {
+export function setLanguage(lang, persist) {
+    if (persist) {
+        saveSettingKey(LANG_KEY, lang);
+    }
 
     currStrings = strings[lang];
     gLang = lang;
@@ -417,8 +421,9 @@ export function setLanguage(lang) {
     }
 
     window?.document.documentElement.style.setProperty('--dir', isRTL() ? "rtl" : "ltr");
-    window?.document.documentElement.style.setProperty('--rtl_f', isRTL() ? 1 : 0);
-    window?.document.documentElement.style.setProperty('--ltr_f', isRTL() ? 0 : 1);
+    window?.document.documentElement.style.setProperty('--dirRev', isRTL() ? "ltr" : "rtl");
+    // window?.document.documentElement.style.setProperty('--rtl_f', isRTL() ? 1 : 0);
+    // window?.document.documentElement.style.setProperty('--ltr_f', isRTL() ? 0 : 1);
 }
 
 export function isRTL() {

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack } from '@mui/icons-material'
 import { fTranslate, translate } from '../utils/lang';
 import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
@@ -10,7 +10,7 @@ import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
 import WordAdults from "../containers/Word-adult";
 import { isBrowser, isMobile } from '../utils/Utils';
-
+import {  isRTL } from '../utils/lang';
 import { ClipLoader } from 'react-spinners';
 import { CircularProgressbar } from 'react-circular-progressbar';
 
@@ -20,7 +20,8 @@ export function TrashButton(props) {
 }
 
 export function BackButton(props) {
-  return <div className="back-button" {...props}></div>
+  //return <div className="back-button" {...props}></div>
+  return <ArrowBack style={{fontSize:40, transform: isRTL()?"rotateY(180deg)":""}} {...props} />
 }
 
 export function PrevButton(props) {

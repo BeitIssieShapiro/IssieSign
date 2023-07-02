@@ -20,10 +20,6 @@
 
     <script>
         window.isBrowser = false;
-
-        let assetsInit = false;
-        let assetsInit2 = false;
-
        
         function handleTouch(e) {
             if (document.swipeInProgress) {
@@ -61,100 +57,13 @@
             }
         }
 
-        function getAssetsInfo() {
-            console.log("getAssetsInfo");
-
-            window.PlayAssets.getPlayAssets((assets)=> {
-                if (assets && assets.ready && assets.assets.length === 2) {
-                    document.assetsReady = true;
-                    
-                    if (assets.assets[0].name === "issiesign_assets") {
-                        document.basePath = "__cdvfile_root__" + assets.assets[0].path + "/";
-                        document.basePath2 = "__cdvfile_root__" + assets.assets[1].path + "/";
-                    } else {
-                        document.basePath = "__cdvfile_root__" + assets.assets[1].path + "/";
-                        document.basePath2 = "__cdvfile_root__" + assets.assets[0].path + "/";
-                    }
-                    
-                    
-                } else {
-                    if (assets) {
-                        document.downloadPercent = assets.downloadPercent;
-                        document.totalSizeToDownload = assets.totalSizeToDownload;
-                        document.fileIndex = assets.fileIndex;
-                        
-                        console.log("Downloading...", assets.downloadPercent);
-                    }
-                    console.log("retry getting getAssetsInfo")
-                    setTimeout(getAssetsInfo, 1500);
-                }
-            })
-        }
-
-
+        
         function onDeviceReady() {
             console.log("Cordova: Device Is Ready");
             window.isBrowser = false;
-            if (window.Keyboard) {
-                //cordova.plugins.keyboard.disableScroll(true);
-                console.log("keyboard plugin active")
-            }
-
-            
-            if (cordova.file.applicationDirectory.includes('android_asset')) {
-                // Android:
-                console.log("Device is Android")
-                window.isAndroid = true;
-                
-                //https://localhost/__cdvfile_assets__/ == assets/www
-                window.documents = cordova.file.dataDirectory;
-                // would be file:///data/user/0/com.issieshapiro.myissiesign/files/
-
-                // todo - adjust once issie sign has own app-id
-                const isMyIssieSign = window.documents.includes("com.issieshapiro.myissiesign"); 
-
-
-                document.basePath = "https://localhost/__cdvfile_assets__/";
-                if (!isMyIssieSign) {
-                    document.assetsReady = false;
-
-                    window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
-                    getAssetsInfo();
-                } 
-                
-                if (!cordova.openwith) {
-                    console.log("cordova.openwith is undefined");
-                }
-                cordova.openwith?.init(
-                    () => {
-                        console.log("open with init success");
-                        cordova.openwith.addHandler((intent) => {
-                            console.log("open with handler called");
-                            if (intent.items.length == 1) {
-                                let url = intent.items[0].uri
-                                console.log("open with url:", url);
-
-                                if (window.openWith) {
-                                    console.log("open with started");
-                                    window.openWith(url);
-                                }
-                            }
-                        });
-                    },
-                    (err) => console.log("open with init error", err));
-
-            } else {
-                //only in iOS
-                console.log("Device is iOS");
-                window.isAndroid = false;
-                document.basePath = cordova.file.applicationDirectory;
-                window.documents = cordova.file.documentsDirectory;
-                document.assetsReady=true;
-            }
-            console.log("base path:", document.basePath, "window.documents:", window.documents);
+            window.deviceIsReady = true;
         }
 
-        document.assetsReady = true;
         document.preventTouch = true;
 
         document.addEventListener("touchmove", handleTouch, { passive: false });

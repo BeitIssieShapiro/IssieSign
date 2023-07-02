@@ -8,8 +8,8 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY } from "./utils/Utils";
-import { translate, setLanguage, fTranslate } from './utils/lang';
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap } from "./utils/Utils";
+import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
 import 'react-circular-progressbar/dist/styles.css';
 
 import './css/App.css';
@@ -18,7 +18,7 @@ import './css/style.css';
 
 import {
     getTheme,
-    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, getBooleanSettingKey, headerSize
+    ALLOW_SWIPE_KEY, ALLOW_ADD_KEY, ADULT_MODE_KEY, getBooleanSettingKey, headerSize, AppType
 } from "./utils/Utils";
 import Shell from "./containers/Shell";
 import IssieBase from './IssieBase';
@@ -37,13 +37,20 @@ import { Sync } from '@mui/icons-material'
 import { SlideupMenu } from './components/slideup-menu';
 import InfoArabic from './containers/Info-issie-sign-arabic';
 import InfoMyIssieSign from './containers/Info-my-issie-sign';
+import AppTypeSelection from './components/apptype-selector';
 
 
 
 const SEARCH_PATH = "/search/";
 const SCROLL_RESET = { x: 0, y: 0 };
 
-let editModeRequestInterval = undefined;
+const AssetsState = {
+    UNINITIALIZED: "0",
+    LOADING: "1",
+    READY: "2",
+};
+
+
 
 class PubSub {
     constructor() {
@@ -83,6 +90,78 @@ class App extends IssieBase {
     //         this.preventKeyBoardScrollApp()
     //     });
     // }
+
+    deviceReady() {
+        if (isBrowser()) return;
+        if (cordova.file.applicationDirectory.includes('android_asset')) {
+            // Android:
+            console.log("Device is Android")
+            window.isAndroid = true;
+
+            //https://localhost/__cdvfile_assets__/ == assets/www
+            window.documents = cordova.file.dataDirectory;
+            // would be file:///data/user/0/com.issieshapiro.myissiesign/files/
+
+            const isMyIssieSign = window.documents.includes("com.issieshapiro.myissiesign");
+
+
+            document.basePath = "https://localhost/__cdvfile_assets__/";
+            if (!isMyIssieSign) {
+                this.loadAssets();
+            }
+
+            if (!cordova.openwith) {
+                console.log("cordova.openwith is undefined");
+            }
+            cordova.openwith?.init(
+                () => {
+                    console.log("open with init success");
+                    cordova.openwith.addHandler((intent) => {
+                        console.log("open with handler called");
+                        if (intent.items.length == 1) {
+                            let url = intent.items[0].uri
+                            console.log("open with url:", url);
+
+                            if (window.openWith) {
+                                console.log("open with started");
+                                window.openWith(url);
+                            }
+                        }
+                    });
+                },
+                (err) => console.log("open with init error", err));
+
+        } else {
+            //only in iOS
+            console.log("Device is iOS");
+            window.isAndroid = false;
+            window.documents = cordova.file.documentsDirectory;
+        }
+        console.log("base path:", document.basePath, "window.documents:", window.documents);
+    }
+
+    waitForDeviceReady() {
+        return new Promise((resolve)=>{
+            this.pollDeviceReady(resolve)
+        })
+    }
+
+    pollDeviceReady(resolver){
+        if (isBrowser()) {
+            console.log("Device is Browser")
+            resolver();
+            return;
+        }
+
+        if (window.deviceIsReady) {
+            console.log("Cordova Device is Ready");
+            resolver();
+        } else {
+            console.log("Cordova Device is not ready yet - recheck in 1 sec");
+            setTimeout(()=>this.pollDeviceReady(resolver), 1000);
+        }
+    }
+
 
     async componentDidMount() {
 
@@ -175,16 +254,30 @@ class App extends IssieBase {
         }
         window.goBack = () => this.goBack();
         let lang = getLanguage();
-        setLanguage(lang)
+        setLanguage(lang, false)
 
         const showOwnFoldersFirst = isMyIssieSign() || getBooleanSettingKey(SHOW_OWN_FOLDERS_FIRST_KEY, true);
 
         const pubsub = new PubSub()
-        trace("App: Init file system", showOwnFoldersFirst);
-        await FileSystem.get().init(mainJson, pubsub, showOwnFoldersFirst).then(() => this.setState({ fs: FileSystem.get() }));
+        console.log("Loading settings..");
+        const appType = getSettingKey(ISSIE_SIGN_APP_TYPE, (getAppName() === "IssieSignArabic" ? AppType.IssieSignArabic : AppType.UNINITIALIZED));
+        const assetsState = getSettingKey(ISSIE_SIGN_ASSETS_STATE, AssetsState.UNINITIALIZED);
+
+        console.log("App type", appType, "AssetsState", assetsState);
+
+        const contentMap = getContentMap(appType);
+        await this.waitForDeviceReady();
+        this.deviceReady();
+
+        if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState +"" == AssetsState.UNINITIALIZED) {
+            this.loadAssets();
+        } else {
+            console.log("Assets state saved:", assetsState)
+        }
+
+        await FileSystem.get().init(contentMap, appType, pubsub, showOwnFoldersFirst).then(() => this.setState({ fs: FileSystem.get() }));
 
         const shareCart = new ShareCart();
-
 
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
@@ -203,7 +296,9 @@ class App extends IssieBase {
 
             slideupMenuOpen: false,
             reload: 0,
-
+            assetsState,
+            appType,
+            contentMap,
         });
         pubsub.subscribe((args) => this.getEvents(args));
 
@@ -230,7 +325,7 @@ class App extends IssieBase {
                 },
                 (err) => {
                     this.props.alert.error(fTranslate("ImportWordsErr", JSON.stringify(err)));
-                    console.log(fTranslate("ImportWordsErr",JSON.stringify(err)));
+                    console.log(fTranslate("ImportWordsErr", JSON.stringify(err)));
                 }
             ).finally(() => pubsub.publish({ command: 'long-process-done' })), 50);
         }
@@ -243,27 +338,51 @@ class App extends IssieBase {
             }, 100);
         }
 
-        this.loadingMedia();
-
     }
 
-    loadingMedia = () => {
-        setTimeout(() => {
-            if (!document.assetsReady) {
-                //let sizeInMb = Math.floor(document.totalSizeToDownload / (1024*1024));
+    loadAssets() {
+        console.log("Load assets on demand")
+        if (isBrowser()) return;
+
+        this.setState({ assetsState: AssetsState.LOADING })
+
+        if (window.isAndroid) {
+            window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
+        } else {
+            window.PlayAssets.initPlayAssets(["Hebrew-IL1", "Hebrew-IL2"]);
+        }
+        this.monitorAssetsLoading();
+    }
+
+    monitorAssetsLoading() {
+        window.PlayAssets.getPlayAssets((assets) => {
+            console.log("assets info", JSON.stringify(assets));
+            if (assets && assets.ready && assets.assets.length === 2) {
+                //todo android
+                // if (assets.assets[0].name === "issiesign_assets") {
+                //     document.basePath = "__cdvfile_root__" + assets.assets[0].path + "/";
+                //     document.basePath2 = "__cdvfile_root__" + assets.assets[1].path + "/";
+                // } else {
+                //     document.basePath = "__cdvfile_root__" + assets.assets[1].path + "/";
+                //     document.basePath2 = "__cdvfile_root__" + assets.assets[0].path + "/";
+                // }
+
+                document.basePath = assets.assets[0].path;
+                document.basePath2 = assets.assets[1].path;
+
+                this.setState({ assetsState: AssetsState.READY, busy: false, progress: undefined });
+            } else if (assets) {
                 this.setState({
                     busy: true,
                     showProgress: true,
-                    progress: document.downloadPercent,
-                    progressText: `${document.downloadPercent || 0}%`,
-                    busyText: fTranslate("LoadingMedia", document.fileIndex, 2)
+                    progress: assets.downloadPercent,
+                    progressText: `${assets.downloadPercent || 0}%`,
+                    busyText: fTranslate("LoadingMedia", assets.fileIndex, 2)
                 });
-               
-                this.loadingMedia()
-            } else {
-                this.setState({ busy: false, progress: undefined });
+                console.log("Loading Assets...not ready, recheck in 1.5 sec", document.fileIndex, assets.downloadPercent);
+                setTimeout(()=>this.monitorAssetsLoading(), 1500);
             }
-        }, 1500);
+        });
     }
 
     componentDidUpdate() {
@@ -453,7 +572,39 @@ class App extends IssieBase {
         window.scrollTo(0, 0);
     }
 
+    handleAppTypeChange = (appType) => {
+        console.log("App type selected ", appType)
+        if (this.state.appType +"" === AppType.UNINITIALIZED) {
+            // sets also the default language
+            if (appType == AppType.IssieSign) {
+                setLanguage("he", true);
+            } else if (appType == AppType.IssieSignArabic) {
+                setLanguage("ar", true);
+            } else {
+                setLanguage("en", true);
+            }
+        }
+        saveSettingKey(ISSIE_SIGN_APP_TYPE, appType);
+
+        if (appType == AppType.IssieSign && this.state.assetsState+"" == AssetsState.UNINITIALIZED) {
+            this.loadAssets();
+        }
+
+        const contentMap = getContentMap(appType);
+        this.state.fs.init(contentMap, appType, this.state.pubsub, this.state.showOwnFoldersFirst).then(() =>
+            this.setState({ appType, contentMap })
+        );
+    }
+
     render() {
+
+        if (this.state.appType+"" == AppType.UNINITIALIZED) {
+            return <AppTypeSelection
+                onType={(appType) => this.handleAppTypeChange(appType)}
+            />;
+        }
+
+
         let path = this.props.history.path;
         //console.log("sett scroll", this.state.settingsScroll?.x, this.state.settingsScroll?.y)
         //console.log("render app")
@@ -469,7 +620,7 @@ class App extends IssieBase {
 
         if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.isShareScreen()) {
             searchInput = (
-                <div slot="center-bar" className="search shellSearch">
+                <div slot="center-bar" className="search shellSearch" style={isRTL() ? { right: 0 } : { left: 0 }}>
                     <input
                         key="searchInput"
                         type="search" onChange={this.handleSearch}
@@ -497,7 +648,7 @@ class App extends IssieBase {
         console.log("catID", this.state.categoryId)
 
         return (
-            <div className="App" style={getLanguage() == "he" ? { fontFamily: "ArialMT" } : {}}>
+            <div className="App" style={getLanguage() == "he" ? { fontFamily: "ArialMT" } : {}} >
 
                 {<SlideupMenu
                     {...this.state.slideupMenuProps}
@@ -579,6 +730,9 @@ class App extends IssieBase {
                         showInfo={() => this.showInfo()}
                         pubSub={this.state.pubSub}
                         scroll={this.state.settingsScroll}
+                        appType={this.state.appType}
+                        onChangeAppType={(appType) => this.handleAppTypeChange(appType)}
+                        contentMap={this.state.contentMap}
                     />}
 
                     <div slot="body" className="theBody" style={{

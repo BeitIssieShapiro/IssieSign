@@ -132,9 +132,10 @@
   height: 35px;
 }
 
-.back-button {
-  display: inline-block;
-  margin-top: 5px;
+.back-button > svg {
+  font-size: 35px;
+  /* display: inline-block;
+  margin-top: 5px; */
 }
 
 .logout-button {

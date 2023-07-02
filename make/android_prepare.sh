@@ -15,14 +15,15 @@ rm $WWW/index.html
 cp -R build/* $WWW
 
 
-# Clean up video files
-rm ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/*
-rm ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/*
+# uncomment only when media changes
+# # Clean up video files
+# rm ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/*
+# rm ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/*
 
-# Copy video files
-mkdir -p ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos
-mkdir -p ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/
+# # Copy video files
+# mkdir -p ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos
+# mkdir -p ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/
 
-cp -R $mediaPath/videos/$lang/prod/[A-L]*   ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/
-cp -R $mediaPath/videos/$lang/prod/[M-Z]*  ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/
+# cp -R $mediaPath/videos/$lang/prod/[A-L]*   ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/
+# cp -R $mediaPath/videos/$lang/prod/[M-Z]*  ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/
 

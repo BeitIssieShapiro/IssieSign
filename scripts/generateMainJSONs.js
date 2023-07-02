@@ -149,7 +149,7 @@ console.log("Run from the IssieSign root folder")
 const mediaPath = fs.readFileSync('./make/.mediaPath', 'utf8').trim();
 
 var sourceFile = mediaPath + '/issie-words.xlsx'
-var targetFile = './jsons'
+var targetFile = './src/jsons'
 var imagePath = mediaPath+'/images/he'
 var videoPath = mediaPath + '/videos/he/prod'
 var colors = [

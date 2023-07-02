@@ -1,0 +1,30 @@
+.app-type-host {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+}
+
+
+.app-type-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    width: 200px;
+    height: 200px;
+}
+
+.app-type-button-img {
+    width: 80%;
+    height: 80%;
+}
+
+.app-type-button-desc {
+    font-size: 25px;
+    color:black;
+}

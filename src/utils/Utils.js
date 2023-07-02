@@ -1,9 +1,12 @@
 import { AppName, gCurrentLanguage } from '../current-language';
+import { mainJson } from '../mainJson';
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
 export const ALLOW_SWIPE_KEY = "IssieSign_Settings_AllowSwipe";
 export const ADULT_MODE_KEY = "IssieSign_Settings_AdultMode";
+export const ISSIE_SIGN_APP_TYPE = "IssieSign_Settings_AppType";
+export const ISSIE_SIGN_ASSETS_STATE = "IssieSign_Settings_AssetsState";
 
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 export const SHOW_OWN_FOLDERS_FIRST_KEY = "IssieSign_Settings_ShowOwnFoldersFirst";
@@ -12,6 +15,27 @@ export const LANG_KEY = "MyIssieSign_Settings_Lang";
 
 export const HIDDEN_FOLDERS_KEY = "MyIssieSign_Settings_Hiden_Folders";
 
+export const AppType = {
+    UNINITIALIZED: "0",
+    IssieSign: "1",
+    MyIssieSign: "2",
+    IssieSignArabic: "3",
+};
+
+import { mainJson as gHEMainJSON } from '../jsons/he/mainJson';
+import { mainJson as gENMainJSON } from '../jsons/en/mainJson';
+import { mainJson as gARMainJSON } from '../jsons/ar/mainJson';
+
+
+export function getContentMap(appType) {
+    if (appType === AppType.IssieSign)
+        return gHEMainJSON;
+
+    if (appType === AppType.IssieSignArabic)
+        return gARMainJSON;
+
+    return gENMainJSON;
+}
 
 export function isBrowser() {
     return window.isBrowser;
@@ -19,6 +43,10 @@ export function isBrowser() {
 
 export function isMyIssieSign() {
     return AppName == "MyIssieSign";
+}
+
+export function isIssieSignArabic() {
+    return AppName == "IssieSignArabic";
 }
 
 export function getAppName() {
@@ -55,6 +83,15 @@ export function getBooleanSettingKey(key, defaultVal) {
     return Boolean(defaultVal);
 }
 
+export function getSettingKey(key, defaultVal) {
+    let value = window.localStorage.getItem(key);
+
+    if (value == null) {
+        return defaultVal;
+    }
+    return value;
+}
+
 
 export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW, isMobile, inSearch) {
     if (isMobile) {
@@ -83,7 +120,7 @@ export const getTheme = (categoryID) => {
 }
 
 export function getThemeName(themeId) {
-    return themeId === "blue"?"blue":"flavor-"+themeId;
+    return themeId === "blue" ? "blue" : "flavor-" + themeId;
 }
 
 export function getAvailableThemes() {

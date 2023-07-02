@@ -2,7 +2,8 @@ import FileSystem from "./filesystem";
 
 const getImageContent = (image): string => {
     try {
-        return require("../images/adt/" + image);
+
+        return require("../images/adt/" + FileSystem.get().appTypePathPrefix + image);
     } catch (e) {
         console.log("Image not found", image);
         return undefined

@@ -55,7 +55,7 @@ IssieSign is avaiable under the GPL Licence. See the following link: https://www
 ```
 cordova create <ios-app | android-app> com.issieshapiro.signlang IssieSign
 cd <ios-app | android-app>
-cordova plugin add cordova-plugin-file
+cordova plugins add cordova-plugin-file
 cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
@@ -63,14 +63,20 @@ cordova plugins add cordova-plugin-x-socialsharing
 # take the client id of the IOS for prod from IssieSign project's API's Credentials in GCP
 cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
 
-# android only
+
 cordova plugins add ../PlayAssetsPlugin/
 ```
 
 
 - Fix config.xml:
   - description and author
-  - add `<preference name="AllowInlineMediaPlayback" value="true" />`
+  - add 
+```
+    <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="scheme" value="cdvfile" />
+    <preference name="hostname" value="localhost" />
+    <preference name="iosExtraFilesystems" value="root" />
+```
 
 - for iOS: install cocoapods: https://cocoapods.org/
 - add the platfrom: `cordova platform add <ios | android>`
