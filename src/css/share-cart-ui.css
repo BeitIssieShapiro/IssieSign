@@ -1,5 +1,5 @@
 .share-cart-container {
-    width: 100vw;
+    width: 100%;
     direction: var(--dir);
     color: #585A5A;
     background-color: #EAE5DA;

@@ -28,7 +28,7 @@ function Tile2(props) {
         } else {
             props.shareCart.add({
                 name: props.tileName,
-                image: imageSrc,
+                image: props.imageName,
             })
             props.alert.success(translate("ItemAddedToShare"));
         }

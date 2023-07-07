@@ -8,7 +8,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -28,7 +28,6 @@ import {
     SettingsButton, TrashButton,
     BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2, BusyMsg
 } from './components/ui-elements';
-import { mainJson } from './mainJson';
 import FileSystem from './apis/filesystem';
 import ShareInfo from './components/share-info';
 import { ShareCart } from './share-cart';
@@ -141,12 +140,12 @@ class App extends IssieBase {
     }
 
     waitForDeviceReady() {
-        return new Promise((resolve)=>{
+        return new Promise((resolve) => {
             this.pollDeviceReady(resolve)
         })
     }
 
-    pollDeviceReady(resolver){
+    pollDeviceReady(resolver) {
         if (isBrowser()) {
             console.log("Device is Browser")
             resolver();
@@ -158,7 +157,7 @@ class App extends IssieBase {
             resolver();
         } else {
             console.log("Cordova Device is not ready yet - recheck in 1 sec");
-            setTimeout(()=>this.pollDeviceReady(resolver), 1000);
+            setTimeout(() => this.pollDeviceReady(resolver), 1000);
         }
     }
 
@@ -260,7 +259,7 @@ class App extends IssieBase {
 
         const pubsub = new PubSub()
         console.log("Loading settings..");
-        const appType = getSettingKey(ISSIE_SIGN_APP_TYPE, (getAppName() === "IssieSignArabic" ? AppType.IssieSignArabic : AppType.UNINITIALIZED));
+        const appType = getPersistedAppType();
         const assetsState = getSettingKey(ISSIE_SIGN_ASSETS_STATE, AssetsState.UNINITIALIZED);
 
         console.log("App type", appType, "AssetsState", assetsState);
@@ -269,7 +268,7 @@ class App extends IssieBase {
         await this.waitForDeviceReady();
         this.deviceReady();
 
-        if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState +"" == AssetsState.UNINITIALIZED) {
+        if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState + "" == AssetsState.UNINITIALIZED) {
             this.loadAssets();
         } else {
             console.log("Assets state saved:", assetsState)
@@ -299,7 +298,7 @@ class App extends IssieBase {
             assetsState,
             appType,
             contentMap,
-        });
+        }, () => !isBrowser() && navigator.splashscreen.hide());
         pubsub.subscribe((args) => this.getEvents(args));
 
         window.importWords = (url) => {
@@ -380,7 +379,7 @@ class App extends IssieBase {
                     busyText: fTranslate("LoadingMedia", assets.fileIndex, 2)
                 });
                 console.log("Loading Assets...not ready, recheck in 1.5 sec", document.fileIndex, assets.downloadPercent);
-                setTimeout(()=>this.monitorAssetsLoading(), 1500);
+                setTimeout(() => this.monitorAssetsLoading(), 1500);
             }
         });
     }
@@ -396,7 +395,7 @@ class App extends IssieBase {
         if (!props.pubSub) {
             return {
                 theme: App.isHome(props) ? "blue" : state.theme,
-                title: App.isHome(props) ? translate("AppTitle") : state.title,
+                title: App.isHome(props) ? translate(getAppName()) : state.title,
                 pubSub: state.pubSub ? state.pubSub : new PubSub()
             };
         }
@@ -447,7 +446,7 @@ class App extends IssieBase {
                 this.setState({ editMode: true });
                 break;
             case 'set-busy':
-                this.setState({ busy: args.active === true, busyText: args.active ? args.text : undefined });
+                this.setState({ busy: args.active === true, busyText: args.active ? args.text : undefined, showProgress:undefined });
                 break;
             case 'long-process':
                 this.setState({ longProcess: { msg: args.msg, icon: args.icon } });
@@ -574,7 +573,7 @@ class App extends IssieBase {
 
     handleAppTypeChange = (appType) => {
         console.log("App type selected ", appType)
-        if (this.state.appType +"" === AppType.UNINITIALIZED) {
+        if (this.state.appType === AppType.UNINITIALIZED || this.state.appType !== AppType.MyIssieSign) {
             // sets also the default language
             if (appType == AppType.IssieSign) {
                 setLanguage("he", true);
@@ -584,21 +583,25 @@ class App extends IssieBase {
                 setLanguage("en", true);
             }
         }
-        saveSettingKey(ISSIE_SIGN_APP_TYPE, appType);
+        
+        saveAppType(appType);
 
-        if (appType == AppType.IssieSign && this.state.assetsState+"" == AssetsState.UNINITIALIZED) {
+
+        this.state.shareCart.clear();
+
+        if (appType == AppType.IssieSign && this.state.assetsState + "" == AssetsState.UNINITIALIZED) {
             this.loadAssets();
         }
 
         const contentMap = getContentMap(appType);
         this.state.fs.init(contentMap, appType, this.state.pubsub, this.state.showOwnFoldersFirst).then(() =>
-            this.setState({ appType, contentMap })
+            this.setState({ appType, contentMap, title: translate(getAppName()) })
         );
     }
 
     render() {
 
-        if (this.state.appType+"" == AppType.UNINITIALIZED) {
+        if (this.state.appType + "" == AppType.UNINITIALIZED) {
             return <AppTypeSelection
                 onType={(appType) => this.handleAppTypeChange(appType)}
             />;
@@ -619,8 +622,9 @@ class App extends IssieBase {
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.isShareScreen()) {
+            const paddingInlineEnd = this.state.editMode ? 120 : undefined;
             searchInput = (
-                <div slot="center-bar" className="search shellSearch" style={isRTL() ? { right: 0 } : { left: 0 }}>
+                <div slot="center-bar" className="search shellSearch" style={isRTL() ? { right: 0, paddingInlineEnd } : { left: 0, paddingInlineEnd }}>
                     <input
                         key="searchInput"
                         type="search" onChange={this.handleSearch}
@@ -751,8 +755,8 @@ class App extends IssieBase {
 
     getChildren(path) {
         //console.log("get children, path", path)
-
         if (path === "/" || path === "") {
+            this.setTitle(translate(getAppName(this.state.appType)))
 
             return <Body
                 categories={FileSystem.get().getCategories()}

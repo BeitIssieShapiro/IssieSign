@@ -5,6 +5,7 @@ import "../css/share-cart-ui.css"
 import { fTranslate, translate } from '../utils/lang';
 import { trace } from "../utils/Utils";
 import { withAlert } from 'react-alert'
+import { imageLocalCall } from '../apis/ImageLocalCall';
 
 const emptyCart = require("../images/empty-share-list.png");
 
@@ -66,8 +67,10 @@ function ShareCartUI({ shareCart, pubSub, alert }) {
             {
                 shareCart?.items.map((si, i) => {
                     const item = shareCart.get(i);
-                    return (<div className="share-cart-item">
-                        <item style={{justifyContent: "center"}}><img src={item.image}/></item>
+                    return (<div className="share-cart-item" key={i}>
+                        <item style={{justifyContent: "center"}}>
+                            <img src={imageLocalCall(item.image, true)} alt={translate("MissingImageAlt")}/>
+                        </item>
                         <item>{item.category}</item>
                         <item>{item.name}</item>
                         <item style={{justifyContent: "center"}}>

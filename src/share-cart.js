@@ -42,6 +42,11 @@ export class ShareCart {
         this.save();
     }
 
+    clear() {
+        this.items = [];
+        this.save();
+    }
+
     exists(name) {
         return this.items.find(i => i.name === name);
     }

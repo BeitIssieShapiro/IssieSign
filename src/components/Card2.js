@@ -46,7 +46,7 @@ function Card2(props) {
         } else {
             props.shareCart.add({
                 name: sharedName,
-                image: imageSrc,
+                image: props.imageName,
             })
             props.alert.success(translate("ItemAddedToShare"));
         }

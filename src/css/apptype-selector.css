@@ -1,30 +1,80 @@
 .app-type-host {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
     background-color: white;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    height: 100%;
+    height: 40%;
 }
 
 
-.app-type-button {
+.app-type-main-img {
+    width: 200px;
+    margin-bottom: 15px;
+}
+
+.app-type-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 35px;
+    color: #006096;
+}
+
+
+.app-type-buttons-area {
+    position: absolute;
+    bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-items: center;
-    width: 200px;
-    height: 200px;
+    justify-content: center;
+    background-color: #EDF4FB;
+    width: 100%;
+    height: 60%
+}
+.app-type-buttons-area-text {
+    font-weight: bold;
+    font-size: 18px;
+    color: #527FA0;
+
 }
 
-.app-type-button-img {
-    width: 80%;
-    height: 80%;
+.app-type-button {
+    margin: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 150px;
+    background-color: #527FA0;
+    border-radius: 15px;
+    
+}
+
+.app-type-btn-text {
+    margin-left: 30px;
+}
+
+.app-type-button-name {
+    font-size: 28px;
+    color: white;
 }
 
 .app-type-button-desc {
-    font-size: 25px;
-    color:black;
+    font-size: 12px;
+    color: white;
 }
+
+.app-type-button-img {
+    width: 100px;
+    height: 100px;
+}
+
+.app-type-button-img > svg {
+    width: 100px;
+}
+
+

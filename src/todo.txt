@@ -1,8 +1,9 @@
 
-RECOVER:
-- BUSY MESSAGE on android
-- add properties support in android
-- android: aglie title above app
+MyIssieSign merge into Issie:
+V- final design (settings, selector)
+V- landscape mode
+V- splash to high
+
 
 
 features:

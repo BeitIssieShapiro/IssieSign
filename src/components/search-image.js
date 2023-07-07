@@ -43,7 +43,9 @@ export default function SearchImage({ onClose, onSelectImage, pubSub }) {
                     <img className="foundItem"
                         key={i}
                         src={item.url}
-                        onClick={() => onSelectImage(item.url)}
+                        onClick={() => {
+                            onSelectImage(item.url)
+                        }}
                     />)) :
                     <div className="noResultMsg">{translate("NoResultsMsg")}</div>)}
             </div>

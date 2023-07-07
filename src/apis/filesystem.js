@@ -1,7 +1,6 @@
-import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY, AppType } from '../utils/Utils';
+import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY, AppType, getAppRootFolderName } from '../utils/Utils';
 import axios from 'axios';
 import { translate } from '../utils/lang';
-import { mainJson } from '../mainJson';
 
 let fileSystem;
 
@@ -1083,7 +1082,7 @@ export default class FileSystem {
         }
 
         return new Promise(async (resolve, reject) => {
-            let rootFolderId = this.index.rootFolderId, rootFolderName = getAppName();
+            let rootFolderId = this.index.rootFolderId, rootFolderName = getAppRootFolderName();
 
             if (!rootFolderId) {
                 // try to find it in the users' Drive first
@@ -1190,7 +1189,7 @@ export default class FileSystem {
     // if not found, return undefined
     async findRootFolder() {
         return new Promise((resolve, reject) => {
-            window.plugins.gdrive.findFolder(getAppName(), "",
+            window.plugins.gdrive.findFolder(getAppRootFolderName(), "",
                 (response) => {
                     trace("Found root folders", response.folders.length)
                     if (response.folders.length == 0) {
@@ -1229,7 +1228,7 @@ export default class FileSystem {
     }
     async reconsile() {
 
-        const rootFolderId = await this.findRootFolder(getAppName());
+        const rootFolderId = await this.findRootFolder(getAppRootFolderName());
         trace("Found root ID", rootFolderId)
         if (!rootFolderId) {
             // If not found - nothing to reconsile

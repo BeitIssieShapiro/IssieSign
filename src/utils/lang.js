@@ -7,7 +7,8 @@ let gLang = gCurrentLanguage
 
 var strings = {
     "he": {
-        "AppTitle": "שפת הסימנים",
+        "IssieSign": "שפת הסימנים",
+        "MyIssieSign": "הסימנים שלי",
         "SettingsLanguage": "שפה",
         "SettingsSwipe": "מצב דפדוף",
         "NavByArrow": "חיצים",
@@ -129,8 +130,8 @@ var strings = {
         "SettingsAppType":"בחר אפליקציה",
     },
     "ar": {
-
-        "AppTitle": "لغة الإشارة",
+        "IssieSignArabic": "لغة الإشارة",
+        "MyIssieSign": "إشاراتي",
         "SettingsLanguage": "اللغة",
         "SettingsSwipe": "السحب",
         "SettingsTitle": "اعدادات",
@@ -247,7 +248,8 @@ var strings = {
         "InvalidCharachtersInName": "  يحتوي إسم الملف على رموز لا يمكن استخدامها ",
     },
     "en": {
-        "AppTitle": "My IssieSign",
+        "MyIssieSign": "My IssieSign",
+
         "SettingsLanguage": "Language",
         "SettingsSwipe": "Swipe",
         "NavByArrow": "Arrows",

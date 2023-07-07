@@ -60,6 +60,7 @@ cordova plugins add cordova-plugin-camera
 cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
+cordova plugin add cordova-plugin-splashscreen
 # take the client id of the IOS for prod from IssieSign project's API's Credentials in GCP
 cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
 
@@ -73,6 +74,9 @@ cordova plugins add ../PlayAssetsPlugin/
   - add 
 ```
     <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="AutoHideSplashScreen" value="false" />
+
+
     <preference name="scheme" value="cdvfile" />
     <preference name="hostname" value="localhost" />
     <preference name="iosExtraFilesystems" value="root" />

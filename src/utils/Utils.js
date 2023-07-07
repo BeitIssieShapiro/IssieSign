@@ -1,5 +1,4 @@
 import { AppName, gCurrentLanguage } from '../current-language';
-import { mainJson } from '../mainJson';
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
@@ -42,15 +41,31 @@ export function isBrowser() {
 }
 
 export function isMyIssieSign() {
-    return AppName == "MyIssieSign";
+    return getAppName() == "MyIssieSign";
 }
 
 export function isIssieSignArabic() {
-    return AppName == "IssieSignArabic";
+    return getAppName() == "IssieSignArabic";
 }
 
-export function getAppName() {
-    return AppName;
+export function getAppRootFolderName() {
+    const appType = getPersistedAppType();
+    if (appType == AppType.IssieSignArabic) {
+        return "IssieSignArabic";
+    }
+    return "IssieSign";
+}
+
+export function getAppName(appType) {
+    appType = appType || getPersistedAppType();
+    if (appType == AppType.IssieSignArabic) {
+        return "IssieSignArabic";
+    }
+    if (appType == AppType.MyIssieSign) {
+        return "MyIssieSign";
+    }
+
+    return "IssieSign"
 }
 
 
@@ -69,6 +84,15 @@ export function getLanguage() {
 export function saveSettingKey(key, value) {
     window.localStorage.setItem(key, value);
 }
+
+export function getPersistedAppType() {
+    return getSettingKey(ISSIE_SIGN_APP_TYPE, (AppName === "IssieSignArabic" ? AppType.IssieSignArabic : AppType.UNINITIALIZED)) + "";
+}
+
+export function saveAppType(appType) {
+    saveSettingKey(ISSIE_SIGN_APP_TYPE, appType);
+}
+
 
 export function getBooleanSettingKey(key, defaultVal) {
     let value = window.localStorage.getItem(key);

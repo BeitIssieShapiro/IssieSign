@@ -48,7 +48,7 @@
     position: relative;
     display: grid;
     grid-template-columns: 80px 1fr 80px;
-    width: 100vw;
+    width: 100%;
     min-height: 76px;
     max-height: 76px;
     padding: 20px 14px;
@@ -76,6 +76,7 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-areas: 'a b c d';
     justify-content: flex-start;
+    z-index: 1000;
 }
 
 .centerBar {

@@ -10,14 +10,15 @@ import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
 import { GridView, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
-
+import { MyIssieImg } from './components/apptype-selector'
+import { ReactComponent as IssieImg } from './images/IssieSign_opt.svg'
 
 function ToggleButtons({ title, buttons }) {
   return <div className="toggle-container">
     <div className="toggle-title">{title}</div>
-    <div className="toggle-buttons">
+    <div className="toggle-buttons" >
       {buttons.map((button, i) => <div key={i} className={button.selected ? "toggle-caption-selected" : ""}>
-        <div key={i} className={"toggle-button" + (button.selected ? " toggle-selected" : "")} onClick={button.onSelect}>
+        <div key={i} className={"toggle-button " + (button.styleClass || "") + " " + (button.selected ? (button.selectedClass ? button.selectedClass : " toggle-selected") : "")} onClick={button.onSelect}>
           {button.icon}
         </div>
         {button.caption}
@@ -28,7 +29,7 @@ function ToggleButtons({ title, buttons }) {
 }
 
 
-function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll , contentMap, appType, onChangeAppType}) {
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll, contentMap, appType, onChangeAppType }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
   //const [langSettingsMode, setLangSettingsMode] = useState(false);
@@ -171,7 +172,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         />
 
       </div>
-      {!isIssieSignArabic() && <div className="settings-item">
+      {isMyIssieSign() && <div className="settings-item">
         <ToggleButtons
           title={translate("SettingsLanguage")}
           buttons={[
@@ -255,7 +256,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             }}
           />
 
-          <ButtonReconsile onClick={() => reconcile().then( ()=>sync() )} />
+          <ButtonReconsile onClick={() => reconcile().then(() => sync())} />
         </div>
       </div>
       <div className="status-item" >
@@ -267,8 +268,16 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         <ToggleButtons
           title={translate("SettingsAppType")}
           buttons={[
-            { icon: <img className='setting-appType-img' src={require("./images/IssieSign.png")}/>, caption: "IssieSign", onSelect: () => onChangeAppType(AppType.IssieSign), selected: appType === AppType.IssieSign },
-            { icon: <img className='setting-appType-img' src={require("./images/MyIssieSign.png")}/>, caption: "My IssieSign", onSelect: () => onChangeAppType(AppType.MyIssieSign), selected: appType === AppType.MyIssieSign },
+            {
+              icon: <IssieImg />, caption: "IssieSign", onSelect: () => onChangeAppType(AppType.IssieSign),
+              selected: appType + "" == AppType.IssieSign,
+              styleClass: "app-toggle-button", selectedClass: "app-toggle-button-selected"
+            },
+            {
+              icon: <MyIssieImg />, caption: "My IssieSign", onSelect: () => onChangeAppType(AppType.MyIssieSign),
+              selected: appType + "" == AppType.MyIssieSign,
+              styleClass: "app-toggle-button", selectedClass: "app-toggle-button-selected"
+            },
           ]}
         />
 

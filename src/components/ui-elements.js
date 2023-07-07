@@ -69,6 +69,8 @@ export function EditButton(props) {
   const [pressInterval, setPressInterval] = useState(undefined);
   const [waited, setWaited] = useState(0);
 
+  const alignTo = isRTL()?{left:40}:{right:40};
+
   return <HeaderButton slot={props.slot} className="a"
     // onClick={()=>{
     //   if (isBrowser()) {
@@ -116,7 +118,7 @@ export function EditButton(props) {
     }}
   >
     <EditModeSVG style={{ width: 40, fillOpacity: props.selected ? 1 : 0 }} />
-    {pressInterval && <div style={{ position: 'absolute', left: 40, top: 5, width: 200, fontSize: 22, textAlign: "start" }}>{fTranslate("EnterEditMode", 3 - waited)}</div>}
+    {pressInterval && <div style={{ ...alignTo, position: 'absolute', top: 5, width: 200, fontSize: 22, textAlign: "start", zIndex:1000 }}>{fTranslate("EnterEditMode", 3 - waited)}</div>}
   </HeaderButton>
 }
 
