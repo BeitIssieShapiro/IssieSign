@@ -10,6 +10,8 @@ import { withAlert } from 'react-alert'
 
 import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
+import { os } from './current-language';
+
 import 'react-circular-progressbar/dist/styles.css';
 
 import './css/App.css';
@@ -101,13 +103,7 @@ class App extends IssieBase {
             window.documents = cordova.file.dataDirectory;
             // would be file:///data/user/0/com.issieshapiro.myissiesign/files/
 
-            const isMyIssieSign = window.documents.includes("com.issieshapiro.myissiesign");
-
-
             document.basePath = "https://localhost/__cdvfile_assets__/";
-            if (!isMyIssieSign) {
-                this.loadAssets();
-            }
 
             if (!cordova.openwith) {
                 console.log("cordova.openwith is undefined");
@@ -128,8 +124,8 @@ class App extends IssieBase {
                         }
                     });
                 },
-                (err) => console.log("open with init error", err));
-
+                (err) => console.log("open with init error", err)
+            );
         } else {
             //only in iOS
             console.log("Device is iOS");
@@ -166,14 +162,14 @@ class App extends IssieBase {
 
         window.addEventListener("resize", this.resizeListener);
 
-        window.addEventListener('keyboardDidHide', function () {
-            console.log("keyboard hide")
-            //this.preventKeyBoardScrollApp()
-        });
+        // window.addEventListener('keyboardDidHide', function () {
+        //     console.log("keyboard hide")
+        //     //this.preventKeyBoardScrollApp()
+        // });
 
-        window.addEventListener('keyboardDidShow', function () {
-            console.log("keyboard show")
-        });
+        // window.addEventListener('keyboardDidShow', function () {
+        //     console.log("keyboard show")
+        // });
         const getCurrent = () => {
             if (this.state.menuOpen) {
                 return this.state.settingsScroll;
@@ -271,7 +267,7 @@ class App extends IssieBase {
         if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState + "" == AssetsState.UNINITIALIZED) {
             this.loadAssets();
         } else {
-            console.log("Assets state saved:", assetsState)
+            console.log("Persisted assets state:", assetsState)
         }
 
         await FileSystem.get().init(contentMap, appType, pubsub, showOwnFoldersFirst).then(() => this.setState({ fs: FileSystem.get() }));
@@ -345,7 +341,7 @@ class App extends IssieBase {
 
         this.setState({ assetsState: AssetsState.LOADING })
 
-        if (window.isAndroid) {
+        if (os == "Android") {
             window.PlayAssets.initPlayAssets(["issiesign_assets", "issiesign_assets3"])
         } else {
             window.PlayAssets.initPlayAssets(["Hebrew-IL1", "Hebrew-IL2"]);
@@ -446,7 +442,7 @@ class App extends IssieBase {
                 this.setState({ editMode: true });
                 break;
             case 'set-busy':
-                this.setState({ busy: args.active === true, busyText: args.active ? args.text : undefined, showProgress:undefined });
+                this.setState({ busy: args.active === true, busyText: args.active ? args.text : undefined, showProgress: undefined });
                 break;
             case 'long-process':
                 this.setState({ longProcess: { msg: args.msg, icon: args.icon } });
@@ -573,7 +569,7 @@ class App extends IssieBase {
 
     handleAppTypeChange = (appType) => {
         console.log("App type selected ", appType)
-        if (this.state.appType === AppType.UNINITIALIZED || this.state.appType !== AppType.MyIssieSign) {
+        if (this.state.appType === AppType.UNINITIALIZED || appType !== AppType.MyIssieSign) {
             // sets also the default language
             if (appType == AppType.IssieSign) {
                 setLanguage("he", true);
@@ -583,7 +579,7 @@ class App extends IssieBase {
                 setLanguage("en", true);
             }
         }
-        
+
         saveAppType(appType);
 
 

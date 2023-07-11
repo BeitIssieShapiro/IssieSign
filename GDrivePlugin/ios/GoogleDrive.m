@@ -38,7 +38,50 @@ static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
     return objc_getAssociatedObject(self, kCurrentAuthorizationFlowKey);
 }
 
+
 + (void)load {
+    
+//    // testing on demand resources:
+//    NSSet *tags = [NSSet setWithObjects: @"Hebrew-IL", nil];
+//     
+//    // Use the shorter initialization method as all resources are in the main bundle
+//    NSBundleResourceRequest * resourceRequest = [[NSBundleResourceRequest alloc] initWithTags:tags];
+//
+//    [resourceRequest conditionallyBeginAccessingResourcesWithCompletionHandler:
+//                                                     ^(BOOL resourcesAvailable)
+//        {
+//            // Check whether the resources are available
+//            if (resourcesAvailable) {
+//                // the associated resources are loaded, start using them
+//                
+//                NSURL *url = [[resourceRequest bundle] URLForResource:@"A2" withExtension: @"mp4" subdirectory:@"videos"];
+//                int a = 1;
+//
+//            } else {
+//                // The resources are not on the device and need to be loaded
+//                [resourceRequest beginAccessingResourcesWithCompletionHandler:
+//                                                 ^(NSError * __nullable error)
+//                    {
+//                        // Check if there is an error
+//                        if (error) {
+//                 
+//                            return;
+//                        }
+//                 
+//                        // The associated resources are loaded
+//                    int a=3;
+//                    }
+//                ];
+//            }
+//        }
+//    ];
+//
+//    
+//    
+//    
+    
+    
+    
     Method original = class_getInstanceMethod(self, @selector(application:openURL:options:));
     Method myApp = class_getInstanceMethod(self, @selector(application:myOpenURL:options:));
     method_exchangeImplementations(original, myApp);
@@ -162,7 +205,7 @@ static const char *kCurrentAuthorizationFlowKey = "CurrentAuthorizationFlowKey";
     BOOL appfolder = [[command.arguments objectAtIndex:5] boolValue];
     NSDictionary* props = [command.arguments objectAtIndex:6];
     GTLRDrive_File_Properties *properties = nil;
-    if (props != nil) {
+    if (![props isKindOfClass:[NSNull class]]) {
         properties = [GTLRDrive_File_Properties objectWithJSON:props];
     }
     

@@ -1,4 +1,4 @@
-import { AppName, gCurrentLanguage } from '../current-language';
+import { AppName, gCurrentLanguage, os } from '../current-language';
 
 export var wordsTranslateX = 0;
 export var rootTranslateX = 0;
@@ -86,7 +86,16 @@ export function saveSettingKey(key, value) {
 }
 
 export function getPersistedAppType() {
-    return getSettingKey(ISSIE_SIGN_APP_TYPE, (AppName === "IssieSignArabic" ? AppType.IssieSignArabic : AppType.UNINITIALIZED)) + "";
+    let defType = AppType.UNINITIALIZED;
+    if (AppName === "IssieSignArabic") {
+        defType = AppType.IssieSignArabic;
+    }
+
+    if (AppName == "MyIssieSign" && os == "Android") {
+        defType = AppType.MyIssieSign;
+    }
+
+    return getSettingKey(ISSIE_SIGN_APP_TYPE, defType) + "";
 }
 
 export function saveAppType(appType) {
