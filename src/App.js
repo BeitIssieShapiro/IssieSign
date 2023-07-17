@@ -180,12 +180,13 @@ class App extends IssieBase {
             } else if (this.isInfo()) {
                 return this.state.infoScroll;
             } else if (this.isAddScreen()) {
-                this.state.addScroll;
+                return this.state.addScroll;
             } else {
                 return this.state.bodyScroll;
             }
         }
         const setCurrent = (event, { x, y }, overwriteSwipeMode) => {
+            console.log("swipe", x, y)
             if (this.isSwipeAllowed() || overwriteSwipeMode) {
                 // go up and look for scroll marker
                 let container = event.target;
@@ -203,7 +204,7 @@ class App extends IssieBase {
                     }
                     x = Math.max(x, -maxScrollX);
                     y = Math.max(y, -maxScrollY);
-                    console.log("max scroll", maxScrollX, x, maxScrollY, y)
+                    //console.log("max scroll",  maxScrollY, container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - 131))
                     // if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
                     //     x = window.innerWidth - container.scrollWidth;
                     // }
@@ -287,6 +288,7 @@ class App extends IssieBase {
             wordScroll: SCROLL_RESET,
             searchScroll: SCROLL_RESET,
             infoScroll: SCROLL_RESET,
+            addScroll:  SCROLL_RESET,
             shareCart,
 
             slideupMenuOpen: false,
@@ -353,17 +355,18 @@ class App extends IssieBase {
         window.PlayAssets.getPlayAssets((assets) => {
             console.log("assets info", JSON.stringify(assets));
             if (assets && assets.ready && assets.assets.length === 2) {
-                //todo android
-                // if (assets.assets[0].name === "issiesign_assets") {
-                //     document.basePath = "__cdvfile_root__" + assets.assets[0].path + "/";
-                //     document.basePath2 = "__cdvfile_root__" + assets.assets[1].path + "/";
-                // } else {
-                //     document.basePath = "__cdvfile_root__" + assets.assets[1].path + "/";
-                //     document.basePath2 = "__cdvfile_root__" + assets.assets[0].path + "/";
-                // }
-
-                document.basePath = assets.assets[0].path;
-                document.basePath2 = assets.assets[1].path;
+                if (window.isAndroid) {
+                    if (assets.assets[0].name === "issiesign_assets") {
+                        document.basePath = "__cdvfile_root__" + assets.assets[0].path + "/";
+                        document.basePath2 = "__cdvfile_root__" + assets.assets[1].path + "/";
+                    } else {
+                        document.basePath = "__cdvfile_root__" + assets.assets[1].path + "/";
+                        document.basePath2 = "__cdvfile_root__" + assets.assets[0].path + "/";
+                    }
+                } else {
+                    document.basePath = assets.assets[0].path;
+                    document.basePath2 = assets.assets[1].path;
+                }
 
                 this.setState({ assetsState: AssetsState.READY, busy: false, progress: undefined });
             } else if (assets) {
@@ -432,6 +435,7 @@ class App extends IssieBase {
                 break;
             case 'set-title':
                 if (args.title !== this.state.title) {
+                    console.log("Set title", args.title, this.state.title)
                     this.setState({ title: args.title })
                 }
                 break;
@@ -596,7 +600,7 @@ class App extends IssieBase {
     }
 
     render() {
-
+        // console.log(render, JSON.stringify(this.state))
         if (this.state.appType + "" == AppType.UNINITIALIZED) {
             return <AppTypeSelection
                 onType={(appType) => this.handleAppTypeChange(appType)}
@@ -610,17 +614,25 @@ class App extends IssieBase {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = App.isHome(this.props) ? null : <BackButton slot="end-bar" onClick={() => this.goBack()} />
+        let backElement = App.isHome(this.props) ? null : <BackButton className="f" slot="top-bar" onClick={() => this.goBack()} />
         let searchInput = "";
 
-        let deleteButton = this.state.showDelete ?
-            <TrashButton slot="start-bar" onClick={this.state.showDelete} /> : null;
+        // let deleteButton = this.state.showDelete ?
+        //     <TrashButton slot="top-bar" onClick={this.state.showDelete} /> : null;
         document.preventTouch = true;
 
         if (!this.isInfo() && !this.isVideo() && !this.isAddScreen() && !this.isShareScreen()) {
-            const paddingInlineEnd = this.state.editMode ? 120 : undefined;
+            //const paddingInlineEnd = this.state.editMode ? 120 : undefined;
+            const secondRow = window.innerWidth < 650;
+            const secondRowSideLocation = this.state.editMode ?
+                (isRTL() ? { right: 0 } : { left: 0 }) : { left: "calc(50% - 75px)" };
+            const shouldCenter2ndRow = !this.state.editMode && window.innerWidth < 650;
             searchInput = (
-                <div slot="center-bar" className="search shellSearch" style={isRTL() ? { right: 0, paddingInlineEnd } : { left: 0, paddingInlineEnd }}>
+                <div slot="top-bar" className={"search " + (secondRow ? "" : " e")}
+                    style={secondRow ? { position: "absolute", top: 52, ...secondRowSideLocation }
+                        : undefined}
+                //style={isRTL() ? { right: 0, paddingInlineEnd } : { left: 0, paddingInlineEnd }}
+                >
                     <input
                         key="searchInput"
                         type="search" onChange={this.handleSearch}
@@ -645,7 +657,10 @@ class App extends IssieBase {
             overFlowX = 'visible';
         }
 
-        console.log("catID", this.state.categoryId)
+        // console.log("catID", this.state.categoryId)
+        const showAdd = this.state.allowAddWord && (App.isHome(this.props) ||
+            (this.isWords() && this.state.categoryId !== FileSystem.FAVORITES_NAME && this.state.categoryId !== FileSystem.TUTORIAL_NAME)) &&
+            this.state.editMode && !this.isVideo();
 
         return (
             <div className="App" style={getLanguage() == "he" ? { fontFamily: "ArialMT" } : {}} >
@@ -664,12 +679,7 @@ class App extends IssieBase {
                     />
                 }
 
-                {/** long process */
-                    this.state.longProcess && <div style={{ position: 'absolute', display: "flex", alignItems: "center", bottom: 15, right: 0, fontSize: 15, zIndex: 100 }}>
-                        {this.state.longProcess.msg}
-                        <Sync className="rotate" />
-                    </div>
-                }
+
 
                 {/** Busy Message */}
                 {this.state.busy && <BusyMsg
@@ -687,7 +697,8 @@ class App extends IssieBase {
                     } theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
-                        slot="start-bar"
+                        slot="top-bar"
+                        className="a"
                         selected={this.state.editMode}
                         onChange={(select) => {
                             this.setState({ editMode: select })
@@ -697,16 +708,12 @@ class App extends IssieBase {
                     />
 
 
-                    {this.state.editMode && !this.isAddScreen() && <SettingsButton slot="start-bar" onClick={() => this.handleMenuClick()} />}
+                    {this.state.editMode && !this.isAddScreen() && <SettingsButton slot="top-bar" className="b" onClick={() => this.handleMenuClick()} />}
 
-                    {this.state.allowAddWord &&
-                        (App.isHome(this.props) ||
-                            (this.isWords() && this.state.categoryId !== FileSystem.FAVORITES_NAME && this.state.categoryId !== FileSystem.TUTORIAL_NAME)) &&
-                        this.state.editMode && !this.isVideo() &&
-                        <AddButton slot="start-bar"
-                            addFolder={App.isHome(this.props)}
-                            onClick={() => this.handleNewClick()} color='white'
-                        />
+                    {showAdd && <AddButton slot="top-bar" className="c"
+                        addFolder={App.isHome(this.props)}
+                        onClick={() => this.handleNewClick()} color='white'
+                    />
                     }
 
                     <div slot="center-bar" className="shelltitle">{this.state.title}</div>
@@ -714,16 +721,17 @@ class App extends IssieBase {
                     {leftArrow}
                     {rightArrow}
                     {backElement}
-                    {deleteButton}
 
                     {this.state.editMode &&
-                        !this.isAddScreen() && (!this.isVideo() || this.state.adultMode) &&
-                        <ShareCartButton slot="start-bar"
+                        !this.isShareScreen() && !this.isAddScreen() && (!this.isVideo() || this.state.adultMode) &&
+                        <ShareCartButton slot="top-bar" className={showAdd ? "d" : "c"}
                             count={this.state?.shareCart?.count()}
                             onClick={() => this.props.history.push("/share-cart")} />}
 
                     {this.state.menuOpen && <Settings
                         slot="body"
+                        isMobile={IssieBase.isMobile()}
+                        isLandscape={IssieBase.isLandscape()}
                         state={this.state}
                         setState={(obj => this.setState(obj))}
                         onClose={() => this.setState({ menuOpen: false })}
@@ -734,6 +742,14 @@ class App extends IssieBase {
                         onChangeAppType={(appType) => this.handleAppTypeChange(appType)}
                         contentMap={this.state.contentMap}
                     />}
+
+                    {/** long process */
+                        this.state.longProcess &&
+                        <div slot="body" className="longProcessHost">
+                            {this.state.longProcess?.msg}
+                            <Sync className="rotate" />
+                        </div>
+                    }
 
                     <div slot="body" className="theBody" style={{
                         paddingLeft: this.shellPadding,
@@ -752,7 +768,7 @@ class App extends IssieBase {
     getChildren(path) {
         //console.log("get children, path", path)
         if (path === "/" || path === "") {
-            this.setTitle(translate(getAppName(this.state.appType)))
+            setTimeout(() => this.setTitle(translate(getAppName(this.state.appType))), 10);
 
             return <Body
                 categories={FileSystem.get().getCategories()}

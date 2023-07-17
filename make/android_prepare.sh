@@ -16,11 +16,11 @@ cp -R build/* $WWW
 
 
 # uncomment only when media changes
-# # Clean up video files
-rm ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/*
-rm ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/*
+# Clean up video files
+# rm ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos/*
+# rm ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/*
 
-# # Copy video files
+# # # Copy video files
 # mkdir -p ./$androidRoot/platforms/android/issiesign_assets/src/main/assets/videos
 # mkdir -p ./$androidRoot/platforms/android/issiesign_assets3/src/main/assets/videos/
 

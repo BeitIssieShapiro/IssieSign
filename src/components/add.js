@@ -176,7 +176,7 @@ function AddEditItem(props) {
     let imgName = selectedImage.length > 0 ? translate("AddImageSelected") : translate("AddPlaceholderSelectImage");
 
     return (
-        <div className="addContainer showScroll" style={{ transform: `translateY(${props.scroll?.y || 0}px)` }}>
+        <div scroll-marker="1" className="addContainer showScroll" style={{ transform: `translateY(${props.scroll?.y || 0}px)` }}>
             {showWebSearch && <SearchImage
                 pubSub={props.pubSub}
                 onClose={() => setShowWebSearch(false)}

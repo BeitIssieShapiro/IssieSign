@@ -34,18 +34,15 @@ function Shell(props) {
     return (
         <div className="shellhost">
             {!collapseHeader && <div className="shellTopBlueBar" />}
+            <div className="projectors-background"/>
             {!collapseHeader && <div className="shellheader parent" theme={props.theme}>
-                <div className="shellheaderTop">
-                    <div className="startBar">
-                        <Slot slot="start-bar">{props.children}</Slot>
+                    <div className="topBar">
+                        <Slot slot="top-bar">{props.children}</Slot>
                     </div>
+                    
                     <div className="centerBar">
                         <Slot slot="center-bar">{props.children}</Slot>
                     </div>
-                    <div className="endBar">
-                        <Slot slot="end-bar">{props.children}</Slot>
-                    </div>
-                </div>
             </div>}
 
             {!collapseHeader && projectors}

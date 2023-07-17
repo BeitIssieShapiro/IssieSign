@@ -21,7 +21,7 @@ export function TrashButton(props) {
 
 export function BackButton(props) {
   //return <div className="back-button" {...props}></div>
-  return <ArrowBack style={{fontSize:40, transform: isRTL()?"rotateY(180deg)":""}} {...props} />
+  return <ArrowBack className={props.className} style={{fontSize:40, transform: isRTL()?"rotateY(180deg)":""}} {...props} />
 }
 
 export function PrevButton(props) {
@@ -43,7 +43,6 @@ export function HeaderButton(props) {
     fontSize: 35,
     marginLeft: 5,
     marginRight: 5,
-    height: 40,
     position: "relative"
   };
 
@@ -71,7 +70,7 @@ export function EditButton(props) {
 
   const alignTo = isRTL()?{left:40}:{right:40};
 
-  return <HeaderButton slot={props.slot} className="a"
+  return <HeaderButton slot={props.slot} className={props.className}
     // onClick={()=>{
     //   if (isBrowser()) {
     //     props.onChange(!props.selected);
@@ -123,7 +122,7 @@ export function EditButton(props) {
 }
 
 export function AddButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className="c"
+  return <HeaderButton slot={props.slot} selected={props.selected} className={props.className}
     onClick={props.onClick}>
     {props.addFolder ? <AddFolderSVG style={{ width: 40 }} /> :
       <AddVideoSVG style={{ width: 40 }} />}
@@ -131,14 +130,14 @@ export function AddButton(props) {
 }
 
 export function SettingsButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className="b"
+  return <HeaderButton slot={props.slot} selected={props.selected} className={props.className}
     onClick={props.onClick}>
-    <Menu style={{ fontSize: 40, minHeight: 40 }} />
+    <Menu style={{ fontSize: 40 }} />
   </HeaderButton>
 }
 
 export function ShareCartButton(props) {
-  return <HeaderButton slot={props.slot} className="d"
+  return <HeaderButton slot={props.slot} className={props.className}
     onClick={props.onClick}>
     {/* <ShoppingBagOutlined style={{ fontSize: 40, strokeWidth:0 }} /> */}
     <ShareBasketSVG style={{ width: 40 }} />

@@ -91,10 +91,6 @@ export function getPersistedAppType() {
         defType = AppType.IssieSignArabic;
     }
 
-    if (AppName == "MyIssieSign" && os == "Android") {
-        defType = AppType.MyIssieSign;
-    }
-
     return getSettingKey(ISSIE_SIGN_APP_TYPE, defType) + "";
 }
 
@@ -130,7 +126,7 @@ export function calcWidth(elementCount, windowHeight, windowWidth, tileH, tileW,
     if (isMobile) {
         //scroll vertically by touch
         let cols = Math.max(Math.floor((windowWidth) / tileW), 2);
-        console.log("calcWidth: mobile", windowWidth, tileW, + Math.floor(windowWidth / tileW) + "cols: " + cols);
+        // console.log("calcWidth: mobile", windowWidth, tileW, + Math.floor(windowWidth / tileW) + "cols: " + cols);
         return cols * (tileW * 1.05);
     }
 

@@ -92,7 +92,7 @@
   text-align: start;
   align-items: center;
   display: grid;
-  grid-template-columns: 10% 40% 40% 10%;
+  grid-template-columns: 44px 40% 40% 24px;
   width:100%;
 }
 
@@ -113,6 +113,7 @@ rowborder {
 .fieldsContainer>label {
   font-size: 25px;
 }
+
 
 .changeColorContainer {
   display: flex;
@@ -144,6 +145,7 @@ input[type="text"]::placeholder {
   color: #5c7e9d;
   height: 45px;
   background-color: #C4C4C4;
+  border-radius: 8px;
   width: 100%;
   border: none;
   /* border-bottom: 2px solid; */
@@ -166,6 +168,15 @@ input[type="text"]::placeholder {
   border-bottom: 2px solid;
   border-bottom-color: grey;
   padding: 0;
+}
+
+@media (max-width: 500px) {
+  .fieldsContainer>label {
+    font-size: 18px;
+  }
+  .addInput {
+    font-size: 0.8em;
+  }
 }
 
 

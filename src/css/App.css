@@ -219,8 +219,42 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .noTouchCallout {
   -webkit-touch-callout: none;
-  -webkit-user-select: none;   /* Webkit */
-  -moz-user-select: none;      /* Firefox */
-  -ms-user-select: none;       /* Edge*/
-   user-select: none;       /* Future-proof*/
+  -webkit-user-select: none;
+  /* Webkit */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Edge*/
+  user-select: none;
+  /* Future-proof*/
+}
+
+
+.longProcessHost {
+  position: absolute;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  top: 10px;
+  width: 320px;
+  left: calc(50% - 160px);
+  z-index: 100;
+  color: black;
+  direction: var(--dirRev);
+}
+
+@keyframes rotating {
+  from {
+
+    transform: rotate(0deg);
+  }
+
+  to {
+
+    transform: rotate(180deg);
+  }
+}
+
+.rotate {
+  animation: rotating 1s linear infinite;
 }

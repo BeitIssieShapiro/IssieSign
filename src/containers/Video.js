@@ -82,7 +82,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         } else if (videoName.startsWith('http')) {
             videoContent = videoName;
         } else {
-            if (document.basePath?.startsWith("/var")) {
+            if (!window.isAndroid) {
                 //iOS
                 if (decodeURIComponent(videoName)[0] < 'M') {
                     videoContent = "cdvfile:///_app_file_" + document.basePath + videoName;

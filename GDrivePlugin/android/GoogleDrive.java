@@ -68,6 +68,7 @@ import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.issieshapiro.signlang.BuildConfig;
 
 
 public class GoogleDrive extends CordovaPlugin  {
@@ -102,15 +103,17 @@ public class GoogleDrive extends CordovaPlugin  {
         okHttpClient = new OkHttpClient();
         try {
             mAccessToken = getSavedAccessToken();
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+            Log.w(TAG, "error getting saved access token" + e.toString());
+        }
 
         FirebaseApp.initializeApp(this.getContext());
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-        firebaseAppCheck.installAppCheckProviderFactory(
-                DebugAppCheckProviderFactory.getInstance());
+        if (com.issieshapiro.signlang.BuildConfig.DEBUG) {
+            firebaseAppCheck.installAppCheckProviderFactory(
+                    DebugAppCheckProviderFactory.getInstance());
+        }
         mFunctions = FirebaseFunctions.getInstance("europe-west1");
-
-
 
         cordova.setActivityResultCallback(this);
         Log.i(TAG,"Plugin initialized. Cordova has activity: " + cordova.getActivity());
@@ -188,6 +191,7 @@ public class GoogleDrive extends CordovaPlugin  {
         }
 
         Intent intent = mSignInClient.getSignInIntent();
+        this.cordova.setActivityResultCallback(this);
         this.cordova.getActivity().startActivityForResult(intent, RC_SIGN_IN);
 
         return true;
@@ -379,7 +383,7 @@ public class GoogleDrive extends CordovaPlugin  {
                                 try {
                                     Map<String, Object> accToken = (Map<String, Object>) task.getResult().getData();
                                     JSONObject accTokenJson = getEnhancedAccessToken(accToken);
-                                    saveAccessToken(accToken.toString());
+                                    saveAccessToken(accTokenJson.toString());
                                     mAccessToken = accTokenJson;
                                     execute(mAccessToken.getString("access_token"));
                                 } catch (Exception e) {
@@ -644,7 +648,7 @@ public class GoogleDrive extends CordovaPlugin  {
                                                 try {
                                                     Map<String, Object> accToken = (Map<String, Object>) task.getResult().getData();
                                                     JSONObject accTokenJson = getEnhancedAccessToken(accToken);
-                                                    saveAccessToken(accToken.toString());
+                                                    saveAccessToken(accTokenJson.toString());
                                                     mAccessToken = accTokenJson;
                                                     getFreshTokenAndExecute(accTokenJson);
                                                 } catch (Exception e) {
@@ -681,6 +685,7 @@ public class GoogleDrive extends CordovaPlugin  {
             } else {
                 //try to refresh the token on a different thread:
                 accessToken.getString("refresh_token");
+                cordova.setActivityResultCallback(this);
                 RefreshTokenAndExecute rt = new RefreshTokenAndExecute(accessToken);
                 cordova.getThreadPool().execute(rt);
                 return true;

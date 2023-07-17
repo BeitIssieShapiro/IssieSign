@@ -29,7 +29,8 @@ function ToggleButtons({ title, buttons }) {
 }
 
 
-function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll, contentMap, appType, onChangeAppType }) {
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll, 
+  contentMap, appType, onChangeAppType, isMobile, isLandscape }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
   //const [langSettingsMode, setLangSettingsMode] = useState(false);
@@ -97,7 +98,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
     //animate={true} 
     width={width} // + "px"}
-    style={{ top: 170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": "8vw" }}
+    style={{ top: isMobile && isLandscape? 50:170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh":"8vh" }}
   >
     <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
       <div onClick={showInfo} className="settings-item about">
@@ -106,28 +107,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       </div>
 
 
-      <div className="settings-item">
-        {/* <lbl>
-          <div>{translate("SettingsSwipe")}</div>
-        </lbl>
-
-        <div className="settingsGroup">
-          <input type="radio" id="off" name="navMode" value={false} checked={!state.allowSwipe}
-            onChange={swipeModeChange}
-          />
-          <label for="off">
-            <SyncAlt />
-            {translate("NavByArrow")}
-          </label>
-          <input type="radio" id="on" name="navMode" value={true} checked={state.allowSwipe}
-            onChange={swipeModeChange}
-          />
-          <label for="on">
-            <Swipe />
-            {translate("NavBySwipe")}
-          </label>
-
-        </div> */}
+      {!isMobile && <div className="settings-item">
         <ToggleButtons
           title={translate("SettingsSwipe")}
           buttons={[
@@ -135,7 +115,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             { icon: <Swipe />, caption: translate("NavBySwipe"), onSelect: () => swipeModeChange(true), selected: state.allowSwipe },
           ]}
         />
-      </div>
+      </div>}
 
       <div className="settings-item">
         {/* <lbl>
