@@ -359,7 +359,7 @@ input[type="text"]::placeholder {
 }
 
 .syncCaption {
-  font-size: 20px;
+  font-size: 15px;
   color: black;
   padding-left: 10px;
   padding-right: 10px;

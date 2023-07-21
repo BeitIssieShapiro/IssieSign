@@ -79,7 +79,10 @@ public class PlayAssets extends CordovaPlugin {
     }
 
     private void setProgress(long percent, long totalSize, String name) {
-        downloadPercent = percent;
+        // calculate total percent over all assets
+        int finished = this.playAssets.size();
+        downloadPercent = (finished * 100 + percent) / pckList.size();
+
         if (percent > 0) {
             totalSizeToDownload = totalSize;
             if (currentFileName.length() == 0) {

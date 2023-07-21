@@ -186,7 +186,7 @@ class App extends IssieBase {
             }
         }
         const setCurrent = (event, { x, y }, overwriteSwipeMode) => {
-            console.log("swipe", x, y)
+            //console.log("swipe", x, y)
             if (this.isSwipeAllowed() || overwriteSwipeMode) {
                 // go up and look for scroll marker
                 let container = event.target;
@@ -204,7 +204,7 @@ class App extends IssieBase {
                     }
                     x = Math.max(x, -maxScrollX);
                     y = Math.max(y, -maxScrollY);
-                    //console.log("max scroll",  maxScrollY, container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - 131))
+                    console.log("scroll info", y, maxScrollY, container.scrollHeight, container.offsetHeight, window.innerHeight)
                     // if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
                     //     x = window.innerWidth - container.scrollWidth;
                     // }
@@ -215,7 +215,6 @@ class App extends IssieBase {
                     //     console.log("poo")
                     // }
                 }
-
 
                 const newScrollX = { x, y: 0 };
                 const newScrollY = { x: 0, y };
@@ -288,7 +287,7 @@ class App extends IssieBase {
             wordScroll: SCROLL_RESET,
             searchScroll: SCROLL_RESET,
             infoScroll: SCROLL_RESET,
-            addScroll:  SCROLL_RESET,
+            addScroll: SCROLL_RESET,
             shareCart,
 
             slideupMenuOpen: false,
@@ -549,7 +548,7 @@ class App extends IssieBase {
     }
 
     isSwipeAllowed = () => {
-        return (IssieBase.isMobile() || this.isInfo() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen);
+        return (IssieBase.isMobile() || this.isInfo() || this.isAddScreen() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen);
     }
 
     onFavoriteToggle = (categoryId, title, changeToOn) => {
@@ -679,7 +678,19 @@ class App extends IssieBase {
                     />
                 }
 
-
+                {this.state.menuOpen && <Settings
+                    isMobile={IssieBase.isMobile()}
+                    isLandscape={IssieBase.isLandscape()}
+                    state={this.state}
+                    setState={(obj => this.setState(obj))}
+                    onClose={() => this.setState({ menuOpen: false })}
+                    showInfo={() => this.showInfo()}
+                    pubSub={this.state.pubSub}
+                    scroll={this.state.settingsScroll}
+                    appType={this.state.appType}
+                    onChangeAppType={(appType) => this.handleAppTypeChange(appType)}
+                    contentMap={this.state.contentMap}
+                />}
 
                 {/** Busy Message */}
                 {this.state.busy && <BusyMsg
@@ -728,20 +739,7 @@ class App extends IssieBase {
                             count={this.state?.shareCart?.count()}
                             onClick={() => this.props.history.push("/share-cart")} />}
 
-                    {this.state.menuOpen && <Settings
-                        slot="body"
-                        isMobile={IssieBase.isMobile()}
-                        isLandscape={IssieBase.isLandscape()}
-                        state={this.state}
-                        setState={(obj => this.setState(obj))}
-                        onClose={() => this.setState({ menuOpen: false })}
-                        showInfo={() => this.showInfo()}
-                        pubSub={this.state.pubSub}
-                        scroll={this.state.settingsScroll}
-                        appType={this.state.appType}
-                        onChangeAppType={(appType) => this.handleAppTypeChange(appType)}
-                        contentMap={this.state.contentMap}
-                    />}
+
 
                     {/** long process */
                         this.state.longProcess &&
@@ -919,6 +917,7 @@ class App extends IssieBase {
                     isLandscape={IssieBase.isLandscape()}
                     categoryId={categoryId}
                     themeId={themeId}
+                    scroll={this.state.addScroll}
                     dimensions={this.state.dimensions}
                 />
             )

@@ -610,7 +610,10 @@ public class GoogleDrive extends CordovaPlugin  {
             String rootFolderId = mArgs.getString(3);
             String rootFolderName = mArgs.getString(4);
             boolean appFolder = mArgs.getBoolean(5);
-            JSONObject properties = mArgs.getJSONObject(6);
+            JSONObject properties = null;
+            if (!mArgs.isNull(6)) {
+                 properties = mArgs.getJSONObject(6);
+            }
 
             UploadFile uf = new UploadFile(bearerToken, mCallbackContext, srcPath, folderId, targetPath, rootFolderId, rootFolderName, properties);
             cordova.getThreadPool().execute(uf);
