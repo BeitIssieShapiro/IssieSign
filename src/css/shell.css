@@ -78,13 +78,14 @@
 .f {
     grid-area: f;
 }
+
 .g {
     grid-area: g;
 }
 
 .topBar {
     position: absolute;
-    top:10px;
+    top: 10px;
     margin-left: 2%;
     margin-right: 2%;
     width: 96%;
@@ -94,16 +95,25 @@
     justify-content: flex-start;
     z-index: 1000;
     direction: var(--dirRev);
-    
+
 }
 
 .centerBar {
     position: absolute;
-    top:10px;
+    display: flex;
+    justify-content: center;
+    top: 10px;
     width: 100%;
-
     font-size: xx-large;
     direction: var(--dir);
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.centerBarInner {
+    pointer-events: all;
+    width:auto;
+
 }
 
 .endBar {
@@ -112,10 +122,15 @@
     justify-content: flex-end;
 }
 
+.allow-mouse-events {
+    pointer-events: all;
+}
+
 .shelltitle {
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
+    
 }
 
 .search {
@@ -279,7 +294,7 @@
         min-height: 105px;
         max-height: 105px;
     }
-    
+
     .projectors-background {
         top: 109px;
     }

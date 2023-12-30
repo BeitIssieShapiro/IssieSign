@@ -12,6 +12,7 @@ import { withAlert } from 'react-alert'
 import { GridView, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
 import { MyIssieImg } from './components/apptype-selector'
 import { ReactComponent as IssieImg } from './images/IssieSign_opt.svg'
+import { List } from '@mui/material';
 
 function ToggleButtons({ title, buttons }) {
   return <div className="toggle-container">

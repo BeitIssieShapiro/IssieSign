@@ -1,6 +1,10 @@
 import {
-    ArrowForwardRounded, Favorite, FavoriteBorder, PauseCircleFilled, PlayCircle,
-    ReplayCircleFilled
+    ArrowForwardRounded, Favorite, FavoriteBorder, Pause, PauseCircleFilled, PlayArrow, PlayCircle,
+    Replay,
+    ReplayCircleFilled,
+    SkipNext,
+    SkipPrevious,
+    SkipPreviousOutlined
 } from "@mui/icons-material";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import FileSystem from "../apis/filesystem";
@@ -9,7 +13,7 @@ import { createPortal } from 'react-dom';
 import '../css/App.css';
 
 const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
-    maxWidth, isFavorite, onFavoriteToggle, headerSize }) => {
+    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
@@ -17,7 +21,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
     const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5 / 9 });
     const [videoWidth, setVideoWidth] = useState(0);
     const [videoHeight, setVideoHeight] = useState(0);
-    const videoRef = useRef(null);
+    //const videoRef = useRef(null);
 
     const vidElem = document.getElementById("video");
     const vidHost = document.getElementById("videoHost");
@@ -44,6 +48,10 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         setEnded(true);
         setPlaying(false);
         setPaused(true);
+        if (onVideoEnded) {
+            trace("OnVideoEnded")
+            onVideoEnded();
+        }
     }
 
     const onLoadedMetadata = (e) => setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight });
@@ -87,7 +95,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
                 if (decodeURIComponent(videoName)[0] < 'M') {
                     videoContent = "cdvfile:///_app_file_" + document.basePath + videoName;
                 } else {
-                    videoContent =  "cdvfile:///_app_file_" +document.basePath2 + videoName;
+                    videoContent = "cdvfile:///_app_file_" + document.basePath2 + videoName;
                 }
             } else {
                 //Android
@@ -148,11 +156,15 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
                 <FavoriteBorder style={{ fontSize: 50 }} />}
         </div>}
 
-        {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />}
+        {/* {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />} */}
         <div className="videoButtonsNew">
-            {playing && <PauseCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.pause()} />}
-            {paused && !ended && <PlayCircle style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
-            {ended && <ReplayCircleFilled style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
+            {onPrevious && <SkipPrevious style={{ fontSize: 100 }}  className="videoButtonNew-white" onClick={() => onPrevious()} />}
+            <div style={{width:10}}></div>
+            {playing && <Pause style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.pause()} />}
+            {paused && !ended && <PlayArrow style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
+            {ended && <Replay style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
+            <div style={{width:10}}></div>
+            {onNext && <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />}
         </div>
     </div>, document.getElementById("videoButtons"))
 });

@@ -1,5 +1,6 @@
 import React from "react";
 import '../css/shell.css';
+import { trace } from "../utils/Utils";
 
 function Slot({ children, slot }) {
     let slottedChildren = [];
@@ -10,8 +11,9 @@ function Slot({ children, slot }) {
             return; // Return since we can't do anything with a child without props.
         }
 
+
         if (child.props['slot'] === slot) { //Verify it matches the slot we are looking for.
-            let clone = React.cloneElement(child, { "key": slot + id++ });
+            let clone = React.cloneElement(child, { "key": slot + id++});
             slottedChildren.push(clone); // Clone it and set it to the slotted child
         }
     });
@@ -34,15 +36,17 @@ function Shell(props) {
     return (
         <div className="shellhost">
             {!collapseHeader && <div className="shellTopBlueBar" />}
-            <div className="projectors-background"/>
+            <div className="projectors-background" />
             {!collapseHeader && <div className="shellheader parent" theme={props.theme}>
-                    <div className="topBar">
-                        <Slot slot="top-bar">{props.children}</Slot>
-                    </div>
-                    
-                    <div className="centerBar">
+                <div className="topBar" onClick={() => trace("top bar clicked")}>
+                    <Slot slot="top-bar">{props.children}</Slot>
+                </div>
+
+                <div className="centerBar">
+                    {/* <div className="centerBarInner" onClick={(e) =>  trace("center bar clicked") }> */}
                         <Slot slot="center-bar">{props.children}</Slot>
-                    </div>
+                    {/* </div> */}
+                </div>
             </div>}
 
             {!collapseHeader && projectors}

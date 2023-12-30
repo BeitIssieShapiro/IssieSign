@@ -39,6 +39,7 @@ import { SlideupMenu } from './components/slideup-menu';
 import InfoArabic from './containers/Info-issie-sign-arabic';
 import InfoMyIssieSign from './containers/Info-my-issie-sign';
 import AppTypeSelection from './components/apptype-selector';
+import ISLink from './components/ISLink';
 
 
 
@@ -521,8 +522,13 @@ class App extends IssieBase {
 
     goBack(skipSearch) {
         if (this.isWords()) {
+            if (this.state.playAllWords) {
+                // return to words view
+                this.setState({ playAllWords: undefined });
+                return;
+            }
             //reset words position
-            this.setState({ wordScroll: SCROLL_RESET, categoryId: undefined });
+            this.setState({ wordScroll: SCROLL_RESET, categoryId: undefined, playAllWords: undefined });
         }
 
         if (this.isSearch()) {
@@ -604,6 +610,39 @@ class App extends IssieBase {
         this.state.fs.init(contentMap, appType, this.state.pubsub, this.state.showOwnFoldersFirst).then(() =>
             this.setState({ appType, contentMap, title: translate(getAppName()) })
         );
+    }
+
+    onTitleClicked = () => {
+        if (this.isWords()) {
+            this.setState({
+                playAllWords: {
+                    current: undefined,
+                },
+            });
+        }
+    }
+
+    nextWord = (words)=> {
+        // move to the next word
+        let current = this.state.playAllWords?.current;
+        if (!current) {
+            current = 0;
+        }
+        if (current < words.length-1) {
+            this.setState({playAllWords: {...this.state.playAllWords, current: current+1}});
+        } else {
+            this.setState({playAllWords:undefined});
+        }
+    }
+
+    prevWord = ()=> {
+        let current = this.state.playAllWords?.current;
+        if (!current) {
+            return;
+        }
+        if (current > 0) {
+            this.setState({playAllWords: {...this.state.playAllWords, current: current-1}});
+        } 
     }
 
     render() {
@@ -739,7 +778,8 @@ class App extends IssieBase {
                     />
                     }
 
-                    <div slot="center-bar" className="shelltitle">{this.state.title}</div>
+                    {/* <ISLink slot="center-bar" onPress={()=>trace("long title press")}><div>{this.state.title}</div></ISLink> */}
+                    <div  slot="center-bar" className="shelltitle allow-mouse-events" onClick={()=>this.onTitleClicked()}>{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}
@@ -834,6 +874,36 @@ class App extends IssieBase {
 
             const themeId = cat && (cat.userContent && cat.themeId ? cat.themeId : getTheme(cat.id))
             const words = cat?.words || [];
+
+            if (this.state.playAllWords && words.length > 0) {
+                let current = this.state.playAllWords.current;
+                if (!current) {
+                    //set first word
+                    current = 0;
+                    //this.setState({playAllWords: {...this.state.playAllWords, current: 0}});
+                }
+                const word = words[current];
+               // return <div>{word.name}</div>
+              
+                return <div style={{ width: "100%", height: "100%", position: "relative" }}>
+                    <Video {...this.props}
+                        isFavorite={word.favorite}
+                        onFavoriteToggle={this.onFavoriteToggle}
+                        goBack={() => this.goBack()}
+                        categoryId={categoryId}
+                        isLandscape={IssieBase.isLandscape()}
+                        isMobile={IssieBase.isMobile()}
+                        videoName={word.videoName}
+                        title={word.title}
+                        filePath={word.videoName}
+                        headerSize={headerSize}
+                        onNext={()=>this.nextWord(words)}
+                        onPrevious={()=>this.prevWord()}
+                        onVideoEnded={() => this.nextWord(words)}
+                    />
+                </div>
+            }
+
 
             const wordProps = {
                 pubSub: this.state.pubSub,
