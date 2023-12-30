@@ -87,9 +87,13 @@ function WordAdults(props) {
         wordsElements = props.words.map((word) => {
 
             return <Card2
+                name={word.name}
+                symLink={word.favorite || word.symLink}
+                onFavoriteToggle={props.onFavoriteToggle}
                 editMode={props.editMode}
                 translate={word.translate}
-                categoryId={props.categoryId || word.category}
+                categoryId={props.categoryId}
+                originalCategoryId={word.category}
                 pubSub={props.pubSub}
                 shareCart={props.shareCart}
                 userContent={word.userContent}
@@ -108,7 +112,7 @@ function WordAdults(props) {
             />
         });
     }
-    const headerSizeCalc = isLandscapeView ? 
+    const headerSizeCalc = isLandscapeView ?
         isMobile() ? 0 : headerSize :
         headerSize + 245;
 
@@ -134,7 +138,7 @@ function WordAdults(props) {
             title={selectedWord.name}
             onFavoriteToggle={props.onFavoriteToggle}
             headerSize={headerSizeCalc}
-            goBack={() => setSelected(undefined)} 
+            goBack={() => setSelected(undefined)}
         />
 
     if (isLandscapeView && isMobile() && selected) {
@@ -157,13 +161,13 @@ function WordAdults(props) {
                 }}>
                     {wordsElements.map((word, i) => (
 
-                        <div style={{ maxWidth: "98%", minWidth: "98%", display: "flex",justifyContent: "center", }}    >
+                        <div style={{ maxWidth: "98%", minWidth: "98%", display: "flex", justifyContent: "center", }}    >
                             <Rope size={1} >
                                 {word}
                             </Rope>
                         </div>))
-}
-                    
+                    }
+
                 </div>
                 :
 
@@ -207,7 +211,7 @@ function WordAdults(props) {
                 }} />
             </div> */}
             {/** Video */}
-            <div style={{ width: isLandscapeView ? window.innerWidth - sideBarSize - 30 : window.innerWidth , position: "relative" }}>
+            <div style={{ width: isLandscapeView ? window.innerWidth - sideBarSize - 30 : window.innerWidth, position: "relative" }}>
                 {selectedWord ?
                     videoElem :
                     wordsElements.length && <div

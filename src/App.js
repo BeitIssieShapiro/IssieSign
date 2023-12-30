@@ -171,9 +171,13 @@ class App extends IssieBase {
         //     console.log("keyboard show")
         // });
         const getCurrent = () => {
-            if (this.state.menuOpen) {
+            if (this.state.menuOpen)
                 return this.state.settingsScroll;
-            } if (this.isWords() || this.isSearch() && this.state.categoryId) {
+
+            if (this.state.slideupMenuOpen)
+                return this.state.slideupMenuScroll;
+
+            if (this.isWords() || this.isSearch() && this.state.categoryId) {
                 return this.state.wordScroll;
             } else if (this.isSearch()) {
                 return this.state.searchScroll;
@@ -186,7 +190,7 @@ class App extends IssieBase {
             }
         }
         const setCurrent = (event, { x, y }, overwriteSwipeMode) => {
-            //console.log("swipe", x, y)
+            console.log("swipe", x, y)
             if (this.isSwipeAllowed() || overwriteSwipeMode) {
                 // go up and look for scroll marker
                 let container = event.target;
@@ -194,8 +198,9 @@ class App extends IssieBase {
                     container = container.parentElement;
                 }
                 if (container.getAttribute("scroll-marker") === "1") {
+                    const top = container?.getBoundingClientRect()?.top || -131;
                     const maxScrollX = container.scrollWidth - Math.min(container.offsetWidth, window.innerWidth);
-                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - 131);
+                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - top + y );
                     if (x > 0) {
                         x = 0;
                     }
@@ -204,7 +209,7 @@ class App extends IssieBase {
                     }
                     x = Math.max(x, -maxScrollX);
                     y = Math.max(y, -maxScrollY);
-                    console.log("scroll info", y, maxScrollY, container.scrollHeight, container.offsetHeight, window.innerHeight)
+                    console.log("scroll info", y, top,  maxScrollY, container.scrollHeight, container.offsetHeight, window.innerHeight)
                     // if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
                     //     x = window.innerWidth - container.scrollWidth;
                     // }
@@ -220,6 +225,8 @@ class App extends IssieBase {
                 const newScrollY = { x: 0, y };
                 if (this.state.menuOpen) {
                     this.setState({ settingsScroll: newScrollY });
+                } else if (this.state.slideupMenuOpen) {
+                    this.setState({ slideupMenuScroll: newScrollY });
                 } else if (this.isWords() || this.isSearch() && this.state.categoryId) {
                     this.setState({ wordScroll: { x, y } });
                 } else if (this.isSearch()) {
@@ -283,6 +290,7 @@ class App extends IssieBase {
             pubSub: pubsub,
             busy: false,
             settingsScroll: SCROLL_RESET,
+            slideupMenuScroll: SCROLL_RESET,
             bodyScroll: SCROLL_RESET,
             wordScroll: SCROLL_RESET,
             searchScroll: SCROLL_RESET,
@@ -548,16 +556,16 @@ class App extends IssieBase {
     }
 
     isSwipeAllowed = () => {
-        return (IssieBase.isMobile() || this.isInfo() || this.isAddScreen() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen);
+        return (IssieBase.isMobile() || this.isInfo() || this.isAddScreen() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen || this.state.slideupMenuOpen);
     }
 
-    onFavoriteToggle = (categoryId, title, changeToOn) => {
-        FileSystem.get().addRemoveFavorites(
+    onFavoriteToggle = (categoryId, title, changeToOn, addToAnotherCategoryID) => {
+        FileSystem.get().addRemoveSymbolicLink(
             categoryId,
             title,
             //add or remove
-            changeToOn
-
+            changeToOn,
+            addToAnotherCategoryID
         ).then(() => {
             // force re-render
             this.setState({ reload: this.state.reload + 1 });
@@ -668,7 +676,11 @@ class App extends IssieBase {
                     {...this.state.slideupMenuProps}
                     height={(this.state.slideupMenuOpen ? this.state.slideupMenuProps.height || 350 : 0)}
                     dimensions={this.state.dimensions}
-                    onClose={() => this.setState({ slideupMenuOpen: false })} />}
+                    scroll={this.state.slideupMenuScroll}
+                    onClose={() => {
+                        trace("close slide menu")
+                        this.setState({ slideupMenuOpen: false, settingsScroll: SCROLL_RESET })
+                    }} />}
 
                 {/**Word Info */
                     this.state.showEntityInfo && <ShareInfo

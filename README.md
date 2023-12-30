@@ -219,64 +219,64 @@ cordova plugin add cc.fovea.cordova.openwith \
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
     android {
-        namespace cordovaConfig.PACKAGE_NAMESPACE
-        assetPacks = [":issiesign_assets", ":issiesign_assets3"]
+            namespace cordovaConfig.PACKAGE_NAMESPACE
+            assetPacks = [":issiesign_assets", ":issiesign_assets3"]
 
-        signingConfigs {
-            create("issiesign") {
-                keyAlias keystoreProperties['HEkeyAlias']
-                keyPassword keystoreProperties['HEkeyPassword']
-                storeFile file(keystoreProperties['HEstoreFile'])
-                storePassword keystoreProperties['HEstorePassword']
+            signingConfigs {
+                create("issiesign") {
+                    keyAlias keystoreProperties['HEkeyAlias']
+                    keyPassword keystoreProperties['HEkeyPassword']
+                    storeFile file(keystoreProperties['HEstoreFile'])
+                    storePassword keystoreProperties['HEstorePassword']
+                }
+                create("myissiesign") {
+                    keyAlias keystoreProperties['ENkeyAlias']
+                    keyPassword keystoreProperties['ENkeyPassword']
+                    storeFile file(keystoreProperties['ENstoreFile'])
+                    storePassword keystoreProperties['ENstorePassword']
+                }
+                create("issiesignarabic") {
+                    keyAlias keystoreProperties['ENkeyAlias']
+                    keyPassword keystoreProperties['ENkeyPassword']
+                    storeFile file(keystoreProperties['ENstoreFile'])
+                    storePassword keystoreProperties['ENstorePassword']
+                }
             }
-            create("myissiesign") {
-                keyAlias keystoreProperties['ENkeyAlias']
-                keyPassword keystoreProperties['ENkeyPassword']
-                storeFile file(keystoreProperties['ENstoreFile'])
-                storePassword keystoreProperties['ENstorePassword']
-            }
-            create("issiesignarabic") {
-                keyAlias keystoreProperties['ENkeyAlias']
-                keyPassword keystoreProperties['ENkeyPassword']
-                storeFile file(keystoreProperties['ENstoreFile'])
-                storePassword keystoreProperties['ENstorePassword']
-            }
-        }
 
-        flavorDimensions "languages"
+            flavorDimensions "languages"
 
-           productFlavors {
-            issiesign {
-                applicationId "org.issieshapiro.signlang2"
-                resValue "string", "app_name", "IssieSign"
-                manifestPlaceholders = [
-                        appIcon: "@mipmap/ic_launcher",
-                ]
-                versionCode 10016
-                versionName "2.0.0"
-                signingConfig signingConfigs.issiesign
+            productFlavors {
+                issiesign {
+                    applicationId "org.issieshapiro.signlang2"
+                    resValue "string", "app_name", "IssieSign"
+                    manifestPlaceholders = [
+                            appIcon: "@mipmap/ic_launcher",
+                    ]
+                    versionCode 10024
+                    versionName "2.1.0"
+                    signingConfig signingConfigs.issiesign
+                }
+                myissiesign {
+                    applicationId "com.issieshapiro.myissiesign"
+                    resValue "string", "app_name", "My IssieSign"
+                    manifestPlaceholders = [
+                            appIcon: "@mipmap/ic_launcher_en",
+                    ]
+                    versionCode 10005
+                    versionName "1.0.0"
+                    signingConfig signingConfigs.myissiesign
+                }
+                issiesignarabic {
+                    applicationId "com.issieshapiro.issiesignarabic"
+                    resValue "string", "app_name", "IssieSignArabic"
+                    manifestPlaceholders = [
+                            appIcon: "@mipmap/ic_launcher_ar",
+                    ]
+                    versionCode 10013
+                    versionName "1.0.1"
+                    signingConfig signingConfigs.issiesign
+                }
             }
-            myissiesign {
-                applicationId "com.issieshapiro.myissiesign"
-                resValue "string", "app_name", "My IssieSign"
-                manifestPlaceholders = [
-                        appIcon: "@mipmap/ic_launcher_en",
-                ]
-                versionCode 10005
-                versionName "1.0.0"
-                signingConfig signingConfigs.myissiesign
-            }
-            issiesignarabic {
-                applicationId "com.issieshapiro.issiesignarabic"
-                resValue "string", "app_name", "IssieSignArabic"
-                manifestPlaceholders = [
-                        appIcon: "@mipmap/ic_launcher_ar",
-                ]
-                versionCode 10009
-                versionName "1.0.0"
-                signingConfig signingConfigs.issiesignarabic
-            }
-        }
         ...
 
 ```
@@ -319,6 +319,8 @@ include ":issiesign_assets3"
 - Change your config.xml and make <content src="..." /> point to your local-IP address and your dev-port, e.g. <content src="http://localhost:3000/index.html" />
 - Add a whitelist entry (refer to cordova whitelist-plugin documentation for more details): e.g. <allow-navigation href="http://localhost:3000/*" />
 - run `./scripts/prepareCDVLocal.sh`
+- start the server `npm start`
+
 - to revert, run `windownCDVLocalRun.sh`
 
 

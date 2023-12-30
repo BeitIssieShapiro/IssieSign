@@ -219,12 +219,12 @@ export default class FileSystem {
                                     })
 
                                     // Load favorites:
-                                    const favCat = this.index.categories.find(cat=>cat.id === FileSystem.FAVORITES_ID);
+                                    const favCat = this.index.categories.find(cat => cat.id === FileSystem.FAVORITES_ID);
                                     if (favCat) {
-                                        favCat?.words.forEach(favWord=> {
+                                        favCat?.words.forEach(favWord => {
                                             const srcCat = this.findCategory(favWord.category);
                                             if (srcCat) {
-                                                const srcWord = srcCat.words.find(w=>w.name === favWord.name);
+                                                const srcWord = srcCat.words.find(w => w.name === favWord.name);
                                                 if (srcWord) {
                                                     srcWord.favorite = true;
                                                 }
@@ -337,11 +337,17 @@ export default class FileSystem {
         return words;
     }
 
-    async addRemoveFavorites(categoryId, title, isAdd) {
-        trace("addRemoveFavorites", categoryId, title);
-        const favCategory = this.index.categories.find(c => c.id === FileSystem.FAVORITES_ID);
+    async addRemoveSymbolicLink(categoryId, title, isAdd, addIntoCategoryID) {
+        if (!addIntoCategoryID) {
+            addIntoCategoryID = FileSystem.FAVORITES_NAME;
+        }
+        const attributeFieldName = (addIntoCategoryID === FileSystem.FAVORITES_NAME) ? "favorite" : "symLink";
+        trace("addRemoveSymbolicLink", categoryId, title, isAdd, addIntoCategoryID, attributeFieldName + "=" + isAdd)
+
+        if (isBrowser()) return;
+        const favCategory = this.index.categories.find(c => c.name === addIntoCategoryID);
         if (!favCategory) {
-            throw new Error("addToFavorite - no favorties category found");
+            throw new Error("Add To another category - category " + addIntoCategoryID + " not found");
         }
 
         let category;
@@ -352,7 +358,7 @@ export default class FileSystem {
             if (favWord) {
                 category = this.index.categories.find(c => c.name === favWord.category);
             } else {
-                trace("word not found in fav", categoryId, title, favCategory.words.map(w => w.id + "-" + w.name));
+                trace("word not found in category", categoryId, title, favCategory.words.map(w => w.id + "-" + w.name));
             }
         }
 
@@ -365,7 +371,7 @@ export default class FileSystem {
             throw new Error("Word " + title + " - not found");
         }
 
-        word.favorite = isAdd;
+        word[attributeFieldName] = isAdd;
         if (isAdd) {
             trace("Add favorite", categoryId, title);
             // verify word is not there yet:
@@ -665,8 +671,13 @@ export default class FileSystem {
             (videoFile) => videoFile.remove()
         );
 
-        let indexCat = this.index.categories.find(c => c.name === categoryName);
-        indexCat.words = indexCat.words.filter(w => w.name !== word.name);
+        // remove the word from any category it exists in (favorites, link in other folder etc.)
+        this.index.categories.forEach(cat => {
+            if (cat.words.find(word => word.name == wordName && word.category === categoryName)) {
+                // remove from this category:
+                cat.words = cat.words.filter(word => !(word.name == wordName && word.category === categoryName));
+            }
+        })
 
         return this.saveIndex();
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import '../css/App.css';
 import Card2, { ClipType } from "../components/Card2";
 import { calcWidth, getBooleanFromString } from "../utils/Utils";
@@ -8,15 +8,12 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 function Word(props) {
-
     useEffect(() => {
         if (props.pubSub && props.categoryId) {
             props.pubSub.publish({ command: "set-categoryId", categoryId: props.categoryId });
             props.pubSub.publish({ command: "set-themeId", themeId: props.themeId });
         }
     }, [props.pubSub, props.categoryId]);
-
-
 
     let wordsElements = [];
     let elementWidths = [];
@@ -27,9 +24,13 @@ function Word(props) {
 
 
             return <Card2 key={word.id}
+                name={word.name}
+                symLink={word.favorite || word.symLink}
+                onFavoriteToggle={props.onFavoriteToggle}
                 editMode={props.editMode}
                 translate={word.translate}
-                categoryId={word.category || props.categoryId}
+                categoryId={props.categoryId}
+                originalCategoryId={word.category}
                 pubSub={props.pubSub}
                 shareCart={props.shareCart}
                 userContent={word.userContent}

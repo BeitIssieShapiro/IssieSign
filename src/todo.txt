@@ -1,3 +1,25 @@
+Bugs from Alaa:
+--------------
+- when adding new word - the icon is not shown but ?
+- sharing does not work (after selecting YES nothing happends)
+V- If word is deleted, it is stuck in the favorites
+- When syncing, sometimes "request had insufficient authentication scopes..."
+- in tiles, arabic not all items are shown
+
+
+Features:
+- add symLink in other (custom) folders (highest prio)
+- mode quiz?
+- android TV
+- play whole folder
+- 3rd mode of list w/o preview
+- windows version (low prio)
+
+
+
+
+
+
 
 MyIssieSign merge into Issie:
 V- final design (settings, selector)

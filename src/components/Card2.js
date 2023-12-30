@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/card.css";
 import "../css/Tile.css";
 import "../css/rope.css";
@@ -6,35 +6,39 @@ import { withAlert } from 'react-alert'
 import { confirmAlert } from 'react-confirm-alert';
 
 import { imageLocalCall } from "../apis/ImageLocalCall";
-import { getTheme, getThemeName, isMyIssieSign } from "../utils/Utils";
+import { getTheme, getThemeName, isMyIssieSign, trace } from "../utils/Utils";
 import { AddToShareButton, DeleteTilebutton, InfoButton, RemoveFromShareButton, Selected, TileButton } from "./ui-elements";
 import ISLink from "./ISLink";
 import { fTranslate, translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
-import { Delete, Edit, MoreHoriz, Share } from "@mui/icons-material";
+import { Delete, Edit, Favorite, MoreHoriz, PlaylistAdd, PlaylistRemove, Share } from "@mui/icons-material";
 
 export const ClipType = {
     Clip: "clip",
     Binder: "binder",
-    None:"none",
+    None: "none",
 }
 
 function Card2(props) {
+    const [showOtherCategories, setShowOtherCategories] = useState(false);
+
+    const originalCategoryId = props.originalCategoryId || props.categoryId;
+
     const reload = () => props.pubSub.refresh();
     let imageSrc = props.imageName ? imageLocalCall(props.imageName, props.userContent) : undefined;
 
     let image2 = props.imageName2 ? <img className="tileImg img2" src={imageLocalCall(props.imageName2, props.userContent)} alt="card Placeholder"></img> : "";
-    let cardDouble = isMyIssieSign() ? {paddingRight: 10, paddingLeft:10} : {paddingRight: 5, paddingLeft:5, paddingTop:5, '--card-width': '165px'};
+    let cardDouble = isMyIssieSign() ? { paddingRight: 10, paddingLeft: 10 } : { paddingRight: 5, paddingLeft: 5, paddingTop: 5, '--card-width': '165px' };
     let url = "";
     if (!props.noLink && !props.selected) {
         if (props.cardType === "file") {
-            url = "/video/file/" + props.categoryId + "/" + encodeURIComponent(props.cardName) + "/" + encodeURIComponent(props.videoName);
+            url = "/video/file/" + originalCategoryId + "/" + encodeURIComponent(props.cardName) + "/" + encodeURIComponent(props.videoName);
         } else {
-            url = "/video/" + encodeURIComponent(props.videoName) + "/" + props.categoryId + "/" + encodeURIComponent(props.cardName) + "/-";
+            url = "/video/" + encodeURIComponent(props.videoName) + "/" + originalCategoryId + "/" + encodeURIComponent(props.cardName) + "/-";
         }
     }
 
-    const sharedName = props.categoryId + "/" + props.cardName;
+    const sharedName = originalCategoryId + "/" + props.cardName;
     const isShared = props.editMode && props.userContent && props.shareCart?.exists(sharedName);
 
     const addToShare = () => {
@@ -65,7 +69,7 @@ function Card2(props) {
                 {
                     label: translate("BtnYes"),
                     onClick: () => {
-                        FileSystem.get().deleteWord(props.categoryId, props.cardName).then(
+                        FileSystem.get().deleteWord(originalCategoryId, props.cardName).then(
                             () => {
                                 props.pubSub.refresh();
                                 if (isShared) {
@@ -86,40 +90,84 @@ function Card2(props) {
         });
     }
 
-    let translatedName = props.translate?translate(props.cardName): props.cardName;
+    const addToFavorites = () => {
+        trace("addToFavorites");
+        props?.onFavoriteToggle(originalCategoryId, props.name, true)
+    }
+    const removeFromFavorite = () => {
+        trace("removeFromFavorite");
+        props?.onFavoriteToggle(originalCategoryId, props.name, false)
+    }
+    const removeFromThisCategory = () => {
+        trace("removeFromThisCategory");
+        props?.onFavoriteToggle(originalCategoryId, props.name, false, props.categoryId);
+    }
+    const addToAnotherCategory = () => {
+        trace("addToAnotherCategory");
+        setTimeout(() => props.pubSub.publish({
+            command: "open-slideup-menu", props: {
+                label: "PlayLists",
+                type: "categories",
+                omitCategories: [props.categoryId, originalCategoryId],
+                callback: (selectedCategoryId) => {
+                    // add to this category
+                    trace("addToAnotherCategory", selectedCategoryId);
+                    props?.onFavoriteToggle(originalCategoryId, props.name, true, selectedCategoryId);
+                }
+            }
+        }), 100);
+    }
+
+    let translatedName = props.translate ? translate(props.cardName) : props.cardName;
 
     let innerBody = (
         <div className="card" style={cardDouble} theme={getThemeName(props.themeId)}>
             <div className={"header " + (props.clipType)
-        }></div>
+            }></div>
             <div className="main">
                 {image2}
-                {imageSrc ? <img className={"tileImg " +(props.imageName2 ? "img1":"imgSingle")} src={imageSrc} alt="card Placeholder"></img> : null}
+                {imageSrc ? <img className={"tileImg " + (props.imageName2 ? "img1" : "imgSingle")} src={imageSrc} alt="card Placeholder"></img> : null}
             </div>
             <div className="footer">
                 <h2 className="rtl tileFont">{translatedName}</h2>
-                {props.editMode && !props.noMoreMenu && props.userContent &&
+                {props.editMode && !props.noMoreMenu && //props.userContent &&
                     <TileButton size={24} onClick={() => {
+                        const buttons = props.userContent ?
+                            [
+                                { caption: translate("EditMenu"), icon: <Edit />, callback: showWordInfo },
+                                {
+                                    caption: isShared ?
+                                        translate("RemoveFromShareMenu") :
+                                        translate("AddToShareMenu"), icon: <Share />, callback: addToShare
+                                }, //todo unshare icon
+                                { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteWord }
+                            ] :
+                            [];
+
+                        trace("card menu", JSON.stringify(props))
+                        if (props.categoryId === FileSystem.FAVORITES_NAME) {
+                            buttons.push({ caption: translate("RemoveFromFavorite"), icon: <Favorite />, callback: removeFromFavorite })
+                        } else {
+                            buttons.push({ caption: translate("AddToFavorite"), icon: <Favorite />, callback: addToFavorites })
+                        }
+                        if (props.symLink) {
+                            buttons.push({ caption: translate("RemoveFromThisCategory"), icon: <PlaylistRemove />, callback: removeFromThisCategory })
+                        } else {
+                            buttons.push({ caption: translate("AddToAnotherCategory"), icon: <PlaylistAdd />, callback: addToAnotherCategory })
+                        }
+
                         props.pubSub.publish({
                             command: "open-slideup-menu", props: {
+                                height: buttons.length * 70 + 200,
                                 label: translatedName,
                                 image: imageSrc,
                                 type: "card",
-                                //todo translate
-                                buttons: [
-                                    { caption: translate("EditMenu"), icon: <Edit />, callback: showWordInfo },
-                                    {
-                                        caption: isShared ?
-                                            translate("RemoveFromShareMenu") :
-                                            translate("AddToShareMenu"), icon: <Share />, callback: addToShare
-                                    }, //todo unshare icon
-                                    { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteWord }
-                                ]
+                                buttons
                             }
                         });
                     }}
                     >
-                        <MoreHoriz style={{fontSize:35, color:'white'}}/>
+                        <MoreHoriz style={{ fontSize: 35, color: 'white' }} />
                     </TileButton>
                 }
             </div>
