@@ -52,34 +52,53 @@
     width: 130px;
     height: 130px;
     position: relative;
-  }
+}
 
-.progressCircle  div {
+.progressCircle div {
     position: absolute;
     width: 100px;
     height: 100px;
     top: 15px;
     left: 15px;
-  }
+}
 
 
-  .progress circle {
+.progress circle {
     stroke-dashoffset: 60;
     stroke-dasharray: 10 240;
     stroke: white;
     stroke-width: 10;
     fill: none;
     animation: progress 3s linear infinite;
-  }
+}
 
-  @keyframes progress {
+@keyframes progress {
     0% {
-      stroke-dasharray: 10 240;
+        stroke-dasharray: 10 240;
     }
+
     50% {
-      stroke-dasharray: 125 125;
+        stroke-dasharray: 125 125;
     }
+
     100% {
-      stroke-dasharray: 250 0;
+        stroke-dasharray: 250 0;
     }
-  }
+}
+
+
+.quizMode {
+    clip-path: polygon(0 0, 100% 100%, 100% 0);
+    background-color: #E7E7E7;
+    position: absolute;
+    right: 0;
+
+}
+
+.quizInner {
+    position: absolute;
+    right: 25%;
+    top: 25%;
+    color: black;
+    font-size: 65px;
+}

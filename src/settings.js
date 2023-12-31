@@ -4,7 +4,7 @@ import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import {
   ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY,
-  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType, WordsListMode
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType, WordsListMode, QUIZ_MODE_KEY
 } from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
@@ -30,7 +30,7 @@ function ToggleButtons({ title, buttons }) {
 }
 
 
-function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll, 
+function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scroll,
   contentMap, appType, onChangeAppType, isMobile, isLandscape }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
@@ -99,7 +99,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
   return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
     //animate={true} 
     width={width} // + "px"}
-    style={{ top: isMobile && isLandscape? 50:170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh":"8vh" }}
+    style={{ top: isMobile && isLandscape ? 50 : 170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh" : "8vh" }}
   >
     <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
       <div onClick={showInfo} className="settings-item about">
@@ -119,14 +119,14 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       </div>}
 
       <div className="settings-item">
-       
+
 
 
         <ToggleButtons
           title={translate("SettingsWordsListMode")}
           buttons={[
             { icon: <GridView />, caption: translate("WordsTiles"), onSelect: () => setWordsListMode(WordsListMode.TILES), selected: state.wordsListMode == WordsListMode.TILES },
-            { icon: <PlaylistPlay/>, caption: translate("WordsListAndPreview"), onSelect: () => setWordsListMode(WordsListMode.LIST_AND_PREVIEW), selected: state.wordsListMode == WordsListMode.LIST_AND_PREVIEW },
+            { icon: <PlaylistPlay />, caption: translate("WordsListAndPreview"), onSelect: () => setWordsListMode(WordsListMode.LIST_AND_PREVIEW), selected: state.wordsListMode == WordsListMode.LIST_AND_PREVIEW },
             { icon: <ViewList />, caption: translate("WordsList"), onSelect: () => setWordsListMode(WordsListMode.LIST), selected: state.wordsListMode == WordsListMode.LIST },
 
           ]}
@@ -195,6 +195,22 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
             setState({ showOwnFoldersFirst: isOn });
             window[SHOW_OWN_FOLDERS_FIRST_KEY] = isOn;
             FileSystem.get().setCustomFoldersFirst(isOn);
+          }}
+        />
+      </div>}
+
+      {<div className="settings-item">
+        <lbl>
+          <div>{translate("QuizMode")}</div>
+        </lbl>
+        <RadioBtn className="settingsAction"
+          checked={state.quizMode == true}
+          onText={translate("Yes")}
+          offText={translate("No")}
+
+          onChange={(isOn) => {
+            saveSettingKey(QUIZ_MODE_KEY, isOn);
+            setState({ quizMode: isOn });
           }}
         />
       </div>}

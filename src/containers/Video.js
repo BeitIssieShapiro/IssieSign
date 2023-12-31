@@ -11,12 +11,14 @@ import FileSystem from "../apis/filesystem";
 import { createPortal } from 'react-dom';
 
 import '../css/video.css';
+import { trace } from "../utils/Utils";
 
 const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
-    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious, autoNext }) => {
+    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious, autoNext, quizMode }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
+    const [overwideQuiz, setOverwideQuiz] = useState(false);
 
     const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5 / 9 });
     const [videoWidth, setVideoWidth] = useState(0);
@@ -54,7 +56,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
 
         if (onNext && autoNext) {
-            setTimeout(()=>onNext(), 3000);
+            setTimeout(() => onNext(), 3000);
         }
     }
 
@@ -86,7 +88,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
     }, [])
 
-   
+
     useEffect(() => {
         let videoContent = "";
         if (videoName === 'file') {
@@ -144,6 +146,13 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         vidHost.style.top = videoTop + "px";
         vidHost.style.left = leftPos + "px";
     }
+
+    if (vidElem) {
+        vidElem.muted = quizMode && !overwideQuiz;
+    }
+
+    trace("video QM:", quizMode, "mute", vidElem.muted)
+
     return createPortal(<div className="videoHostNew" >
         {isMobile && isLandscape && <div className="videoBackButtonMobile" >
             <ArrowForwardRounded style={{ fontSize: 80 }} className="videoButtonNew"
@@ -159,6 +168,19 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
             {isFavorite ? <Favorite style={{ fontSize: 50 }} /> :
                 <FavoriteBorder style={{ fontSize: 50 }} />}
         </div>}
+
+        {
+            quizMode && !overwideQuiz && <div className="quizMode" style={{
+                top: -videoHeight,
+                width: videoWidth/2,
+                height: videoHeight*2/3
+            }}
+            onClick={()=>setOverwideQuiz(true)}
+            >
+                <div className="quizInner">?</div>
+
+            </div>
+        }
 
 
         <div className="videoButtonsNew">

@@ -135,6 +135,7 @@ var strings = {
         "RemoveFromThisCategory":"הסרת קיצור הדרך",
         "AddToAnotherCategory":"הוספת קיצור דרך לקטגוריה אחרת...",
         "CategoriesTitle":"הוספה לקטגוריה",
+        "QuizMode": "מצב חידון",
     },
     "ar": {
         "IssieSignArabic": "لغة الإشارة",
@@ -383,7 +384,7 @@ var strings = {
         "RemoveFromThisCategory":"Remove Shortcut",
         "AddToAnotherCategory":"Add a Shortcut To Another Category...",
         "CategoriesTitle":"Add To Category",
-
+        "QuizMode": "Quiz Mode",
     }
 }
 

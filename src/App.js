@@ -8,7 +8,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType, WordsListMode } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType, WordsListMode, QUIZ_MODE_KEY } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
 import { os } from './current-language';
 
@@ -297,6 +297,7 @@ class App extends IssieBase {
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, true),
+            quizMode: getBooleanSettingKey(QUIZ_MODE_KEY, false),
             showOwnFoldersFirst,
             wordsListMode,
             language: lang,
@@ -912,6 +913,7 @@ class App extends IssieBase {
                         onNext={()=>this.nextWord(words)}
                         autoNext={true}
                         onPrevious={()=>this.prevWord()}
+                        quizMode={this.state.quizMode}
                         // onVideoEnded={() => this.nextWord(words)}
                     />
                 </div>
@@ -962,6 +964,7 @@ class App extends IssieBase {
                         title={title}
                         filePath={filePath ? decodeURIComponent(filePath) : ""}
                         headerSize={headerSize}
+                        quizMode={this.state.quizMode}
                     />
                 </div>)
         }
