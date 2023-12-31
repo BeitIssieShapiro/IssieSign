@@ -8,11 +8,13 @@ import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
 import { ReactComponent as AddVideoSVG } from '../images/addVideo.svg'
 import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
-import WordAdults from "../containers/Word-adult";
-import { isBrowser, isMobile } from '../utils/Utils';
+import WordListAndPreview from "../containers/Word-and-video";
+
+import { WordsListMode, isBrowser, isMobile } from '../utils/Utils';
 import {  isRTL } from '../utils/lang';
 import { ClipLoader } from 'react-spinners';
 import { CircularProgressbar } from 'react-circular-progressbar';
+import { WordList } from '../containers/Word-list';
 
 
 export function TrashButton(props) {
@@ -262,8 +264,11 @@ export function DeleteTilebutton(props) {
 
 
 export function Word2(props) {
-  if (props.adultMode) {
-    return <WordAdults {...props} />
+  if (props.wordsListMode === WordsListMode.LIST_AND_PREVIEW) {
+    return <WordListAndPreview {...props} />
+  }
+  if (props.wordsListMode === WordsListMode.LIST) {
+    return <WordList {...props} />
   }
   return <Word  {...props} />;
 }

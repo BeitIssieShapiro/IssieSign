@@ -140,7 +140,7 @@ export default function ISLink(props) {
 
   return (
     <div
-      className={"tileGroup noTouchCallout"}
+      className={"tileGroup noTouchCallout " + props.className || ""}
       style={props.style}
       onMouseDown={start}
       onMouseUp={

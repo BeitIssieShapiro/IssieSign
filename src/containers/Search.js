@@ -3,15 +3,15 @@ import '../css/App.css';
 import Word from "./Word";
 import Body from "./Body";
 //const levenshtein = require('js-levenshtein');
-import { getTheme, getThemeName, trace } from "../utils/Utils";
+import { WordsListMode, getTheme, getThemeName, trace } from "../utils/Utils";
 import { fTranslate } from '../utils/lang';
 import { Word2 } from "../components/ui-elements";
 
 
 function fuzzyMatch(str, searchStr) {
 
-    return str && searchStr ? 
-        str.toLowerCase().includes(searchStr.toLowerCase()):// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
+    return str && searchStr ?
+        str.toLowerCase().includes(searchStr.toLowerCase()) :// || searchStr.length > 3 && levenshtein(str, searchStr) <= 2;
         false;
 }
 
@@ -29,17 +29,17 @@ function Search(props) {
     const filterWords = (filterStr) => {
         trace("filterWord:" + filterStr)
         const res = [];
-        props.words.forEach(word=>{
+        props.words.forEach(word => {
             let found = fuzzyMatch(word.name, filterStr);
             if (!found && word.tags) {
                 let foundTags = word.tags.filter(tag => tag.startsWith(filterStr));
                 found = foundTags.length > 0;
             }
-            if (found && !res.find(w=>w.id === word.id)) {
-                res.push({...word});
+            if (found && !res.find(w => w.id === word.id)) {
+                res.push({ ...word });
             };
         });
-        
+
 
         return props.currentCategory ? res : res.map(word => {
             if (word.categoryId) {
@@ -97,7 +97,7 @@ function Search(props) {
                 allowSwipe={props.allowSwipe}
                 scroll={props.wordScroll}
                 categoryId={props.currentCategory}
-                adultMode={props.adultMode && props.currentCategory}
+                wordsListMode={props.currentCategory ? props.wordsListMode : WordsListMode.TILES}
             />
         </div>
     )

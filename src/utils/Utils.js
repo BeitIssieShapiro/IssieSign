@@ -21,6 +21,14 @@ export const AppType = {
     IssieSignArabic: "3",
 };
 
+export const WordsListMode = {
+    KEY_NAME: "IssieSign_Settings_WordListMode",
+    TILES: "tiles",
+    LIST_AND_PREVIEW: "listAndPreview",
+    LIST:"list",
+}
+
+
 import { mainJson as gHEMainJSON } from '../jsons/he/mainJson';
 import { mainJson as gENMainJSON } from '../jsons/en/mainJson';
 import { mainJson as gARMainJSON } from '../jsons/ar/mainJson';

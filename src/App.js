@@ -8,7 +8,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType, WordsListMode } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
 import { os } from './current-language';
 
@@ -282,11 +282,23 @@ class App extends IssieBase {
 
         const shareCart = new ShareCart();
 
+        //Migrate adulmModeKey to WordsListMode
+        const adultMode = getBooleanSettingKey(ADULT_MODE_KEY, false);
+
+        let wordsListMode = getSettingKey(WordsListMode.KEY_NAME, WordsListMode.TILES);
+        if (adultMode) {
+            // migrate
+            window.localStorage.removeItem(ADULT_MODE_KEY);
+
+            saveSettingKey(WordsListMode.KEY_NAME, WordsListMode.LIST_AND_PREVIEW);
+            wordsListMode = WordsListMode.LIST_AND_PREVIEW;
+        }
+
         this.setState({
             allowSwipe: getBooleanSettingKey(ALLOW_SWIPE_KEY, false),
             allowAddWord: isMyIssieSign() || getBooleanSettingKey(ALLOW_ADD_KEY, true),
             showOwnFoldersFirst,
-            adultMode: getBooleanSettingKey(ADULT_MODE_KEY, false),
+            wordsListMode,
             language: lang,
             pubSub: pubsub,
             busy: false,
@@ -562,7 +574,7 @@ class App extends IssieBase {
     }
 
     isSwipeAllowed = () => {
-        return (IssieBase.isMobile() || this.isInfo() || this.isAddScreen() || this.state.allowSwipe || (this.state.adultMode && this.isWords()) || this.state.menuOpen || this.state.slideupMenuOpen);
+        return (IssieBase.isMobile() || this.isInfo() || this.isAddScreen() || this.state.allowSwipe || (this.state.wordsListMode !== WordsListMode.TILES && this.isWords()) || this.state.menuOpen || this.state.slideupMenuOpen);
     }
 
     onFavoriteToggle = (categoryId, title, changeToOn, addToAnotherCategoryID) => {
@@ -688,7 +700,7 @@ class App extends IssieBase {
 
         if (!this.isSwipeAllowed() && !this.isShareScreen() &&
             (!this.isAddScreen() && !this.isVideo() && (
-                this.isWords() && !this.state.adultMode) ||
+                this.isWords() && this.state.wordsListMode === WordsListMode.TILES) ||
                 this.isSearch() ||
                 App.isHome(this.props))) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
@@ -755,7 +767,7 @@ class App extends IssieBase {
                     collapseHeader={collapseHeader}
                     projectorsOff={this.isVideo() ||
                         this.isAddScreen() ||
-                        ((this.isWords() || this.isSearch() && this.state.categoryId) && this.state.adultMode)
+                        ((this.isWords() || this.isSearch() && this.state.categoryId) && this.state.wordsListMode !== WordsListMode.TILES)
                     } theme={App.isHome(this.props) ? "blue" : getThemeName(this.state.theme)} id="page1" isMobile={IssieBase.isMobile()}>
 
                     <EditButton
@@ -786,7 +798,7 @@ class App extends IssieBase {
                     {backElement}
 
                     {this.state.editMode &&
-                        !this.isShareScreen() && !this.isAddScreen() && (!this.isVideo() || this.state.adultMode) &&
+                        !this.isShareScreen() && !this.isAddScreen() && (!this.isVideo() || this.state.wordsListMode == WordsListMode.LIST_AND_PREVIEW) &&
                         <ShareCartButton slot="top-bar" className={showAdd ? "d" : "c"}
                             count={this.state?.shareCart?.count()}
                             onClick={() => this.props.history.push("/share-cart")} />}
@@ -852,7 +864,7 @@ class App extends IssieBase {
                 wordScroll={this.state.wordScroll}
                 pubSub={this.state.pubSub}
                 themeId={this.state.theme}
-                adultMode={this.state.adultMode}
+                wordsListMode={this.state.wordsListMode}
             />
         }
 
@@ -893,13 +905,14 @@ class App extends IssieBase {
                         categoryId={categoryId}
                         isLandscape={IssieBase.isLandscape()}
                         isMobile={IssieBase.isMobile()}
-                        videoName={word.videoName}
+                        videoName={word.userContent? "file" : word.videoName}
                         title={word.title}
                         filePath={word.videoName}
                         headerSize={headerSize}
                         onNext={()=>this.nextWord(words)}
+                        autoNext={true}
                         onPrevious={()=>this.prevWord()}
-                        onVideoEnded={() => this.nextWord(words)}
+                        // onVideoEnded={() => this.nextWord(words)}
                     />
                 </div>
             }
@@ -918,7 +931,7 @@ class App extends IssieBase {
                 themeId,
                 scroll: this.state.wordScroll,
                 onFavoriteToggle: this.onFavoriteToggle,
-                adultMode: this.state.adultMode,
+                wordsListMode: this.state.wordsListMode,
                 setScrolls: (x, y) => this.setState({ wordScroll: { x, y } }),
             }
             return (<Word2 {...wordProps} />);

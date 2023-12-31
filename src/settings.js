@@ -4,12 +4,12 @@ import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import {
   ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY,
-  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType, WordsListMode
 } from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import { withAlert } from 'react-alert'
-import { GridView, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
+import { Details, GridView, ListAlt, PlaylistPlay, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
 import { MyIssieImg } from './components/apptype-selector'
 import { ReactComponent as IssieImg } from './images/IssieSign_opt.svg'
 import { List } from '@mui/material';
@@ -82,10 +82,10 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
     setLanguage(lang, true);
   }
 
-  const adultModeChange = (isOn) => {
+  const setWordsListMode = (newMode) => {
     //const isOn = e.currentTarget.value === "true";
-    saveSettingKey(ADULT_MODE_KEY, isOn);
-    setState({ adultMode: isOn });
+    saveSettingKey(WordsListMode.KEY_NAME, newMode);
+    setState({ wordsListMode: newMode });
   }
 
   const swipeModeChange = (isOn) => {
@@ -119,36 +119,16 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       </div>}
 
       <div className="settings-item">
-        {/* <lbl>
-          <div>{translate("SettingsAdultMode")}</div>
-           <div className="settingsSubTitle">{translate("SettingsAdultModeLbl")}</div> 
-        </lbl>
-
-        <div className="settingsGroup">
-
-
-          <input type="radio" id="off" name="adultMode" value={false} checked={!state.adultMode}
-            onChange={adultModeChange}
-          />
-          <label for="off">
-            <GridView />
-            {translate("AdultModeOff")}
-          </label>
-          <input type="radio" id="on" name="adultMode" value={true} checked={state.adultMode}
-            onChange={adultModeChange}
-          />
-          <label for="on">
-            <ViewList />
-            {translate("AdultModeOn")}
-          </label>
-        </div> */}
+       
 
 
         <ToggleButtons
-          title={translate("SettingsAdultMode")}
+          title={translate("SettingsWordsListMode")}
           buttons={[
-            { icon: <GridView />, caption: translate("AdultModeOff"), onSelect: () => adultModeChange(false), selected: !state.adultMode },
-            { icon: <ViewList />, caption: translate("AdultModeOn"), onSelect: () => adultModeChange(true), selected: state.adultMode },
+            { icon: <GridView />, caption: translate("WordsTiles"), onSelect: () => setWordsListMode(WordsListMode.TILES), selected: state.wordsListMode == WordsListMode.TILES },
+            { icon: <PlaylistPlay/>, caption: translate("WordsListAndPreview"), onSelect: () => setWordsListMode(WordsListMode.LIST_AND_PREVIEW), selected: state.wordsListMode == WordsListMode.LIST_AND_PREVIEW },
+            { icon: <ViewList />, caption: translate("WordsList"), onSelect: () => setWordsListMode(WordsListMode.LIST), selected: state.wordsListMode == WordsListMode.LIST },
+
           ]}
         />
 

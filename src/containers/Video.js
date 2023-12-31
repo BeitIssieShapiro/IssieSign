@@ -10,10 +10,10 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import FileSystem from "../apis/filesystem";
 import { createPortal } from 'react-dom';
 
-import '../css/App.css';
+import '../css/video.css';
 
 const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
-    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious }) => {
+    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious, autoNext }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
@@ -52,6 +52,10 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
             trace("OnVideoEnded")
             onVideoEnded();
         }
+
+        if (onNext && autoNext) {
+            setTimeout(()=>onNext(), 3000);
+        }
     }
 
     const onLoadedMetadata = (e) => setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight });
@@ -82,7 +86,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
     }, [])
 
-
+   
     useEffect(() => {
         let videoContent = "";
         if (videoName === 'file') {
@@ -156,15 +160,28 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
                 <FavoriteBorder style={{ fontSize: 50 }} />}
         </div>}
 
-        {/* {(playing || paused || ended) && <div className="videoButtonsBackgroundNew" />} */}
+
         <div className="videoButtonsNew">
-            {onPrevious && <SkipPrevious style={{ fontSize: 100 }}  className="videoButtonNew-white" onClick={() => onPrevious()} />}
-            <div style={{width:10}}></div>
+            {onPrevious && <SkipPrevious style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onPrevious()} />}
+            <div style={{ width: 10 }}></div>
             {playing && <Pause style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.pause()} />}
             {paused && !ended && <PlayArrow style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
-            {ended && <Replay style={{ fontSize: 100 }} className="videoButtonNew" onClick={() => vidElem.play()} />}
-            <div style={{width:10}}></div>
-            {onNext && <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />}
+            {ended && <Replay style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
+            <div style={{ width: 10 }}></div>
+            {onNext && (ended ?
+                <div class="progressCircle">
+                    <svg class="progress" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" >
+                            {/* <animate attributeName="stroke-dashoffset" attributeType="XML" from="10" to="251.2" dur="5s" repeatCount="indefinite" /> */}
+                        </circle>
+                    </svg>
+                    <div>
+                        <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />
+                    </div>
+                </div> :
+                <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />)
+            }
+
         </div>
     </div>, document.getElementById("videoButtons"))
 });

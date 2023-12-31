@@ -10,7 +10,7 @@ V- If word is deleted, it is stuck in the favorites
 Features:
 V- add symLink in other (custom) folders (highest prio)
 V- play whole folder
-- 3rd mode of list w/o preview
+V- 3rd mode of list w/o preview
 - mode quiz?
 - android TV
 - windows version (low prio)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import '../css/App.css';
 import Card2, { ClipType } from "../components/Card2";
-import Video from "../containers/Video";
+import Video from "./Video";
 import Rope from '../components/Rope'
 
 import { withAlert } from 'react-alert'
@@ -59,7 +59,7 @@ function ScrollBar({ vertical, length, marginStartEnd, marginToContainer, pos })
 }
 
 
-function WordAdults(props) {
+function WordListAndPreview(props) {
     const scrollDivRef = useRef(null);
     const [selected, setSelected] = useState(undefined);
     const [landscapeState, setLandscapeState] = useState(isLandscape())
@@ -230,4 +230,4 @@ function WordAdults(props) {
     )
 }
 
-export default withAlert()(WordAdults);
+export default withAlert()(WordListAndPreview);

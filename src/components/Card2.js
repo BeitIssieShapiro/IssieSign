@@ -106,7 +106,7 @@ function Card2(props) {
         trace("addToAnotherCategory");
         setTimeout(() => props.pubSub.publish({
             command: "open-slideup-menu", props: {
-                label: "PlayLists",
+                label: translate("CategoriesTitle"),
                 type: "categories",
                 omitCategories: [props.categoryId, originalCategoryId],
                 callback: (selectedCategoryId) => {
