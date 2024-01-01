@@ -56,7 +56,7 @@ export function SlideupMenu(props) {
                         {btn.caption}
                     </div>))
                 }
-                <div scroll-marker="1" className='scrollable' style={{
+                <div scroll-marker="1" style={{
                     height: "100%",
                     transform: `translateX(${props.scroll?.x || 0}px) translateY(${props.scroll?.y || 0}px)`,
                     

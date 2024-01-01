@@ -135,10 +135,10 @@ input[type="search"] {
   height: 27px;
   width: 150px;
   background-color: var(--search-background-color);
-  padding-inline-end: 28px;
+  padding-inline-end: 5px;
   color: rgb(255, 255, 255);
   direction: var(--dir);
-  padding-inline-start: 5px;
+  padding-inline-start: 28px;
 }
 
 

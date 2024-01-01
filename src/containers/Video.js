@@ -56,9 +56,18 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
 
         if (onNext && autoNext) {
-            setTimeout(() => onNext(), 3000);
+            setTimeout(() => {
+                onNext()
+                setOverwideQuiz(false);
+            }, 3000);
         }
     }
+
+    const onNextClicked = ()=>{
+        setOverwideQuiz(false);
+        onNext();
+    }
+
 
     const onLoadedMetadata = (e) => setVideoDimension({ w: e.currentTarget.videoWidth, h: e.currentTarget.videoHeight });
 
@@ -184,7 +193,10 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
 
 
         <div className="videoButtonsNew">
-            {onPrevious && <SkipPrevious style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onPrevious()} />}
+            {onPrevious && <SkipPrevious style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => {
+                onPrevious();
+                setOverwideQuiz(false);
+            }} />}
             <div style={{ width: 10 }}></div>
             {playing && <Pause style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.pause()} />}
             {paused && !ended && <PlayArrow style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
@@ -198,10 +210,10 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
                         </circle>
                     </svg>
                     <div>
-                        <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />
+                        <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={onNextClicked} />
                     </div>
                 </div> :
-                <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => onNext()} />)
+                <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={onNextClicked} />)
             }
 
         </div>

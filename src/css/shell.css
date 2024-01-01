@@ -130,7 +130,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
-    
+
 }
 
 .search {
@@ -250,14 +250,14 @@
 
 .prev {
     position: absolute;
-    top: calc(var(--header-height)+30px);
+    /* top: calc(var(--header-height)+30px); */
     left: 18px;
     z-index: 100;
 }
 
 .next {
     position: absolute;
-    top: calc(var(--header-height)+30px);
+    /* top: calc(var(--header-height)+30px); */
     right: 18px;
     z-index: 100;
 }

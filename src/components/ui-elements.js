@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack, ArrowForward } from '@mui/icons-material'
 import { fTranslate, translate } from '../utils/lang';
 import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
@@ -23,7 +23,9 @@ export function TrashButton(props) {
 
 export function BackButton(props) {
   //return <div className="back-button" {...props}></div>
-  return <ArrowBack className={props.className} style={{fontSize:40, transform: isRTL()?"rotateY(180deg)":""}} {...props} />
+  return  isRTL()? 
+    <ArrowForward className={props.className} style={{fontSize:40}} {...props} />:
+    <ArrowBack className={props.className} style={{fontSize:40}} {...props} />;
 }
 
 export function PrevButton(props) {

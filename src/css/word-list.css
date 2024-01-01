@@ -1,15 +1,13 @@
 
 
 .word-list-item {
-    display: flex;
-    flex-direction: row;
     width:100%;
     justify-content: flex-start;
+    flex-direction: row;
     align-items: center;
     direction: var(--dir);
-
-    
-    
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
 }
 .word-list-item-img > img {
     width: 50px;
@@ -19,5 +17,7 @@
 .word-list-item-text {
     color: black;
     font-size: 2em;
-    padding-inline-start: 25px;
+    text-align: start;
+    margin-inline-start: 10px;
+    /* padding-inline-start: 25px; */
 }

@@ -20,7 +20,6 @@ export const ClipType = {
 }
 
 function Card2(props) {
-    const [showOtherCategories, setShowOtherCategories] = useState(false);
 
     const originalCategoryId = props.originalCategoryId || props.categoryId;
 
@@ -117,8 +116,59 @@ function Card2(props) {
             }
         }), 100);
     }
+    const onWordMenu = () => {
+        const buttons = props.userContent ?
+            [
+                { caption: translate("EditMenu"), icon: <Edit />, callback: showWordInfo },
+                {
+                    caption: isShared ?
+                        translate("RemoveFromShareMenu") :
+                        translate("AddToShareMenu"), icon: <Share />, callback: addToShare
+                }, //todo unshare icon
+                { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteWord }
+            ] :
+            [];
+
+        trace("card menu", JSON.stringify(props))
+        if (props.categoryId === FileSystem.FAVORITES_NAME) {
+            buttons.push({ caption: translate("RemoveFromFavorite"), icon: <Favorite />, callback: removeFromFavorite })
+        } else {
+            buttons.push({ caption: translate("AddToFavorite"), icon: <Favorite />, callback: addToFavorites })
+        }
+        if (props.symLink) {
+            buttons.push({ caption: translate("RemoveFromThisCategory"), icon: <PlaylistRemove />, callback: removeFromThisCategory })
+        } else {
+            buttons.push({ caption: translate("AddToAnotherCategory"), icon: <PlaylistAdd />, callback: addToAnotherCategory })
+        }
+
+        props.pubSub.publish({
+            command: "open-slideup-menu", props: {
+                height: buttons.length * 70 + 200,
+                label: translatedName,
+                image: imageSrc,
+                type: "card",
+                buttons
+            }
+        });
+    }
+
 
     let translatedName = props.translate ? translate(props.cardName) : props.cardName;
+
+    if (props.asListItem) {
+        return <ISLink url={url} className="word-list-item">
+            <div className="word-list-item-img"><img src={imageSrc} /></div>
+            <div className="word-list-item-text">{translatedName}</div>
+            <div style={{ color: "black" }}>{
+                props.editMode && <TileButton size={24} onClick={onWordMenu}>
+                    <MoreHoriz style={{ fontSize: 35, color: 'black' }} />
+                </TileButton>
+            }
+            </div>
+        </ISLink>
+    }
+
+
 
     let innerBody = (
         <div className="card" style={cardDouble} theme={getThemeName(props.themeId)}>
@@ -131,42 +181,7 @@ function Card2(props) {
             <div className="footer">
                 <h2 className="rtl tileFont">{translatedName}</h2>
                 {props.editMode && !props.noMoreMenu && //props.userContent &&
-                    <TileButton size={24} onClick={() => {
-                        const buttons = props.userContent ?
-                            [
-                                { caption: translate("EditMenu"), icon: <Edit />, callback: showWordInfo },
-                                {
-                                    caption: isShared ?
-                                        translate("RemoveFromShareMenu") :
-                                        translate("AddToShareMenu"), icon: <Share />, callback: addToShare
-                                }, //todo unshare icon
-                                { caption: translate("DeleteMenu"), icon: <Delete />, callback: deleteWord }
-                            ] :
-                            [];
-
-                        trace("card menu", JSON.stringify(props))
-                        if (props.categoryId === FileSystem.FAVORITES_NAME) {
-                            buttons.push({ caption: translate("RemoveFromFavorite"), icon: <Favorite />, callback: removeFromFavorite })
-                        } else {
-                            buttons.push({ caption: translate("AddToFavorite"), icon: <Favorite />, callback: addToFavorites })
-                        }
-                        if (props.symLink) {
-                            buttons.push({ caption: translate("RemoveFromThisCategory"), icon: <PlaylistRemove />, callback: removeFromThisCategory })
-                        } else {
-                            buttons.push({ caption: translate("AddToAnotherCategory"), icon: <PlaylistAdd />, callback: addToAnotherCategory })
-                        }
-
-                        props.pubSub.publish({
-                            command: "open-slideup-menu", props: {
-                                height: buttons.length * 70 + 200,
-                                label: translatedName,
-                                image: imageSrc,
-                                type: "card",
-                                buttons
-                            }
-                        });
-                    }}
-                    >
+                    <TileButton size={24} onClick={onWordMenu}>
                         <MoreHoriz style={{ fontSize: 35, color: 'white' }} />
                     </TileButton>
                 }

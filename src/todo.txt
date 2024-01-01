@@ -1,3 +1,14 @@
+Bugs:
+V- word on the magnifier in search
+V- back button not shown?
+V- when playing whole folder, the title does not change, and the quiz is not reset after moveNext
+V- navigation r/l is not located right and not working at all
+V- in Video mode, settings is under video-host
+V- in iPhone - shortcut to another folder - empty list?
+- Question, before delete - bad design and not aligned to hebrew
+V- list mode, add action menu
+
+
 Bugs from Alaa:
 --------------
 - when adding new word - the icon is not shown but ?
@@ -11,7 +22,8 @@ Features:
 V- add symLink in other (custom) folders (highest prio)
 V- play whole folder
 V- 3rd mode of list w/o preview
-- mode quiz?
+V- mode quiz
+
 - android TV
 - windows version (low prio)
 

@@ -12,7 +12,8 @@ import { withAlert } from 'react-alert'
 import { Details, GridView, ListAlt, PlaylistPlay, Swipe, Sync, SyncAlt, ViewList } from '@mui/icons-material';
 import { MyIssieImg } from './components/apptype-selector'
 import { ReactComponent as IssieImg } from './images/IssieSign_opt.svg'
-import { List } from '@mui/material';
+import { createPortal } from 'react-dom';
+
 
 function ToggleButtons({ title, buttons }) {
   return <div className="toggle-container">
@@ -96,10 +97,13 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
   const width = Math.min(550, window.innerWidth);
 
-  return <ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
+  return createPortal(<ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
     //animate={true} 
     width={width} // + "px"}
-    style={{ top: isMobile && isLandscape ? 50 : 170, left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh" : "8vh" }}
+    style={{ 
+      top: isMobile && isLandscape ? 50 : 170, 
+      left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh" : "8vh" 
+    }}
   >
     <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
       <div onClick={showInfo} className="settings-item about">
@@ -262,7 +266,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
       }
 
     </div>
-  </ModalDialog >
+  </ModalDialog >, document.getElementById("settings"))
 }
 
 

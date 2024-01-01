@@ -67,6 +67,7 @@
 
 .slideup-menu-title-text {
     padding-inline-start: 15px;
+    font-size: 40px;
 }
 
 .slideup-menu-body {
@@ -92,7 +93,14 @@
     padding: 5px;
     grid-template-columns: 60px 1fr;
     padding-inline-start: 15px;
+    font-size: 35px;
 }
+
+.slideup-menu-item > lbl{
+    font-size: 25px;
+}
+
+
 
 .slideup-menu-item > svg {
     
