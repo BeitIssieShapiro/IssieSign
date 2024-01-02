@@ -10,7 +10,7 @@ import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
 import WordListAndPreview from "../containers/Word-and-video";
 
-import { WordsListMode, isBrowser, isMobile } from '../utils/Utils';
+import { WordsListMode, isBrowser, isElectron, isMobile } from '../utils/Utils';
 import {  isRTL } from '../utils/lang';
 import { ClipLoader } from 'react-spinners';
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -59,9 +59,11 @@ export function HeaderButton(props) {
   return <div {...props}
     onClick={props.onClick}
     onTouchStart={props.onTouchStart}
-    //onPointerDown={props.onTouchStart}
+    onMouseDown={props.onTouchStart}
+    onPointerDown={props.onTouchStart}
     onTouchEnd={props.onTouchEnd}
-    //onPointerUp={props.onTouchEnd}
+    onMouseUp={props.onTouchEnd}
+    onPointerUp={props.onTouchEnd}
     className={"noTouchCallout " + (props.className || "")}
     style={style}>
     {props.children}
@@ -83,7 +85,7 @@ export function EditButton(props) {
     onTouchStart={(evt) => {
 
       evt.preventDefault()
-      if (isBrowser() || isMobile()) {
+      if (isBrowser() || isMobile() || isElectron()) {
         props.onChange(!props.selected);
         return;
       }

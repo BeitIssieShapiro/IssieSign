@@ -8,7 +8,7 @@ import Info from "./containers/Info";
 import AddEditItem from "./components/add";
 import { withAlert } from 'react-alert'
 
-import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType, WordsListMode, QUIZ_MODE_KEY } from "./utils/Utils";
+import { getLanguage, trace, isMyIssieSign, getThemeName, getAppName, SHOW_OWN_FOLDERS_FIRST_KEY, isBrowser, ISSIE_SIGN_ASSETS_STATE, ISSIE_SIGN_APP_TYPE, getSettingKey, saveSettingKey, getContentMap, saveAppType, getPersistedAppType, WordsListMode, QUIZ_MODE_KEY, isElectron } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from './utils/lang';
 import { os } from './current-language';
 
@@ -39,7 +39,6 @@ import { SlideupMenu } from './components/slideup-menu';
 import InfoArabic from './containers/Info-issie-sign-arabic';
 import InfoMyIssieSign from './containers/Info-my-issie-sign';
 import AppTypeSelection from './components/apptype-selector';
-import ISLink from './components/ISLink';
 
 
 
@@ -95,6 +94,16 @@ class App extends IssieBase {
 
     deviceReady() {
         if (isBrowser()) return;
+
+        if (isElectron()) {
+            console.log("Device is ELECTRON");
+            window.isAndroid = false;
+            window.isElectron = true;
+            document.basePath = "";
+            window.documents = "";
+            return;
+        }
+
         if (cordova.file.applicationDirectory.includes('android_asset')) {
             // Android:
             console.log("Device is Android")
@@ -149,8 +158,8 @@ class App extends IssieBase {
             return;
         }
 
-        if (window.deviceIsReady) {
-            console.log("Cordova Device is Ready");
+        if (window.deviceIsReady ){ //&& (os !== "ELECTRON" || window.isFilePluginReadyRaised())) {
+            console.log("Cordova Device is Ready", os);
             resolver();
         } else {
             console.log("Cordova Device is not ready yet - recheck in 1 sec");
@@ -201,7 +210,7 @@ class App extends IssieBase {
                 if (container.getAttribute("scroll-marker") === "1") {
                     const top = container?.getBoundingClientRect()?.top || -131;
                     const maxScrollX = container.scrollWidth - Math.min(container.offsetWidth, window.innerWidth);
-                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - top + y );
+                    const maxScrollY = container.scrollHeight - Math.min(container.offsetHeight, window.innerHeight - top + y);
                     if (x > 0) {
                         x = 0;
                     }
@@ -210,7 +219,7 @@ class App extends IssieBase {
                     }
                     x = Math.max(x, -maxScrollX);
                     y = Math.max(y, -maxScrollY);
-                    console.log("scroll info", y, top,  maxScrollY, container.scrollHeight, container.offsetHeight, window.innerHeight)
+                    console.log("scroll info", y, top, maxScrollY, container.scrollHeight, container.offsetHeight, window.innerHeight)
                     // if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
                     //     x = window.innerWidth - container.scrollWidth;
                     // }
@@ -272,10 +281,12 @@ class App extends IssieBase {
         await this.waitForDeviceReady();
         this.deviceReady();
 
-        if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState + "" == AssetsState.UNINITIALIZED) {
-            this.loadAssets();
-        } else {
-            console.log("Persisted assets state:", assetsState)
+        if (!isElectron()) {
+            if ((appType == AppType.IssieSign || appType == AppType.IssieSignArabic) && assetsState + "" == AssetsState.UNINITIALIZED) {
+                this.loadAssets();
+            } else {
+                console.log("Persisted assets state:", assetsState)
+            }
         }
 
         await FileSystem.get().init(contentMap, appType, pubsub, showOwnFoldersFirst).then(() => this.setState({ fs: FileSystem.get() }));
@@ -615,7 +626,7 @@ class App extends IssieBase {
 
         this.state.shareCart.clear();
 
-        if (appType == AppType.IssieSign && this.state.assetsState + "" == AssetsState.UNINITIALIZED) {
+        if (!isElectron() && appType == AppType.IssieSign && this.state.assetsState + "" == AssetsState.UNINITIALIZED) {
             this.loadAssets();
         }
 
@@ -635,27 +646,27 @@ class App extends IssieBase {
         }
     }
 
-    nextWord = (words)=> {
+    nextWord = (words) => {
         // move to the next word
         let current = this.state.playAllWords?.current;
         if (!current) {
             current = 0;
         }
-        if (current < words.length-1) {
-            this.setState({playAllWords: {...this.state.playAllWords, current: current+1}});
+        if (current < words.length - 1) {
+            this.setState({ playAllWords: { ...this.state.playAllWords, current: current + 1 } });
         } else {
-            this.setState({playAllWords:undefined});
+            this.setState({ playAllWords: undefined });
         }
     }
 
-    prevWord = ()=> {
+    prevWord = () => {
         let current = this.state.playAllWords?.current;
         if (!current) {
             return;
         }
         if (current > 0) {
-            this.setState({playAllWords: {...this.state.playAllWords, current: current-1}});
-        } 
+            this.setState({ playAllWords: { ...this.state.playAllWords, current: current - 1 } });
+        }
     }
 
     render() {
@@ -792,7 +803,7 @@ class App extends IssieBase {
                     }
 
                     {/* <ISLink slot="center-bar" onPress={()=>trace("long title press")}><div>{this.state.title}</div></ISLink> */}
-                    <div  slot="center-bar" className="shelltitle allow-mouse-events" onClick={()=>this.onTitleClicked()}>{this.state.title}</div>
+                    <div slot="center-bar" className="shelltitle allow-mouse-events" onClick={() => this.onTitleClicked()}>{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}
@@ -896,8 +907,8 @@ class App extends IssieBase {
                     //this.setState({playAllWords: {...this.state.playAllWords, current: 0}});
                 }
                 const word = words[current];
-               // return <div>{word.name}</div>
-              
+                // return <div>{word.name}</div>
+
                 return <div style={{ width: "100%", height: "100%", position: "relative" }}>
                     <Video {...this.props}
                         isFavorite={word.favorite}
@@ -906,15 +917,15 @@ class App extends IssieBase {
                         categoryId={categoryId}
                         isLandscape={IssieBase.isLandscape()}
                         isMobile={IssieBase.isMobile()}
-                        videoName={word.userContent? "file" : word.videoName}
+                        videoName={word.userContent ? "file" : word.videoName}
                         title={word.title}
                         filePath={word.videoName}
                         headerSize={headerSize}
-                        onNext={()=>this.nextWord(words)}
+                        onNext={() => this.nextWord(words)}
                         autoNext={true}
-                        onPrevious={()=>this.prevWord()}
+                        onPrevious={() => this.prevWord()}
                         quizMode={this.state.quizMode}
-                        // onVideoEnded={() => this.nextWord(words)}
+                    // onVideoEnded={() => this.nextWord(words)}
                     />
                 </div>
             }

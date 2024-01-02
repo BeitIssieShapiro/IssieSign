@@ -10,6 +10,8 @@ package-lock.json
 .firebaserc
 .mediaPath
 
+#electron:
+win-app
 
 # language sensitive files
 src/mainJson.js

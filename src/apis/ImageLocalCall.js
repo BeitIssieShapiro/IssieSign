@@ -1,3 +1,4 @@
+import { isElectron } from "../utils/Utils";
 import FileSystem from "./filesystem";
 
 const getImageContent = (image): string => {
@@ -15,7 +16,9 @@ export const imageLocalCall = (imageName: string, isUserContent) => {
     if (imageName.startsWith("http")) return imageName;
     const sep = imageName.includes("?") ? "&" : "?"
     const cacheBuster = sep + "r=" + FileSystem.cacheBuster;
-    if (imageName.startsWith("issie-")) return imageName + cacheBuster
+    if (imageName.startsWith("issie-")) {
+        return imageName + cacheBuster;
+    }
     if (isUserContent || imageName.startsWith("file:")) {
         return FileSystem.get().getFilePath(imageName) + cacheBuster;
     }

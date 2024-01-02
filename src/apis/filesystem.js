@@ -1,4 +1,4 @@
-import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY, AppType, getAppRootFolderName } from '../utils/Utils';
+import { isBrowser, saveSettingKey, trace, getAppName, HIDDEN_FOLDERS_KEY, AppType, getAppRootFolderName, isElectron } from '../utils/Utils';
 import axios from 'axios';
 import { translate } from '../utils/lang';
 
@@ -165,17 +165,46 @@ export default class FileSystem {
         this.pubSub = pubSub;
         if (!isBrowser()) {
             return new Promise(async (resolve, reject) => {
-                // let attempts = 0;
-                // while (attempts < 15 && !(await waitForCordova(1000))) {
-                //     console.log("Wait for cordova2..." + attempts)
-                //     attempts++;
-                // };
-                if (!window.resolveLocalFileSystemURL || FileSystem.getDocDir() === undefined) {
+
+                if (!isElectron() && !window.resolveLocalFileSystemURL || FileSystem.getDocDir() === undefined) {
                     console.log("Cordova file plugin not working...")
                     return;
+                } else if (isElectron()) {
+                    window.requestFileSystem =
+                        window.requestFileSystem || window.webkitRequestFileSystem;
+                    window.directoryEntry = window.directoryEntry || window.webkitDirectoryEntry;
+
+                    const waitForFS = new Promise((resolve, reject) =>
+                        window.requestFileSystem(Window.PERSISTENT, 1000000, (fs) => {
+                            console.log("File system ready.");
+                            window.electronFS = fs;
+                            window.electronDocumentBaseURL = fs.root.toURL()
+                            console.log("electron base url", window.electronDocumentBaseURL)
+                            resolve();
+                        }, (err) => reject(err)));
+
+                    await waitForFS;
+
+                    window.resolveLocalFileSystemURL = (path, success, error, isFile) => {
+                        if (path === FileSystem.getDocDir()) {
+                            if (success && window.electronFS?.root) {
+                                success(window.electronFS.root)
+                            }
+
+                            if (error && !window.electronFS.root) {
+                                error("Root folder not ready yet")
+                            }
+                        } else {
+                            if (isFile) {
+                                window.electronFS?.root.getFile(path, { create: false }, success, error);
+                            } else {
+                                window.electronFS?.root.getDirectory(path, { create: false }, success, error);
+                            }
+                        }
+                    }
                 }
 
-                return window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
+                window.resolveLocalFileSystemURL(FileSystem.getDocDir(),
                     (docDir) => {
                         docDir.getFile(FileSystem.INDEX_FILE, { create: false, exclusive: false },
                             (indexFile) => {
@@ -259,7 +288,11 @@ export default class FileSystem {
                                     (err) => reject(err)
                                 );
                             })
-                    })
+                    }),
+                    (err) => {
+                        console.log("Error resolving doc dir", err)
+                        reject(err)
+                    }
 
             });
         } else {
@@ -778,7 +811,8 @@ export default class FileSystem {
                 },
                 (err) => reject(err)
             ),
-            (err) => reject(err)
+            (err) => reject(err),
+            true // isFile
         ));
     }
 
@@ -797,13 +831,18 @@ export default class FileSystem {
                 // return document.basePath + name.substr(skip);
                 trace("not expected to arrive here!")
                 throw new Error("getFilePath with file:// in android - not expected")
+            } else if (!isElectron()) {
+                return "issie-" + name;
             }
-            return "issie-" + name;
         } else if (name.startsWith("http")) {
             return name;
         }
 
         const relPath = "Categories/" + decodeURIComponent(name);
+
+        if (isElectron()) {
+            return window.electronDocumentBaseURL + relPath;
+        }
 
         if (forUpload && window.isAndroid) {
             let filePath = window.documents + relPath;
@@ -877,7 +916,8 @@ export default class FileSystem {
                     (err) => reject(err)
                 )
             },
-                (err) => reject(err)
+                (err) => reject(err),
+                true // isFile
             )
         });
     }
@@ -889,7 +929,8 @@ export default class FileSystem {
                 trace("getHttpURLForFile -result", file.toURL(), file.fullPath);
                 resolve(file.toURL())
             },
-            (err) => reject(err)
+            (err) => reject(err),
+            true // isFile
         ));
     }
 
@@ -1319,21 +1360,6 @@ export default class FileSystem {
     }
 
 
-}
-
-
-export function waitForCordova(ms) {
-    if (isBrowser() || (window.cordova && window.cordova.file && window.resolveLocalFileSystemURL && window['documents'])) {
-        return Promise.resolve(true);
-    }
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            if (window.cordova && window.cordova.file && window.resolveLocalFileSystemURL && window['documents']) {
-                resolve(true)
-            }
-            resolve(false)
-        }, ms)
-    })
 }
 
 

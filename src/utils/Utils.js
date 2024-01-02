@@ -49,6 +49,11 @@ export function isBrowser() {
     return window.isBrowser;
 }
 
+export function isElectron() {
+    return os === "ELECTRON";
+}
+
+
 export function isMyIssieSign() {
     return getAppName() == "MyIssieSign";
 }

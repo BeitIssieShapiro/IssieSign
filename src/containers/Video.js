@@ -11,7 +11,7 @@ import FileSystem from "../apis/filesystem";
 import { createPortal } from 'react-dom';
 
 import '../css/video.css';
-import { trace } from "../utils/Utils";
+import { isElectron, trace } from "../utils/Utils";
 
 const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
     maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious, autoNext, quizMode }) => {
@@ -63,7 +63,7 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
     }
 
-    const onNextClicked = ()=>{
+    const onNextClicked = () => {
         setOverwideQuiz(false);
         onNext();
     }
@@ -106,11 +106,15 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
             videoContent = videoName;
         } else {
             if (!window.isAndroid) {
-                //iOS
-                if (decodeURIComponent(videoName)[0] < 'M') {
-                    videoContent = "cdvfile:///_app_file_" + document.basePath + videoName;
+                if (isElectron()) {
+                    videoContent = "videos/" + videoName;
                 } else {
-                    videoContent = "cdvfile:///_app_file_" + document.basePath2 + videoName;
+                    //iOS
+                    if (decodeURIComponent(videoName)[0] < 'M') {
+                        videoContent = "cdvfile:///_app_file_" + document.basePath + videoName;
+                    } else {
+                        videoContent = "cdvfile:///_app_file_" + document.basePath2 + videoName;
+                    }
                 }
             } else {
                 //Android
@@ -181,10 +185,10 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         {
             quizMode && !overwideQuiz && <div className="quizMode" style={{
                 top: -videoHeight,
-                width: videoWidth/2,
-                height: videoHeight*2/3
+                width: videoWidth / 2,
+                height: videoHeight * 2 / 3
             }}
-            onClick={()=>setOverwideQuiz(true)}
+                onClick={() => setOverwideQuiz(true)}
             >
                 <div className="quizInner">?</div>
 
