@@ -123,6 +123,13 @@ use_modular_headers!
 
 Note: if you move the whole project from backup, you may get an error os CodeSign. in this case removing all xattr helped: `xattr -rc /path/to/directory` 
 
+### Electron
+
+
+#### Build/Run
+- for debug `cordova run electron --nobuild`
+- release `cordova build electron --release`
+
 
 ### Android
 - Import project (app/platforms/android)

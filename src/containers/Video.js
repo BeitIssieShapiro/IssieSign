@@ -1,5 +1,5 @@
 import {
-    ArrowForwardRounded, Favorite, FavoriteBorder, Pause, PauseCircleFilled, PlayArrow, PlayCircle,
+    ArrowForwardRounded, Check, Clear, Delete, Favorite, FavoriteBorder, Pause, PauseCircleFilled, PlayArrow, PlayCircle,
     Replay,
     ReplayCircleFilled,
     SkipNext,
@@ -12,13 +12,18 @@ import { createPortal } from 'react-dom';
 
 import '../css/video.css';
 import { isElectron, trace } from "../utils/Utils";
+import { imageLocalCall } from "../apis/ImageLocalCall";
 
 const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, isLandscape, goBack,
-    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded, onNext, onPrevious, autoNext, quizMode }) => {
+    maxWidth, isFavorite, onFavoriteToggle, headerSize, onVideoEnded,
+    onNext, onPrevious, autoNext, quizMode, getMultipleChoices }) => {
     const [playing, setPlaying] = useState(false);
     const [paused, setPaused] = useState(false);
     const [ended, setEnded] = useState(false);
-    const [overwideQuiz, setOverwideQuiz] = useState(false);
+    const [overideQuiz, setOverideQuiz] = useState(false);
+    const [showMultipleChoices, setShowMultipleChoices] = useState(false);
+    const [multipleChoices, setMultipleChoices] = useState(false);
+    const [showMultipleChoiceAnswer, setShowMultipleChoiceAnswer] = useState([]);
 
     const [videoDimension, setVideoDimension] = useState({ w: window.innerWidth, h: window.innerWidth * 5 / 9 });
     const [videoWidth, setVideoWidth] = useState(0);
@@ -36,6 +41,13 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         }
     }, [ended, paused, playing])
 
+    useEffect(() => {
+        if (getMultipleChoices && !multipleChoices) {
+            const choices = getMultipleChoices();
+            trace("choices", choices)
+            setMultipleChoices(choices);
+        } 
+    }, [showMultipleChoices, multipleChoices])
     const onPlay = () => {
         setPlaying(true);
         setPaused(false);
@@ -55,16 +67,20 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
             onVideoEnded();
         }
 
-        if (onNext && autoNext) {
+        if (onNext && autoNext && !quizMode) {
             setTimeout(() => {
                 onNext()
-                setOverwideQuiz(false);
+                setOverideQuiz(false);
             }, 3000);
+        } else if (quizMode && getMultipleChoices) {
+            setShowMultipleChoices(true)
         }
     }
 
     const onNextClicked = () => {
-        setOverwideQuiz(false);
+        setOverideQuiz(false);
+        setShowMultipleChoices(false);
+        setMultipleChoices(undefined);
         onNext();
     }
 
@@ -161,10 +177,16 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
     }
 
     if (vidElem) {
-        vidElem.muted = quizMode && !overwideQuiz;
+        vidElem.muted = quizMode && !overideQuiz;
     }
 
     trace("video QM:", quizMode, "mute", vidElem.muted)
+
+    //calculate bottons location
+    const buttonSize = 100;
+    const freeHeightBelowVideoHost = window.innerHeight - (videoTop + videoHeight);
+
+    const buttonsBottom = - Math.min(130, Math.max(freeHeightBelowVideoHost, 55));
 
     return createPortal(<div className="videoHostNew" >
         {isMobile && isLandscape && <div className="videoBackButtonMobile" >
@@ -183,41 +205,62 @@ const Video = React.memo(({ videoName, filePath, title, categoryId, isMobile, is
         </div>}
 
         {
-            quizMode && !overwideQuiz && <div className="quizMode" style={{
+            quizMode && !overideQuiz && <div className="quizMode" style={{
                 top: -videoHeight,
                 width: videoWidth / 2,
                 height: videoHeight * 2 / 3
             }}
-                onClick={() => setOverwideQuiz(true)}
+                onClick={() => setOverideQuiz(true)}
             >
                 <div className="quizInner">?</div>
 
             </div>
         }
 
+        {showMultipleChoices && multipleChoices &&
+            <div className="videoButtonsNew" style={{
+                bottom: (videoHeight / 2) - (window.innerWidth / 10),
+                justifyContent: "space-around", flexDirection: "row-reverse"
+            }}>
+                {multipleChoices.map((mc, i) => (<div className="quizBox"
+                    style={{ width: window.innerWidth / 5, height: window.innerWidth / 5, }}
+                    onClick={() => setShowMultipleChoiceAnswer([i, ...showMultipleChoiceAnswer])}
+                >
+                    <div>{i + 1}</div>
+                    <div>{mc.name}</div>
+                    <img src={imageLocalCall(mc.imageName, mc.userContent)} />
+                    {showMultipleChoiceAnswer.some(x => x === i) && <div className="quiz-answer">
+                        {mc.correct ? <Check style={{ color: "#00F501" }} /> : <Clear style={{ color: "red" }} />}
+                    </div>}
+                </div>))}
+            </div>}
 
-        <div className="videoButtonsNew">
-            {onPrevious && <SkipPrevious style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => {
+
+        <div className="videoButtonsNew" style={{ bottom: buttonsBottom }}>
+            {onPrevious && <SkipPrevious style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={() => {
                 onPrevious();
-                setOverwideQuiz(false);
+                setOverideQuiz(false);
             }} />}
             <div style={{ width: 10 }}></div>
-            {playing && <Pause style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.pause()} />}
-            {paused && !ended && <PlayArrow style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
-            {ended && <Replay style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
+            {playing && <Pause style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={() => vidElem.pause()} />}
+            {paused && !ended && <PlayArrow style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={() => vidElem.play()} />}
+            {ended && <Replay style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={() => {
+                setShowMultipleChoices(false);
+                vidElem.play()
+            }} />}
             <div style={{ width: 10 }}></div>
-            {onNext && (ended ?
+            {onNext && (ended && autoNext && !quizMode ?
                 <div class="progressCircle">
-                    <svg class="progress" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" >
+                    <svg class="progress" viewBox={"0 0 " + buttonSize + " " + buttonSize}>
+                        <circle cx={"" + buttonSize / 2} cy={"" + buttonSize / 2} r={"" + buttonSize / 2 - 10} >
                             {/* <animate attributeName="stroke-dashoffset" attributeType="XML" from="10" to="251.2" dur="5s" repeatCount="indefinite" /> */}
                         </circle>
                     </svg>
                     <div>
-                        <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={onNextClicked} />
+                        <SkipNext style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={onNextClicked} />
                     </div>
                 </div> :
-                <SkipNext style={{ fontSize: 100 }} className="videoButtonNew-white" onClick={onNextClicked} />)
+                <SkipNext style={{ fontSize: buttonSize }} className="videoButtonNew-white" onClick={onNextClicked} />)
             }
 
         </div>

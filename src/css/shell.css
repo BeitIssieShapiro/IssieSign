@@ -90,8 +90,8 @@
     margin-right: 2%;
     width: 96%;
     display: grid;
-    grid-template-columns: 44px 44px 44px 44px 1fr 44px;
-    grid-template-areas: 'a b c d e f';
+    grid-template-columns: 44px 44px 44px 44px 44px 1fr 44px;
+    grid-template-areas: 'a b c d e f g';
     justify-content: flex-start;
     z-index: 1000;
     direction: var(--dirRev);
@@ -301,8 +301,8 @@
 
     .topBar {
         grid-template-areas:
-            'a . . . . f'
-            'b c d . e .';
+            'a e . . . . g'
+            'b c d f . . .';
     }
 
 }

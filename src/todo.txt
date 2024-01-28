@@ -1,4 +1,5 @@
 Bugs:
+ - after adding a word to fav or another folder, its menu is wrong, show remove from shorcut.
 V- word on the magnifier in search
 V- back button not shown?
 V- when playing whole folder, the title does not change, and the quiz is not reset after moveNext

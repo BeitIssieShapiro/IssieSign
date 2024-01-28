@@ -158,12 +158,14 @@ function Card2(props) {
     if (props.asListItem) {
         return <ISLink url={url} className="word-list-item">
             <div className="word-list-item-img"><img src={imageSrc} /></div>
-            <div className="word-list-item-text">{translatedName}</div>
-            <div style={{ color: "black" }}>{
-                props.editMode && <TileButton size={24} onClick={onWordMenu}>
-                    <MoreHoriz style={{ fontSize: 35, color: 'black' }} />
-                </TileButton>
-            }
+            <div className="word-list-underlined-group">
+                <div className="word-list-item-text">{translatedName}</div>
+                <div style={{ color: "black" }}>{
+                    props.editMode && <TileButton size={24} onClick={onWordMenu}>
+                        <MoreHoriz style={{ fontSize: 35, color: 'black' }} />
+                    </TileButton>
+                }
+                </div>
             </div>
         </ISLink>
     }

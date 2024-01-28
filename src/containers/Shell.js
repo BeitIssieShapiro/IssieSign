@@ -36,7 +36,7 @@ function Shell(props) {
     return (
         <div className="shellhost">
             {!collapseHeader && <div className="shellTopBlueBar" />}
-            <div className="projectors-background" />
+            {!collapseHeader && <div className="projectors-background" />}
             {!collapseHeader && <div className="shellheader parent" theme={props.theme}>
                 <div className="topBar" onClick={() => trace("top bar clicked")}>
                     <Slot slot="top-bar">{props.children}</Slot>

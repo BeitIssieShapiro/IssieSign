@@ -28,7 +28,7 @@ import Settings from './settings'
 import './css/settings.css'
 import {
     SettingsButton, TrashButton,
-    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2, BusyMsg
+    BackButton, PrevButton, NextButton, EditButton, AddButton, ShareCartButton, Word2, BusyMsg, PlayAllButton
 } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
 import ShareInfo from './components/share-info';
@@ -158,7 +158,7 @@ class App extends IssieBase {
             return;
         }
 
-        if (window.deviceIsReady ){ //&& (os !== "ELECTRON" || window.isFilePluginReadyRaised())) {
+        if (window.deviceIsReady || os === "ELECTRON") { // || window.isFilePluginReadyRaised())) {
             console.log("Cordova Device is Ready", os);
             resolver();
         } else {
@@ -636,15 +636,15 @@ class App extends IssieBase {
         );
     }
 
-    onTitleClicked = () => {
-        if (this.isWords()) {
-            this.setState({
-                playAllWords: {
-                    current: undefined,
-                },
-            });
-        }
-    }
+    // onTitleClicked = () => {
+    //     if (this.isWords()) {
+    //         this.setState({
+    //             playAllWords: {
+    //                 current: undefined,
+    //             },
+    //         });
+    //     }
+    // }
 
     nextWord = (words) => {
         // move to the next word
@@ -684,7 +684,7 @@ class App extends IssieBase {
         let leftArrow = "";
         let rightArrow = "";
 
-        let backElement = App.isHome(this.props) ? null : <BackButton className="f" slot="top-bar" onClick={() => this.goBack()} />
+        let backElement = App.isHome(this.props) ? null : <BackButton className="g" slot="top-bar" onClick={() => this.goBack()} />
         let searchInput = "";
 
         // let deleteButton = this.state.showDelete ?
@@ -698,7 +698,7 @@ class App extends IssieBase {
                 (isRTL() ? { right: 0 } : { left: 0 }) : { left: "calc(50% - 75px)" };
             const shouldCenter2ndRow = !this.state.editMode && window.innerWidth < 650;
             searchInput = (
-                <div slot="top-bar" className={"search " + (secondRow ? "" : " e")}
+                <div slot="top-bar" className={"search " + (secondRow ? "" : " f")}
                     style={secondRow ? { position: "absolute", top: 52, ...secondRowSideLocation }
                         : undefined}
                 //style={isRTL() ? { right: 0, paddingInlineEnd } : { left: 0, paddingInlineEnd }}
@@ -712,7 +712,7 @@ class App extends IssieBase {
 
         if (!this.isSwipeAllowed() && !this.isShareScreen() &&
             (!this.isAddScreen() && !this.isVideo() && (
-                this.isWords() && this.state.wordsListMode === WordsListMode.TILES) ||
+                this.isWords() && this.state.wordsListMode === WordsListMode.TILES && !this.state.playAllWords) ||
                 this.isSearch() ||
                 App.isHome(this.props))) {
             leftArrow = <NextButton slot="next" onClick={this.ScrollRight} id="scrolRight" />
@@ -720,7 +720,7 @@ class App extends IssieBase {
         }
 
         const collapseHeader = (IssieBase.isMobile() && IssieBase.isLandscape() && (this.isVideo() ||
-            this.state.adultMode && this.isWords()))
+            (this.state.adultMode || this.state.playAllWords) && this.isWords()))
 
         let overFlowX = this.state.dimensions.overFlowX;
         if (this.isSearch() || this.isWords()) {
@@ -803,7 +803,21 @@ class App extends IssieBase {
                     }
 
                     {/* <ISLink slot="center-bar" onPress={()=>trace("long title press")}><div>{this.state.title}</div></ISLink> */}
-                    <div slot="center-bar" className="shelltitle allow-mouse-events" onClick={() => this.onTitleClicked()}>{this.state.title}</div>
+
+                    {this.isWords() &&
+                        <PlayAllButton slot="top-bar" className={this.state.editMode ? (showAdd ? "e" : "d") : (window.innerWidth < 650 ? "e" : "b")} color='white'
+                            addFolder={App.isHome(this.props)}
+                            onClick={() => this.setState({
+                                playAllWords: {
+                                    current: undefined,
+                                },
+                            })
+                            }
+                        />}
+
+
+
+                    <div slot="center-bar" className="shelltitle allow-mouse-events">{this.state.title}</div>
                     {searchInput}
                     {leftArrow}
                     {rightArrow}
@@ -837,6 +851,38 @@ class App extends IssieBase {
 
             </div >
         );
+    }
+
+    getVideoQuizChoices(word, categoryId) {
+        if (!word) return [];
+        
+        const getRandomWord = (existingWords) => {
+            const category = FileSystem.get().getCategories().find(cat => cat.name === categoryId);
+            // categories = categories.filter(c => c.id !== FileSystem.TUTORIAL_ID && c.id !== FileSystem.FAVORITES_ID && !c.userContent)
+            // if (categories.length > 0) {
+
+
+            //     const randCat = Math.floor(Math.random() * categories.length);
+            //     trace("rand", randCat, categories)
+            if (category) {
+                let words = category.words;
+                words = words.filter(w => !w.userContent && existingWords.find(ew => w.name !== ew.name));
+                if (words.length > 0) {
+                    const randWord = Math.floor(Math.random() * words.length);
+                    return words[randWord];
+                }
+            }
+            return word;
+        }
+
+        const word1 = getRandomWord([word]);
+        const word2 = getRandomWord([word, word1]);
+
+        return [
+            { name: word.name, imageName: word.imageName, correct: 1, order: Math.random() },
+            { name: word1.name, imageName: word1.imageName, correct: 0, order: Math.random() },
+            { name: word2.name, imageName: word2.imageName, correct: 0, order: Math.random() }
+        ].sort((a, b) => a.order - b.order);
     }
 
     getChildren(path) {
@@ -894,7 +940,11 @@ class App extends IssieBase {
             const [categoryId, title] = splitAndDecodeCompoundName(path.substr(6));
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
 
-            this.setTitle(cat?.translate ? translate(title) : title);
+            if (this.state.quizMode && this.state.playAllWords) {
+                this.setTitle("? ? ?");
+            } else {
+                this.setTitle(cat?.translate ? translate(title) : title);
+            }
 
             const themeId = cat && (cat.userContent && cat.themeId ? cat.themeId : getTheme(cat.id))
             const words = cat?.words || [];
@@ -925,6 +975,7 @@ class App extends IssieBase {
                         autoNext={true}
                         onPrevious={() => this.prevWord()}
                         quizMode={this.state.quizMode}
+                        getMultipleChoices={() => this.getVideoQuizChoices(word, categoryId)}
                     // onVideoEnded={() => this.nextWord(words)}
                     />
                 </div>
@@ -959,8 +1010,11 @@ class App extends IssieBase {
             const cat = FileSystem.get().getCategories().find(c => c.name === categoryId);
             const word = cat?.words.find(w => w.name === title);
             const isFavorite = word?.favorite;
-
-            this.setTitle((word && word.translate) ? translate(title) : title);
+            if (this.state.quizMode) {
+                this.setTitle("? ? ?");
+            } else {
+                this.setTitle((word && word.translate) ? translate(title) : title);
+            }
 
             return (
                 <div style={{ width: "100%", height: "100%", position: "relative" }}>
@@ -976,6 +1030,7 @@ class App extends IssieBase {
                         filePath={filePath ? decodeURIComponent(filePath) : ""}
                         headerSize={headerSize}
                         quizMode={this.state.quizMode}
+                        getMultipleChoices={() => this.getVideoQuizChoices(word, categoryId)}
                     />
                 </div>)
         }

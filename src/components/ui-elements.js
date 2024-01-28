@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack, ArrowForward } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack, ArrowForward, PlaylistPlay } from '@mui/icons-material'
 import { fTranslate, translate } from '../utils/lang';
 import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
@@ -77,14 +77,14 @@ export function EditButton(props) {
   const alignTo = isRTL()?{left:40}:{right:40};
 
   return <HeaderButton slot={props.slot} className={props.className}
-    // onClick={()=>{
-    //   if (isBrowser()) {
-    //     props.onChange(!props.selected);
-    //   }
-    // }}
+    onClick={()=>{
+      if (isBrowser() || isElectron()) {
+        props.onChange(!props.selected);
+      }
+    }}
     onTouchStart={(evt) => {
 
-      evt.preventDefault()
+      //evt.preventDefault()
       if (isBrowser() || isMobile() || isElectron()) {
         props.onChange(!props.selected);
         return;
@@ -132,6 +132,13 @@ export function AddButton(props) {
     onClick={props.onClick}>
     {props.addFolder ? <AddFolderSVG style={{ width: 40 }} /> :
       <AddVideoSVG style={{ width: 40 }} />}
+  </HeaderButton>
+}
+
+export function PlayAllButton(props) {
+  return <HeaderButton slot={props.slot} selected={props.selected} className={props.className}
+    onClick={props.onClick}>
+     <PlaylistPlay style={{ fontSize: 45 }} /> 
   </HeaderButton>
 }
 
