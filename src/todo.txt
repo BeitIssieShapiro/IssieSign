@@ -1,5 +1,6 @@
 Bugs:
- - after adding a word to fav or another folder, its menu is wrong, show remove from shorcut.
+V- 3 second delay message is on top of play-list btn
+V- after adding a word to fav or another folder, its menu is wrong, show remove from shorcut.
 V- word on the magnifier in search
 V- back button not shown?
 V- when playing whole folder, the title does not change, and the quiz is not reset after moveNext
@@ -53,7 +54,7 @@ V- in מילים שימושיות sort by id
 V- sort single image before all double images
 V- check arabic and Heb AA - should also be Z803-Z804?
 V- fix Z: X764-X795
-V- repeated search and backspace pusht he header up 
+V- repeated search and backspace pusht he header up
 V- slide sideways in words is מגומגם
 - double images are getting out of box - can't reproduce
 V- replace fav. icone with a heart
@@ -75,7 +76,7 @@ V- מחיקה - delete also from cloud? - no
 
 
 V- add to favorite from search
-V- scroll in word unlimited 
+V- scroll in word unlimited
 V- no projectors on Add screen
 V- in add screen - the input text for name is too short
 V    - color selection - give more height
@@ -110,11 +111,11 @@ V (check)- favorites - make sure no more than one
 V- Sorting folders: favorite first then alphabetically
 V- Tutorial for heb/Arabic
 V- settings:
-V  swipe: two options: 
+V  swipe: two options:
 V  - swipe
 V  - click (arrows)
 V- google drive: yes/no translated
-V- in add google-drive yes/no translated  
+V- in add google-drive yes/no translated
 V- space before folder name in add.js
 V- delete a word or cat which is in sharelist
 V- reply button is behind video
@@ -183,4 +184,3 @@ Bugs:
 - settings:
   - word in adult mode - settings in to low on the z-order
   - back from word-adult mode - after selecting on video - video control is still visible
-  

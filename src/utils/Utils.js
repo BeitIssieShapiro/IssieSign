@@ -9,7 +9,6 @@ export const ISSIE_SIGN_ASSETS_STATE = "IssieSign_Settings_AssetsState";
 
 export const ALLOW_ADD_KEY = "IssieSign_Settings_AllowAdd";
 export const SHOW_OWN_FOLDERS_FIRST_KEY = "IssieSign_Settings_ShowOwnFoldersFirst";
-export const QUIZ_MODE_KEY = "IssieSign_Settings_QuizMode";
 export const LANG_KEY = "MyIssieSign_Settings_Lang";
 //export const HIDE_TUTORIAL_KEY = "MyIssieSign_Settings_Hide_Tutorial";
 
@@ -193,3 +192,7 @@ export function isLandscape() {
 export const headerSize = 145;
 
 export const getBooleanFromString = (str) => str && str.length > 0 && str.charCodeAt(0) % 2 === 0
+
+export function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5)
+}

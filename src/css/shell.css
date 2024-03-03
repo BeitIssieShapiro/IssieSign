@@ -85,7 +85,7 @@
 
 .topBar {
     position: absolute;
-    top: 10px;
+    top: 22px;
     margin-left: 2%;
     margin-right: 2%;
     width: 96%;
@@ -102,7 +102,7 @@
     position: absolute;
     display: flex;
     justify-content: center;
-    top: 10px;
+    top: 22px;
     width: 100%;
     font-size: xx-large;
     direction: var(--dir);
@@ -300,9 +300,14 @@
     }
 
     .topBar {
+        top: 10px;
         grid-template-areas:
             'a e . . . . g'
             'b c d f . . .';
+    }
+
+    .centerBar {
+        top: 10px;
     }
 
 }

@@ -100,6 +100,13 @@
   margin-bottom: 10px;
 }
 
+.toggle-butten-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
 .toggle-buttons {
   display: flex;
   flex-direction: row;

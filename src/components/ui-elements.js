@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import '../css/ui-elements.css';
 import { svgLocalCall } from "../apis/ImageLocalCall";
-import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack, ArrowForward, PlaylistPlay } from '@mui/icons-material'
+import { Edit, Add, Settings, ShoppingCart, Share, Delete, Logout, CloudSync, ShoppingBag, ShoppingBasket, Menu, ShoppingBagOutlined, Folder, Movie, VideoCallOutlined, ArrowLeft, ArrowBack, ArrowForward, PlaylistPlay, Quiz } from '@mui/icons-material'
 import { fTranslate, translate } from '../utils/lang';
 import { ReactComponent as EditModeSVG } from '../images/edit-mode.svg'
 import { ReactComponent as AddFolderSVG } from '../images/addFolder.svg'
@@ -10,8 +10,8 @@ import { ReactComponent as ShareBasketSVG } from '../images/shareBasket.svg'
 import Word from '../containers/Word';
 import WordListAndPreview from "../containers/Word-and-video";
 
-import { WordsListMode, isBrowser, isElectron, isMobile } from '../utils/Utils';
-import {  isRTL } from '../utils/lang';
+import { WordsListMode, isBrowser, isElectron, isMobile, trace } from '../utils/Utils';
+import { isRTL } from '../utils/lang';
 import { ClipLoader } from 'react-spinners';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { WordList } from '../containers/Word-list';
@@ -23,9 +23,9 @@ export function TrashButton(props) {
 
 export function BackButton(props) {
   //return <div className="back-button" {...props}></div>
-  return  isRTL()? 
-    <ArrowForward className={props.className} style={{fontSize:40}} {...props} />:
-    <ArrowBack className={props.className} style={{fontSize:40}} {...props} />;
+  return isRTL() ?
+    <ArrowForward className={props.className} style={{ fontSize: 40 }} {...props} /> :
+    <ArrowBack className={props.className} style={{ fontSize: 40 }} {...props} />;
 }
 
 export function PrevButton(props) {
@@ -69,34 +69,40 @@ export function HeaderButton(props) {
     {props.children}
   </div>
 }
-
 export function EditButton(props) {
+  return <LongPressHeaderButton {...props}>
+    <EditModeSVG style={{ width: 40, fillOpacity: props.selected ? 1 : 0 }} />
+  </LongPressHeaderButton>
+}
+
+export function LongPressHeaderButton(props) {
   const [pressInterval, setPressInterval] = useState(undefined);
   const [waited, setWaited] = useState(0);
 
-  const alignTo = isRTL()?{left:40}:{right:40};
-
+  const alignTo = isRTL() ? { left: 40 } : { right: 40 };
+  const vPos = props.atBottom ? { bottom: -10 } : { top: 5 }
   return <HeaderButton slot={props.slot} className={props.className}
-    onClick={()=>{
-      if (isBrowser() || isElectron()) {
-        props.onChange(!props.selected);
-      }
-    }}
+    // onClick={()=>{
+    //   if (isBrowser() || isElectron()) {
+    //     props.onChange(!props.selected);
+    //   }
+    // }}
     onTouchStart={(evt) => {
+      // if (isBrowser() || isElectron()) return;
 
-      //evt.preventDefault()
-      if (isBrowser() || isMobile() || isElectron()) {
-        props.onChange(!props.selected);
-        return;
-      }
+      // //evt.preventDefault()
+      // if (isBrowser() || isMobile() || isElectron()) {
+      //   props.onChange(!props.selected);
+      //   return;
+      // }
       console.log("edit-mode-touchStart")
-      if (!props.selected && !pressInterval) {
+      if ((!props.selected || !props.onChange) && !pressInterval) {
         console.log("edit-mode-start-waiting")
         setWaited(0);
         setPressInterval(setInterval(() => {
           setWaited(curWaited => {
             if (curWaited >= 2) {
-              props.onChange(true);
+              props.onChange ? props.onChange(true) : props.onClick();
               setPressInterval(interval => {
                 clearInterval(interval);
                 return undefined;
@@ -107,7 +113,7 @@ export function EditButton(props) {
 
         }
           , 850))
-      } else {
+      } else if (props.onChange) {
         props.onChange(false);
       }
     }}
@@ -122,8 +128,13 @@ export function EditButton(props) {
       })
     }}
   >
-    <EditModeSVG style={{ width: 40, fillOpacity: props.selected ? 1 : 0 }} />
-    {pressInterval && <div style={{ ...alignTo, position: 'absolute', top: 5, width: 200, fontSize: 22, textAlign: "start", zIndex:1000 }}>{fTranslate("EnterEditMode", 3 - waited)}</div>}
+    {props.children}
+    {pressInterval && <div
+      style={{
+        ...alignTo, position: 'absolute',
+        ...vPos, width: 200, fontSize: 22, textAlign: "start", zIndex: 1000
+      }}
+    >{fTranslate("EnterEditMode", 3 - waited)}</div>}
   </HeaderButton>
 }
 
@@ -136,11 +147,20 @@ export function AddButton(props) {
 }
 
 export function PlayAllButton(props) {
-  return <HeaderButton slot={props.slot} selected={props.selected} className={props.className}
-    onClick={props.onClick}>
-     <PlaylistPlay style={{ fontSize: 45 }} /> 
-  </HeaderButton>
+  return <div style={{ display: "flex", flexDirection: "row" }}>
+    <LongPressHeaderButton {...props}
+      onClick={() => props.onClick(false)} atBottom={true}>
+      <PlaylistPlay style={{ fontSize: 45 }} />
+    </LongPressHeaderButton>
+
+    <LongPressHeaderButton {...props} atBottom={true}
+      onClick={() => props.onClick(true)}>
+      <Quiz style={{ fontSize: 40 }} />
+    </LongPressHeaderButton>
+  </div >
+
 }
+
 
 export function SettingsButton(props) {
   return <HeaderButton slot={props.slot} selected={props.selected} className={props.className}
@@ -329,31 +349,31 @@ const decorations = [
 ]
 
 function getRandomItem(line, tileWidth, maxWidth, itemCount, lastSpot) {
-  
+
   const values = [
-    {index: 0, location: 2},
-    {index: -1},
-    {index: 3, location: 1},
-    {index: 4, location: 0},
-    {index: -1},
-    {index: 1, location: 1},
-    {index: -1},
-    {index: 5, location: 1},
-    {index: 6, location: 2},
-    {index: -1},
-    {index: 2, location: 1},
-    {index: -1},
-    {index: 6, location: 2},
-    {index: 0, location: 0},
-    {index: -1},
-    {index: 4, location: 1},
+    { index: 0, location: 2 },
+    { index: -1 },
+    { index: 3, location: 1 },
+    { index: 4, location: 0 },
+    { index: -1 },
+    { index: 1, location: 1 },
+    { index: -1 },
+    { index: 5, location: 1 },
+    { index: 6, location: 2 },
+    { index: -1 },
+    { index: 2, location: 1 },
+    { index: -1 },
+    { index: 6, location: 2 },
+    { index: 0, location: 0 },
+    { index: -1 },
+    { index: 4, location: 1 },
   ]
 
   if (line >= values.length || values[line].index < 0) {
     return [];
   }
 
-  return getItem(values[line].index, values[line].location*tileWidth, maxWidth, lastSpot);
+  return getItem(values[line].index, values[line].location * tileWidth, maxWidth, lastSpot);
 }
 
 function getItem(index, left, maxWidth, lastSpot) {

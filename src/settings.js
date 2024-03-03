@@ -4,7 +4,7 @@ import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import {
   ADULT_MODE_KEY, ALLOW_ADD_KEY, SHOW_OWN_FOLDERS_FIRST_KEY,
-  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType, WordsListMode, QUIZ_MODE_KEY
+  ALLOW_SWIPE_KEY, isMyIssieSign, LANG_KEY, saveSettingKey, isIssieSignArabic, AppType, WordsListMode, isElectron, isBrowser
 } from './utils/Utils';
 import { ButtonReconsile, RadioBtn } from './components/ui-elements';
 import FileSystem from './apis/filesystem';
@@ -19,11 +19,13 @@ function ToggleButtons({ title, buttons }) {
   return <div className="toggle-container">
     <div className="toggle-title">{title}</div>
     <div className="toggle-buttons" >
-      {buttons.map((button, i) => <div key={i} className={button.selected ? "toggle-caption-selected" : ""}>
+      {buttons.map((button, i) => <div key={i} className={"toggle-butten-container " +(button.selected ? "toggle-caption-selected" : "")}>
         <div key={i} className={"toggle-button " + (button.styleClass || "") + " " + (button.selected ? (button.selectedClass ? button.selectedClass : " toggle-selected") : "")} onClick={button.onSelect}>
           {button.icon}
         </div>
+        <div>
         {button.caption}
+        </div>
       </div>
       )}
     </div>
@@ -100,9 +102,9 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
   return createPortal(<ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
     //animate={true} 
     width={width} // + "px"}
-    style={{ 
-      top: isMobile && isLandscape ? 50 : 170, 
-      left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh" : "8vh" 
+    style={{
+      top: isMobile && isLandscape ? 50 : 170,
+      left: (window.innerWidth - width) / 2, "--hmargin": "0", "--vmargin": isMobile ? "1vh" : "8vh"
     }}
   >
     <div scroll-marker="1" className=" settingsContainer " style={{ transform: `translateY(${scroll?.y || 0}px)`, }}>
@@ -203,24 +205,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
         />
       </div>}
 
-      {<div className="settings-item">
-        <lbl>
-          <div>{translate("QuizMode")}</div>
-        </lbl>
-        <RadioBtn className="settingsAction"
-          checked={state.quizMode == true}
-          onText={translate("Yes")}
-          offText={translate("No")}
-
-          onChange={(isOn) => {
-            saveSettingKey(QUIZ_MODE_KEY, isOn);
-            setState({ quizMode: isOn });
-          }}
-        />
-      </div>}
-
-
-      <div className="settings-item no-bottom-seperator" >
+      {!isElectron() && !isBrowser() && <div className="settings-item no-bottom-seperator" >
         <lbl>  {translate("SettingsConnectedGDrive")}    </lbl>
 
         <div className="conn-buttons">
@@ -239,10 +224,10 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
           <ButtonReconsile onClick={() => reconcile().then(() => sync())} />
         </div>
-      </div>
-      <div className="status-item" >
+      </div>}
+      {!isElectron() && !isBrowser() && <div className="status-item" >
         {email && <div className="settingsSubTitle settings-selected">{"מחובר " + email}</div>}
-      </div>
+      </div>}
 
 
       {!isIssieSignArabic() && <div className="settings-item">

@@ -9,7 +9,7 @@ import Shelf from '../containers/Shelf'
 import { translate } from "../utils/lang";
 import FileSystem from "../apis/filesystem";
 import SearchImage from "./search-image";
-import { getAvailableThemes, trace } from "../utils/Utils";
+import { getAvailableThemes, isElectron, trace } from "../utils/Utils";
 import { BrushOutlined, Check, MoreHoriz } from "@mui/icons-material";
 
 
@@ -202,7 +202,7 @@ function AddEditItem(props) {
                 <div className="fieldsContainer">
                     {/*Name Selection */}
                     <EditNameSVG className="add-icon-style" />
-                    <input type="text" className={"addInput " + (invalidName?"":"addInputSpanOverTwo")}
+                    <input type="text" className={"addInput " + (invalidName ? "" : "addInputSpanOverTwo")}
                         placeholder={addWordMode ? translate("AddPlaceholderWordName") : translate("AddPlaceholderCategoryName")}
                         onChange={(e) => {
                             const validName = isValid(e.target.value);
@@ -214,7 +214,7 @@ function AddEditItem(props) {
                         color: "red",
                         fontSize: 20,
                     }}>{translate("InvalidCharachtersInName")}</div>}
-                    
+
                     <div className={isValid(label) ? "v-icon" : "x-icon"} />
 
                     <rowborder />
@@ -286,28 +286,28 @@ function AddEditItem(props) {
                     {!addWordMode && <label>{translate("ChangeColor")} </label>}
                     {!addWordMode && <div className="addButtons">
                         <TileButton size={24} onClick={() => {
-            
-                        props.pubSub.publish({
-                            command: "open-slideup-menu", props: {
-                                label: translate("SelectColorMenuTitle"),
-                                themeId: props.themeId,
-                                type: "colors",
-                                height: 400,
-                                buttons: getAvailableThemes().map((theme) => ({
-                                    icon: <div theme="blue" theme-flavor={theme + ""}>
-                                        <div className="tileColorBtn" style={{
-                                            backgroundColor: "var(--box-background-color-1)"
-                                        }} >{themeId == theme && <Check />}</div>
-                                    </div>,
-                                    callback: () => {
-                                        setThemeId(theme);
-                                        setThemeDirty(true);
-                                    }
-                                }))
-                            }
-                        });
-                    }}>
-                        {/* <label>{translate("ChangeColor")} </label>
+
+                            props.pubSub.publish({
+                                command: "open-slideup-menu", props: {
+                                    label: translate("SelectColorMenuTitle"),
+                                    themeId: props.themeId,
+                                    type: "colors",
+                                    height: 400,
+                                    buttons: getAvailableThemes().map((theme) => ({
+                                        icon: <div theme="blue" theme-flavor={theme + ""}>
+                                            <div className="tileColorBtn" style={{
+                                                backgroundColor: "var(--box-background-color-1)"
+                                            }} >{themeId == theme && <Check />}</div>
+                                        </div>,
+                                        callback: () => {
+                                            setThemeId(theme);
+                                            setThemeDirty(true);
+                                        }
+                                    }))
+                                }
+                            });
+                        }}>
+                            {/* <label>{translate("ChangeColor")} </label>
                         <TileButton size={24} > */}
                             <BrushOutlined style={{ fontSize: 35, color: "#606060" }} />
                         </TileButton>
@@ -375,33 +375,35 @@ function AddEditItem(props) {
                     {addWordMode && <rowborder />}
 
                     {/*Sync To Cloud */}
-                    <SyncSVG className="add-icon-style" />
+                    {!isElectron() && <React.Fragment>
+                        <SyncSVG className="add-icon-style" />
 
-                    <label>
+                        <label>
 
-                        {translate("SyncToCloudTitle")}
-                        <div className="syncLine">
-                            <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
-                            <div className="syncCaption">{origElem?.sync ? translate(origElem.sync) : translate("SyncStatusNone")}</div>
+                            {translate("SyncToCloudTitle")}
+                            <div className="syncLine">
+                                <div className="syncCaption">{translate("SyncStatusLbl") + ":"}</div>
+                                <div className="syncCaption">{origElem?.sync ? translate(origElem.sync) : translate("SyncStatusNone")}</div>
+                            </div>
+
+                            <div className="syncLine">
+                                {origElem?.syncErr && <div className="syncCaption">{translate("SyncErrorLbl") + ":"}</div>}
+                                {origElem?.syncErr && <div className="syncCaption">{origElem.syncErr}</div>}
+                            </div>
+                        </label>
+                        <div className="addButtons">
+                            <RadioBtn
+                                checked={syncOn}
+                                onChange={(isOn) => {
+                                    setSyncOn(isOn);
+                                    setSyncDirty(true);
+                                }}
+                                onText={translate("Yes")}
+                                offText={translate("No")}
+                            />
                         </div>
-
-                        <div className="syncLine">
-                            {origElem?.syncErr && <div className="syncCaption">{translate("SyncErrorLbl") + ":"}</div>}
-                            {origElem?.syncErr && <div className="syncCaption">{origElem.syncErr}</div>}
-                        </div>
-                    </label>
-                    <div className="addButtons">
-                        <RadioBtn
-                            checked={syncOn}
-                            onChange={(isOn) => {
-                                setSyncOn(isOn);
-                                setSyncDirty(true);
-                            }}
-                            onText={translate("Yes")}
-                            offText={translate("No")}
-                        />
-                    </div>
-                    <rowborder />
+                        <rowborder />
+                    </React.Fragment>}
                 </div >
 
                 {/* {syncInProcess && <div className="syncinProcess" ><Sync className="rotate" /><div>{translate("SyncToCloudMsg")}</div></div>} */}

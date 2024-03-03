@@ -16,13 +16,13 @@
     <title>Sign Language Application</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- <script type="text/javascript" charset="utf-8" src="cordova.js"></script> -->
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 
     <script>
         document.addEventListener("deviceready", onDeviceReady, false);
         //document.onDeviceReady = onDeviceReady;
 
-        window.isBrowser = true;
+        window.isBrowser = false;
 
         function handleTouch(e) {
             if (document.swipeInProgress) {

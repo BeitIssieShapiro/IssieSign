@@ -61,6 +61,7 @@ cordova plugins add cordova-plugin-media-capture
 cordova plugins add cordova-plugin-share
 cordova plugins add cordova-plugin-x-socialsharing
 cordova plugin add cordova-plugin-splashscreen
+cordova plugin add cordova-plugin-vibration
 # take the client id of the IOS for prod from IssieSign project's API's Credentials in GCP
 cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
 
