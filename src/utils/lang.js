@@ -195,7 +195,7 @@ var strings = {
 
     RestartApp:
       " الملفات قيد التحميل، مفضل اغلاق التطبيق واعادة المحاولة بعد عدة دقائق",
-    LoadingMedia: "يتم تحميل الملفات ({1} من {2})",
+    LoadingMedia: "يتم تحميل الملفات",
     Yes: "نعم",
     No: "لا",
     SettingsWordsListMode: "طريقة عرض المجموعة",
@@ -267,6 +267,7 @@ var strings = {
     AddToAnotherCategory: "إضافة إختصار لمجموعة أخرى...",
     CategoriesTitle: "إضافة لمجموعة",
     QuizMode: "وضع التحدي",
+    Quiz: "وضع التحدي",
   },
   en: {
     MyIssieSign: "My IssieSign",

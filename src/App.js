@@ -26,6 +26,7 @@ import {
   WordsListMode,
   isElectron,
   shuffleArray,
+  isIssieSignArabic,
 } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from "./utils/lang";
 import { os } from "./current-language";
@@ -457,7 +458,6 @@ class App extends IssieBase {
   loadAssets() {
     console.log("Load assets on demand");
     if (isBrowser()) return;
-
     this.setState({ assetsState: AssetsState.LOADING });
 
     if (os == "Android") {
@@ -466,7 +466,11 @@ class App extends IssieBase {
         "issiesign_assets3",
       ]);
     } else {
-      window.PlayAssets.initPlayAssets(["Hebrew-IL1", "Hebrew-IL2"]);
+      if (isIssieSignArabic()) {
+        window.PlayAssets.initPlayAssets(["Arabic-IL1", "Arabic-IL2"]);
+      } else {
+        window.PlayAssets.initPlayAssets(["Hebrew-IL1", "Hebrew-IL2"]);
+      }
     }
     this.monitorAssetsLoading();
   }
@@ -498,6 +502,7 @@ class App extends IssieBase {
           progress: undefined,
         });
       } else if (assets) {
+        console.log("7")
         this.setState({
           busy: true,
           showProgress: true,
@@ -1045,7 +1050,7 @@ class App extends IssieBase {
                   this.setState({
                     playAllWords: {
                       current: 0,
-                      words: isQuiz ? shuffleArray([...cat.words]): cat.words,
+                      words: isQuiz ? shuffleArray([...cat.words]) : cat.words,
                     },
                     quizMode: isQuiz
                   })
@@ -1220,6 +1225,10 @@ class App extends IssieBase {
         .getCategories()
         .find((c) => c.name === categoryId);
 
+      const favCat = FileSystem.get()
+        .getCategories()
+        .find((c) => c.id === FileSystem.FAVORITES_ID);
+
       if (this.state.quizMode && this.state.playAllWords) {
         this.setTitle(translate("Quiz"));
       } else {
@@ -1243,7 +1252,7 @@ class App extends IssieBase {
           <div style={{ width: "100%", height: "100%", position: "relative" }}>
             <Video
               {...this.props}
-              isFavorite={word.favorite}
+              isFavorite={favCat.words.find(w => w.name === word.name && w.category === categoryId) !== undefined}
               onFavoriteToggle={this.onFavoriteToggle}
               goBack={() => this.goBack()}
               categoryId={categoryId}
@@ -1292,11 +1301,15 @@ class App extends IssieBase {
       const [videoName, categoryId, title, filePath] =
         splitAndDecodeCompoundName(path.substr(7));
 
+      const favCat = FileSystem.get()
+        .getCategories()
+        .find((c) => c.id === FileSystem.FAVORITES_ID);
+
       const cat = FileSystem.get()
         .getCategories()
         .find((c) => c.name === categoryId);
       const word = cat?.words.find((w) => w.name === title);
-      const isFavorite = word?.favorite;
+      const isFavorite = favCat.words.find(w => w.name === word.name && w.category === categoryId) !== undefined;
       if (this.state.quizMode && this.state.playAllWords) {
         this.setTitle(translate("Quiz"));
       } else {

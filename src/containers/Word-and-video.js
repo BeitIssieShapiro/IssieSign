@@ -154,11 +154,11 @@ function WordListAndPreview(props) {
 
   const scrollPos = isLandscapeView
     ? (-props.scroll?.y / scrollDivRef.current?.scrollHeight) *
-        (window.innerHeight - headerSizeCalc) +
-      5
+    (window.innerHeight - headerSizeCalc) +
+    5
     : (-props.scroll?.x / scrollDivRef.current?.scrollWidth) *
-        window.innerWidth +
-      5;
+    window.innerWidth +
+    5;
 
   const selectedWord =
     selected &&
@@ -166,6 +166,9 @@ function WordListAndPreview(props) {
     props.words.find((w) => w.name === selected);
 
   const sideBarSize = isLandscapeView && (!isMobile() || !selected) ? 260 : 0;
+  const favCat = FileSystem.get()
+    .getCategories()
+    .find((c) => c.id === FileSystem.FAVORITES_ID);
 
   const videoElem = selectedWord && (
     <Video
@@ -175,7 +178,7 @@ function WordListAndPreview(props) {
       videoName={selectedWord.userContent ? "file" : selectedWord.videoName}
       filePath={selectedWord.userContent ? selectedWord.videoName : ""}
       maxWidth={window.innerWidth - sideBarSize - 15}
-      isFavorite={selectedWord.favorite}
+      isFavorite={favCat.words.find(w => w.name === selectedWord.name && w.category === categoryId) !== undefined}
       categoryId={selectedWord.categoryId || props.categoryId}
       title={selectedWord.name}
       onFavoriteToggle={props.onFavoriteToggle}
@@ -291,19 +294,19 @@ function WordListAndPreview(props) {
         {selectedWord
           ? videoElem
           : wordsElements.length && (
-              <div
-                style={{
-                  display: "flex",
-                  height: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: 45,
-                  color: "black",
-                }}
-              >
-                {translate("NoWordSelected")}
-              </div>
-            )}
+            <div
+              style={{
+                display: "flex",
+                height: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: 45,
+                color: "black",
+              }}
+            >
+              {translate("NoWordSelected")}
+            </div>
+          )}
       </div>
     </div>
   );
