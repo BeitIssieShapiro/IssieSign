@@ -448,3 +448,14 @@ Download latest from Firebase MyIssieSign and reduce to look like below:
 }
 ```
 
+## Publish Android version
+
+- Build android app:
+  - run `./make/android-make-he.sh` or `./make/android-make-ar.sh` 
+  - open Android Studio
+    - Adjust the version in `build.gradle` in `productFlavors->issiesign`
+    - Build -> Generate Singed Bundle... ->  Android App Budnle -> (release)
+    - locate the aab file
+- open `https://play.google.com/`
+- create/edit the Internal release of IssieSign or IssieSignArabic
+- upload the aab file
