@@ -40,6 +40,7 @@ const cameraOptions = {
     targetHeight: 336,
     mediaType: 0,
     allowEdit: false,
+    correctOrientation: true,
 }
 
 async function selectImage() {

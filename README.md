@@ -81,6 +81,7 @@ cordova plugins add ../PlayAssetsPlugin/
     <preference name="scheme" value="cdvfile" />
     <preference name="hostname" value="localhost" />
     <preference name="iosExtraFilesystems" value="root" />
+    <preference name="applicationId" value="com.issieshapiro.signlang"/>
 ```
 
 - for iOS: install cocoapods: https://cocoapods.org/
@@ -89,6 +90,8 @@ cordova plugins add ../PlayAssetsPlugin/
 
 
 ### IOS
+
+TODO: changes to add.js cameraOption: correctOrientation: true, were not tested on iOS. for android they are essential.
 
 - change Podfile:
 ```
@@ -138,7 +141,7 @@ Note: if you move the whole project from backup, you may get an error os CodeSig
 - in MainActivity.java
   add `getSupportActionBar().hide();` before `loadUrl` - to hide a redundent header
 
-- for the camera to work, add these files
+<!-- - for the camera to work, add these files
 ```
 package org.issieshapiro.signlang2;
 
@@ -150,18 +153,13 @@ public class BuildConfig {
 package com.issieshapiro.issiesignarabic; 
 public class BuildConfig {
     public static final String APPLICATION_ID = "com.issieshapiro.issiesignarabic";
-}
-
-package com.issieshapiro.myissiesign; 
-public class BuildConfig {
-    public static final String APPLICATION_ID = "com.issieshapiro.myissiesign";
-}
+} -->
 
 ...
 ```
 
 - android/app/src/main/AndroidManifest.xml: 
-  ??- adjust `<manifest android:versionCode="10008"  package="$applicationId" ...`
+  ??- adjust `<manifest android:versionCode="10008"  ...`
   - add `< application ...android:usesCleartextTraffic="true" ... android:theme="@style/Theme.AppCompat.Light" ... android:icon="${appIcon}"`
   - modify `<activity ... android:name="com.issieshapiro.signlang.MainActivity">`
   - add intent-filter (for open with)
@@ -194,7 +192,7 @@ cordova plugin add cc.fovea.cordova.openwith \
   - `android.enableJetifier=false`
   
 - in `android/build.gradle`
-- add in buildscript/dependencies: `classpath "com.google.gms:google-services:4.3.14"`
+- add in buildscript/dependencies: `classpath "com.google.gms:google-services:4.4.2"`
 `
 
 -  in `android/app/build.gradle`: 
@@ -203,23 +201,24 @@ cordova plugin add cc.fovea.cordova.openwith \
   apply plugin: 'com.google.gms.google-services'
 
   dependencies {
-    //implementation 'com.google.android.play:core:1.10.3'
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'com.google.android.play:asset-delivery:2.2.2'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     //implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
     implementation 'com.google.apis:google-api-services-drive:v3-rev75-1.22.0'
 
-    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
     implementation 'com.google.firebase:firebase-functions'
     implementation 'com.google.firebase:firebase-appcheck-playintegrity'
     implementation 'com.google.firebase:firebase-appcheck-debug:16.1.0'
-    
+
     // Added due to a duplicate class error - try without
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
   }
   ```
   - near `android {}`
+
   - you need the keystore.properties file in the root of the android project
 ```
     def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -255,6 +254,7 @@ cordova plugin add cc.fovea.cordova.openwith \
 
             productFlavors {
                 issiesign {
+                    namespace "org.issieshapiro.signlang2"
                     applicationId "org.issieshapiro.signlang2"
                     resValue "string", "app_name", "IssieSign"
                     manifestPlaceholders = [
@@ -264,17 +264,9 @@ cordova plugin add cc.fovea.cordova.openwith \
                     versionName "2.1.0"
                     signingConfig signingConfigs.issiesign
                 }
-                myissiesign {
-                    applicationId "com.issieshapiro.myissiesign"
-                    resValue "string", "app_name", "My IssieSign"
-                    manifestPlaceholders = [
-                            appIcon: "@mipmap/ic_launcher_en",
-                    ]
-                    versionCode 10005
-                    versionName "1.0.0"
-                    signingConfig signingConfigs.myissiesign
-                }
+                
                 issiesignarabic {
+                    namespace "com.issieshapiro.issiesignarabic"
                     applicationId "com.issieshapiro.issiesignarabic"
                     resValue "string", "app_name", "IssieSignArabic"
                     manifestPlaceholders = [
@@ -285,7 +277,17 @@ cordova plugin add cc.fovea.cordova.openwith \
                     signingConfig signingConfigs.issiesign
                 }
             }
-        ...
+             defaultConfig {
+                versionCode cdvVersionCode ?: new BigInteger("" + privateHelpers.extractIntFromManifest("versionCode"))
+                applicationId cordovaConfig.PACKAGE_NAMESPACE
+
+                minSdkVersion cordovaConfig.MIN_SDK_VERSION
+                if (cordovaConfig.MAX_SDK_VERSION != null) {
+                    maxSdkVersion cordovaConfig.MAX_SDK_VERSION
+                }
+                targetSdkVersion cordovaConfig.SDK_VERSION
+                compileSdkVersion cordovaConfig.COMPILE_SDK_VERSION
+            }
 
 ```
  
@@ -307,19 +309,17 @@ include ":issiesign_assets3"
     - see [issue](https://github.com/apache/cordova-plugin-file/issues/525)
   ```
   
-  - in `platforms/android/cdv-gradle-config.json`
-    set version of android to 31 `"SDK_VERSION": 31`,
-
   - Copy `res` folder from `code-changes/AndroidAssets` to (replace) `platform/android/app/src/main/`
 
   - prepare a google-services.json as in "Setup oauth client for android"
 
 
   - In the IDE, select 'Generate Signed Bundle /APK' and set the following:
-    RELEASE_STORE_FILE={path to your keystore [the file named `issieSign2.0.jks`]}
-    RELEASE_STORE_PASSWORD=signland
+    RELEASE_STORE_FILE={path to your keystore [the file named `issieSign.jks`]}
+    RELEASE_STORE_PASSWORD=signlang
     RELEASE_KEY_ALIAS=issiesign
-    RELEASE_KEY_PASSWORD=signland
+    RELEASE_KEY_PASSWORD=signlang
+
 
 
 
@@ -454,6 +454,7 @@ Download latest from Firebase MyIssieSign and reduce to look like below:
   - run `./make/android-make-he.sh` or `./make/android-make-ar.sh` 
   - open Android Studio
     - Adjust the version in `build.gradle` in `productFlavors->issiesign`
+    - Adjust the sdk version of Android (if needed) in `cdv-gradle-config.json`
     - Build -> Generate Singed Bundle... ->  Android App Budnle -> (release)
     - locate the aab file
 - open `https://play.google.com/`

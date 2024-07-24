@@ -2,8 +2,8 @@
 node_modules/
 .vscode/
 build
-androidApp/
 android-app/
+_android-app/
 ios-app/
 package-lock.json
 .DS_Store
