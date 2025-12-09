@@ -1,5 +1,23 @@
-const functions = require("firebase-functions");
 const axios = require("axios");
+const admin = require("firebase-admin");
+
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { setGlobalOptions, logger } = require("firebase-functions/v2");
+const { defineString } = require("firebase-functions/params");
+
+
+setGlobalOptions({
+    region: "europe-west1",
+});
+
+admin.initializeApp();
+const db = getFirestore();
+
+const oauthClientID = defineString("OAUTH_CLIENT_ID");
+const oauthClientSecret = defineString("OAUTH_SECRET");
+
 
 // const express = require("express");
 // const app = express();
@@ -9,38 +27,54 @@ const axios = require("axios");
 // // Create and deploy your first functions
 // // https://firebase.google.com/docs/functions/get-started
 //
-exports.getAccessToken = functions.region("europe-west1")
-    .runWith({
-        enforceAppCheck: true, // Reject requests with missing or invalid App Check tokens.
-    })
-    .https.onCall(async (data, context) => {
-        const code = data.authCode;
-        const refresh_token = data.refresh_token;
-        functions.logger.info("getAccessToken", code, refresh_token);
+exports.getAccessToken = onCall({ cors: true, enforceAppCheck: true }, async (request) => {
 
-        const bodyFormData = {
-            client_id: functions.config().oauth.client_id,
-            client_secret: functions.config().oauth.secret,
-            redirect_uri: "",
-        };
+    const code = request.data.authCode;
+    const refresh_token = request.data.refresh_token;
+    logger.info("getAccessToken", code, refresh_token);
 
-        if (code) {
-            bodyFormData.code = code;
-            bodyFormData.grant_type = "authorization_code";
-        } else {
-            bodyFormData.refresh_token = refresh_token;
-            bodyFormData.grant_type = "refresh_token";
-        }
+    const bodyFormData = {
+        client_id: oauthClientID.value(),
+        client_secret: oauthClientSecret.value(),
+        redirect_uri: "",
+    };
 
-        const headers = {
-            "Content-Type": "application/x-www-form-urlencoded",
-        };
+    if (code) {
+        bodyFormData.code = code;
+        bodyFormData.grant_type = "authorization_code";
+    } else {
+        bodyFormData.refresh_token = refresh_token;
+        bodyFormData.grant_type = "refresh_token";
+    }
 
-        return axios.post("https://www.googleapis.com/oauth2/v4/token", bodyFormData, {
-            headers,
-        }).then((res) => {
-            return res.data;
-        });
+    const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+    };
+
+    return axios.post("https://www.googleapis.com/oauth2/v4/token", bodyFormData, {
+        headers,
+    }).then((res) => {
+        return res.data;
     });
+});
 
 
+exports.addUserFeedback = onCall({ cors: true, enforceAppCheck: true }, async (request) => {
+    const { appName, feedbackText } = request.data;
+
+    // Basic validation
+    if (!appName || !feedbackText || feedbackText.trim().length < 5) {
+        logger.warn("Invalid input in addUserFeedback", request.data);
+        throw new HttpsError("invalid-argument", "Invalid input");
+    }
+
+    // Store feedback in Firestore
+    const feedback = {
+        appName,
+        feedbackText: feedbackText.trim(),
+        createdAt: FieldValue.serverTimestamp(),
+    };
+    console.log("feedback", feedback);
+    return db.collection("userFeedback").add(feedback)
+        .then(() => logger.info("Feedback saved", feedback));
+});

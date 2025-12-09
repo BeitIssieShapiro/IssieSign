@@ -13,5 +13,31 @@
         "npm --prefix \"$RESOURCE_DIR\" run lint"
       ]
     }
-  ]
+  ],
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": {
+    "public": "hosting",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "predeploy": [
+      "npm --prefix ../feedback-admin run build",
+      "rm -rf hosting",
+      "cp -r ../feedback-admin/build hosting"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "react-native": {
+    "google_analytics_automatic_screen_reporting_enabled": false
+  }
+
 }

@@ -13,6 +13,7 @@ package-lock.json
 #electron:
 win-app
 
+
 # language sensitive files
 src/mainJson.js
 src/images/adt/
@@ -36,3 +37,4 @@ googleplay/export/
 
 output.apks
 
+.env*

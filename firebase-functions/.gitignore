@@ -1,0 +1,12 @@
+# Firebase cache
+.firebase/
+
+# Firebase hosting build directory
+hosting/
+
+# Logs
+firebase-debug.log
+firebase-debug.*.log
+
+# Node modules
+node_modules/
