@@ -85,6 +85,8 @@ const GITHUB_PROJECT_CONFIG = {
     PROJECT_ID: "PVT_kwDOAP7gl84BLorl",
     APP_FIELD_ID: "PVTSSF_lADOAP7gl84BLorlzg7KCrg",
     FEEDBACK_BOOL_FIELD_ID: "PVTF_lADOAP7gl84BLorlzg7KehA", // IsUserFeedback
+    REPO_OWNER: "BeitIssieShapiro",
+    REPO_NAME: "issie-internal",
     APPS: {
         IssieDocs: "600b5886",
         IssieDice: "b45d2395",
@@ -106,11 +108,11 @@ exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: 
     const { Octokit } = require("@octokit/rest");
     const octokit = new Octokit({ auth: GITHUB_PAT.value() });
 
-    // 1. Mutation to create the Draft
-    const createMutation = `
-    mutation($projectId: ID!, $title: String!, $body: String!) {
-      addProjectV2DraftIssue(input: {projectId: $projectId, title: $title, body: $body}) {
-        projectItem { id }
+    // 1. Mutation to link issue to project
+    const addToProjectMutation = `
+    mutation($projectId: ID!, $contentId: ID!) {
+      addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+        item { id }
       }
     }`;
 
@@ -135,16 +137,25 @@ exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: 
     const body = feedbackText + (email ? "\nfrom: " + email : "");
 
     try {
-        // Step 1: Create the Draft
-        const createRes = await octokit.graphql(createMutation, {
-            projectId: GITHUB_PROJECT_CONFIG.PROJECT_ID,
+        // Step 1: Create a regular issue in the issie-internal repo
+        const issueRes = await octokit.issues.create({
+            owner: GITHUB_PROJECT_CONFIG.REPO_OWNER,
+            repo: GITHUB_PROJECT_CONFIG.REPO_NAME,
             title: feedbackTitle,
             body,
         });
 
-        const newItemId = createRes.addProjectV2DraftIssue.projectItem.id;
+        const issueNodeId = issueRes.data.node_id;
 
-        // Step 2: Set "App" (Select Option)
+        // Step 2: Add the issue to the project
+        const addToProjectRes = await octokit.graphql(addToProjectMutation, {
+            projectId: GITHUB_PROJECT_CONFIG.PROJECT_ID,
+            contentId: issueNodeId,
+        });
+
+        const newItemId = addToProjectRes.addProjectV2ItemById.item.id;
+
+        // Step 3: Set "App" (Select Option)
         await octokit.graphql(updateSelectMutation, {
             projectId: GITHUB_PROJECT_CONFIG.PROJECT_ID,
             itemId: newItemId,
@@ -152,7 +163,7 @@ exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: 
             optionId: GITHUB_PROJECT_CONFIG.APPS[appName]
         });
 
-        // Step 3: Set "IsUserFeedback" to 1 (Number)
+        // Step 4: Set "IsUserFeedback" to 1 (Number)
         await octokit.graphql(updateNumberMutation, {
             projectId: GITHUB_PROJECT_CONFIG.PROJECT_ID,
             itemId: newItemId,
@@ -160,7 +171,7 @@ exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: 
             value: 1.0 // GitHub GraphQL treats numbers as Floats
         });
 
-        return { success: true, itemId: newItemId };
+        return { success: true, itemId: newItemId, issueNumber: issueRes.data.number };
     } catch (err) {
         console.error("Error creating issue:", err);
         throw new HttpsError("internal", "Failed to create GitHub issue");
