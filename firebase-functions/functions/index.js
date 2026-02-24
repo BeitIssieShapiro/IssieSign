@@ -92,7 +92,8 @@ const GITHUB_PROJECT_CONFIG = {
         IssieDice: "b45d2395",
         IssieSign: "d1cedfca",
         IssieBoard: "a0dc3761",
-        IssieCalc: "8244afb0"
+        IssieCalc: "8244afb0",
+        IssieSays: "3dc62959",
     }
 };
 
