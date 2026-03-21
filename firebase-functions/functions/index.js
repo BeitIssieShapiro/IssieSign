@@ -94,17 +94,27 @@ const GITHUB_PROJECT_CONFIG = {
         IssieBoard: "a0dc3761",
         IssieCalc: "8244afb0",
         IssieSays: "3dc62959",
+        IssieVoice: "377f5282",
+        IssieAlbum: "a73b498f",
     }
 };
 
 
 exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: [GITHUB_PAT] }, async (request) => {
     const { appName, feedbackText, feedbackTitle, email } = request.data;
-    
+
     if (!appName || !GITHUB_PROJECT_CONFIG.APPS[appName] || !feedbackText || feedbackText.trim().length < 5) {
         logger.warn("Invalid input in addUserFeedback", request.data);
         throw new HttpsError("invalid-argument", "Invalid input");
     }
+
+    // Detect platform from user-agent header
+    const ua = (request.rawRequest?.headers?.["user-agent"] || "").toLowerCase();
+    const platformLabel = ua.includes("iphone") || ua.includes("ipad") || ua.includes("darwin")
+        ? "iOS"
+        : ua.includes("android")
+            ? "Android"
+            : "";
 
     const { Octokit } = require("@octokit/rest");
     const octokit = new Octokit({ auth: GITHUB_PAT.value() });
@@ -135,14 +145,16 @@ exports.addUserFeedback2 = onCall({ cors: true, enforceAppCheck: true, secrets: 
       }) { projectV2Item { id } }
     }`;
 
-    const body = feedbackText + (email ? "\nfrom: " + email : "");
+    const body = feedbackText
+        + (platformLabel ? "\nplatform: " + platformLabel : "")
+        + (email ? "\nfrom: " + email : "");
 
     try {
         // Step 1: Create a regular issue in the issie-internal repo
         const issueRes = await octokit.issues.create({
             owner: GITHUB_PROJECT_CONFIG.REPO_OWNER,
             repo: GITHUB_PROJECT_CONFIG.REPO_NAME,
-            title: feedbackTitle,
+            title: `[UserFeedback-${appName}] ${feedbackTitle}`,
             body,
         });
 

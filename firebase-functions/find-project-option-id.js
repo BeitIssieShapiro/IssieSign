@@ -1,13 +1,9 @@
-const { Octokit } = require("@octokit/rest");
+const https = require("https");
 
-// Usage: GITHUB_TOKEN=your_token_here node find-project-option-id.js
-
-const GITHUB_TOKEN = "add here"
-;
+const GITHUB_TOKEN = "todo";
 
 if (!GITHUB_TOKEN) {
-    console.error("Error: GITHUB_TOKEN environment variable is required");
-    console.error("Usage: GITHUB_TOKEN=your_token_here node find-project-option-id.js");
+    console.error("Error: Set GITHUB_TOKEN in the script");
     process.exit(1);
 }
 
@@ -32,32 +28,54 @@ query($projectId: ID!) {
   }
 }`;
 
-async function findOptionId() {
-    const octokit = new Octokit({ auth: GITHUB_TOKEN });
+const body = JSON.stringify({
+    query,
+    variables: { projectId: PROJECT_ID },
+});
 
-    try {
-        const result = await octokit.graphql(query, {
-            projectId: PROJECT_ID
-        });
+const options = {
+    hostname: "api.github.com",
+    path: "/graphql",
+    method: "POST",
+    headers: {
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+        "User-Agent": "find-project-option-id",
+        "Content-Length": Buffer.byteLength(body),
+    },
+};
 
-        console.log("Project:", result.node.title);
+const req = https.request(options, (res) => {
+    let data = "";
+    res.on("data", (chunk) => (data += chunk));
+    res.on("end", () => {
+        if (res.statusCode !== 200) {
+            console.error(`HTTP ${res.statusCode}: ${data}`);
+            process.exit(1);
+        }
+        const result = JSON.parse(data);
+        if (result.errors) {
+            console.error("GraphQL errors:", JSON.stringify(result.errors, null, 2));
+            process.exit(1);
+        }
+        console.log("Project:", result.data.node.title);
         console.log("\nApp field options:");
         console.log("==================");
-
-        if (result.node.field && result.node.field.options) {
-            result.node.field.options.forEach(option => {
+        const field = result.data.node.field;
+        if (field && field.options) {
+            field.options.forEach((option) => {
                 console.log(`${option.name}: "${option.id}"`);
             });
         } else {
             console.log("No options found or field not accessible");
         }
-    } catch (error) {
-        console.error("Error querying GitHub:", error.message);
-        if (error.errors) {
-            console.error("Details:", JSON.stringify(error.errors, null, 2));
-        }
-        process.exit(1);
-    }
-}
+    });
+});
 
-findOptionId();
+req.on("error", (err) => {
+    console.error("Request error:", err.message);
+    process.exit(1);
+});
+
+req.write(body);
+req.end();
