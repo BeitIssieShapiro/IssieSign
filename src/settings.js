@@ -1,5 +1,6 @@
 import './css/settings.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import eruda from "eruda";
 import { getLanguage, setLanguage, translate, fTranslate } from './utils/lang';
 import ModalDialog from './components/modal';
 import {
@@ -37,8 +38,35 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
   contentMap, appType, onChangeAppType, isMobile, isLandscape }) {
   const [reload, setReload] = useState(0);
   const [email, setEmail] = useState(undefined);
-  //const [langSettingsMode, setLangSettingsMode] = useState(false);
+  const titleTapCount = useRef(0);
+  const titleTapTimer = useRef(null);
   const currLanguage = getLanguage()
+
+  const hideErudaBtn = () => {
+    const btn = document.querySelector('#eruda .eruda-entry-btn');
+    if (btn) { btn.style.display = 'none'; }
+    else { setTimeout(hideErudaBtn, 200); }
+  };
+
+  // If eruda already initialized (persisted from previous session), hide its button
+  useEffect(() => {
+    if (window._erudaInit) hideErudaBtn();
+  }, []);
+
+  const onTitleTap = () => {
+    titleTapCount.current++;
+    clearTimeout(titleTapTimer.current);
+    titleTapTimer.current = setTimeout(() => { titleTapCount.current = 0; }, 1500);
+    if (titleTapCount.current >= 5) {
+      titleTapCount.current = 0;
+      if (!window._erudaInit) {
+        window._erudaInit = true;
+        eruda.init();
+        hideErudaBtn();
+      }
+      eruda.show();
+    }
+  };
 
   const hideableCategories = contentMap.categories.filter(cat => cat.allowHide);
 
@@ -99,7 +127,7 @@ function Settings({ onClose, state, setState, slot, showInfo, pubSub, alert, scr
 
   const width = Math.min(550, window.innerWidth);
 
-  return createPortal(<ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose}
+  return createPortal(<ModalDialog slot={slot} title={translate("SettingsTitle")} titleStyle={{ textAlign: "center", marginLeft: 50, fontWeight: "bold" }} onClose={onClose} onTitleClick={onTitleTap}
     //animate={true} 
     width={width} // + "px"}
     style={{

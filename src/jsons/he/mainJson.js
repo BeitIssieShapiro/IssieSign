@@ -1874,7 +1874,7 @@ const mainJson = {
           "tags": []
         },
         {
-          "name": "דב",
+          "name": "דב פנדה",
           "id": "1193",
           "imageName": "E193.png",
           "videoName": "E193.mp4",

@@ -1,10 +1,15 @@
 import React from "react";
 import '../css/info.css';
-import { AppVersion, AppBuild } from "../current-language";
+import { AppVersion } from "../current-language";
 
 export default function Info(props) {
     return (
-        <div className="info" scroll-marker="1" style={{
+        <div scroll-marker="1" style={{
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+        }}>
+        <div className="info" style={{
             transform: `translateY(${props.scroll?.y || 0}px)`,
             transitionDuration: '0s',
         }}>
@@ -70,13 +75,14 @@ export default function Info(props) {
             </div >
 
             <br />
-            <div className="info-seperator" />
-            <br />
             {AppVersion && (
-                <div style={{ textAlign: 'center', opacity: 0.5, fontSize: 12, marginBottom: 8 }}>
-                    Version {AppVersion} ({AppBuild})
+                <div className="heb" style={{ textAlign: 'center', opacity: 0.5, fontSize: 12, marginBottom: 4 }}>
+                    גרסה {AppVersion}
                 </div>
             )}
+            <br />
+            <div className="info-seperator" />
+            <br />
             <br />
             <div className="en" >
 
@@ -133,6 +139,12 @@ export default function Info(props) {
                 </ul>
                 <br />
             </div>
+            {AppVersion && (
+                <div className="en" style={{ textAlign: 'center', opacity: 0.5, fontSize: 12, marginTop: 4, marginBottom: 8 }}>
+                    Version {AppVersion}
+                </div>
+            )}
+        </div>
         </div>
     )
 }

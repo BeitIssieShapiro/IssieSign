@@ -1,8 +1,6 @@
 import "./css/App.css";
 
-import React from "react";
-import eruda from "eruda";
-import Body from "./containers/Body";
+import React from "react";import Body from "./containers/Body";
 import Video from "./containers/Video";
 import Search from "./containers/Search";
 import Info from "./containers/Info";
@@ -31,7 +29,6 @@ import {
 } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from "./utils/lang";
 import { os } from "./current-language";
-import { AppVersion, AppBuild } from "./current-language";
 
 import "react-circular-progressbar/dist/styles.css";
 
@@ -206,21 +203,14 @@ class App extends IssieBase {
   async componentDidMount() {
     window.addEventListener("resize", this.resizeListener);
 
-    // 5 taps anywhere → eruda dev console
-    let tapCount = 0, tapTimer;
-    document.addEventListener("touchend", () => {
-      tapCount++;
-      clearTimeout(tapTimer);
-      tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
-      if (tapCount >= 5) {
-        tapCount = 0;
-        if (!window._erudaInit) {
-          window._erudaInit = true;
-          eruda.init();
-        }
-        eruda.show();
-      }
-    });
+    // Hide eruda entry button if it auto-restored from previous session
+    const hideErudaBtn = () => {
+      const btn = document.querySelector('#eruda .eruda-entry-btn');
+      if (btn) btn.style.display = 'none';
+    };
+    hideErudaBtn();
+    setTimeout(hideErudaBtn, 500);
+    setTimeout(hideErudaBtn, 2000);
 
     // window.addEventListener('keyboardDidHide', function () {
     //     console.log("keyboard hide")
@@ -259,13 +249,11 @@ class App extends IssieBase {
           container = container.parentElement;
         }
         if (container.getAttribute("scroll-marker") === "1") {
-          const top = container?.getBoundingClientRect()?.top || -131;
           const maxScrollX =
             container.scrollWidth -
             Math.min(container.offsetWidth, window.innerWidth);
           const maxScrollY =
-            container.scrollHeight -
-            Math.min(container.offsetHeight, window.innerHeight - top + y);
+            container.scrollHeight - container.offsetHeight;
           if (x > 0) {
             x = 0;
           }
@@ -274,15 +262,6 @@ class App extends IssieBase {
           }
           x = Math.max(x, -maxScrollX);
           y = Math.max(y, -maxScrollY);
-          console.log(
-            "scroll info",
-            y,
-            top,
-            maxScrollY,
-            container.scrollHeight,
-            container.offsetHeight,
-            window.innerHeight,
-          );
           // if (x !== 0 && x < window.innerWidth - container.scrollWidth) {
           //     x = window.innerWidth - container.scrollWidth;
           // }
@@ -476,6 +455,12 @@ class App extends IssieBase {
   loadAssets() {
     console.log("Load assets on demand");
     if (isBrowser()) return;
+    if (!window.PlayAssets) {
+      console.log("PlayAssets not available — skipping asset load");
+      this.setState({ assetsState: AssetsState.READY });
+      return;
+    }
+    this.assetsLoadStartTime = Date.now();
     this.setState({ assetsState: AssetsState.LOADING });
 
     if (os == "Android") {
@@ -520,6 +505,12 @@ class App extends IssieBase {
           progress: undefined,
         });
       } else if (assets) {
+        // Timeout fallback: if stuck for >30s (e.g. emulator), skip assets
+        if (Date.now() - this.assetsLoadStartTime > 30000) {
+          console.log("Assets load timeout — marking ready");
+          this.setState({ assetsState: AssetsState.READY, busy: false, progress: undefined });
+          return;
+        }
         console.log("7")
         this.setState({
           busy: true,
@@ -1081,7 +1072,6 @@ class App extends IssieBase {
 
           <div slot="center-bar" className="shelltitle allow-mouse-events">
             {this.state.title}
-            {AppVersion && <div style={{ fontSize: 10, opacity: 0.6, lineHeight: 1 }}>{AppVersion} ({AppBuild})</div>}
           </div>
           {searchInput}
           {leftArrow}
