@@ -40,8 +40,10 @@
     "watch": "node scripts/watch.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy:android": "fastlane deploy_he",
-    "deploy:android:full": "fastlane deploy_he_full"
+    "deploy:android": "fastlane android deploy_he",
+    "deploy:android:full": "fastlane android deploy_he_full",
+    "deploy:ios": "fastlane ios deploy_he",
+    "deploy:ios:full": "fastlane ios deploy_he_full"
   },
   "browserslist": {
     "production": [

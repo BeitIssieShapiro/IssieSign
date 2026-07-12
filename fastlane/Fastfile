@@ -1,7 +1,8 @@
 default_platform(:android)
 
-REPO_ROOT    = File.expand_path("..", __dir__)          # IssieSign repo root
+REPO_ROOT    = File.expand_path("..", __dir__)
 ANDROID_ROOT = "#{REPO_ROOT}/android-app/platforms/android"
+IOS_ROOT     = "#{REPO_ROOT}/ios-app/platforms/ios"
 VERSION_FILE = "#{REPO_ROOT}/version.properties"
 
 def read_version_props
@@ -29,44 +30,55 @@ def write_version_props(props)
   File.write(VERSION_FILE, lines.join)
 end
 
+# ─── Android ────────────────────────────────────────────────────────────────
+
 platform :android do
   desc "Build and upload IssieSign Hebrew to Play Store (no media re-upload)"
   lane :deploy_he do
-    build_and_upload_he(with_assets: false)
+    build_and_upload_android_he(with_assets: false)
   end
 
   desc "Build and upload IssieSign Hebrew to Play Store (including asset packs)"
   lane :deploy_he_full do
-    build_and_upload_he(with_assets: true)
+    build_and_upload_android_he(with_assets: true)
   end
 
-  private_lane :build_and_upload_he do |options|
+  private_lane :build_and_upload_android_he do |options|
     with_assets = options[:with_assets]
 
     # 1. React build
     sh("cd #{REPO_ROOT} && ./make/react_prepare.sh he false IssieSign Android")
 
-    # 2. Copy JS/HTML into Android www (skip media)
+    # 2. Copy JS/HTML into Android www
     www = "#{ANDROID_ROOT}/app/src/main/assets/www"
     sh("rm -rf '#{www}/static' '#{www}/index.html'")
     sh("cp -R #{REPO_ROOT}/build/* '#{www}/'")
 
-    # 3. Read version (written to disk only after successful build)
+    # 3. Copy media only for full build
+    if with_assets
+      media_path = File.read("#{REPO_ROOT}/make/.mediaPath").strip
+      sh("rm -f #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos/*")
+      sh("rm -f #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos/*")
+      sh("mkdir -p #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos")
+      sh("mkdir -p #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos")
+      sh("cp -R #{media_path}/videos/he/prod/[A-L]* #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos/")
+      sh("cp -R #{media_path}/videos/he/prod/[M-Z]* #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos/")
+    end
+
+    # 4. Read version (written to disk only after successful upload)
     props = read_version_props
     new_code = props["issiesign.versionCode"].to_i + 1
     UI.message("Building versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
 
-    # 4. Patch gradle files
+    # 5. Patch gradle files
     settings_file  = "#{ANDROID_ROOT}/settings.gradle"
     app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
     settings_orig  = File.read(settings_file)
     app_build_orig = File.read(app_build_file)
 
-    # Patch version code+name directly in issiesign flavor block
-    # (injected props are ignored when flavor hardcodes versionCode)
     patched = app_build_orig.sub(/issiesign \{[^}]+\}/m) do |block|
       block
-        .sub(/versionCode \d+/,    "versionCode #{new_code}")
+        .sub(/versionCode \d+/,     "versionCode #{new_code}")
         .sub(/versionName "[^"]*"/, "versionName \"#{props["issiesign.versionName"]}\"")
     end
 
@@ -78,7 +90,6 @@ platform :android do
     end
     File.write(app_build_file, patched)
 
-    # Delete cached AAB to force fresh build with correct version code
     cached_aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
     File.delete(cached_aab) if File.exist?(cached_aab)
 
@@ -99,7 +110,6 @@ platform :android do
     UI.user_error!("AAB not found at: #{aab}") unless File.exist?(aab)
     UI.success("Built AAB: #{aab}")
 
-    # 5. Upload to Play Store
     upload_to_play_store(
       track: "internal",
       release_status: "draft",
@@ -114,13 +124,98 @@ platform :android do
       timeout: 600
     )
 
-    # 6. Write version bump and commit only after successful upload
     props["issiesign.versionCode"] = new_code.to_s
     write_version_props(props)
     sh("cd #{REPO_ROOT} && git add version.properties")
-    sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign versionCode to #{new_code}'")
+    sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign Android versionCode to #{new_code}'")
 
-    UI.success("Done! IssieSign #{props["issiesign.versionName"]} (#{new_code}) uploaded to internal track as draft.")
+    UI.success("Done! IssieSign Android #{props["issiesign.versionName"]} (#{new_code}) uploaded.")
+  end
+
+  error do |lane, exception|
+    UI.error("Error in lane #{lane}: #{exception.message}")
+  end
+end
+
+# ─── iOS ────────────────────────────────────────────────────────────────────
+
+platform :ios do
+  desc "Build and upload IssieSign Hebrew to TestFlight (no media re-upload)"
+  lane :deploy_he do
+    build_and_upload_ios_he(with_assets: false)
+  end
+
+  desc "Build and upload IssieSign Hebrew to TestFlight (including asset packs)"
+  lane :deploy_he_full do
+    build_and_upload_ios_he(with_assets: true)
+  end
+
+  private_lane :build_and_upload_ios_he do |options|
+    with_assets = options[:with_assets]
+
+    # 1. React build
+    sh("cd #{REPO_ROOT} && ./make/react_prepare.sh he true IssieSign iOS")
+
+    # 2. Copy JS/HTML into iOS www
+    ios_www = "#{IOS_ROOT}/www"
+    sh("rm -f #{ios_www}/precache-*.* && rm -rf #{ios_www}/videos #{ios_www}/static")
+    sh("cp -R #{REPO_ROOT}/build/* #{ios_www}/")
+
+    # 3. Copy media only for full build
+    if with_assets
+      media_path = File.read("#{REPO_ROOT}/make/.mediaPath").strip
+      sh("rm -f #{REPO_ROOT}/ios-app/Hebrew-IL1/* #{REPO_ROOT}/ios-app/Hebrew-IL2/*")
+      sh("mkdir -p #{REPO_ROOT}/ios-app/Hebrew-IL1 #{REPO_ROOT}/ios-app/Hebrew-IL2")
+      sh("cp -R #{media_path}/videos/he/prod/[A-L]* #{REPO_ROOT}/ios-app/Hebrew-IL1/")
+      sh("cp -R #{media_path}/videos/he/prod/[M-Z]* #{REPO_ROOT}/ios-app/Hebrew-IL2/")
+    end
+
+    # 4. Read version
+    props = read_version_props
+    new_build = props["issiesign.versionCode"].to_i + 1
+    version_name = props["issiesign.versionName"]
+    UI.message("Building iOS #{version_name} (#{new_build})")
+
+    # 5. Bump version in Xcode project
+    increment_version_number(
+      version_number: version_name,
+      xcodeproj: "#{IOS_ROOT}/IssieSign.xcodeproj"
+    )
+    increment_build_number(
+      build_number: new_build.to_s,
+      xcodeproj: "#{IOS_ROOT}/IssieSign.xcodeproj"
+    )
+
+    # 6. Install pods and build IPA
+    cocoapods(podfile: "#{IOS_ROOT}/Podfile")
+
+    build_app(
+      workspace: "#{IOS_ROOT}/IssieSign.xcworkspace",
+      scheme: "IssieSign",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "#{REPO_ROOT}/build-ios",
+      output_name: "IssieSign.ipa",
+      export_options: {
+        provisioningProfiles: {
+          "com.issieshapiro.signlang" => "IssieSign AppStore"
+        }
+      }
+    )
+
+    # 7. Upload to TestFlight
+    upload_to_testflight(
+      ipa: "#{REPO_ROOT}/build-ios/IssieSign.ipa",
+      skip_waiting_for_build_processing: true
+    )
+
+    # 8. Write version bump and commit only after successful upload
+    props["issiesign.versionCode"] = new_build.to_s
+    write_version_props(props)
+    sh("cd #{REPO_ROOT} && git add version.properties")
+    sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign iOS build to #{new_build}'")
+
+    UI.success("Done! IssieSign iOS #{version_name} (#{new_build}) uploaded to TestFlight.")
   end
 
   error do |lane, exception|
