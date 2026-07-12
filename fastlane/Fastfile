@@ -42,6 +42,7 @@ platform :android do
 
   private_lane :build_and_upload_he do |options|
     with_assets = options[:with_assets]
+
     # 1. React build
     sh("cd #{REPO_ROOT} && ./make/react_prepare.sh he false IssieSign Android")
 
@@ -50,86 +51,55 @@ platform :android do
     sh("rm -rf '#{www}/static' '#{www}/index.html'")
     sh("cp -R #{REPO_ROOT}/build/* '#{www}/'")
 
-    # 3. Read version (bump written only after successful build)
+    # 3. Read version (written to disk only after successful build)
     props = read_version_props
     new_code = props["issiesign.versionCode"].to_i + 1
-    UI.message("versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
+    UI.message("Building versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
 
-    # 4. Build signed AAB — strip asset pack modules unless with_assets requested
-    settings_file = "#{ANDROID_ROOT}/settings.gradle"
+    # 4. Patch gradle files
+    settings_file  = "#{ANDROID_ROOT}/settings.gradle"
     app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
-    settings_orig = File.read(settings_file)
+    settings_orig  = File.read(settings_file)
     app_build_orig = File.read(app_build_file)
 
+    # Patch version code+name directly in issiesign flavor block
+    # (injected props are ignored when flavor hardcodes versionCode)
+    patched = app_build_orig.sub(/issiesign \{[^}]+\}/m) do |block|
+      block
+        .sub(/versionCode \d+/,    "versionCode #{new_code}")
+        .sub(/versionName "[^"]*"/, "versionName \"#{props["issiesign.versionName"]}\"")
+    end
+
     unless with_assets
+      patched = patched.gsub(/^\s*assetPacks\s*=.*\n/, '')
       File.write(settings_file, settings_orig
         .gsub(/^include ":issiesign_assets"\n/, '')
         .gsub(/^include ":issiesign_assets3"\n/, ''))
-      File.write(app_build_file, app_build_orig
-        .gsub(/^\s*assetPacks\s*=.*\n/, ''))
     end
+    File.write(app_build_file, patched)
+
+    # Delete cached AAB to force fresh build with correct version code
+    cached_aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
+    File.delete(cached_aab) if File.exist?(cached_aab)
 
     begin
       gradle(
-        task: "bundle",
+        task: "clean bundle",
         flavor: "issiesign",
         build_type: "Release",
         project_dir: ANDROID_ROOT,
-        print_command: true,
-        properties: {
-          "android.injected.version.code" => new_code.to_s,
-          "android.injected.version.name" => props["issiesign.versionName"]
-        }
+        print_command: true
       )
     ensure
-      unless with_assets
-        File.write(settings_file, settings_orig)
-        File.write(app_build_file, app_build_orig)
-      end
-    end
-
-    # Write version bump only after successful build
-    props["issiesign.versionCode"] = new_code.to_s
-    write_version_props(props)
-
-    # 4. Build signed AAB — strip asset pack modules unless with_assets requested
-    settings_file = "#{ANDROID_ROOT}/settings.gradle"
-    app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
-    settings_orig = File.read(settings_file)
-    app_build_orig = File.read(app_build_file)
-
-    unless with_assets
-      File.write(settings_file, settings_orig
-        .gsub(/^include ":issiesign_assets"\n/, '')
-        .gsub(/^include ":issiesign_assets3"\n/, ''))
-      File.write(app_build_file, app_build_orig
-        .gsub(/^\s*assetPacks\s*=.*\n/, ''))
-    end
-
-    begin
-      gradle(
-        task: "bundle",
-        flavor: "issiesign",
-        build_type: "Release",
-        project_dir: ANDROID_ROOT,
-        print_command: true,
-        properties: {
-          "android.injected.version.code" => new_code.to_s,
-          "android.injected.version.name" => props["issiesign.versionName"]
-        }
-      )
-    ensure
-      unless with_assets
-        File.write(settings_file, settings_orig)
-        File.write(app_build_file, app_build_orig)
-      end
+      File.write(settings_file, settings_orig) unless with_assets
+      File.write(app_build_file, app_build_orig)
     end
 
     aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
     UI.user_error!("AAB not found at: #{aab}") unless File.exist?(aab)
     UI.success("Built AAB: #{aab}")
 
-    # 5. Upload app AAB only — Play Store reuses existing asset packs on device
+    # 5. Upload to Play Store
     upload_to_play_store(
       track: "internal",
       release_status: "draft",
@@ -144,7 +114,9 @@ platform :android do
       timeout: 600
     )
 
-    # 6. Commit version bump
+    # 6. Write version bump and commit only after successful upload
+    props["issiesign.versionCode"] = new_code.to_s
+    write_version_props(props)
     sh("cd #{REPO_ROOT} && git add version.properties")
     sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign versionCode to #{new_code}'")
 
