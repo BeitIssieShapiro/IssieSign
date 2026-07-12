@@ -7,6 +7,7 @@ import Rope from "../components/Rope";
 import { withAlert } from "react-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { translate } from "../utils/lang";
+import FileSystem from "../apis/filesystem";
 import {
   getBooleanFromString,
   headerSize,
