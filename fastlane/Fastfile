@@ -50,22 +50,23 @@ platform :android do
     sh("rm -rf '#{www}/static' '#{www}/index.html'")
     sh("cp -R #{REPO_ROOT}/build/* '#{www}/'")
 
-    # 3. Bump versionCode
+    # 3. Read version (bump written only after successful build)
     props = read_version_props
     new_code = props["issiesign.versionCode"].to_i + 1
-    props["issiesign.versionCode"] = new_code.to_s
-    write_version_props(props)
     UI.message("versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
 
     # 4. Build signed AAB — strip asset pack modules unless with_assets requested
     settings_file = "#{ANDROID_ROOT}/settings.gradle"
+    app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
     settings_orig = File.read(settings_file)
+    app_build_orig = File.read(app_build_file)
 
     unless with_assets
-      settings_no_assets = settings_orig
+      File.write(settings_file, settings_orig
         .gsub(/^include ":issiesign_assets"\n/, '')
-        .gsub(/^include ":issiesign_assets3"\n/, '')
-      File.write(settings_file, settings_no_assets)
+        .gsub(/^include ":issiesign_assets3"\n/, ''))
+      File.write(app_build_file, app_build_orig
+        .gsub(/^\s*assetPacks\s*=.*\n/, ''))
     end
 
     begin
@@ -81,8 +82,47 @@ platform :android do
         }
       )
     ensure
-      # Always restore settings.gradle
-      File.write(settings_file, settings_orig) unless with_assets
+      unless with_assets
+        File.write(settings_file, settings_orig)
+        File.write(app_build_file, app_build_orig)
+      end
+    end
+
+    # Write version bump only after successful build
+    props["issiesign.versionCode"] = new_code.to_s
+    write_version_props(props)
+
+    # 4. Build signed AAB — strip asset pack modules unless with_assets requested
+    settings_file = "#{ANDROID_ROOT}/settings.gradle"
+    app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
+    settings_orig = File.read(settings_file)
+    app_build_orig = File.read(app_build_file)
+
+    unless with_assets
+      File.write(settings_file, settings_orig
+        .gsub(/^include ":issiesign_assets"\n/, '')
+        .gsub(/^include ":issiesign_assets3"\n/, ''))
+      File.write(app_build_file, app_build_orig
+        .gsub(/^\s*assetPacks\s*=.*\n/, ''))
+    end
+
+    begin
+      gradle(
+        task: "bundle",
+        flavor: "issiesign",
+        build_type: "Release",
+        project_dir: ANDROID_ROOT,
+        print_command: true,
+        properties: {
+          "android.injected.version.code" => new_code.to_s,
+          "android.injected.version.name" => props["issiesign.versionName"]
+        }
+      )
+    ensure
+      unless with_assets
+        File.write(settings_file, settings_orig)
+        File.write(app_build_file, app_build_orig)
+      end
     end
 
     aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
