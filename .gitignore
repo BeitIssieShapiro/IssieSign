@@ -38,3 +38,7 @@ googleplay/export/
 output.apks
 
 .env*
+
+# fastlane auto-generated
+fastlane/README.md
+fastlane/report.xml
