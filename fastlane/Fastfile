@@ -32,6 +32,16 @@ end
 platform :android do
   desc "Build and upload IssieSign Hebrew to Play Store (no media re-upload)"
   lane :deploy_he do
+    build_and_upload_he(with_assets: false)
+  end
+
+  desc "Build and upload IssieSign Hebrew to Play Store (including asset packs)"
+  lane :deploy_he_full do
+    build_and_upload_he(with_assets: true)
+  end
+
+  private_lane :build_and_upload_he do |options|
+    with_assets = options[:with_assets]
     # 1. React build
     sh("cd #{REPO_ROOT} && ./make/react_prepare.sh he false IssieSign Android")
 
@@ -47,18 +57,33 @@ platform :android do
     write_version_props(props)
     UI.message("versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
 
-    # 4. Build signed AAB — version injected via gradle properties, no media copy
-    gradle(
-      task: "bundle",
-      flavor: "issiesign",
-      build_type: "Release",
-      project_dir: ANDROID_ROOT,
-      print_command: true,
-      properties: {
-        "android.injected.version.code" => new_code.to_s,
-        "android.injected.version.name" => props["issiesign.versionName"]
-      }
-    )
+    # 4. Build signed AAB — strip asset pack modules unless with_assets requested
+    settings_file = "#{ANDROID_ROOT}/settings.gradle"
+    settings_orig = File.read(settings_file)
+
+    unless with_assets
+      settings_no_assets = settings_orig
+        .gsub(/^include ":issiesign_assets"\n/, '')
+        .gsub(/^include ":issiesign_assets3"\n/, '')
+      File.write(settings_file, settings_no_assets)
+    end
+
+    begin
+      gradle(
+        task: "bundle",
+        flavor: "issiesign",
+        build_type: "Release",
+        project_dir: ANDROID_ROOT,
+        print_command: true,
+        properties: {
+          "android.injected.version.code" => new_code.to_s,
+          "android.injected.version.name" => props["issiesign.versionName"]
+        }
+      )
+    ensure
+      # Always restore settings.gradle
+      File.write(settings_file, settings_orig) unless with_assets
+    end
 
     aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
     UI.user_error!("AAB not found at: #{aab}") unless File.exist?(aab)
@@ -75,7 +100,8 @@ platform :android do
       skip_upload_changelogs: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      json_key: File.expand_path('../issie-shared/android/fastlane/release-admin-creds.json', REPO_ROOT)
+      json_key: File.expand_path('../issie-shared/android/fastlane/release-admin-creds.json', REPO_ROOT),
+      timeout: 600
     )
 
     # 6. Commit version bump
