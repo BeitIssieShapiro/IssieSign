@@ -1,6 +1,7 @@
 import "./css/App.css";
 
 import React from "react";
+import eruda from "eruda";
 import Body from "./containers/Body";
 import Video from "./containers/Video";
 import Search from "./containers/Search";
@@ -203,6 +204,22 @@ class App extends IssieBase {
 
   async componentDidMount() {
     window.addEventListener("resize", this.resizeListener);
+
+    // 5 taps anywhere → eruda dev console
+    let tapCount = 0, tapTimer;
+    document.addEventListener("touchend", () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+      if (tapCount >= 5) {
+        tapCount = 0;
+        if (!window._erudaInit) {
+          window._erudaInit = true;
+          eruda.init();
+        }
+        eruda.show();
+      }
+    });
 
     // window.addEventListener('keyboardDidHide', function () {
     //     console.log("keyboard hide")
@@ -1224,6 +1241,11 @@ class App extends IssieBase {
       const cat = FileSystem.get()
         .getCategories()
         .find((c) => c.name === categoryId);
+
+      console.log("[App] /word/ categoryId:", categoryId, "cat found:", !!cat, "words:", cat?.words?.length ?? "N/A");
+      if (!cat) {
+        console.warn("[App] category NOT found. Available:", FileSystem.get().getCategories().map(c => c.name).join(", "));
+      }
 
       const favCat = FileSystem.get()
         .getCategories()

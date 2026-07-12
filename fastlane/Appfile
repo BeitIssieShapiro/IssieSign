@@ -1,0 +1,2 @@
+json_key_file("../issie-shared/android/fastlane/release-admin-creds.json")
+package_name("org.issieshapiro.signlang2")

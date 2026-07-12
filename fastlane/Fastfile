@@ -1,0 +1,91 @@
+default_platform(:android)
+
+REPO_ROOT    = File.expand_path("..", __dir__)          # IssieSign repo root
+ANDROID_ROOT = "#{REPO_ROOT}/android-app/platforms/android"
+VERSION_FILE = "#{REPO_ROOT}/version.properties"
+
+def read_version_props
+  props = {}
+  File.readlines(VERSION_FILE).each do |line|
+    line = line.strip
+    next if line.empty? || line.start_with?('#')
+    k, v = line.split('=', 2)
+    props[k.strip] = v.strip if k && v
+  end
+  props
+end
+
+def write_version_props(props)
+  lines = []
+  File.readlines(VERSION_FILE).each do |line|
+    stripped = line.strip
+    if stripped.empty? || stripped.start_with?('#')
+      lines << line
+    else
+      k, _ = stripped.split('=', 2)
+      lines << (props.key?(k&.strip) ? "#{k.strip}=#{props[k.strip]}\n" : line)
+    end
+  end
+  File.write(VERSION_FILE, lines.join)
+end
+
+platform :android do
+  desc "Build and upload IssieSign Hebrew to Play Store (no media re-upload)"
+  lane :deploy_he do
+    # 1. React build
+    sh("cd #{REPO_ROOT} && ./make/react_prepare.sh he false IssieSign Android")
+
+    # 2. Copy JS/HTML into Android www (skip media)
+    www = "#{ANDROID_ROOT}/app/src/main/assets/www"
+    sh("rm -rf '#{www}/static' '#{www}/index.html'")
+    sh("cp -R #{REPO_ROOT}/build/* '#{www}/'")
+
+    # 3. Bump versionCode
+    props = read_version_props
+    new_code = props["issiesign.versionCode"].to_i + 1
+    props["issiesign.versionCode"] = new_code.to_s
+    write_version_props(props)
+    UI.message("versionCode: #{new_code}, versionName: #{props["issiesign.versionName"]}")
+
+    # 4. Build signed AAB — version injected via gradle properties, no media copy
+    gradle(
+      task: "bundle",
+      flavor: "issiesign",
+      build_type: "Release",
+      project_dir: ANDROID_ROOT,
+      print_command: true,
+      properties: {
+        "android.injected.version.code" => new_code.to_s,
+        "android.injected.version.name" => props["issiesign.versionName"]
+      }
+    )
+
+    aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignRelease/app-issiesign-release.aab"
+    UI.user_error!("AAB not found at: #{aab}") unless File.exist?(aab)
+    UI.success("Built AAB: #{aab}")
+
+    # 5. Upload app AAB only — Play Store reuses existing asset packs on device
+    upload_to_play_store(
+      track: "internal",
+      release_status: "draft",
+      package_name: "org.issieshapiro.signlang2",
+      aab: aab,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      json_key: File.expand_path('../issie-shared/android/fastlane/release-admin-creds.json', REPO_ROOT)
+    )
+
+    # 6. Commit version bump
+    sh("cd #{REPO_ROOT} && git add version.properties")
+    sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign versionCode to #{new_code}'")
+
+    UI.success("Done! IssieSign #{props["issiesign.versionName"]} (#{new_code}) uploaded to internal track as draft.")
+  end
+
+  error do |lane, exception|
+    UI.error("Error in lane #{lane}: #{exception.message}")
+  end
+end

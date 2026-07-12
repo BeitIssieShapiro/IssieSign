@@ -307,6 +307,10 @@ export default class FileSystem {
                   "Successfully read the existing index file. categories:",
                   this.index.categories.length,
                 );
+                console.log(
+                  "[FS] category names:",
+                  this.index.categories.map((c) => c.name + "(words:" + (c.words?.length || 0) + ")").join(", ")
+                );
                 this.initialized = true;
                 this.sortCategories();
                 this.sortWords();
