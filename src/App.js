@@ -31,6 +31,7 @@ import {
 } from "./utils/Utils";
 import { translate, setLanguage, fTranslate, isRTL } from "./utils/lang";
 import { os } from "./current-language";
+import { AppVersion, AppBuild } from "./current-language";
 
 import "react-circular-progressbar/dist/styles.css";
 
@@ -1080,6 +1081,7 @@ class App extends IssieBase {
 
           <div slot="center-bar" className="shelltitle allow-mouse-events">
             {this.state.title}
+            {AppVersion && <div style={{ fontSize: 10, opacity: 0.6, lineHeight: 1 }}>{AppVersion} ({AppBuild})</div>}
           </div>
           {searchInput}
           {leftArrow}

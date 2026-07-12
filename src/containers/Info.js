@@ -1,5 +1,6 @@
 import React from "react";
 import '../css/info.css';
+import { AppVersion, AppBuild } from "../current-language";
 
 export default function Info(props) {
     return (
@@ -70,6 +71,12 @@ export default function Info(props) {
 
             <br />
             <div className="info-seperator" />
+            <br />
+            {AppVersion && (
+                <div style={{ textAlign: 'center', opacity: 0.5, fontSize: 12, marginBottom: 8 }}>
+                    Version {AppVersion} ({AppBuild})
+                </div>
+            )}
             <br />
             <div className="en" >
 

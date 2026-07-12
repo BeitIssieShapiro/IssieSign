@@ -23,6 +23,13 @@ fi
 # fi
 
 echo "export const gCurrentLanguage = \"$lang\";\nexport const AppName = \"$appName\";\nexport const os=\"$os\";\n" > ./src/current-language.js
+
+# Append version info if version.properties exists
+if [ -f "./version.properties" ]; then
+  versionName=$(grep "^issiesign.versionName" ./version.properties | cut -d'=' -f2)
+  versionCode=$(grep "^issiesign.versionCode" ./version.properties | cut -d'=' -f2)
+  echo "export const AppVersion = \"$versionName\";\nexport const AppBuild = \"$versionCode\";" >> ./src/current-language.js
+fi
 # cp -f jsons/$lang/mainJson.js src/mainJson.js
 
 npm run build
