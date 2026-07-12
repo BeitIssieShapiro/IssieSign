@@ -186,7 +186,16 @@ platform :ios do
       xcodeproj: "#{IOS_ROOT}/IssieSign.xcodeproj"
     )
 
-    # 6. Install pods and build IPA
+    # 6. Fetch/create App Store provisioning profile
+    get_provisioning_profile(
+      app_identifier: "com.issieshapiro.signlang",
+      team_id: "SKNJT9TD9G",
+      provisioning_name: "IssieSign AppStore",
+      adhoc: false,
+      force: false
+    )
+
+    # 7. Install pods and build IPA
     cocoapods(podfile: "#{IOS_ROOT}/Podfile")
 
     build_app(
@@ -197,9 +206,10 @@ platform :ios do
       output_directory: "#{REPO_ROOT}/build-ios",
       output_name: "IssieSign.ipa",
       export_options: {
-        provisioningProfiles: {
-          "com.issieshapiro.signlang" => "IssieSign AppStore"
-        }
+        method: "app-store",
+        teamID: "SKNJT9TD9G",
+        signingCertificate: "Apple Distribution: BEIT ISSIE SHAPIRO (SKNJT9TD9G)",
+        signingStyle: "automatic"
       }
     )
 
