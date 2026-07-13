@@ -42,3 +42,5 @@ output.apks
 # fastlane auto-generated
 fastlane/README.md
 fastlane/report.xml
+build-ios/
+AppStore_*

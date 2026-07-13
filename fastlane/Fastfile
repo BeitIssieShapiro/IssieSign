@@ -172,8 +172,8 @@ platform :ios do
 
     # 4. Read version
     props = read_version_props
-    new_build = props["issiesign.versionCode"].to_i + 1
-    version_name = props["issiesign.versionName"]
+    new_build = props["issiesign.ios.versionCode"].to_i + 1
+    version_name = props["issiesign.ios.versionName"]
     UI.message("Building iOS #{version_name} (#{new_build})")
 
     # 5. Bump version in Xcode project
@@ -220,7 +220,7 @@ platform :ios do
     )
 
     # 8. Write version bump and commit only after successful upload
-    props["issiesign.versionCode"] = new_build.to_s
+    props["issiesign.ios.versionCode"] = new_build.to_s
     write_version_props(props)
     sh("cd #{REPO_ROOT} && git add version.properties")
     sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesign iOS build to #{new_build}'")
