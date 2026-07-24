@@ -49,47 +49,273 @@ Note: some features won't work, as it requires device API such as filesystem
 IssieSign is avaiable under the GPL Licence. See the following link: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 
-## recreate cordova
+## recreate cordova — Android
 
-- start a new cordova app : recommended to keep one app for android and one for ios
+Tested with **cordova-android 15.1.0**, targetSdkVersion **36** (API 36, Android 16), Gradle 8.14.2, AGP 8.10.1.
+Node >= 20.17.0 required.
+
+### Prerequisites
+
+- Node >= 20.17
+- `npm install -g cordova` (any recent version, e.g. 12.x)
+- Android SDK installed, `ANDROID_HOME` set
+- JDK 17 (e.g. JetBrains Runtime). Note the path — needed in `gradle.properties`
+- `bundletool` installed (`brew install bundletool`) — needed for emulator testing with Play Assets
+- `keystore.properties` and `googleplay/*.jks` keystore files (not in repo — copy from secure backup)
+- `google-services.json` (not in repo — see "Setup oauth client for android" section)
+
+### 1. Rename existing android-app as backup (if upgrading)
+
+```bash
+mv android-app android-app-old
 ```
-cordova create <ios-app | android-app> com.issieshapiro.signlang IssieSign
-cd <ios-app | android-app>
-cordova plugins add cordova-plugin-file
-cordova plugins add cordova-plugin-camera
-cordova plugins add cordova-plugin-media-capture
-cordova plugins add cordova-plugin-share
-cordova plugins add cordova-plugin-x-socialsharing
-cordova plugin add cordova-plugin-splashscreen
+
+### 2. Create fresh Cordova project
+
+```bash
+# from project root
+cordova create android-app com.issieshapiro.signlang IssieSign
+cp android-app-old/config.xml android-app/config.xml   # carries preferences
+
+cd android-app
+npm install cordova-android@^15.1.0 --save-dev
+cordova platform add android
+# → confirms: Android Target SDK: android-36
+```
+
+### 3. Add plugins
+
+```bash
+# from android-app/
+cordova plugin add cordova-plugin-file@^8.1.3
+cordova plugin add cordova-plugin-camera@^8.0.0
+cordova plugin add cordova-plugin-media-capture@^6.0.0
+cordova plugin add cordova-plugin-share
+cordova plugin add cordova-plugin-x-socialsharing
 cordova plugin add cordova-plugin-vibration
-# take the client id of the IOS for prod from IssieSign project's API's Credentials in GCP
-cordova plugins add ../GDrivePlugin/ --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
-
-
-cordova plugins add ../PlayAssetsPlugin/
+cordova plugin add ../GDrivePlugin/ \
+  --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q \
+  --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
+cordova plugin add ../PlayAssetsPlugin/
+cordova plugin add cc.fovea.cordova.openwith@2.1.0 \
+  --variable ANDROID_MIME_TYPE="image/*" \
+  --variable IOS_URL_SCHEME=ccfoveaopenwithdemo \
+  --variable IOS_UNIFORM_TYPE_IDENTIFIER=public.image \
+  --variable ANDROID_EXTRA_ACTIONS=" "
 ```
 
+Note: do **not** add `cordova-plugin-splashscreen` — cordova-android 15 has a built-in splash screen handler that replaces it.
 
-- Fix config.xml:
-  - description and author
-  - add 
-```
-    <preference name="AllowInlineMediaPlayback" value="true" />
-    <preference name="AutoHideSplashScreen" value="false" />
+### 4. gradle.properties
 
-
-    <preference name="scheme" value="cdvfile" />
-    <preference name="hostname" value="localhost" />
-    <preference name="iosExtraFilesystems" value="root" />
-    <preference name="applicationId" value="com.issieshapiro.signlang"/>
+Edit `platforms/android/gradle.properties`:
+```properties
+org.gradle.jvmargs=-Xmx4048m
+android.useAndroidX=true
+android.enableJetifier=true
+org.gradle.java.home=<path to JDK 17, e.g. /Users/you/Library/Java/JavaVirtualMachines/jbr-17.0.12/Contents/Home>
 ```
 
-- for iOS: install cocoapods: https://cocoapods.org/
-- add the platfrom: `cordova platform add <ios | android>`
-- Add the cordova folder to the .gitignore
+### 5. Gradle wrapper
 
+Copy the Gradle wrapper from the old project (or generate via Android Studio):
+```bash
+cp -R android-app-old/platforms/android/gradle android-app/platforms/android/
+cp android-app-old/platforms/android/gradlew android-app/platforms/android/
+chmod +x android-app/platforms/android/gradlew
+```
 
-### IOS
+Update `gradle/wrapper/gradle-wrapper.properties` to match `cdv-gradle-config.json`'s `GRADLE_VERSION`:
+```
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.14.2-bin.zip
+```
+
+### 6. settings.gradle — add asset packs
+
+In `platforms/android/settings.gradle` add:
+```groovy
+include ":issiesign_assets"
+include ":issiesign_assets3"
+```
+
+### 7. build.gradle (top-level) — add google-services classpath
+
+In `platforms/android/build.gradle`, inside `buildscript > dependencies`:
+```groovy
+classpath "com.google.gms:google-services:4.5.0"
+```
+
+### 8. app/build.gradle — custom dependencies, signing, flavors
+
+After `apply plugin: 'com.android.application'` add:
+```groovy
+apply plugin: 'com.google.gms.google-services'
+
+dependencies {
+    implementation 'com.google.android.play:asset-delivery:2.2.2'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev75-1.22.0'
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+    implementation 'com.google.firebase:firebase-functions'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-appcheck-debug:16.1.0'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+}
+```
+
+Before the `android {` block add keystore loading:
+```groovy
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+```
+
+Inside `android {` after `buildFeatures` add:
+```groovy
+    assetPacks = [":issiesign_assets", ":issiesign_assets3"]
+
+    signingConfigs {
+        create("issiesign") {
+            keyAlias keystoreProperties['HEkeyAlias']
+            keyPassword keystoreProperties['HEkeyPassword']
+            storeFile file(keystoreProperties['HEstoreFile'])
+            storePassword keystoreProperties['HEstorePassword']
+        }
+        create("issiesignarabic") {
+            keyAlias keystoreProperties['ENkeyAlias']
+            keyPassword keystoreProperties['ENkeyPassword']
+            storeFile file(keystoreProperties['ENstoreFile'])
+            storePassword keystoreProperties['ENstorePassword']
+        }
+    }
+
+    flavorDimensions "languages"
+
+    productFlavors {
+        issiesign {
+            namespace "org.issieshapiro.signlang2"
+            applicationId "org.issieshapiro.signlang2"
+            resValue "string", "app_name", "IssieSign"
+            manifestPlaceholders = [appIcon: "@mipmap/ic_launcher"]
+            versionCode 10106
+            versionName "2.2.2"
+            signingConfig signingConfigs.issiesign
+        }
+        issiesignarabic {
+            namespace "com.issieshapiro.issiesignarabic"
+            applicationId "com.issieshapiro.issiesignarabic"
+            resValue "string", "app_name", "IssieSignArabic"
+            manifestPlaceholders = [appIcon: "@mipmap/ic_launcher_ar"]
+            versionCode 10104
+            versionName "2.2.2"
+            signingConfig signingConfigs.issiesign
+        }
+    }
+```
+
+### 9. AndroidManifest.xml
+
+In `app/src/main/AndroidManifest.xml`:
+
+- `<manifest>` tag: add `xmlns:tools="http://schemas.android.com/tools"`
+- `<application>` tag: set `android:icon="${appIcon}"`, `android:theme="@style/Theme.AppCompat.Light"`, `android:usesCleartextTraffic="true"`
+- `<activity>` tag: set `android:name="com.issieshapiro.signlang.MainActivity"`, `android:theme="@style/Theme.App.SplashScreen"`, `android:launchMode="singleTask"`
+- Add Import Words intent-filter inside the activity:
+```xml
+<intent-filter android:label="Import Words" android:priority="1"
+    android:scheme="http" tools:ignore="AppLinkUrlError">
+    <action android:name="android.intent.action.VIEW" />
+    <action android:name="android.intent.action.EDIT" />
+    <action android:name="android.intent.action.PICK" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:mimeType="*/*" />
+    <data android:pathPattern="*.zip" />
+</intent-filter>
+```
+- Add permissions: `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`, `RECORD_AUDIO`, `READ_MEDIA_AUDIO`, `READ_EXTERNAL_STORAGE` (maxSdkVersion=32)
+
+### 10. res/values/cdv_themes.xml — splash screen theme
+
+Change `postSplashScreenTheme` to use `Theme.AppCompat.Light` (not the default DayNight):
+```xml
+<item name="postSplashScreenTheme">@style/Theme.AppCompat.Light</item>
+```
+
+### 11. MainActivity.java
+
+In `onCreate`, add before `loadUrl`:
+```java
+getSupportActionBar().hide();
+```
+
+### 12. GDrivePlugin — comment out BuildConfig reference
+
+In `platforms/android/app/src/main/java/bentu/googledrive/GoogleDrive.java`:
+- Comment out: `//import com.issieshapiro.signlang.BuildConfig;`
+- Replace: `if (com.issieshapiro.signlang.BuildConfig.DEBUG)` → `//if (...)\nif (false)`
+
+### 13. Copy asset packs, res, and secret files
+
+```bash
+# from project root
+cp -R code-changes/AndroidAssets/issiesign_assets  android-app/platforms/android/
+cp -R code-changes/AndroidAssets/issiesign_assets3 android-app/platforms/android/
+cp -R code-changes/AndroidAssets/res/. android-app/platforms/android/app/src/main/res/
+
+# secret files (not in repo):
+cp <backup>/keystore.properties       android-app/platforms/android/
+cp <backup>/google-services.json      android-app/platforms/android/app/
+```
+
+Note: `res/values/strings.xml` must be empty (no `launcher_name`/`activity_name` — they come from `cdv_strings.xml`):
+```xml
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+</resources>
+```
+
+### 14. Verify build
+
+```bash
+cd android-app/platforms/android
+./gradlew assembleIssiesignDebug
+# → BUILD SUCCESSFUL
+```
+
+---
+
+## Run on Android emulator with Play Assets (bundletool)
+
+```bash
+# 1. Build React + copy assets (from project root):
+./make/android-make-he.sh
+
+# 2. Build debug AAB (from android-app/platforms/android):
+./gradlew bundleIssiesignDebug
+
+# 3. Build APK set with local-testing flag:
+bundletool build-apks \
+  --bundle=app/build/outputs/bundle/issiesignDebug/app-issiesign-debug.aab \
+  --output=/tmp/issiesign-debug.apks \
+  --overwrite \
+  --ks=/path/to/googleplay/issieSign.jks \
+  --ks-pass=pass:signlang \
+  --ks-key-alias=issiesign \
+  --key-pass=pass:signlang \
+  --local-testing
+
+# 4. Install on emulator (includes asset packs):
+bundletool install-apks --apks=/tmp/issiesign-debug.apks --device-id=emulator-5554
+
+# 5. Launch:
+adb -s emulator-5554 shell am start -n org.issieshapiro.signlang2/com.issieshapiro.signlang.MainActivity
+```
+
+The `--local-testing` flag pushes asset packs directly to the device without going through Play, enabling full local testing of Play Asset Delivery.
+
+---
 
 TODO: changes to add.js cameraOption: correctOrientation: true, were not tested on iOS. for android they are essential.
 
@@ -136,10 +362,10 @@ Note: if you move the whole project from backup, you may get an error os CodeSig
 
 
 ### Android
-- Import project (app/platforms/android)
 
-- in MainActivity.java
-  add `getSupportActionBar().hide();` before `loadUrl` - to hide a redundent header
+> See the **"recreate cordova — Android"** section for the full up-to-date setup guide (cordova-android 15, API 36).
+
+Legacy notes (may be outdated):
 
 <!-- - for the camera to work, add these files
 ```
@@ -333,7 +559,7 @@ include ":issiesign_assets3"
 
 
 ## run on android emulator with PlayAssets
-Create a bundle for debug, and debug on the emulator. this will trigger download of the assets
+See "Run on Android emulator with Play Assets (bundletool)" section above.
 
 ## Android Signing keys:
 IssieSign: 
@@ -454,7 +680,7 @@ Download latest from Firebase MyIssieSign and reduce to look like below:
   - run `./make/android-make-he.sh` or `./make/android-make-ar.sh` 
   - open Android Studio
     - Adjust the version in `build.gradle` in `productFlavors->issiesign`
-    - Adjust the sdk version of Android (if needed) in `cdv-gradle-config.json`
+    - Adjust the sdk version of Android (targetSdkVersion = **36**, compileSdkVersion = **36**) in `cdv-gradle-config.json`
     - Build -> Generate Singed Bundle... ->  Android App Budnle -> (release)
     - locate the aab file
 - open `https://play.google.com/`
