@@ -61,7 +61,7 @@ Node >= 20.17.0 required.
 - Android SDK installed, `ANDROID_HOME` set
 - JDK 17 (e.g. JetBrains Runtime). Note the path — needed in `gradle.properties`
 - `bundletool` installed (`brew install bundletool`) — needed for emulator testing with Play Assets
-- `keystore.properties` and `googleplay/*.jks` keystore files (not in repo — copy from secure backup)
+- `keystore.properties` and `googleplay/*.p12` keystore files (not in repo — copy from secure backup; convert from `.jks` to PKCS12 if needed — see Troubleshooting below)
 - `google-services.json` (not in repo — see "Setup oauth client for android" section)
 
 ### 1. Rename existing android-app as backup (if upgrading)
@@ -110,11 +110,13 @@ Note: do **not** add `cordova-plugin-splashscreen` — cordova-android 15 has a 
 
 Edit `platforms/android/gradle.properties`:
 ```properties
-org.gradle.jvmargs=-Xmx4048m
+org.gradle.jvmargs=-Xmx8192m -XX:MaxMetaspaceSize=512m
 android.useAndroidX=true
 android.enableJetifier=true
 org.gradle.java.home=<path to JDK 17, e.g. /Users/you/Library/Java/JavaVirtualMachines/jbr-17.0.12/Contents/Home>
 ```
+
+> **Important:** `Xmx8192m` (8GB) is required for release AAB signing. Lower values (4GB or less) cause an `OutOfMemoryError` that manifests as a cryptic `Self-suppression not permitted` error in `signIssiesignReleaseBundle`.
 
 ### 5. Gradle wrapper
 
@@ -250,11 +252,36 @@ In `onCreate`, add before `loadUrl`:
 getSupportActionBar().hide();
 ```
 
-### 12. GDrivePlugin — comment out BuildConfig reference
+### 12. GDrivePlugin — fix BuildConfig reference and AppCheck
 
 In `platforms/android/app/src/main/java/bentu/googledrive/GoogleDrive.java`:
-- Comment out: `//import com.issieshapiro.signlang.BuildConfig;`
-- Replace: `if (com.issieshapiro.signlang.BuildConfig.DEBUG)` → `//if (...)\nif (false)`
+
+1. Comment out the import:
+```java
+//import com.issieshapiro.signlang.BuildConfig;
+```
+
+2. Replace the AppCheck initialization block. The original code used `BuildConfig.DEBUG` (which doesn't exist in this namespace) and must be replaced with a runtime debug check that also installs `PlayIntegrityAppCheckProviderFactory` for release:
+```java
+FirebaseApp.initializeApp(this.getContext());
+FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+boolean isDebug = (this.getContext().getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+if (isDebug) {
+    firebaseAppCheck.installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance());
+} else {
+    firebaseAppCheck.installAppCheckProviderFactory(
+            com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory.getInstance());
+}
+```
+
+**Why:** The original `if (BuildConfig.DEBUG)` was replaced with `if (false)` to fix a compile error, but that meant AppCheck was never initialized — causing `No AppCheckProvider installed` and `Unauthenticated` errors on every GDrive sync attempt.
+
+**Debug token registration:** On first debug run, logcat will print a line like:
+```
+DebugAppCheckProvider: Enter this debug secret into the allow list: <uuid>
+```
+Add this UUID in Firebase Console → AppCheck → Apps → `org.issieshapiro.signlang2` → Manage debug tokens. Without this, AppCheck returns 403 and GDrive sync fails.
 
 ### 13. Copy asset packs, res, and secret files
 
@@ -756,7 +783,7 @@ For debug:
  - locate the APK
  - `keytool -printcert -jarfile <*.apk>`
 
-For AppCheck, you need in addition to enable it, and provide the play's SH256. In addition a debug key. this is ommited into the logs by the debug-provider set in the code
+For AppCheck, you need in addition to enable it, and provide the play's SH256. For debug builds, the debug token is printed to logcat on first run — add it in Firebase Console → AppCheck → Manage debug tokens.
 
 
 - The code is using the WebClientID of the IssieSign project in GCP
@@ -829,12 +856,37 @@ Download latest from Firebase MyIssieSign and reduce to look like below:
 ## Publish Android version
 
 - Build android app:
-  - run `./make/android-make-he.sh` or `./make/android-make-ar.sh` 
-  - open Android Studio
+  - run `./make/android-make-he.sh` or `./make/android-make-ar.sh`
+  - run `npm run deploy:android:full` (uses fastlane) or via Android Studio:
     - Adjust the version in `build.gradle` in `productFlavors->issiesign`
     - Adjust the sdk version of Android (targetSdkVersion = **36**, compileSdkVersion = **36**) in `cdv-gradle-config.json`
-    - Build -> Generate Singed Bundle... ->  Android App Budnle -> (release)
+    - Build -> Generate Signed Bundle... -> Android App Bundle -> (release)
     - locate the aab file
 - open `https://play.google.com/`
 - create/edit the Internal release of IssieSign or IssieSignArabic
 - upload the aab file
+
+### Troubleshooting release build
+
+**`Self-suppression not permitted` / `signIssiesignReleaseBundle` fails**
+
+Root cause: `OutOfMemoryError: Java heap space` during AAB signing — the error is misleadingly reported as `Self-suppression not permitted`.
+
+Fix: ensure `platforms/android/gradle.properties` has at least 8GB heap:
+```properties
+org.gradle.jvmargs=-Xmx8192m -XX:MaxMetaspaceSize=512m
+```
+
+**Keystore format**
+
+The signing keystores (`googleplay/*.jks`) may need to be converted from legacy JKS to PKCS12 format for compatibility with newer tooling:
+```bash
+keytool -importkeystore \
+  -srckeystore googleplay/issieSign.jks \
+  -destkeystore googleplay/issieSign.p12 \
+  -deststoretype PKCS12 \
+  -srcstorepass signlang -deststorepass signlang \
+  -srcalias issiesign -destalias issiesign \
+  -srckeypass signlang -destkeypass signlang -noprompt
+```
+Then update `keystore.properties` to point to the `.p12` file.
