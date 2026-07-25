@@ -317,41 +317,203 @@ The `--local-testing` flag pushes asset packs directly to the device without goi
 
 ---
 
-TODO: changes to add.js cameraOption: correctOrientation: true, were not tested on iOS. for android they are essential.
+## recreate cordova — iOS
 
-- change Podfile:
+Tested with **cordova-ios 8.1.1**. Node >= 20.17.0, CocoaPods >= 1.16, Xcode 16+ required.
+
+### 1. Rename existing ios-app as backup (if upgrading)
+
+```bash
+mv ios-app ios-app-old
 ```
+
+### 2. Create fresh Cordova project
+
+```bash
+# from project root
+cordova create ios-app com.issieshapiro.signlang IssieSign
+cp ios-app-old/config.xml ios-app/config.xml   # carries preferences
+
+cd ios-app
+npm install cordova-ios@^8.1.1 --save-dev
+cordova platform add ios
+```
+
+### 3. Add plugins
+
+```bash
+# from ios-app/
+cordova plugin add cordova-plugin-file@^8.1.3
+cordova plugin add cordova-plugin-camera@^8.0.0
+cordova plugin add cordova-plugin-media-capture@^6.0.0
+cordova plugin add cordova-plugin-share
+cordova plugin add cordova-plugin-x-socialsharing
+cordova plugin add cordova-plugin-splashscreen
+cordova plugin add cordova-plugin-vibration
+cordova plugin add ../GDrivePlugin/ \
+  --variable IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q \
+  --variable IOS_CLIENT_ID=972582951029-7i2ipcpioalrfe0glkgp9udo5ne2fe0q.apps.googleusercontent.com
+cordova plugin add ../PlayAssetsPlugin/
+cordova plugin add cc.fovea.cordova.openwith@2.1.0 \
+  --variable ANDROID_MIME_TYPE="image/*" \
+  --variable IOS_URL_SCHEME=ccfoveaopenwithdemo \
+  --variable IOS_UNIFORM_TYPE_IDENTIFIER=public.image \
+  --variable ANDROID_EXTRA_ACTIONS=" "
+```
+
+### 4. Podfile
+
+In `platforms/ios/Podfile` change `use_frameworks!` to `use_modular_headers!`:
+```ruby
 #use_frameworks!
 use_modular_headers!
 ```
-- run pod install in the `platforms/ios` folder
 
-- copy `code-changes/Images.xcassets/` AppIcon.appiconset and AppIconAR.appiconset 
-- todo: add header icon for launch
-- Open xcode and the ios project
-- Under "Resources"
-  - copy the Storyboard from code-changes (copy , create group)
-  - Copy IssieSign-info.plist contents into the one created by cordova (open as source)
-- Change code of CDVWebViewEngine.m to include `issie-file` scheme - see `code-changes/CDVWebViewEngine.m.txt`
-- In `Build-Settings->Runpath Search Paths` add `/usr/lib/swift`. make sure for both debug and release.
+Then run:
+```bash
+cd platforms/ios && pod install
+```
 
-  - Create Arabic profile:
-    - duplicate IssieSign profile
-    - set Display Name: `IssieSignArabic`
-    - set Bundle Identifier: `com.issieshapiro.signlangarabic`
-    - set version & build
-    - change launch storyboard
-    - change appicon and header
+### 5. CDVWebViewEngine.m — add issie-file scheme
 
-  - Create MyIssieSign profile:
-    - duplicate IssieSign profile
-    - set Display Name: `MyIssieSign`
-    - set Bundle Identifier: `com.issieshapiro.myissiesign`
-    - set version & build
-    - change launch storyboard
-    - change appicon and header
+File: `platforms/ios/packages/cordova-ios/CordovaLib/Classes/Private/Plugins/CDVWebViewEngine/CDVWebViewEngine.m`
 
-Note: if you move the whole project from backup, you may get an error os CodeSign. in this case removing all xattr helped: `xattr -rc /path/to/directory` 
+Just before `return configuration;` at the end of `createConfigurationFromSettings`, add:
+```objc
+[configuration setURLSchemeHandler:self forURLScheme:@"issie-file"];
+```
+
+Then add these three methods to the class (after the closing `}` of `createConfigurationFromSettings`):
+```objc
+- (NSURL *)changeURLScheme:(NSURL *)url toScheme:(NSString *)newScheme {
+    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
+    components.scheme = newScheme;
+    return components.URL;
+}
+
+- (void)webView:(WKWebView *)webView startURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {
+    NSURL *fileURL = [self changeURLScheme:urlSchemeTask.request.URL toScheme:@"file"];
+    NSURLRequest *req = [[NSURLRequest alloc] initWithURL:fileURL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:.1];
+    [[NSURLSession.sharedSession dataTaskWithRequest:req completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (error) { [urlSchemeTask didFailWithError:error]; return; }
+        NSURLResponse *r = [[NSURLResponse alloc] initWithURL:urlSchemeTask.request.URL MIMEType:response.MIMEType expectedContentLength:data.length textEncodingName:nil];
+        [urlSchemeTask didReceiveResponse:r];
+        [urlSchemeTask didReceiveData:data];
+        [urlSchemeTask didFinish];
+    }] resume];
+}
+
+- (void)webView:(WKWebView *)webView stopURLSchemeTask:(id<WKURLSchemeTask>)urlSchemeTask {}
+```
+
+See `code-changes/CDVWebViewEngine.m.txt` for full context.
+
+### 6. App-Info.plist — merge custom entries
+
+In `platforms/ios/App/App-Info.plist` ensure the following are present (cordova-ios 8 auto-generates some of them):
+
+- `NSAllowsArbitraryLoads: true` (replace the localhost-only ATS entry)
+- `NSCameraUsageDescription` — "Use camera to capture new words"
+- `NSMicrophoneUsageDescription` — "This app needs microphone access"
+- `LSSupportsOpeningDocumentsInPlace: true`
+- `CFBundleDocumentTypes` — zip import entry (see `code-changes/IssieSign-Info.plist`)
+- `UILaunchStoryboardName` — `IssieSignLaunchScreen`
+- `CFBundleURLTypes` — Google OAuth reversed client ID (auto-generated by GDrivePlugin)
+
+### 7. Copy assets
+
+```bash
+# from project root
+# App icons
+cp -R code-changes/Images.xcassets/AppIcon.appiconset    ios-app/platforms/ios/App/Assets.xcassets/
+cp -R code-changes/Images.xcassets/AppIconAR.appiconset  ios-app/platforms/ios/App/Assets.xcassets/
+
+# Launch storyboard
+cp code-changes/IssieSignLaunchScreen.storyboard ios-app/platforms/ios/App/Base.lproj/
+
+# Header image
+cp -R ios-app-old/platforms/ios/IssieSign/Images.xcassets/header.imageset \
+       ios-app/platforms/ios/App/Assets.xcassets/
+```
+
+### 8. xcodeproj — build settings
+
+In `platforms/ios/App.xcodeproj/project.pbxproj`, for both Debug and Release build configs add:
+
+```
+HEADER_SEARCH_PATHS = ("$(inherited)", "$(SRCROOT)/ShareExtension");
+LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "/usr/lib/swift");
+```
+
+Or set these in Xcode under Build Settings for the App target.
+
+### 9. SceneDelegate.swift — fix window setup
+
+cordova-ios 8's `CDVSceneDelegate` overrides `scene:willConnectTo:options:` without setting up the window, so the storyboard never loads. Override it in `platforms/ios/App/SceneDelegate.swift`:
+
+```swift
+import Cordova
+import UIKit
+
+class SceneDelegate: CDVSceneDelegate {
+    override func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let rootVC = storyboard.instantiateInitialViewController()!
+        window = UIWindow(windowScene: windowScene)
+        window.rootViewController = rootVC
+        window.makeKeyAndVisible()
+        super.scene(scene, willConnectTo: session, options: connectionOptions)
+    }
+}
+```
+
+### 10. Main.storyboard — disable Cordova splash overlay
+
+In `platforms/ios/App/Base.lproj/Main.storyboard`, change `showSplashScreen` to `NO` so the iOS system launch screen handles the splash instead of Cordova's white overlay:
+
+```xml
+<userDefinedRuntimeAttribute type="boolean" keyPath="showSplashScreen" value="NO"/>
+```
+
+### 11. config.xml — set AutoHideSplashScreen and scheme
+
+Ensure `config.xml` has:
+```xml
+<preference name="AutoHideSplashScreen" value="false" />
+<preference name="scheme" value="app" />
+<preference name="hostname" value="localhost" />
+<preference name="iosExtraFilesystems" value="root" />
+```
+
+Note: `AutoHideSplashScreen=false` keeps Cordova's white overlay until `navigator.splashscreen.hide()` is called from JS after deviceready. The iOS system launch screen (`IssieSignLaunchScreen.storyboard`) shows the IssieSign branding briefly before the Cordova layer takes over.
+
+### 12. Build and run make script
+
+```bash
+# from project root — builds React and copies to www:
+./make/ios-make-he.sh
+
+# rebuild (from ios-app/platforms/ios):
+xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug \
+  -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 17 Pro" build
+# → BUILD SUCCEEDED
+```
+
+### 13. Xcode — create Arabic target profile
+
+Open `ios-app/platforms/ios/App.xcworkspace` in Xcode:
+- Duplicate the `App` target → rename to `IssieSignArabic`
+- Set Bundle Identifier: `com.issieshapiro.signlangarabic`
+- Set version & build
+- Change launch storyboard to `IssieSignArabicLaunchScreen`
+- Change AppIcon to `AppIconAR`
+
+Note: if you move the project from backup and get a CodeSign error: `xattr -rc /path/to/directory`
+
+TODO: changes to add.js `cameraOption: correctOrientation: true` — not tested on iOS; essential for Android.
+
+---
 
 ### Electron
 
@@ -462,12 +624,6 @@ cordova plugin add cc.fovea.cordova.openwith \
                     storeFile file(keystoreProperties['HEstoreFile'])
                     storePassword keystoreProperties['HEstorePassword']
                 }
-                create("myissiesign") {
-                    keyAlias keystoreProperties['ENkeyAlias']
-                    keyPassword keystoreProperties['ENkeyPassword']
-                    storeFile file(keystoreProperties['ENstoreFile'])
-                    storePassword keystoreProperties['ENstorePassword']
-                }
                 create("issiesignarabic") {
                     keyAlias keystoreProperties['ENkeyAlias']
                     keyPassword keystoreProperties['ENkeyPassword']
@@ -567,12 +723,8 @@ IssieSign:
   - SHA1: 3C:EA:48:E1:4D:23:C6:25:B6:EB:A5:4A:87:C6:01:62:9A:25:F8:08
   - `keytool -keystore googleplay/issieSign2.0.jks -list -v`
   - signlang
-MyIssieSign: 
-  - MyIssieSign.jks 
-  - SHA1: BA:B0:41:80:6C:EE:A8:00:D4:DD:06:64:5A:94:89:AA:1F:0B:2E:0A
-  - `openssl pkcs12 -in  googleplay/MyIssieSign.jks -nokeys -out certificate.crt`
-  - signlang
-  - `openssl x509 -noout -fingerprint -sha1 -inform pem -in certificate.crt`
+
+~~MyIssieSign~~ (no longer a standalone project — retired)
 
 IssieSignArabic:
   - IssieSignArabic.jks 

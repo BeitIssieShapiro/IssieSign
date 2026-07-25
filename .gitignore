@@ -44,3 +44,4 @@ fastlane/README.md
 fastlane/report.xml
 build-ios/
 AppStore_*
+ios-app-old
