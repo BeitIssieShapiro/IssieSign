@@ -185,10 +185,10 @@ Inside `android {` after `buildFeatures` add:
             storePassword keystoreProperties['HEstorePassword']
         }
         create("issiesignarabic") {
-            keyAlias keystoreProperties['ENkeyAlias']
-            keyPassword keystoreProperties['ENkeyPassword']
-            storeFile file(keystoreProperties['ENstoreFile'])
-            storePassword keystoreProperties['ENstorePassword']
+            keyAlias keystoreProperties['ARkeyAlias']
+            keyPassword keystoreProperties['ARkeyPassword']
+            storeFile file(keystoreProperties['ARstoreFile'])
+            storePassword keystoreProperties['ARstorePassword']
         }
     }
 
@@ -295,6 +295,25 @@ cp -R code-changes/AndroidAssets/res/. android-app/platforms/android/app/src/mai
 cp <backup>/keystore.properties       android-app/platforms/android/
 cp <backup>/google-services.json      android-app/platforms/android/app/
 ```
+
+**Arabic app icon PNGs** — not in repo, must be generated from `docs/images/icon-issiesignarabic.png`:
+```bash
+python3 << 'EOF'
+from PIL import Image
+import os
+src = Image.open('docs/images/icon-issiesignarabic.png')
+sizes = {'mipmap-mdpi': 48, 'mipmap-hdpi': 72, 'mipmap-xhdpi': 96, 'mipmap-xxhdpi': 144, 'mipmap-xxxhdpi': 192}
+base = 'android-app/platforms/android/app/src/main/res'
+for folder, size in sizes.items():
+    out = os.path.join(base, folder)
+    os.makedirs(out, exist_ok=True)
+    r = src.resize((size, size), Image.LANCZOS)
+    r.save(os.path.join(out, 'ic_launcher_ar.png'))
+    r.save(os.path.join(out, 'ic_launcher_ar_round.png'))
+EOF
+```
+
+The adaptive icon `mipmap-anydpi-v26/ic_launcher_ar.xml` (already in `code-changes`) uses `@mipmap/ic_launcher_ar_round` with `android:inset="18%"` to avoid the icon appearing zoomed in.
 
 Note: `res/values/strings.xml` must be empty (no `launcher_name`/`activity_name` — they come from `cdv_strings.xml`):
 ```xml
