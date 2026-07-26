@@ -132,6 +132,105 @@ platform :android do
     UI.success("Done! IssieSign Android #{props["issiesign.versionName"]} (#{new_code}) uploaded.")
   end
 
+  desc "Build and upload IssieSignArabic to Play Store (no media re-upload)"
+  lane :deploy_ar do
+    build_and_upload_android_ar(with_assets: false)
+  end
+
+  desc "Build and upload IssieSignArabic to Play Store (including asset packs)"
+  lane :deploy_ar_full do
+    build_and_upload_android_ar(with_assets: true)
+  end
+
+  private_lane :build_and_upload_android_ar do |options|
+    with_assets = options[:with_assets]
+
+    # 1. React build
+    sh("cd #{REPO_ROOT} && ./make/react_prepare.sh ar false IssieSignArabic Android")
+
+    # 2. Copy JS/HTML into Android www
+    www = "#{ANDROID_ROOT}/app/src/main/assets/www"
+    sh("rm -rf '#{www}/static' '#{www}/index.html'")
+    sh("cp -R #{REPO_ROOT}/build/* '#{www}/'")
+
+    # 3. Copy media only for full build
+    if with_assets
+      media_path = File.read("#{REPO_ROOT}/make/.mediaPath").strip
+      sh("rm -f #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos/*")
+      sh("rm -f #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos/*")
+      sh("mkdir -p #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos")
+      sh("mkdir -p #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos")
+      sh("cp -R #{media_path}/videos/ar/prod/[A-L]* #{ANDROID_ROOT}/issiesign_assets/src/main/assets/videos/")
+      sh("cp -R #{media_path}/videos/ar/prod/[M-Z]* #{ANDROID_ROOT}/issiesign_assets3/src/main/assets/videos/")
+    end
+
+    # 4. Read version
+    props = read_version_props
+    new_code = props["issiesignarabic.versionCode"].to_i + 1
+    UI.message("Building versionCode: #{new_code}, versionName: #{props["issiesignarabic.versionName"]}")
+
+    # 5. Patch gradle files
+    settings_file  = "#{ANDROID_ROOT}/settings.gradle"
+    app_build_file = "#{ANDROID_ROOT}/app/build.gradle"
+    settings_orig  = File.read(settings_file)
+    app_build_orig = File.read(app_build_file)
+
+    patched = app_build_orig.sub(/issiesignarabic \{[^}]+\}/m) do |block|
+      block
+        .sub(/versionCode \d+/,     "versionCode #{new_code}")
+        .sub(/versionName "[^"]*"/, "versionName \"#{props["issiesignarabic.versionName"]}\"")
+    end
+
+    unless with_assets
+      patched = patched.gsub(/^\s*assetPacks\s*=.*\n/, '')
+      File.write(settings_file, settings_orig
+        .gsub(/^include ":issiesign_assets"\n/, '')
+        .gsub(/^include ":issiesign_assets3"\n/, ''))
+    end
+    File.write(app_build_file, patched)
+
+    cached_aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignarabicRelease/app-issiesignarabic-release.aab"
+    File.delete(cached_aab) if File.exist?(cached_aab)
+
+    begin
+      gradle(
+        task: "clean bundle",
+        flavor: "issiesignarabic",
+        build_type: "Release",
+        project_dir: ANDROID_ROOT,
+        print_command: true
+      )
+    ensure
+      File.write(settings_file, settings_orig) unless with_assets
+      File.write(app_build_file, app_build_orig)
+    end
+
+    aab = "#{ANDROID_ROOT}/app/build/outputs/bundle/issiesignarabicRelease/app-issiesignarabic-release.aab"
+    UI.user_error!("AAB not found at: #{aab}") unless File.exist?(aab)
+    UI.success("Built AAB: #{aab}")
+
+    upload_to_play_store(
+      track: "internal",
+      release_status: "draft",
+      package_name: "com.issieshapiro.issiesignarabic",
+      aab: aab,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      json_key: File.expand_path('../issie-shared/android/fastlane/release-admin-creds.json', REPO_ROOT),
+      timeout: 600
+    )
+
+    props["issiesignarabic.versionCode"] = new_code.to_s
+    write_version_props(props)
+    sh("cd #{REPO_ROOT} && git add version.properties")
+    sh("cd #{REPO_ROOT} && git commit -m 'Bump issiesignarabic Android versionCode to #{new_code}'")
+
+    UI.success("Done! IssieSignArabic Android #{props["issiesignarabic.versionName"]} (#{new_code}) uploaded.")
+  end
+
   error do |lane, exception|
     UI.error("Error in lane #{lane}: #{exception.message}")
   end

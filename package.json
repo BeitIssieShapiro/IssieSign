@@ -42,6 +42,8 @@
     "eject": "react-scripts eject",
     "deploy:android": "fastlane android deploy_he",
     "deploy:android:full": "fastlane android deploy_he_full",
+    "deploy:android:ar": "fastlane android deploy_ar",
+    "deploy:android:ar:full": "fastlane android deploy_ar_full",
     "deploy:ios": "fastlane ios deploy_he",
     "deploy:ios:full": "fastlane ios deploy_he_full"
   },
